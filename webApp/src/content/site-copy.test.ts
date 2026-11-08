@@ -21,6 +21,13 @@ describe("site-copy · textos literales del documento de la dueña", () => {
     );
   });
 
+  it("Catálogo · disciplina sin formaciones (B1, literal del plan)", () => {
+    expect(CATALOGO.emptyDiscipline("Gemoterapia")).toBe(
+      "Todavía no hay formaciones de Gemoterapia. Muy pronto vas a encontrar propuestas acá; mientras tanto, explorá todas nuestras formaciones.",
+    );
+    expect(CATALOGO.emptyDisciplineCta).toBe("Ver todas las formaciones");
+  });
+
   it("Diario (pantalla 7)", () => {
     expect(DIARIO.title).toBe("Diario");
     expect(DIARIO.lead).toBe(

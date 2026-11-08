@@ -18,6 +18,9 @@ export const CATALOGO = {
   lead: "Explorá nuestras formaciones y descubrí nuevos caminos de conocimiento, autoconocimiento y transformación personal.",
   searchPlaceholder: "¿Qué te gustaría aprender? Buscá por curso, disciplina o temática.",
   empty: "No encontramos formaciones con esos criterios. Probá con otra búsqueda o explorá todas nuestras propuestas.",
+  emptyDiscipline: (discipline: string) =>
+    `Todavía no hay formaciones de ${discipline}. Muy pronto vas a encontrar propuestas acá; mientras tanto, explorá todas nuestras formaciones.`,
+  emptyDisciplineCta: "Ver todas las formaciones",
   metaDescription:
     "Explorá las formaciones de Humano Despierto: astrología, tarot, constelaciones familiares, magia y herramientas para el autoconocimiento.",
 } as const;

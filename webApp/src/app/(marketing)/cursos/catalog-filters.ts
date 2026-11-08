@@ -3,6 +3,7 @@
 // nada de conteos inventados. Ver `src/lib/utils/taxonomy.ts` para la decisión de normalización
 // (Q-05).
 import type { PublishedCourseSummary } from "@/lib/server/courses";
+import { DISCIPLINES, disciplineLabel, isDisciplineKey, type DisciplineKey } from "@/lib/taxonomy/disciplines";
 import {
   bucketForDurationSeconds,
   DURATION_BUCKETS,
@@ -18,7 +19,7 @@ const ORDERS: CatalogOrder[] = ["relevancia", "mejor-valorado", "mas-nuevo"];
 
 export interface CatalogFilterState {
   order: CatalogOrder;
-  disciplines: string[];
+  disciplines: DisciplineKey[];
   levels: string[];
   durations: DurationBucketKey[];
   query: string;
@@ -26,7 +27,6 @@ export interface CatalogFilterState {
 }
 
 export interface AnnotatedCourse extends PublishedCourseSummary {
-  disciplineKey: string;
   levelKey: string;
   durationKey: DurationBucketKey;
 }
@@ -56,7 +56,7 @@ export function parseCatalogFilterState(sp: SearchParamsInput): CatalogFilterSta
   const orderRaw = firstValue(sp.orden) as CatalogOrder;
   return {
     order: ORDERS.includes(orderRaw) ? orderRaw : "relevancia",
-    disciplines: parseKeyList(sp.disciplina),
+    disciplines: parseKeyList(sp.disciplina).filter(isDisciplineKey),
     levels: parseKeyList(sp.nivel),
     durations: durationKeys,
     query: firstValue(sp.q).trim(),
@@ -80,17 +80,21 @@ export function toURLSearchParams(sp: SearchParamsInput): URLSearchParams {
 export function annotateCourses(courses: PublishedCourseSummary[]): AnnotatedCourse[] {
   return courses.map((c) => ({
     ...c,
-    disciplineKey: normalizeTaxonomyKey(c.discipline),
     levelKey: normalizeTaxonomyKey(c.level),
     durationKey: bucketForDurationSeconds(c.totalDurationSeconds),
   }));
 }
 
+// Sin tildes ni mayúsculas: quien escribe «astrologia» también encuentra «Astrología».
+function foldForSearch(value: string): string {
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
 function matchesSearch(course: AnnotatedCourse, query: string): boolean {
-  const q = query.trim().toLowerCase();
+  const q = foldForSearch(query.trim());
   if (!q) return true;
-  return [course.title, course.subtitle, course.desc].some((field) =>
-    (field ?? "").toLowerCase().includes(q)
+  return [course.title, course.subtitle, course.desc, disciplineLabel(course.disciplineKey)].some((field) =>
+    foldForSearch(field ?? "").includes(q)
   );
 }
 
@@ -102,7 +106,7 @@ function matchesFilters(
   skip?: FacetDimension
 ): boolean {
   if (!matchesSearch(course, state.query)) return false;
-  if (skip !== "discipline" && state.disciplines.length && !state.disciplines.includes(course.disciplineKey)) {
+  if (skip !== "discipline" && state.disciplines.length && !(state.disciplines as string[]).includes(course.disciplineKey)) {
     return false;
   }
   if (skip !== "level" && state.levels.length && !state.levels.includes(course.levelKey)) {
@@ -124,16 +128,21 @@ export function filterCourses(courses: AnnotatedCourse[], state: CatalogFilterSt
 // total del catálogo entero.
 const LEVEL_DISPLAY_ORDER = ["inicial", "intermedio", "maestría"];
 
+// B1 · las siete siempre, en el orden de la lista: una disciplina sin cursos todavía se ofrece.
 export function buildDisciplineFacets(courses: AnnotatedCourse[], state: CatalogFilterState): FacetOption[] {
-  const keys = [...new Set(courses.map((c) => c.disciplineKey))];
-  return keys
-    .map((key) => ({
-      key,
-      label: taxonomyLabel(key),
-      count: courses.filter((c) => c.disciplineKey === key && matchesFilters(c, state, "discipline")).length,
-      active: state.disciplines.includes(key),
-    }))
-    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+  return DISCIPLINES.map((d) => ({
+    key: d.key,
+    label: d.label,
+    count: courses.filter((c) => c.disciplineKey === d.key && matchesFilters(c, state, "discipline")).length,
+    active: state.disciplines.includes(d.key),
+  }));
+}
+
+/** Etiqueta de la disciplina elegida si es la única y no tiene NINGÚN curso publicado; si no, null. */
+export function emptyDisciplineLabel(courses: AnnotatedCourse[], state: CatalogFilterState): string | null {
+  if (state.disciplines.length !== 1) return null;
+  const key = state.disciplines[0];
+  return courses.some((c) => c.disciplineKey === key) ? null : disciplineLabel(key);
 }
 
 export function buildLevelFacets(courses: AnnotatedCourse[], state: CatalogFilterState): FacetOption[] {

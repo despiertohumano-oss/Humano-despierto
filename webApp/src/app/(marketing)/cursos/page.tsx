@@ -15,6 +15,7 @@ import {
   buildDisciplineFacets,
   buildDurationFacets,
   buildLevelFacets,
+  emptyDisciplineLabel,
   filterCourses,
   hrefFor,
   paginate,
@@ -105,6 +106,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
   const durationFacets = buildDurationFacets(allCourses, state);
 
   const filtered = sortCourses(filterCourses(allCourses, state), state.order);
+  const emptyDiscipline = emptyDisciplineLabel(allCourses, state);
   const { items: pageCourses, page, totalPages } = paginate(filtered, state.page, PAGE_SIZE);
   // Solo la pagina visible: firmar el catalogo entero seria una URL por curso que nadie ve.
   const covers = await signCatalogCovers(pageCourses);
@@ -182,18 +184,16 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
       </PageIntro>
 
       <div className="mx-auto max-w-[1200px] px-6 pb-24">
-        {disciplineFacets.length > 0 && (
-          <ul aria-label="Filtrar por disciplina" className="mb-6 flex flex-wrap gap-2">
-            {disciplineFacets.map((f) => (
-              <li key={f.key}>
-                <Link href={hrefFor(toggleListParam(current, "disciplina", f.key))} aria-pressed={f.active} className={chip(f.active)}>
-                  {f.label}
-                  <span className={f.active ? "text-white" : "text-suave"}>{f.count}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
+        <ul aria-label="Filtrar por disciplina" className="mb-6 flex flex-wrap gap-2">
+          {disciplineFacets.map((f) => (
+            <li key={f.key}>
+              <Link href={hrefFor(toggleListParam(current, "disciplina", f.key))} aria-pressed={f.active} className={chip(f.active)}>
+                {f.label}
+                <span className={f.active ? "text-white" : "text-suave"}>{f.count}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
 
         {/* En móvil el resto de los filtros se pliega; en escritorio va en la columna lateral. */}
         <details className="mb-6 rounded-lg border border-linea bg-papel px-5 lg:hidden">
@@ -253,7 +253,14 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
               ))}
             </nav>
 
-            {filtered.length === 0 ? (
+            {emptyDiscipline ? (
+              <div className="tarjeta flex flex-col items-center gap-5 px-6 py-16 text-center">
+                <p className="max-w-md text-tinta">{CATALOGO.emptyDiscipline(emptyDiscipline)}</p>
+                <ButtonLink href="/cursos" variant="outline">
+                  {CATALOGO.emptyDisciplineCta}
+                </ButtonLink>
+              </div>
+            ) : filtered.length === 0 ? (
               <div className="tarjeta flex flex-col items-center gap-5 px-6 py-16 text-center">
                 <p className="max-w-sm text-suave">{CATALOGO.empty}</p>
                 <ButtonLink href="/cursos" variant="outline">
