@@ -1,66 +1,36 @@
 import Image from "next/image";
 import { ButtonLink } from "@/components/atoms/Button";
-import TeacherPortrait from "@/components/atoms/TeacherPortrait";
-import { HERO_PHOTO, unsplashUrl } from "@/content/placeholder-photos";
+import { BRAND } from "@/content/brand-images";
 import { LANDING } from "@/content/landing";
 
-export interface HeroQuote {
-  text: string;
-  /** Guía real que la firmó (`profiles.quote`); sin ella, la frase de respaldo va sin firma. */
-  guide: { name: string; role: string | null; slug: string; avatarUrl: string | null } | null;
-}
-
-/** Hero B4: foto a sangre, la guía habla. El header va transparente encima (`overHero`). */
-export default function Hero({ quote }: { quote: HeroQuote }) {
+/** Hero cósmico: la imagen de la dueña a sangre, velo `noche` (≥ 70 %) y el título como h1. El
+ *  header va transparente encima (`overHero`). La imagen es decorativa: el texto ya lo dice todo. */
+export default function Hero() {
+  const h = LANDING.hero;
   return (
-    <section aria-label="Presentación" className="relative grid min-h-[min(100svh,860px)] items-end overflow-hidden bg-bosque text-white">
+    <section aria-label="Presentación" className="cosmico relative grid min-h-[min(100svh,860px)] items-end overflow-hidden">
       <Image
-        src={unsplashUrl(HERO_PHOTO.id)}
-        alt={HERO_PHOTO.alt}
+        src={BRAND.heroNebulosa.src}
+        alt=""
         fill
         preload
         sizes="100vw"
-        className="object-cover object-[center_40%]"
+        className="object-cover object-center"
       />
-      {/* El degradado es lo que da contraste al texto blanco sobre una foto luminosa. */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-[linear-gradient(to_top,rgb(20_32_24/0.9)_0%,rgb(20_32_24/0.62)_55%,rgb(20_32_24/0.3)_100%)]"
-      />
-      {/* Banda superior: el header transparente tiene texto blanco encima de la foto. */}
-      <div aria-hidden="true" className="absolute inset-x-0 top-0 h-40 bg-[linear-gradient(to_bottom,rgb(20_32_24/0.6),rgb(20_32_24/0))]" />
+      <div aria-hidden="true" className="cosmico-velo absolute inset-0" />
+      {/* Banda superior: el header transparente tiene texto blanco encima de la imagen. */}
+      <div aria-hidden="true" className="absolute inset-x-0 top-0 h-40 bg-[linear-gradient(to_bottom,rgb(14_20_48/0.7),rgb(14_20_48/0))]" />
       <div className="relative mx-auto w-full max-w-[1200px] px-6 pb-16 pt-36 md:pb-[72px]">
-        <h1 className="sr-only">{LANDING.hero.heading}</h1>
-        <figure>
-          <blockquote className="max-w-[20ch] text-[clamp(32px,5.4vw,68px)] font-semibold leading-[1.08] tracking-[-0.025em] text-balance">
-            <p>{quote.guide ? `«${quote.text}»` : quote.text}</p>
-          </blockquote>
-          <figcaption className="mb-10 mt-6 flex items-center gap-3.5 text-base">
-            {quote.guide ? (
-              <>
-                <TeacherPortrait
-                  name={quote.guide.name}
-                  src={quote.guide.avatarUrl}
-                  size="sm"
-                  loading="eager"
-                  className="h-12 w-12 flex-none rounded-full border-2 border-white"
-                />
-                <span>
-                  <b className="block font-semibold">{quote.guide.name}</b>
-                  {quote.guide.role && <span className="block text-sm text-salvia-100">{quote.guide.role}</span>}
-                </span>
-              </>
-            ) : (
-              <span className="text-salvia-100">{LANDING.hero.fallbackByline}</span>
-            )}
-          </figcaption>
-        </figure>
+        <h1 className="max-w-[26ch] text-[clamp(28px,4.2vw,54px)] font-semibold leading-[1.12] tracking-[-0.02em] text-balance">
+          {h.title}
+        </h1>
+        <p className="mb-10 mt-6 max-w-[52ch] text-lg leading-relaxed">{h.lead}</p>
         <div className="flex flex-wrap gap-3">
           <ButtonLink href="/cursos" arrow>
-            {LANDING.hero.ctaCursos}
+            {h.ctaCursos}
           </ButtonLink>
-          <ButtonLink href="/guias" variant="outline-light">
-            {LANDING.hero.ctaGuias}
+          <ButtonLink href="#nuestra-mirada" variant="outline-light">
+            {h.ctaProyecto}
           </ButtonLink>
         </div>
       </div>
