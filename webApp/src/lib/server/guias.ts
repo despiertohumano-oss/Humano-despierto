@@ -172,20 +172,6 @@ export const getTeacherBySlug = cache(async (slug: string): Promise<PublicTeache
   };
 });
 
-/**
- * "Maestra" de la landing. Sin un flag `featured` en `profiles` (no se justifica una columna
- * nueva para un solo widget) y sin poder contar inscripciones como `anon` (ver cabecera del
- * archivo), se elige a la docente con MAS cursos publicados -- metrica publica, derivada,
- * honesta, no arbitraria. Empate: orden alfabetico de slug (deterministico).
- */
-export async function getFeaturedTeacher(): Promise<PublicTeacherCard | null> {
-  const teachers = await getPublicTeachers();
-  if (teachers.length === 0) return null;
-  return [...teachers].sort(
-    (a, b) => b.coursesCount - a.coursesCount || a.slug.localeCompare(b.slug)
-  )[0];
-}
-
 /** Una firma por página para las tarjetas que se dibujan. Los paths salen de fichas que `anon` ya lee. */
 export async function signTeacherAvatars(teachers: { avatarPath: string | null }[]): Promise<Map<string, string>> {
   return signPublicUploadUrls(teachers.map((t) => t.avatarPath));

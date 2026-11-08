@@ -7,7 +7,7 @@ Guidance for Claude Code when working in this repository.
 > the code, change this file — a wrong CLAUDE.md is worse than none, because it is trusted.
 
 ## What this is
-Online school for holistic trades: tarot, astrology, herbalism, reiki, magic.
+Online school of learning and self-knowledge: astrology, tarot, family constellations, magic, gemotherapy and the universe of symbols (herbalism and reiki are NOT taught: owner's decision, 2026-11-08).
 Teachers publish courses whose lessons are **YouTube** videos with downloadable **Google Drive**
 resources. Students take them through a Udemy-style curriculum and get persisted progress.
 Three roles: `student`, `teacher`, `admin`.
@@ -73,7 +73,7 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 
 | Area | State |
 |------|-------|
-| `webApp/src` | **~24.0k LOC** (non-test). 40 routes (`page.tsx`), 143 files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`; 78 card scans in `public/tarot/rws/`. Tests: Vitest (894 unit tests in 117 files, next to the file) + Playwright (`e2e/`), T-039. |
+| `webApp/src` | **~24.0k LOC** (non-test). 40 routes (`page.tsx`), 136 non-test files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`; 78 card scans in `public/tarot/rws/`; the owner's 9 brand images in `public/brand/` (WebP, `CREDITS.md`). Tests: Vitest (1000 unit tests in 136 files, next to the file) + Playwright (`e2e/`), T-039. |
 | `webApp/supabase` | **Schema live.** 43 migrations (last `0071`; `0032` applies before `0031` by timestamp, independent), 23 tables (`tarot_readings`, ADR-016), RLS + per-column grants + guard triggers, 881 mutation tests (PGlite). Private Storage bucket `uploads`: `avatars/` (T-042) and `covers/` (T-047), uploads only via service_role; its policies are only tested over HTTP by b1. Fixtures `@test.local` (admin, docente, alumna) in `seed.fixtures.sql`, content seed in `seed.sql`, demo data in `demo.sql`: all **local only**, never run in the cloud (see `webApp/supabase/README.md`). |
 | `mobileApp/` | **Empty directory.** No Expo scaffold. **Out of scope for Phase 2.** |
 | `packages/tokens` | 763 LOC of the old Cosmos palette (marked historical in its README, D-66) — **consumed by nobody**: `webApp` does not import it (it uses its own `src/styles/tokens.css`) and `mobileApp` does not exist. Kept for when mobile returns. |
@@ -84,7 +84,7 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 ```
 /                                   Landing (stats, disciplines, testimonials from the DB; lunar calendar computed)
 /cursos  ·  /cursos/[slug]          Catalogue · course page (objectives, promo video, reviews)
-/guias  ·  /guias/[slug]            Teacher directory + public profile
+/guias  ·  /guias/[slug]            «Nuestros docentes»: directory + profile (route kept, label renamed)
 /diario  ·  /diario/[slug]          Blog, written by teachers
 /entrar                             Login + register; honours ?next=, else lands by role
 /entrar/recuperar                   Request a password-reset link (neutral reply)
@@ -261,14 +261,25 @@ cannot review her own course (D-20, enforced by the `course_reviews` guard with 
 ## Design language (hard constraints)
 **«Brote»** (ADR-015, PO 2026-10-22). Spec: `docs/superpowers/specs/2026-10-22-rediseno-brote-design.md`;
 visual reference: `design_handoff_humano_humano/reference/brote/b4-brote2.html`.
-- **One light theme.** No `data-theme`, no toggle, no dark mode. Cosmos and `pergamino` are gone.
+- **One light theme, with cosmic surfaces** (ADR-015 extended, PO 2026-11-08: «Brote + acentos
+  cósmicos»). No `data-theme`, no toggle, no dark mode. The site stays light; four surfaces carry the
+  class `.cosmico` (`globals.css`): the landing hero, the lunar calendar band, the `/tarot` header and
+  the `/tarot` closing block. Cosmos and `pergamino` are still gone.
+- **Cosmic tokens** (`tokens.css`, `@theme inline`): `noche` `#0E1430` · `indigo` `#2A2F6B` · `oro`
+  `#D9B45A` · `--velo-min` `0.78`. They exist **only inside `.cosmico`**: a file that uses
+  `bg|text|border|fill|stroke-(noche|indigo|oro)` must declare `cosmico` or
+  `src/lib/ui/cosmic-tokens.test.ts` fails. Inside: text `papel` or `oro`, focus `oro`; `oro` as text
+  only on solid `noche`/`indigo`, never on an image. A photo under text takes `.cosmico-velo` (>= 70 %
+  `noche`). Every pair is checked in that test (>= 4.5:1 text, >= 3:1 focus). The `primary` button
+  (`miel` + `bosque` text) does not change. The footer stays `bosque`.
 - **Semantic tokens only**, defined once in `webApp/src/styles/tokens.css` and exposed to Tailwind
   by `@theme inline` in `src/styles/globals.css`: `fondo` `#FCFBF8` · `papel` `#FFFFFF` ·
   `salvia-100` `#EEF3EC` · `salvia` `#CFDCCB` · `linea` `#E3E8E1` · `tinta` `#2C3A31` (body text) ·
   `bosque` `#1F2E24` (headings, secondary button, footer) · `bosque-700` · `suave` `#5F6E65`
   (secondary text) · `miel` `#E6A93A` (primary button, `bosque` text on it: 6.85:1) · `miel-hover` `#F0B955` ·
   `miel-800` `#8A6219` (links, accent text) · `miel-100` (tags) · `musgo` `#5E7A66` (**icons and
-  illustration only, never text**) · `error` `#A8322A` · `exito` `#2F6B45`. No `cosmos`, `lila`,
+  illustration only, never text**) · `error` `#A8322A` · `exito` `#2F6B45` · `noche`/`indigo`/`oro` (cosmic
+  surfaces only, see above). No `cosmos`, `lila`,
   `ink`, `gold` or `hh-` class names in `webApp/src`; the one exception is the mail layout
   (`src/lib/server/mail/layout.ts`, a `COLORS` object with `bg #0a0418`, `lila`, `gold`), which keeps
   the Cosmos palette until D-60. Tailwind's default palette (`red-400`…) is not used for text either:
@@ -291,6 +302,14 @@ visual reference: `design_handoff_humano_humano/reference/brote/b4-brote2.html`.
   A rate-limited action answers in the form state's `error`, so each form shows it with its usual
   error pattern (`FormStatus`, `panel/StatusMessage`, `reviews/ActionFeedback`), never a new banner.
 - **The 78 tarot card scans** (`public/tarot/rws/*.webp`, public domain, see `CREDITS.md`) are the second raster source, also served through `next/image`.
+- **The owner's brand images** (`public/brand/*.webp`, generated by her with AI and ceded to the school,
+  see `CREDITS.md`; `image2` was discarded and `image5` is not shipped) are the third raster source,
+  catalogued with their `alt` in `src/content/brand-images.ts` and served through `next/image` with
+  reserved size. The hero and `/tarot` header use them as decorative backgrounds (`alt=""`); «Nuestra
+  mirada» and the closing tarot block carry content (real `alt`). Courses without their own cover
+  show `brandImageForDiscipline`. `placeholder-photos.ts` keeps only the two Unsplash photos of the
+  auth screens. Line illustration in the landing uses `atoms/SkyIllustration` (moon and stars);
+  `LeafIllustration` stays for the panel, auth and empty states.
 - **Raster is allowed for photography, always through `next/image`**, with reserved size. A photo that
   carries content gets a real `alt`; a decorative one next to text that already names the thing (the
   photo of a course card, whose title is the link) gets `alt=""`. The only remote host in `images.remotePatterns` is `images.unsplash.com`, and only the closed,
@@ -317,6 +336,9 @@ visual reference: `design_handoff_humano_humano/reference/brote/b4-brote2.html`.
 - `cn()` = `clsx` + `tailwind-merge`.
 - Server Components by default; `'use client'` only for interactivity or animation.
 - There are no mocks left (T-053 removed the last one). Do not add mocks.
+- Copy lives in `src/content/` (`landing.ts`, `site-copy.ts`); the owner's texts are literal, and
+  `src/content/forbidden-terms.test.ts` fails if `herbolaria`, `herboristas`, `reiki`, `oficios`,
+  `sin vencimiento` or `acceso ilimitado` come back to `src/`.
 
 ## External dependencies not yet provisioned
 Several things block work and require the repo owner's accounts:
@@ -345,6 +367,7 @@ must **never** carry the `NEXT_PUBLIC_` prefix: the first bypasses RLS entirely,
 mail as the school, and the prefix would ship either to the browser.
 
 ## History
+On 2026-11-08 the owner's content document replaced the landing, footer, catalogue, teachers, journal and tarot copy and added the cosmic surfaces (blocks A and C of `docs/superpowers/specs/2026-11-08-contenidos-duena-design.md`).
 On 2026-10-22 T-060 replaced the Cosmos design language (dark theme, Cinzel, no raster, three.js
 login canvas) with «Brote» (ADR-015); the old rules were deleted, not kept as an alternative.
 Until 2026-10-21 this file still described the state of 2026-08-06 (3.6k LOC, 11 routes, "the

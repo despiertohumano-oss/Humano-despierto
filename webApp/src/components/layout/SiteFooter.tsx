@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DOCENTES } from "@/content/site-copy";
 import BackToTop from "./BackToTop";
 import WhatsAppFloat from "./WhatsAppFloat";
 
@@ -9,7 +10,7 @@ const COLS = [
     title: "Escuela",
     links: [
       { label: "Cursos", href: "/cursos" },
-      { label: "Guías", href: "/guias" },
+      { label: DOCENTES.navLabel, href: "/guias" },
       { label: "Diario", href: "/diario" },
       { label: "Círculo", href: "/circulo" },
     ],
@@ -33,8 +34,8 @@ export default function SiteFooter() {
             <div className="col-span-2 md:col-span-1">
               <h2 className="mb-3.5 text-base font-semibold text-white">Humano Despierto</h2>
               <p className="max-w-[34ch]">
-                Escuela online de oficios holísticos. Tarot, astrología, herbolaria, reiki y magia, con guías que
-                los practican.
+                Un espacio de aprendizaje, autoconocimiento y transformación. Astrología, tarot, constelaciones
+                familiares, magia, gemoterapia y el universo de los símbolos.
               </p>
             </div>
             {COLS.map((col) => (
@@ -53,12 +54,14 @@ export default function SiteFooter() {
             ))}
             <div>
               <h2 className="mb-3.5 text-base font-semibold text-white">Certificados</h2>
-              <p>Cada certificado se verifica con el enlace que trae impreso.</p>
+              <p>
+                Al finalizar determinadas formaciones, podrás acceder a tu certificado de participación o
+                aprobación, según las condiciones de cada curso.
+              </p>
             </div>
           </div>
-          <div className="flex flex-wrap justify-between gap-3 border-t border-white/15 pt-6 text-[13px]">
+          <div className="border-t border-white/15 pt-6 text-[13px]">
             <span>© {new Date().getFullYear()} Humano Despierto</span>
-            <span>Cursos completos desde el primer día, a tu ritmo.</span>
           </div>
         </div>
       </footer>

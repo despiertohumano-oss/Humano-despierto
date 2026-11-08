@@ -1,4 +1,5 @@
 import type { AppRole } from "@/lib/stores/useAuthStore";
+import { DOCENTES } from "@/content/site-copy";
 
 export interface NavLink {
   label: string;
@@ -7,7 +8,7 @@ export interface NavLink {
 
 const PUBLIC: NavLink[] = [
   { label: "Cursos", href: "/cursos" },
-  { label: "Guías", href: "/guias" },
+  { label: DOCENTES.navLabel, href: "/guias" },
   { label: "Diario", href: "/diario" },
   { label: "Tarot", href: "/tarot" },
 ];

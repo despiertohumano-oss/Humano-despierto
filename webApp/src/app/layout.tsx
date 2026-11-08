@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     default: "Humano Despierto — Escuela Holística",
     template: "%s — Humano Despierto",
   },
-  description: "Escuela online de tarot, astrología, herbolaria, reiki y magia, con guías que practican lo que enseñan.",
+  description: "Un espacio de aprendizaje y transformación que integra astrología, tarot, constelaciones familiares, magia y herramientas para el autoconocimiento.",
 };
 
 export default async function RootLayout({

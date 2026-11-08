@@ -15,8 +15,9 @@ export function renderWelcomeMail(props: WelcomeProps) {
   const bodyHtml = `
     <p style="margin:0 0 14px;">Hola ${escapeHtml(props.studentName)},</p>
     <p style="margin:0 0 14px;">
-      Tu cuenta ya está lista. Este es un espacio para tarot, astrología, herbolaria, reiki y
-      magia — a tu ritmo, sin fechas fijas ni clases que te esperan a una hora exacta.
+      Tu cuenta ya está lista. Este es un espacio de aprendizaje, autoconocimiento y transformación:
+      astrología, tarot, constelaciones familiares, magia, gemoterapia y el universo de los símbolos —
+      a tu ritmo, sin fechas fijas ni clases que te esperan a una hora exacta.
     </p>
     <p style="margin:0;">Cuando quieras, el catálogo está abierto.</p>`;
 
@@ -34,9 +35,10 @@ export function renderWelcomeMail(props: WelcomeProps) {
     bodyLines: [
       `Hola ${props.studentName},`,
       "",
-      "Tu cuenta ya está lista. Este es un espacio para tarot, astrología, herbolaria,",
-      "reiki y magia — a tu ritmo, sin fechas fijas ni clases que te esperan a una hora",
-      "exacta.",
+      "Tu cuenta ya está lista. Este es un espacio de aprendizaje, autoconocimiento y",
+      "transformación: astrología, tarot, constelaciones familiares, magia, gemoterapia y el",
+      "universo de los símbolos — a tu ritmo, sin fechas fijas ni clases que te esperan a una",
+      "hora exacta.",
       "",
       "Cuando quieras, el catálogo está abierto.",
     ],

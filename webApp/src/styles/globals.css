@@ -21,6 +21,9 @@
   --color-musgo: var(--musgo);
   --color-error: var(--error);
   --color-exito: var(--exito);
+  --color-noche: var(--noche);
+  --color-indigo: var(--indigo);
+  --color-oro: var(--oro);
 
   --radius-sm: var(--radio-sm);
   --radius-md: var(--radio-md);
@@ -99,6 +102,25 @@
    Las variantes de botón viven SOLO acá; `atoms/Button.tsx` las compone. Una pantalla no estiliza
    un botón: elige variante. */
 @layer components {
+  /* Superficie cósmica: la única donde existen noche/indigo/oro. Texto papel, foco oro. */
+  .cosmico {
+    background-color: var(--noche);
+    color: var(--papel);
+  }
+  .cosmico h1,
+  .cosmico h2,
+  .cosmico h3,
+  .cosmico h4 {
+    color: var(--papel);
+  }
+  .cosmico :focus-visible {
+    outline-color: var(--oro);
+  }
+  /* Velo sobre una imagen de fondo; arriba y abajo nunca baja de --velo-min. */
+  .cosmico-velo {
+    background: linear-gradient(to top, rgb(14 20 48 / 0.94), rgb(14 20 48 / var(--velo-min)));
+  }
+
   .btn {
     display: inline-flex;
     align-items: center;
