@@ -1,15 +1,7 @@
-// `courses.discipline` y `courses.level` son texto libre sin CHECK (Q-05, engram/01_requirements.md
-// §6). T-001 los dejó así a propósito antes que inventar una taxonomía sin el PO (P-3). Consecuencia
-// medida en la base real (2026-08-11): entre cursos PUBLICADOS los valores hoy son consistentes
-// ("Astrología", "Tarot", "Magia" / "Inicial", "Intermedio", "Maestría"), pero hay filas en
-// `draft` con variantes de casing ("tarot", "inicial") y hasta un nombre de nivel distinto
-// ("Iniciacion") — residuo de fixtures de QA (T-005). Nada impide que ese residuo se publique mañana.
-//
-// Decisión de este ticket (T-019): normalizar por casing/espacios al filtrar y contar (agrupar por
-// `lower(trim())`), NO cerrar la taxonomía con un CHECK ni una tabla de catálogo — eso exige que el
-// PO fije la lista final (Q-05 sigue ABIERTA) y es una migración, y T-019 no tiene número asignado.
-// Esta normalización solo evita que "Tarot" y "tarot" partan un filtro en dos; NO unifica sinónimos
-// distintos como "Iniciacion" vs "Inicial" — eso sería inventar la taxonomía, no tolerar su formato.
+// `courses.level` es texto libre sin CHECK (Q-05). `courses.discipline` YA NO: desde B1 (migración
+// 0073) es una clave de `src/lib/taxonomy/disciplines.ts`; estas dos funciones quedan para el nivel.
+// Normalizar por casing/espacios (T-019) solo evita que "Inicial" e "inicial" partan un filtro en dos;
+// NO unifica sinónimos como "Iniciacion" vs "Inicial": eso sería inventar la taxonomía.
 export function normalizeTaxonomyKey(value: string): string {
   return value.trim().toLowerCase();
 }

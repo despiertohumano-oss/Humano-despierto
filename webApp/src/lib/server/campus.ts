@@ -2,6 +2,7 @@ import "server-only";
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentUser } from "@/lib/server/auth";
+import { disciplineLabel } from "@/lib/taxonomy/disciplines";
 import type { AppRole } from "@/lib/stores/useAuthStore";
 
 // T-021 · Campus — un hilo por curso + un hilo general (migración 0014).
@@ -87,7 +88,7 @@ export async function getCampusSidebar(): Promise<CampusThreadSummary[]> {
         courseId: c.id,
         slug: c.slug,
         title: [c.title, c.title_em].filter(Boolean).join(" "),
-        subtitle: c.discipline,
+        subtitle: disciplineLabel(c.discipline),
         glyph: c.moon_glyph || "○",
       });
     }
@@ -103,7 +104,7 @@ export async function getCampusSidebar(): Promise<CampusThreadSummary[]> {
         courseId: c.id,
         slug: c.slug,
         title: [c.title, c.title_em].filter(Boolean).join(" "),
-        subtitle: c.discipline,
+        subtitle: disciplineLabel(c.discipline),
         glyph: c.moon_glyph || "○",
       });
     }
@@ -127,7 +128,7 @@ export async function getCampusSidebar(): Promise<CampusThreadSummary[]> {
         courseId: c.id,
         slug: c.slug,
         title: [c.title, c.title_em].filter(Boolean).join(" "),
-        subtitle: c.discipline,
+        subtitle: disciplineLabel(c.discipline),
         glyph: c.moon_glyph || "○",
       });
     }
@@ -186,7 +187,7 @@ export const getCampusThread = cache(async function getCampusThread(
       courseId: course.id,
       slug: course.slug,
       title: [course.title, course.title_em].filter(Boolean).join(" "),
-      subtitle: course.discipline,
+      subtitle: disciplineLabel(course.discipline),
       glyph: course.moon_glyph || "○",
     };
     // Espejo exacto de `can_write_campus_post` (0014): inscripción activa o docente dueña.

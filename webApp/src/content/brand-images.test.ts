@@ -31,7 +31,8 @@ describe("brandImageForDiscipline", () => {
   });
 
   it("una disciplina desconocida, vieja o ausente cae en la imagen neutra", () => {
-    for (const d of ["Herbal", "Numerología", "", null, undefined]) {
+    // B1: la lista es cerrada; un texto libre que solo se parece a una disciplina ya no adivina.
+    for (const d of ["Herbal", "Numerología", "Astrología práctica", "tarot evolutivo", "", null, undefined]) {
       expect(brandImageForDiscipline(d)).toBe(BRAND.libroEstelar);
     }
   });

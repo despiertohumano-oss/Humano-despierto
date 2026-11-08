@@ -1,6 +1,7 @@
 import "server-only";
 import type { CourseOgInput } from "@/lib/og/brand";
 import { getPublicSupabaseClient } from "@/lib/server/supabase-public";
+import { disciplineLabel } from "@/lib/taxonomy/disciplines";
 import { UPLOADS_BUCKET } from "@/lib/server/uploads";
 import { createServiceRoleClient } from "@/lib/supabase/service";
 import { COVER_PATH_RE, MAX_COVER_BYTES, detectImageKind, type ImageKind } from "@/lib/validation/image";
@@ -37,7 +38,7 @@ export async function getCourseOgData(slug: string): Promise<CourseOgData | null
   return {
     title: row.title,
     titleEm: row.title_em,
-    discipline: row.discipline,
+    discipline: row.discipline ? disciplineLabel(row.discipline) : null,
     teacherName: teacher?.full_name ?? null,
     coverPath: row.cover_path,
   };

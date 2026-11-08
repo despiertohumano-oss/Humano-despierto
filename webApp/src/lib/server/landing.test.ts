@@ -42,7 +42,7 @@ describe("getLandingData · conteos (D-41)", () => {
         if (cols.includes("enrollments")) return { count: 2400, data: null, error: null };
         if (cols.includes("courses")) return { count: 12, data: null, error: null };
       }
-      if (table === "courses") return { data: [{ discipline: "Tarot" }, { discipline: "Reiki" }, { discipline: "Tarot" }], error: null };
+      if (table === "courses") return { data: [{ discipline: "tarot" }, { discipline: "magia" }, { discipline: "tarot" }], error: null };
       return { data: null, error: { message: `consulta inesperada a ${table}` } };
     }, log);
     wire(publicClient, () => ({ data: [], error: null }), []);
@@ -55,7 +55,7 @@ describe("getLandingData · conteos (D-41)", () => {
       { num: "12", label: "Docentes" },
       { num: "2400", label: "Inscriptas" },
     ]);
-    expect(data.disciplines.map((d) => [d.key, d.count])).toEqual([["tarot", 2], ["reiki", 1]]);
+    expect(data.disciplines.map((d) => [d.key, d.count])).toEqual([["tarot", 2], ["magia", 1]]);
 
     const heads = log.filter((l) => (selectOf(l.calls).args[1] as { head?: boolean } | undefined)?.head);
     expect(heads).toHaveLength(3);
@@ -79,11 +79,11 @@ describe("getLandingData · disciplinas sin el corte de 1000 (DT4)", () => {
       if (!range) return { data: null, error: { message: "sin range" } };
       const [from] = range;
       const rows = from === 0 ? 1000 : from === 1000 ? 5 : 0;
-      return { data: Array.from({ length: rows }, () => ({ discipline: from === 0 ? "Tarot" : "Reiki" })), error: null };
+      return { data: Array.from({ length: rows }, () => ({ discipline: from === 0 ? "tarot" : "magia" })), error: null };
     }, log);
     wire(publicClient, () => ({ data: [], error: null }), []);
     const data = await getLandingData();
-    expect(data.disciplines.map((d) => [d.key, d.count])).toEqual([["tarot", 1000], ["reiki", 5]]);
+    expect(data.disciplines.map((d) => [d.key, d.count])).toEqual([["tarot", 1000], ["magia", 5]]);
     const pages = log.filter((l) => l.calls.some((c) => c.method === "range")).map((l) => argsOf(l.calls, "range"));
     expect(pages).toEqual([[0, 999], [1000, 1999]]);
   });

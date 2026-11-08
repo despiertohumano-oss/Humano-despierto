@@ -41,13 +41,25 @@ describe("getPublicTeachers · avatar (D-62)", () => {
   it("trae el path del avatar sin firmarlo: el sitemap también lee esta lista", async () => {
     const c = client(
       [{ id: "t1", full_name: "Luna", slug: "luna", avatar_path: AVATAR }, { id: "t2", full_name: "Sol", slug: "sol", avatar_path: null }],
-      [{ slug: "a", teacher_id: "t1", discipline: "Tarot" }, { slug: "b", teacher_id: "t2", discipline: "Reiki" }],
+      [{ slug: "a", teacher_id: "t1", discipline: "tarot" }, { slug: "b", teacher_id: "t2", discipline: "magia" }],
     );
     getPublicSupabaseClient.mockReturnValue(c);
     const teachers = await getPublicTeachers();
     expect(c.select.mock.calls[0][0]).toMatch(/avatar_path/);
     expect(teachers.map((t) => [t.slug, t.avatarPath])).toEqual([["luna", AVATAR], ["sol", null]]);
     expect(signPublicUploadUrls).not.toHaveBeenCalled();
+  });
+
+  it("la disciplina de la tarjeta es la etiqueta de su clave mas frecuente", async () => {
+    getPublicSupabaseClient.mockReturnValue(
+      client([{ id: "t1", full_name: "Luna", slug: "luna", avatar_path: null }], [
+        { slug: "a", teacher_id: "t1", discipline: "talleres-lunares" },
+        { slug: "b", teacher_id: "t1", discipline: "talleres-lunares" },
+        { slug: "c", teacher_id: "t1", discipline: "tarot" },
+      ]),
+    );
+    const [t] = await getPublicTeachers();
+    expect(t.discipline).toBe("Talleres lunares");
   });
 });
 

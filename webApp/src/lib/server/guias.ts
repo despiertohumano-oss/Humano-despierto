@@ -4,6 +4,7 @@ import { getPublicSupabaseClient } from "@/lib/server/supabase-public";
 import { createServiceRoleClient } from "@/lib/supabase/service";
 import { signAvatarUrl } from "@/lib/server/avatar";
 import { signPublicUploadUrls } from "@/lib/server/uploads";
+import { disciplineLabel } from "@/lib/taxonomy/disciplines";
 
 // T-017 · lectura publica de la ficha de docente (`/guias`, `/guias/[slug]`, la seccion
 // "Maestra" de la landing). Reemplaza el mock `guia.ts`.
@@ -115,6 +116,7 @@ async function fetchTeachersAndCourses() {
 
 function toCard(row: TeacherRow, courses: CourseRow[]): PublicTeacherCard {
   const own = courses.filter((c) => c.teacher_id === row.id);
+  const key = mostFrequent(own.map((c) => c.discipline));
   return {
     id: row.id,
     slug: row.slug ?? "",
@@ -124,7 +126,7 @@ function toCard(row: TeacherRow, courses: CourseRow[]): PublicTeacherCard {
     location: row.location,
     quote: row.quote,
     yearsPractice: row.years_practice,
-    discipline: mostFrequent(own.map((c) => c.discipline)),
+    discipline: key ? disciplineLabel(key) : null,
     coursesCount: own.length,
     avatarPath: row.avatar_path,
   };
@@ -165,7 +167,7 @@ export const getTeacherBySlug = cache(async (slug: string): Promise<PublicTeache
         slug: c.slug,
         title: c.title,
         titleEm: c.title_em,
-        discipline: c.discipline,
+        discipline: disciplineLabel(c.discipline),
         level: c.level,
         moonGlyph: c.moon_glyph,
       })),

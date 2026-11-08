@@ -26,13 +26,14 @@ describe("buildHeroStats", () => {
 });
 
 describe("disciplineCounts", () => {
-  it("agrupa por disciplina normalizada y ordena por cantidad", () => {
-    const r = disciplineCounts(["Tarot", "Astrología", "tarot", "Tarot"]);
+  it("cuenta por clave, etiqueta de la lista y ordena por cantidad", () => {
+    const r = disciplineCounts(["tarot", "astrologia", "tarot", "tarot"]);
     expect(r).toEqual([
       { key: "tarot", label: "Tarot", count: 3 },
-      { key: "astrología", label: "Astrología", count: 1 },
+      { key: "astrologia", label: "Astrología", count: 1 },
     ]);
   });
+  it("ignora lo que no es clave de la lista", () => expect(disciplineCounts(["Reiki"])).toEqual([]));
   it("vacio sin cursos", () => expect(disciplineCounts([])).toEqual([]));
 });
 

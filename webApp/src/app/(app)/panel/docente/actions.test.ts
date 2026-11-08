@@ -84,7 +84,7 @@ describe("course actions · error por campo (D-100)", () => {
   function courseForm(overrides: Record<string, string> = {}) {
     const fd = new FormData();
     const base: Record<string, string> = {
-      courseId: COURSE, slug: "tarot-iniciatico", title: "Tarot", discipline: "Tarot", level: "Inicial", price: "240", currency: "ARS", language: "es",
+      courseId: COURSE, slug: "tarot-iniciatico", title: "Tarot", discipline: "tarot", level: "Inicial", price: "240", currency: "ARS", language: "es",
     };
     for (const [k, v] of Object.entries({ ...base, ...overrides })) fd.set(k, v);
     return fd;

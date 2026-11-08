@@ -3,7 +3,8 @@
 import { useActionState } from "react";
 import { createCourseAction, updateCourseAction } from "@/app/(app)/panel/docente/actions";
 import Button from "@/components/atoms/Button";
-import { PanelInput, PanelTextarea } from "@/components/panel/PanelField";
+import { PanelInput, PanelSelect, PanelTextarea } from "@/components/panel/PanelField";
+import { DISCIPLINES } from "@/lib/taxonomy/disciplines";
 import StatusMessage from "@/components/panel/StatusMessage";
 import { TEACHER_ACTION_INITIAL_STATE, fieldError, formError } from "@/lib/teacher/action-state";
 import type { TeacherCourseFields } from "@/lib/server/teacher";
@@ -25,7 +26,16 @@ export default function CourseForm({ course }: Props) {
       <PanelInput label="Título en énfasis (opcional)" name="titleEm" error={fieldError(state, "titleEm")} defaultValue={course?.titleEm ?? ""} />
       <PanelInput label="Subtítulo" name="subtitle" error={fieldError(state, "subtitle")} defaultValue={course?.subtitle ?? ""} />
       <PanelTextarea label="Introducción" name="intro" error={fieldError(state, "intro")} defaultValue={course?.intro ?? ""} rows={3} className="md:col-span-2" />
-      <PanelInput label="Disciplina" name="discipline" error={fieldError(state, "discipline")} defaultValue={course?.discipline} placeholder="Tarot" required />
+      <PanelSelect label="Disciplina" name="discipline" error={fieldError(state, "discipline")} defaultValue={course?.discipline ?? ""} required>
+        <option value="" disabled>
+          Elegí una disciplina
+        </option>
+        {DISCIPLINES.map((d) => (
+          <option key={d.key} value={d.key}>
+            {d.label}
+          </option>
+        ))}
+      </PanelSelect>
       <PanelInput label="Nivel" name="level" error={fieldError(state, "level")} defaultValue={course?.level} placeholder="Iniciación" required />
       <PanelInput
         label="Precio"

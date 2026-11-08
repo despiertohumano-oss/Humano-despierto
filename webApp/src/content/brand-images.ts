@@ -1,3 +1,5 @@
+import { DISCIPLINES, isDisciplineKey, type DisciplineKey } from "@/lib/taxonomy/disciplines";
+
 /**
  * Imágenes de marca generadas por la dueña con IA y cedidas a la escuela (public/brand/CREDITS.md).
  * Locales: pasan por `next/image` sin host remoto. `alt` describe lo que se ve; quien la usa como
@@ -20,25 +22,21 @@ export const BRAND = {
   libroEstelar: { src: "/brand/libro-estelar.webp", alt: "Libro abierto con un mapa celeste que brilla sobre un fondo de estrellas" },
 } as const satisfies Record<string, BrandImage>;
 
-// `discipline` llega como etiqueta ("Astrología") o, tras el bloque B, como clave ("astrologia"):
-// se compara por raíz, sin tildes ni mayúsculas, así que sirve para las dos.
-const BY_DISCIPLINE: ReadonlyArray<[root: string, image: BrandImage]> = [
-  ["tarot", BRAND.tarotArcanos],
-  ["astrolog", BRAND.cartaAstralDorada],
-  ["constelac", BRAND.libroConstelaciones],
-  ["magia", BRAND.escritorioAstrologico],
-  ["gemo", BRAND.minerales],
-  ["simbol", BRAND.cartaAstralAzul],
-  ["lunar", BRAND.libroConstelaciones],
-];
-
-function normalize(s: string): string {
-  return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
-}
+// Una imagen por clave de la lista cerrada (B1). Los mappers entregan la etiqueta; se acepta
+// cualquiera de las dos, pero un texto libre que solo se parece a una disciplina cae en la neutra.
+const BY_DISCIPLINE: Record<DisciplineKey, BrandImage> = {
+  astrologia: BRAND.cartaAstralDorada,
+  tarot: BRAND.tarotArcanos,
+  constelaciones: BRAND.libroConstelaciones,
+  magia: BRAND.escritorioAstrologico,
+  gemoterapia: BRAND.minerales,
+  simbologia: BRAND.cartaAstralAzul,
+  "talleres-lunares": BRAND.libroConstelaciones,
+};
 
 /** Imagen de muestra de un curso sin portada propia. */
 export function brandImageForDiscipline(discipline: string | null | undefined): BrandImage {
-  const d = normalize(discipline ?? "");
-  const hit = d ? BY_DISCIPLINE.find(([root]) => d.includes(root)) : undefined;
-  return hit ? hit[1] : BRAND.libroEstelar;
+  if (!discipline) return BRAND.libroEstelar;
+  const key = isDisciplineKey(discipline) ? discipline : DISCIPLINES.find((d) => d.label === discipline)?.key;
+  return key ? BY_DISCIPLINE[key] : BRAND.libroEstelar;
 }

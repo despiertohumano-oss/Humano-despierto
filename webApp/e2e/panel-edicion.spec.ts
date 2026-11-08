@@ -49,7 +49,7 @@ test("crear curso, editarlo, armar módulo y lección, editar recursos y capítu
   await page.goto("/panel/docente/nuevo", { waitUntil: "networkidle" });
   await page.getByLabel("Slug (URL)").fill(SLUG);
   await page.getByLabel("Título", { exact: true }).fill(TITULO);
-  await page.getByLabel("Disciplina").fill("Tarot");
+  await page.getByLabel("Disciplina").selectOption("tarot");
   await page.getByLabel("Nivel").fill("Iniciación");
   await page.getByLabel("Precio").fill("240");
   await page.getByRole("button", { name: "Crear curso" }).click();
