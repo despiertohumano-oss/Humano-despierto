@@ -16,9 +16,12 @@ export type SaveState = ActionState & { id?: string; ambigua?: AmbiguaLabels };
 
 const SESSION_EXPIRED = { error: "Tu sesión venció. Volvé a entrar.", success: null };
 
-// Por puntos de código: cortar por unidades UTF-16 puede dejar un surrogate suelto.
+// Los espacios (\n, \t) se vuelven uno antes de quitar controles y formato (NUL, bidi), para no
+// pegar palabras. Se corta por puntos de código: por UTF-16 puede quedar un surrogate suelto.
 function cleanLabel(raw: FormDataEntryValue | null, fallback: string): string {
-  const s = typeof raw === "string" ? Array.from(raw.replace(/\s+/g, " ").trim()).slice(0, 60).join("").trim() : "";
+  const s = typeof raw === "string"
+    ? Array.from(raw.replace(/\s+/g, " ").replace(/[\p{Cc}\p{Cf}]/gu, "").trim()).slice(0, 60).join("").trim()
+    : "";
   return s === "" ? fallback : s;
 }
 
@@ -55,12 +58,16 @@ export const guardarCarta = withRateLimit(
     const isSelf = fd.get("propia") === "1";
     const [y, m, d] = parsed.input.date.split("-");
     const label = cleanLabel(fd.get("etiqueta"), isSelf ? "Mi carta" : `Carta del ${d}/${m}/${y}`);
-    const id = await insertNatalChart(user.id, r.birth, r.view.facts, { label, isSelf });
-    if (!id) return { error: "No se pudo guardar la carta. Si ya tenés 100 guardadas, borrá alguna.", success: null };
+    const saved = await insertNatalChart(user.id, r.birth, r.view.facts, { label, isSelf });
+    if (!saved.ok) {
+      return saved.reason === "tope"
+        ? { error: "Ya tenés 100 cartas guardadas. Borrá alguna para guardar otra.", success: null }
+        : { error: "No se pudo guardar la carta. Probá de nuevo en un rato.", success: null };
+    }
 
     revalidatePath("/panel/carta-natal");
     if (isSelf) revalidatePath("/panel/docente", "layout");
-    return { error: null, success: "Carta guardada.", id };
+    return { error: null, success: "Carta guardada.", id: saved.id };
   },
   limitedState,
 );
@@ -103,6 +110,7 @@ export const marcarMiCarta = withRateLimit(
     if (!saved) return { error: "No encontramos esa carta.", success: null };
     if (!(await markSelfChart(user.id, saved))) return { error: "No se pudo marcar la carta.", success: null };
     revalidatePath("/panel/carta-natal");
+    revalidatePath("/panel/docente", "layout");
     return { error: null, success: "Ahora es tu carta." };
   },
   limitedState,

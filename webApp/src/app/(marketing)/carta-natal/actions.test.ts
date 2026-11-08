@@ -6,7 +6,9 @@ vi.mock("server-only", () => ({}));
 vi.mock("next/server", () => ({ connection: vi.fn(async () => {}) }));
 vi.mock("@/lib/supabase/server", () => ({ createClient }));
 vi.mock("@/lib/supabase/service", () => ({ createServiceRoleClient }));
-vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
+const { revalidatePath } = vi.hoisted(() => ({ revalidatePath: vi.fn() }));
+vi.mock("next/cache", () => ({ revalidatePath }));
+vi.mock("@/lib/server/log", () => ({ log: { error: vi.fn(), warn: vi.fn(), info: vi.fn() } }));
 
 import { borrarCarta, buscarLugar, calcularCarta, guardarCarta, marcarMiCarta } from "./actions";
 import { __resetRateLimiterForTests } from "@/lib/server/rate-limit";
@@ -31,6 +33,7 @@ beforeEach(() => {
   rateLimitSubject.mockResolvedValue({ kind: "ip", ip: "203.0.113.7" });
   createClient.mockReset();
   createServiceRoleClient.mockReset();
+  revalidatePath.mockReset();
 });
 
 describe("calcularCarta", () => {
@@ -101,6 +104,36 @@ describe("guardarCarta", () => {
     expect(label.endsWith("\u{1F319}")).toBe(true);
   });
 
+  it("la etiqueta pierde controles y formato (NUL, bidi) sin pegar palabras", async () => {
+    session();
+    const rpc = vi.fn().mockResolvedValue({ data: "c-1", error: null });
+    createServiceRoleClient.mockReturnValue({ rpc });
+    await guardarCarta(INITIAL, form({ ...BASE, consiento: "on", etiqueta: "Ma\u0000má\u202Eolla\u200B\tde\nJuan\u2066" }));
+    expect(rpc.mock.calls[0]![1].p_label).toBe("Mamáolla de Juan");
+  });
+
+  it("una etiqueta hecha solo de controles cae al nombre por defecto", async () => {
+    session();
+    const rpc = vi.fn().mockResolvedValue({ data: "c-1", error: null });
+    createServiceRoleClient.mockReturnValue({ rpc });
+    await guardarCarta(INITIAL, form({ ...BASE, consiento: "on", etiqueta: "\u202E\u0000\u200F" }));
+    expect(rpc.mock.calls[0]![1].p_label).toBe("Carta del 15/06/1990");
+  });
+
+  it("el tope de 100 y cualquier otra falla dan mensajes distintos", async () => {
+    session();
+    const rpc = vi.fn()
+      .mockResolvedValueOnce({ data: null, error: { code: "23514", message: "tope de 100 cartas guardadas" } })
+      .mockResolvedValueOnce({ data: null, error: { code: "23514", message: "Failing row contains (1990-06-15)" } });
+    createServiceRoleClient.mockReturnValue({ rpc });
+    const tope = await guardarCarta(INITIAL, form({ ...BASE, consiento: "on" }));
+    const otra = await guardarCarta(INITIAL, form({ ...BASE, consiento: "on" }));
+    expect(tope.error).toMatch(/100/);
+    expect(otra.error).toBeTruthy();
+    expect(otra.error).not.toMatch(/100/);
+    expect(otra.error).not.toContain("1990");
+  });
+
   it("la 11.ª en una hora queda limitada", async () => {
     for (let i = 0; i < 10; i++) await guardarCarta(INITIAL, form(BASE));
     const r = await guardarCarta(INITIAL, form(BASE));
@@ -153,6 +186,7 @@ describe("borrarCarta y marcarMiCarta", () => {
     const r = await marcarMiCarta(INITIAL, form({ id: CHART, user_id: OTHER }));
     expect(r).toMatchObject({ error: null });
     expect(rpc).toHaveBeenCalledWith("set_self_natal_chart", expect.objectContaining({ p_user_id: UID, p_chart_id: CHART }));
+    expect(revalidatePath).toHaveBeenCalledWith("/panel/docente", "layout");
   });
 
   it("marcar sin sesión no toca service_role", async () => {

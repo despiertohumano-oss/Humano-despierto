@@ -2,6 +2,7 @@ import "server-only";
 import { z } from "@/lib/validation/zod";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceRoleClient } from "@/lib/supabase/service";
+import { log } from "@/lib/server/log";
 import { type ChartFacts, computeChart } from "@/lib/astro/chart";
 import { type ChartText, renderChart } from "@/lib/astro/prose";
 import { type ClockChoice, NOON, type TimeResolution, formatOffset, isValidTimeZone, localToUtc, tzdataVersion, utcFromOffset } from "@/lib/astro/time";
@@ -211,8 +212,20 @@ function signsOf(facts: ChartFacts): { sun: SignId; moon: SignId; asc: SignId | 
   return facts.big3;
 }
 
+export type InsertResult = { ok: true; id: string } | { ok: false; reason: "tope" | "error" };
+type RpcError = { code?: string; message?: string } | null;
+
+// El trigger de 0072 corta en 100 con este mensaje y 23514 (el mismo código que cualquier CHECK).
+const TOPE_MESSAGE = "tope de 100 cartas guardadas";
+
+// Solo el código: en una violación de constraint, message/details traen «Failing row contains
+// (...)» con fecha, hora y coordenadas de nacimiento.
+function logRpcFailure(event: string, error: RpcError): void {
+  void log.error(event, { pg_code: error?.code ?? "sin_codigo" });
+}
+
 /** `userId` tiene que salir de la sesión del servidor (`getUser()`), nunca del request. */
-export async function insertNatalChart(userId: string, birth: ResolvedBirth, facts: ChartFacts, opts: { label: string; isSelf: boolean }): Promise<string | null> {
+export async function insertNatalChart(userId: string, birth: ResolvedBirth, facts: ChartFacts, opts: { label: string; isSelf: boolean }): Promise<InsertResult> {
   const s = signsOf(facts);
   const { data, error } = await createServiceRoleClient().rpc("save_natal_chart", {
     p_user_id: userId, p_label: opts.label, p_birth_date: birth.date, p_birth_time: birth.time,
@@ -221,7 +234,11 @@ export async function insertNatalChart(userId: string, birth: ResolvedBirth, fac
     p_house_system: birth.houseSystem, p_is_self: opts.isSelf,
     p_sun: opts.isSelf ? s.sun : null, p_moon: opts.isSelf ? s.moon : null, p_asc: opts.isSelf ? s.asc : null,
   });
-  return error || typeof data !== "string" ? null : data;
+  if (!error && typeof data === "string") return { ok: true, id: data };
+  const e = error as RpcError;
+  if (e?.code === "23514" && e.message === TOPE_MESSAGE) return { ok: false, reason: "tope" };
+  logRpcFailure("natal_chart_save_failed", e);
+  return { ok: false, reason: "error" };
 }
 
 /** `userId` tiene que salir de la sesión del servidor; `saved` leída por la sesión (RLS). */
@@ -230,5 +247,7 @@ export async function markSelfChart(userId: string, saved: SavedChart): Promise<
   const { error } = await createServiceRoleClient().rpc("set_self_natal_chart", {
     p_user_id: userId, p_chart_id: saved.id, p_sun: s.sun, p_moon: s.moon, p_asc: s.asc,
   });
-  return !error;
+  if (!error) return true;
+  logRpcFailure("natal_chart_mark_self_failed", error as RpcError);
+  return false;
 }

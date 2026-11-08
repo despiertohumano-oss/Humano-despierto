@@ -4,8 +4,10 @@ const { createClient, createServiceRoleClient } = vi.hoisted(() => ({ createClie
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/supabase/server", () => ({ createClient }));
 vi.mock("@/lib/supabase/service", () => ({ createServiceRoleClient }));
+const { logError } = vi.hoisted(() => ({ logError: vi.fn() }));
+vi.mock("@/lib/server/log", () => ({ log: { error: logError, warn: vi.fn(), info: vi.fn() } }));
 
-import { insertNatalChart, parseChartForm, prepareChart, type ChartFormInput } from "./natal-chart";
+import { insertNatalChart, markSelfChart, parseChartForm, prepareChart, type ChartFormInput } from "./natal-chart";
 
 const BA = "America/Argentina/Buenos_Aires";
 const fd = (o: Record<string, string>) => {
@@ -20,6 +22,7 @@ const manual = (over: Partial<ChartFormInput> = {}): ChartFormInput => ({
 beforeEach(() => {
   createClient.mockReset();
   createServiceRoleClient.mockReset();
+  logError.mockReset();
 });
 
 describe("parseChartForm", () => {
@@ -108,11 +111,54 @@ describe("insertNatalChart", () => {
     createServiceRoleClient.mockReturnValue({ rpc });
     const r = await prepareChart(manual({ time: null }));
     if (r.kind !== "ok") throw new Error(r.kind);
-    expect(await insertNatalChart("u-1", r.birth, r.view.facts, { label: "Mi carta", isSelf: true })).toBe("c-1");
+    expect(await insertNatalChart("u-1", r.birth, r.view.facts, { label: "Mi carta", isSelf: true })).toEqual({ ok: true, id: "c-1" });
     const args = rpc.mock.calls[0]![1];
     expect(args).toMatchObject({ p_user_id: "u-1", p_is_self: true, p_birth_time: null, p_asc: null, p_house_system: "placidus" });
     expect(args.p_sun).toBe(r.view.facts.big3.sun);
     await insertNatalChart("u-1", r.birth, r.view.facts, { label: "Otra", isSelf: false });
     expect(rpc.mock.calls[1]![1]).toMatchObject({ p_is_self: false, p_sun: null, p_moon: null, p_asc: null });
+  });
+});
+
+describe("fallas del RPC", () => {
+  // Lo que PostgREST devuelve en una violación de constraint: la fila entera, con datos de nacimiento.
+  const LEAK = {
+    code: "23514",
+    message: 'new row for relation "natal_charts" violates check constraint "natal_charts_lat_check"',
+    details: "Failing row contains (c-9, u-1, Otra, 1990-06-15, 09:00:00, null, -34.60372, -58.38159, America/Argentina/Buenos_Aires).",
+    hint: "revisá 1990-06-15 09:00",
+  };
+
+  async function birth() {
+    const r = await prepareChart(manual());
+    if (r.kind !== "ok") throw new Error(r.kind);
+    return r;
+  }
+
+  it("el tope de 100 se distingue por código y mensaje, sin log", async () => {
+    createServiceRoleClient.mockReturnValue({ rpc: vi.fn().mockResolvedValue({ data: null, error: { code: "23514", message: "tope de 100 cartas guardadas" } }) });
+    const r = await birth();
+    expect(await insertNatalChart("u-1", r.birth, r.view.facts, { label: "Otra", isSelf: false })).toEqual({ ok: false, reason: "tope" });
+    expect(logError).not.toHaveBeenCalled();
+  });
+
+  it("otra violación (mismo 23514) es error genérico y el log lleva solo el código", async () => {
+    createServiceRoleClient.mockReturnValue({ rpc: vi.fn().mockResolvedValue({ data: null, error: LEAK }) });
+    const r = await birth();
+    expect(await insertNatalChart("u-1", r.birth, r.view.facts, { label: "Otra", isSelf: false })).toEqual({ ok: false, reason: "error" });
+    expect(logError).toHaveBeenCalledWith("natal_chart_save_failed", { pg_code: "23514" });
+    const logged = JSON.stringify(logError.mock.calls);
+    for (const dato of ["1990-06-15", "09:00", "-34.6", "-58.38", "Buenos_Aires", "Failing row", "natal_charts_lat_check"]) expect(logged).not.toContain(dato);
+  });
+
+  it("marcar como propia: la falla se loguea solo con el código", async () => {
+    createServiceRoleClient.mockReturnValue({ rpc: vi.fn().mockResolvedValue({ data: null, error: LEAK }) });
+    const saved = {
+      id: "c-9", label: "Otra", birthDate: "1990-06-15", birthTime: "09:00", placeId: null, lat: -34.60372, lon: -58.38159,
+      timeZone: BA, offsetSeconds: -10800, clock: null, houseSystem: "placidus" as const, isSelf: false, createdAt: "2026-11-08T00:00:00Z",
+    };
+    expect(await markSelfChart("u-1", saved)).toBe(false);
+    expect(logError).toHaveBeenCalledWith("natal_chart_mark_self_failed", { pg_code: "23514" });
+    expect(JSON.stringify(logError.mock.calls)).not.toContain("1990-06-15");
   });
 });
