@@ -89,8 +89,9 @@ from public.courses c where c.slug = 'tarot-iniciatico'
 on conflict (user_id, course_id) do update set status = excluded.status;
 
 -- T-024 · toda docente tiene su carta propia: sin ella el panel docente muestra solo el formulario
--- y los e2e de docentes no podrían entrar. Sin signos: el seed no publica Sol/Luna/Ascendente
--- inventados. 1990-07-01 en Buenos Aires es UTC-3 (sin horario de verano en julio).
+-- y los e2e de docentes no podrían entrar. Los signos (Sol cancer, Luna libra) los calculó
+-- computeChart para 1990-07-01 12:00 en Buenos Aires; sin hora no hay Ascendente (asc_sign null).
+-- Una carta propia implica Sol y Luna en el perfil (save_natal_chart / set_self_natal_chart). 1990-07-01 en Buenos Aires es UTC-3 (sin horario de verano en julio).
 insert into public.natal_charts (user_id, label, birth_date, birth_time, place_id, lat, lon, timezone,
                                  utc_offset_seconds, tzdata_version, house_system, is_self, consented_at)
 select p.id, 'Mi carta', date '1990-07-01', null, null, -34.60372, -58.38159, 'America/Argentina/Buenos_Aires',
@@ -98,5 +99,11 @@ select p.id, 'Mi carta', date '1990-07-01', null, null, -34.60372, -58.38159, 'A
   from public.profiles p
  where p.role = 'teacher'
    and not exists (select 1 from public.natal_charts c where c.user_id = p.id and c.is_self);
+
+update public.profiles p
+   set sun_sign = 'cancer', moon_sign = 'libra'
+ where p.role = 'teacher'
+   and p.sun_sign is null
+   and exists (select 1 from public.natal_charts c where c.user_id = p.id and c.is_self);
 
 commit;

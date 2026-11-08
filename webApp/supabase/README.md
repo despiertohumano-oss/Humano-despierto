@@ -15,6 +15,7 @@ Migraciones (`migrations/`), seeds locales, tests de schema (`tests/`, PGlite) y
 `seed-teacher-1234`, ids de video marcados `SEED_PLACEHOLDER`). `seed.fixtures.sql` son las cuentas
 `@test.local` con clave conocida que usan los e2e. `demo.sql` agrega alumnas, reseñas y anuncios para
 la demo. Los tres traen cuentas con contraseña pública: ninguno va a producción (D-22).
+`demo.sql` no siembra carta propia: una docente de demo ve el bloqueo (solo el formulario de carta) al entrar al panel docente.
 
 ## Checklist de nube
 
