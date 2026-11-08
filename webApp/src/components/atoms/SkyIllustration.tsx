@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils/cn";
 
-/** Ilustración de línea: luna creciente y estrellas. Hereda el color (`currentColor`); quien la usa
- *  elige `text-musgo` en superficies claras o `text-oro` en las cósmicas. Decorativa. */
+/** Ilustración de línea: luna creciente y estrellas. Hereda el color (`currentColor`);  *  elige el color: musgo en superficies claras, oro en las cósmicas. Decorativa. */
 export default function SkyIllustration({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 150 190" className={cn("h-auto w-[150px] text-musgo", className)} fill="none"
