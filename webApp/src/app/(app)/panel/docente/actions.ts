@@ -41,7 +41,26 @@ function readCourseForm(formData: FormData) {
     prerequisites: String(formData.get("prerequisites") ?? ""),
     language: String(formData.get("language") ?? "es"),
     promoVideoId: String(formData.get("promoVideoId") ?? ""),
+    includesRecorded: formData.get("includesRecorded") === "on",
+    includesPdf: formData.get("includesPdf") === "on",
+    includesDownloads: formData.get("includesDownloads") === "on",
+    includesLive: formData.get("includesLive") === "on",
+    accessTerms: String(formData.get("accessTerms") ?? ""),
+    issuesCertificate: formData.get("issuesCertificate") === "on",
   });
+}
+
+type CourseFormValues = Extract<ReturnType<typeof readCourseForm>, { success: true }>["data"];
+
+function modalityColumns(v: CourseFormValues) {
+  return {
+    includes_recorded: v.includesRecorded,
+    includes_pdf: v.includesPdf,
+    includes_downloads: v.includesDownloads,
+    includes_live: v.includesLive,
+    access_terms: v.accessTerms || null,
+    issues_certificate: v.issuesCertificate,
+  };
 }
 
 // Criterio 2: crear curso. `teacher_id` viaja en el INSERT (0003 lo permite) pero
@@ -82,6 +101,7 @@ export const createCourseAction = withRateLimit(
           language: v.language,
           promo_video_id: v.promoVideoId || null,
           teacher_id: teacher.id,
+          ...modalityColumns(v),
         })
         .select("id")
         .single();
@@ -146,6 +166,7 @@ export const updateCourseAction = withRateLimit(
           prerequisites: includesToArray(v.prerequisites),
           language: v.language,
           promo_video_id: v.promoVideoId || null,
+          ...modalityColumns(v),
         })
         .eq("id", courseId);
 
@@ -168,6 +189,7 @@ export const updateCourseAction = withRateLimit(
     revalidatePath("/panel/docente");
     // Disciplina y título de un publicado salen en la portada (disciplinas, firma de testimonios).
     revalidateLanding();
+    revalidatePath("/cursos/[slug]", "page");
     return { error: null, success: "Curso actualizado." };
   },
   limitedState,

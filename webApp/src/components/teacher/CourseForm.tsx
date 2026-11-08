@@ -3,7 +3,8 @@
 import { useActionState } from "react";
 import { createCourseAction, updateCourseAction } from "@/app/(app)/panel/docente/actions";
 import Button from "@/components/atoms/Button";
-import { PanelInput, PanelSelect, PanelTextarea } from "@/components/panel/PanelField";
+import { PanelCheckbox, PanelInput, PanelSelect, PanelTextarea } from "@/components/panel/PanelField";
+import { MODALITY_FIELDS } from "@/lib/catalog/modality";
 import { DISCIPLINES } from "@/lib/taxonomy/disciplines";
 import StatusMessage from "@/components/panel/StatusMessage";
 import { TEACHER_ACTION_INITIAL_STATE, fieldError, formError } from "@/lib/teacher/action-state";
@@ -77,6 +78,35 @@ export default function CourseForm({ course }: Props) {
         className="md:col-span-2"
       />
       <PanelTextarea label="Qué incluye" hint="Un ítem por línea." name="includes" error={fieldError(state, "includes")} defaultValue={(course?.includes ?? []).join("\n")} rows={4} className="md:col-span-2" />
+
+      <fieldset className="grid gap-2 rounded-md border border-linea p-4 md:col-span-2">
+        <legend className="px-1 text-sm font-semibold text-tinta">Modalidad</legend>
+        {MODALITY_FIELDS.map((f) => (
+          <PanelCheckbox
+            key={f.name}
+            name={f.name}
+            label={f.label}
+            defaultChecked={course ? course.modality[f.key] : f.key === "recorded"}
+          />
+        ))}
+        <p className="text-sm text-suave">«Encuentros en vivo» es informativo: la fecha y el enlace se coordinan por anuncios.</p>
+      </fieldset>
+      <PanelTextarea
+        label="Condiciones de acceso (opcional)"
+        hint="Hasta 500 caracteres. Se ven en la ficha del curso."
+        name="accessTerms"
+        error={fieldError(state, "accessTerms")}
+        defaultValue={course?.modality.accessTerms ?? ""}
+        rows={3}
+        maxLength={500}
+        className="md:col-span-2"
+      />
+      <PanelCheckbox
+        name="issuesCertificate"
+        label="Emite certificado al completar"
+        defaultChecked={course ? course.modality.issuesCertificate : true}
+        className="md:col-span-2"
+      />
 
       <div className="flex flex-col gap-3 md:col-span-2">
         <StatusMessage error={formError(state)} success={state.success} />

@@ -83,6 +83,16 @@ export const courseFormSchema = z.object({
     .string().trim()
     .regex(/^[A-Za-z0-9_-]{11}$/, "Es el id del video (11 caracteres), no la URL entera.")
     .optional().or(z.literal("")),
+  // B2 · modalidad informativa (0074). Los booleanos llegan de checkboxes: ausente = false.
+  includesRecorded: z.boolean().default(false),
+  includesPdf: z.boolean().default(false),
+  includesDownloads: z.boolean().default(false),
+  includesLive: z.boolean().default(false),
+  accessTerms: noLocator(
+    z.string().trim().max(500, "Las condiciones de acceso tienen hasta 500 caracteres.").optional().or(z.literal("")),
+    "condiciones de acceso",
+  ),
+  issuesCertificate: z.boolean().default(false),
 });
 
 export type CourseFormInput = z.input<typeof courseFormSchema>;

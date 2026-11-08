@@ -7,11 +7,13 @@ import {
   parseCatalogFilterState,
 } from "@/app/(marketing)/cursos/catalog-filters";
 import type { PublishedCourseSummary } from "@/lib/server/courses";
+import { toModality } from "@/lib/catalog/modality";
 
 const curso = (slug: string, disciplineKey: string, discipline: string): PublishedCourseSummary => ({
   id: slug, slug, title: `Curso ${slug}`, titleEm: null, subtitle: null, desc: null,
   discipline, disciplineKey, level: "Inicial", priceCents: 100, currency: "ARS", moonGlyph: null,
   featured: false, teacherName: "Sol", totalDurationSeconds: 0, publishedAt: null, coverPath: null, hasPreview: false,
+  modality: toModality({}),
 });
 
 const cursos = annotateCourses([curso("a", "tarot", "Tarot"), curso("b", "tarot", "Tarot"), curso("c", "astrologia", "Astrología")]);

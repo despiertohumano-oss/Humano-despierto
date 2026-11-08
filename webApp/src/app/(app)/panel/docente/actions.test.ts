@@ -124,6 +124,43 @@ describe("course actions · error por campo (D-100)", () => {
     expect(r.error).toBeTruthy();
     expect(r.field).toBeUndefined();
   });
+
+  it("B2 · la modalidad viaja en el update; checkbox ausente = false", async () => {
+    const update = vi.fn((_row: Record<string, unknown>) => ({ eq: async () => ({ error: null }) }));
+    createClient.mockResolvedValue({ from: () => ({ update }) });
+    await updateCourseAction(INITIAL, courseForm({ includesPdf: "on", includesLive: "on", accessTerms: "Un año de acceso." }));
+    expect(update).toHaveBeenCalledWith(expect.objectContaining({
+      includes_recorded: false, includes_pdf: true, includes_downloads: false, includes_live: true,
+      access_terms: "Un año de acceso.", issues_certificate: false,
+    }));
+  });
+
+  it("B2 · el insert lleva la modalidad; condiciones vacías = null", async () => {
+    const insert = vi.fn((_row: Record<string, unknown>) => ({ select: () => ({ single: async () => ({ data: { id: "nuevo" }, error: null }) }) }));
+    createClient.mockResolvedValue({ from: () => ({ insert }) });
+    await createCourseAction(INITIAL, courseForm({ includesRecorded: "on", issuesCertificate: "on" }));
+    expect(insert).toHaveBeenCalledWith(expect.objectContaining({
+      includes_recorded: true, includes_pdf: false, access_terms: null, issues_certificate: true,
+    }));
+  });
+
+  it("B2 · condiciones de acceso solo con espacios se guardan como null", async () => {
+    const update = vi.fn((_row: Record<string, unknown>) => ({ eq: async () => ({ error: null }) }));
+    createClient.mockResolvedValue({ from: () => ({ update }) });
+    await updateCourseAction(INITIAL, courseForm({ accessTerms: "   \n  " }));
+    expect(update).toHaveBeenCalledWith(expect.objectContaining({ access_terms: null }));
+  });
+
+  it("B2 · condiciones de acceso con un link marcan el campo", async () => {
+    const r = await updateCourseAction(INITIAL, courseForm({ accessTerms: "ver drive.google.com/file/d/X" }));
+    expect(r.field).toBe("accessTerms");
+    expect(createClient).not.toHaveBeenCalled();
+  });
+
+  it("B2 · condiciones de acceso de más de 500 caracteres marcan el campo", async () => {
+    const r = await updateCourseAction(INITIAL, courseForm({ accessTerms: "a".repeat(501) }));
+    expect(r).toMatchObject({ field: "accessTerms", error: "Las condiciones de acceso tienen hasta 500 caracteres." });
+  });
 });
 
 describe("setCoursePublishedAction · portada (DT2)", () => {

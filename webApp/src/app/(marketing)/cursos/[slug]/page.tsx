@@ -16,6 +16,7 @@ import FaqList from "@/components/molecules/FaqList";
 import ReviewsSection from "@/components/reviews/ReviewsSection";
 import { COURSE_FAQ } from "@/content/landing";
 import { brandImageForDiscipline } from "@/content/brand-images";
+import ModalityBlock from "@/components/course/ModalityBlock";
 import { visibleDescription } from "@/lib/catalog/description";
 import { firstPreviewLesson } from "@/lib/catalog/free-class";
 import { enrollmentPanelCopy } from "@/lib/enrollment/panel-copy";
@@ -83,7 +84,6 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
     ...course.includes.map((text) => ({ icon: "file" as const, text })),
     { icon: "chat", text: "Preguntas a la guía dentro de cada clase" },
     { icon: "notes", text: "Tus notas personales en cada clase" },
-    { icon: "award", text: "Certificado de finalización verificable" },
   ];
 
   return (
@@ -186,6 +186,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                 </li>
               )}
             </ul>
+            <ModalityBlock modality={course.modality} />
           </div>
         </aside>
 

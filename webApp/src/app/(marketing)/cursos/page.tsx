@@ -9,6 +9,7 @@ import { getPublishedCourses, signCatalogCovers } from "@/lib/server/courses";
 import { CATALOGO } from "@/content/site-copy";
 import { getWishlistIds } from "@/lib/server/wishlist";
 import { formatPriceCents } from "@/lib/utils/format";
+import { modalitySummary } from "@/lib/catalog/modality";
 import {
   PAGE_SIZE,
   annotateCourses,
@@ -286,6 +287,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                       rating={course.rating}
                       reviewCount={course.reviewCount}
                       hasPreview={course.hasPreview}
+                      meta={modalitySummary(course.modality, course.totalDurationSeconds)}
                       coverUrl={course.coverPath ? covers.get(course.coverPath) : undefined}
                       wishlist={{ courseId: course.id, saved: savedIds?.has(course.id) ?? false, loginHref }}
                     />

@@ -96,3 +96,15 @@ export function PanelSelect({ label, hint, error, invalid, hideLabel, className,
     </Frame>
   );
 }
+
+type CheckboxProps = { label: React.ReactNode; className?: string } & Omit<InputHTMLAttributes<HTMLInputElement>, "className" | "type">;
+
+/** Casilla con su rótulo clickeable. El `label` envuelve al input: no necesita `id`. */
+export function PanelCheckbox({ label, className, ...input }: CheckboxProps) {
+  return (
+    <label className={cn("flex min-h-10 items-center gap-3 text-[15px] text-tinta", className)}>
+      <input type="checkbox" {...input} className="h-5 w-5 flex-none accent-bosque" />
+      {label}
+    </label>
+  );
+}
