@@ -22,7 +22,7 @@ export default function ChartResult({ view }: { view: ChartView }) {
   return (
     <section aria-labelledby="carta-resultado" className="space-y-10">
       <header className="space-y-2">
-        <h2 id="carta-resultado" className="text-3xl font-bold text-bosque">Tu carta natal</h2>
+        <h2 id="carta-resultado" className="text-3xl font-bold text-bosque">Carta natal</h2>
         <p className="text-sm text-suave">
           {view.placeLabel} · {view.zoneLabel}{casas ? ` · casas ${casas}` : ""} · nodo verdadero · Lilith (Luna Negra media) · orbes Urania Trust
         </p>

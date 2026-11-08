@@ -15,7 +15,8 @@ const ETIQUETA = "block text-sm font-semibold text-bosque";
 const CONSENTIMIENTO = "Acepto que guarden mis datos de nacimiento para mostrarme esta carta. Se guardan en privado: solo yo los veo y puedo borrarlos cuando quiera.";
 const CONSENTIMIENTO_GUIA = "Al marcarla como mi carta, el signo de mi Sol, el de mi Luna y mi Ascendente se muestran en mi perfil público de docente.";
 
-type Props = { mode: "libre" | "propia"; signedIn: boolean; isTeacher: boolean };
+// perfilPublico: docente o admin, cuyos signos de la carta propia se ven en su perfil público.
+type Props = { mode: "libre" | "propia"; signedIn: boolean; perfilPublico: boolean };
 
 // Desfase orientativo para mostrar antes de calcular; el definitivo lo resuelve el servidor.
 function offsetLabel(zone: string, date: string, time: string): string | null {
@@ -37,7 +38,7 @@ function offsetLabel(zone: string, date: string, time: string): string | null {
   }
 }
 
-export default function ChartForm({ mode, signedIn, isTeacher }: Props) {
+export default function ChartForm({ mode, signedIn, perfilPublico }: Props) {
   const router = useRouter();
   const [calc, calcAction, calculando] = useActionState(calcularCarta, ACTION_INITIAL_STATE as CalcState);
   const [save, saveAction, guardando] = useActionState(guardarCarta, ACTION_INITIAL_STATE as SaveState);
@@ -70,7 +71,7 @@ export default function ChartForm({ mode, signedIn, isTeacher }: Props) {
 
   const ambigua = !vigente ? undefined : mode === "propia" ? save.ambigua : (save.ambigua ?? calc.ambigua);
   const error = mode === "propia" ? save.error : calc.error;
-  const consentimiento = `${CONSENTIMIENTO}${isTeacher && (mode === "propia" || propia) ? ` ${CONSENTIMIENTO_GUIA}` : ""}`;
+  const consentimiento = `${CONSENTIMIENTO}${perfilPublico && (mode === "propia" || propia) ? ` ${CONSENTIMIENTO_GUIA}` : ""}`;
   const zonaElegida = manual ? huso.trim() : place ? (corregir ? huso.trim() : place.timeZone) : "";
   const desfase = zonaElegida ? offsetLabel(zonaElegida, fecha, sinHora ? "" : hora) : null;
   const nombreHuso = !manual && place && !corregir ? `Hora de ${place.name}` : `Huso ${zonaElegida}`;

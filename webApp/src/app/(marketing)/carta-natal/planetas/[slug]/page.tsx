@@ -32,8 +32,8 @@ export default async function PlanetaPage({ params }: { params: Promise<{ slug: 
   const id = bodyBySlug(slug);
   if (!id) notFound();
   const i = BODY_IDS.indexOf(id);
-  const prev = BODY_IDS[(i + 12) % 13]!;
-  const next = BODY_IDS[(i + 1) % 13]!;
+  const prev = BODY_IDS[(i + BODY_IDS.length - 1) % BODY_IDS.length]!;
+  const next = BODY_IDS[(i + 1) % BODY_IDS.length]!;
   const rige = SIGN_IDS.filter((s) => SIGNS[s].regente === id).map((s) => SIGNS[s].nombre);
   const datos: [string, string][] = [["Tipo", TIPO[id] ?? (id === "sol" || id === "luna" ? "Luminaria" : "Planeta")]];
   if (rige.length > 0) datos.push(["Rige (tradicional)", rige.join(" y ")]);

@@ -38,7 +38,7 @@ export default async function CartaNatalPage() {
         </p>
       </div>
       <main className="mx-auto max-w-[1000px] space-y-16 px-6 pb-20">
-        <ChartForm mode="libre" signedIn={user !== null} isTeacher={user?.role === "teacher"} />
+        <ChartForm mode="libre" signedIn={user !== null} perfilPublico={user !== null && user.role !== "student"} />
         <div className="space-y-8">
           <Indice titulo="Los signos" links={SIGN_IDS.map((s) => ({ href: `/carta-natal/signos/${s}`, label: SIGNS[s].nombre }))} />
           <Indice titulo="Planetas y puntos" links={BODY_IDS.map((b) => ({ href: `/carta-natal/planetas/${bodySlug(b)}`, label: BODY_NAMES[b] }))} />
