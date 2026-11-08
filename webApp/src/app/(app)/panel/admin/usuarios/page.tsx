@@ -3,7 +3,7 @@ import AdminShell from "@/components/admin/AdminShell";
 import AdminPagedList from "@/components/admin/AdminPagedList";
 import UserRoleRow from "@/components/admin/UserRoleRow";
 import { parseListParams } from "@/lib/admin/list-params";
-import { requireAdmin } from "@/lib/server/admin";
+import { getFounderId, requireAdmin } from "@/lib/server/admin";
 import { listUsersPage } from "@/lib/server/admin-lists";
 
 export const metadata: Metadata = { title: "Usuarios · Admin", robots: { index: false, follow: false } };
@@ -18,7 +18,7 @@ export default async function AdminUsersPage({
   // Layout y página renderizan en paralelo: la lectura con service_role no depende del layout.
   await requireAdmin();
   const params = parseListParams(await searchParams);
-  const page = await listUsersPage(params);
+  const [page, founderId] = await Promise.all([listUsersPage(params), getFounderId()]);
   return (
     <AdminShell active="usuarios">
       <section aria-labelledby="usuarios-titulo">
@@ -36,7 +36,7 @@ export default async function AdminUsersPage({
           nextLabel="Siguiente"
         >
           {page.items.map((u) => (
-            <UserRoleRow key={u.id} user={u} />
+            <UserRoleRow key={u.id} user={u} isFounder={u.id === founderId} />
           ))}
         </AdminPagedList>
       </section>

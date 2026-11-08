@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { updateUserRoleAction } from "@/app/(app)/panel/admin/actions";
+import { setFounderAction, updateUserRoleAction } from "@/app/(app)/panel/admin/actions";
 import Button from "@/components/atoms/Button";
 import { PanelSelect } from "@/components/panel/PanelField";
 import { PanelRow, RowMain } from "@/components/panel/PanelRow";
@@ -16,8 +16,9 @@ const ROLE_LABEL: Record<AppRole, string> = {
   admin: "Admin",
 };
 
-export default function UserRoleRow({ user }: { user: AdminUserRow }) {
+export default function UserRoleRow({ user, isFounder = false }: { user: AdminUserRow; isFounder?: boolean }) {
   const [state, formAction, isPending] = useActionState(updateUserRoleAction, ADMIN_ACTION_INITIAL_STATE);
+  const [founderState, founderAction, founderPending] = useActionState(setFounderAction, ADMIN_ACTION_INITIAL_STATE);
 
   return (
     <PanelRow>
@@ -37,7 +38,18 @@ export default function UserRoleRow({ user }: { user: AdminUserRow }) {
         </Button>
       </form>
 
+      {/* B4 · solo una docente puede ser la creadora; la base lo exige igual (0076). */}
+      {user.role === "teacher" && (
+        <form action={founderAction} className="flex items-center gap-2">
+          {isFounder ? <input type="hidden" name="clear" value="1" /> : <input type="hidden" name="userId" value={user.id} />}
+          <Button type="submit" variant={isFounder ? "ghost" : "outline"} size="sm" disabled={founderPending} aria-busy={founderPending}>
+            {isFounder ? "Quitar creadora" : "Marcar como creadora"}
+          </Button>
+        </form>
+      )}
+
       <StatusMessage error={state.error} success={state.success} className="w-full" />
+      <StatusMessage error={founderState.error} success={founderState.success} className="w-full" />
     </PanelRow>
   );
 }

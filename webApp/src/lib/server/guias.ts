@@ -30,6 +30,8 @@ export interface PublicTeacherCard {
   yearsPractice: number | null;
   discipline: string | null;
   coursesCount: number;
+  /** B4 · la creadora destacada (curada por la admin, `admin_set_founder`). */
+  isFounder: boolean;
   /** El path, no la URL: `sitemap.ts` lee esta lista y no tiene por qué firmar. Firma `signTeacherAvatars`. */
   avatarPath: string | null;
 }
@@ -64,6 +66,7 @@ interface TeacherRow {
   formations: { year: string; title: string; place: string }[] | null;
   testimonials: { quote: string; who: string; course: string }[] | null;
   avatar_path: string | null;
+  is_founder: boolean;
 }
 
 interface CourseRow {
@@ -91,7 +94,7 @@ async function fetchTeachersAndCourses() {
       supabase
         .from("profiles")
         .select(
-          "id, full_name, slug, glyph, headline, location, quote, years_practice, bio, formations, testimonials, avatar_path"
+          "id, full_name, slug, glyph, headline, location, quote, years_practice, bio, formations, testimonials, avatar_path, is_founder"
         )
         .eq("role", "teacher")
         .not("slug", "is", null),
@@ -128,6 +131,7 @@ function toCard(row: TeacherRow, courses: CourseRow[]): PublicTeacherCard {
     yearsPractice: row.years_practice,
     discipline: key ? disciplineLabel(key) : null,
     coursesCount: own.length,
+    isFounder: row.is_founder ?? false,
     avatarPath: row.avatar_path,
   };
 }
@@ -135,13 +139,43 @@ function toCard(row: TeacherRow, courses: CourseRow[]): PublicTeacherCard {
 /**
  * Docentes con al menos un curso publicado: mostrar una ficha vacia ("sin cursos") es peor
  * que no listarla (mismo criterio que T-014/ADR-004 aplican a cualquier promesa sin respaldo).
+ * La creadora aparece aunque todavía no tenga cursos (B4): su presentación es el contenido.
  */
-export async function getPublicTeachers(): Promise<PublicTeacherCard[]> {
-  const { teachers, courses } = await fetchTeachersAndCourses();
+function publicCards(teachers: TeacherRow[], courses: CourseRow[]): PublicTeacherCard[] {
   return teachers
     .map((row) => toCard(row, courses))
-    .filter((t) => t.coursesCount > 0)
+    .filter((t) => t.coursesCount > 0 || t.isFounder)
     .sort((a, b) => a.fullName.localeCompare(b.fullName, "es"));
+}
+
+export async function getPublicTeachers(): Promise<PublicTeacherCard[]> {
+  const { teachers, courses } = await fetchTeachersAndCourses();
+  return publicCards(teachers, courses);
+}
+
+export interface PublicFounderCard extends PublicTeacherCard {
+  bio: string | null;
+  disciplines: string[];
+  courses: { slug: string; title: string; titleEm: string | null }[];
+}
+
+/** B4 · `/guias`: la creadora aparte (tarjeta grande) y el resto en la grilla, sin repetirla. */
+export async function getGuiasDirectory(): Promise<{ founder: PublicFounderCard | null; teachers: PublicTeacherCard[] }> {
+  const { teachers, courses } = await fetchTeachersAndCourses();
+  const cards = publicCards(teachers, courses);
+  const card = cards.find((t) => t.isFounder);
+  const row = card && teachers.find((t) => t.id === card.id);
+  const own = card ? courses.filter((c) => c.teacher_id === card.id) : [];
+  const founder: PublicFounderCard | null =
+    card && row
+      ? {
+          ...card,
+          bio: row.bio,
+          disciplines: [...new Set(own.map((c) => c.discipline))].map(disciplineLabel),
+          courses: own.map((c) => ({ slug: c.slug, title: c.title, titleEm: c.title_em })),
+        }
+      : null;
+  return { founder, teachers: cards.filter((t) => !t.isFounder) };
 }
 
 // `cache`: generateMetadata y la pagina piden la misma ficha; sin esto son dos firmas por request.
@@ -151,7 +185,7 @@ export const getTeacherBySlug = cache(async (slug: string): Promise<PublicTeache
   if (!row) return null;
 
   const card = toCard(row, courses);
-  if (card.coursesCount === 0) return null;
+  if (card.coursesCount === 0 && !card.isFounder) return null;
 
   return {
     ...card,

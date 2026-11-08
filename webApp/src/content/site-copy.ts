@@ -9,6 +9,7 @@ export const DOCENTES = {
   navLabel: "Docentes",
   verTodos: "Ver todos los docentes",
   volver: "Todos los docentes",
+  founderLabel: "Creadora de Humano Despierto",
   metaTitle: "Docentes",
   metaDescription: "Conocé a quienes comparten sus saberes y acompañan cada formación en Humano Despierto.",
 } as const;

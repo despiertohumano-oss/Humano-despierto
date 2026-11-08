@@ -81,6 +81,7 @@ export const RATE_LIMITS = {
   setPostPublishedAction: STAFF,
   // Admin (T-008, T-043, T-037, T-031, T-049)
   updateUserRoleAction: STAFF,
+  setFounderAction: STAFF,
   setEnrollmentAction: STAFF,
   setCourseStatusAction: STAFF,
   approveEnrollmentRequestAction: STAFF,

@@ -445,3 +445,33 @@ export const grantEnrollmentByEmailAction = withRateLimit(
   },
   limitedState,
 );
+
+const FOUNDER_ERRORS: Record<string, string> = {
+  "22023": "Solo una docente puede ser la creadora.",
+  // Dos llamadas a la vez: el índice único de 0076 deja pasar solo una; la otra no rompe la página.
+  "23505": "Otra persona cambió la creadora al mismo tiempo. Recargá la página y probá de nuevo.",
+};
+
+// B4 · La creadora destacada. Una sola, docente; lo garantiza `admin_set_founder` (0076) en una
+// transacción, execute solo service_role. El rol del que llama sale de profiles (requireAdmin).
+export const setFounderAction = withRateLimit(
+  "setFounderAction",
+  async function setFounderAction(_prevState: AdminActionState, formData: FormData): Promise<AdminActionState> {
+    await requireAdmin();
+    const clear = formData.get("clear") === "1";
+    const userId = String(formData.get("userId") ?? "");
+    if (!clear && !z.uuid().safeParse(userId).success) return { error: "Datos inválidos.", success: null };
+
+    const { error } = await getAdminSupabaseClient().rpc("admin_set_founder", { p_profile_id: clear ? null : userId });
+    if (error) {
+      log.error("founder_set_failed", { pg_code: error.code });
+      return { error: FOUNDER_ERRORS[error.code ?? ""] ?? "No se pudo actualizar la creadora.", success: null };
+    }
+
+    revalidatePath("/guias");
+    revalidatePath("/guias/[slug]", "page");
+    revalidatePath("/panel/admin/usuarios");
+    return { error: null, success: clear ? "Ya no hay creadora destacada." : "Listo: es la creadora destacada." };
+  },
+  limitedState,
+);
