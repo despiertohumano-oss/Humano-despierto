@@ -5,7 +5,10 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceRoleClient } from "@/lib/supabase/service";
 import { requireTeacher } from "@/lib/server/teacher";
-import { assertOwnsPost } from "@/lib/server/diario";
+import { assertOwnsPost, syncRelatedCourses } from "@/lib/server/diario";
+import { log } from "@/lib/server/log";
+import { UPLOADS_BUCKET, uploadAsServer } from "@/lib/server/uploads";
+import { buildDiarioCoverPath, checkCoverBytes, IMAGE_MIME, isUuid } from "@/lib/validation/image";
 import { diarioPostFormSchema } from "@/lib/validation/diario";
 import { firstIssue } from "@/lib/validation/teacher";
 import type { TeacherActionState } from "@/lib/teacher/action-state";
@@ -18,8 +21,16 @@ function readPostForm(formData: FormData) {
     title: String(formData.get("title") ?? ""),
     excerpt: String(formData.get("excerpt") ?? ""),
     body: String(formData.get("body") ?? ""),
+    category: String(formData.get("category") ?? ""),
+    relatedCourseIds: formData.getAll("relatedCourseIds").map(String),
   });
 }
+
+const RELATED_ERROR: TeacherActionState = {
+  error: "Solo podés vincular tus cursos publicados.",
+  success: null,
+  field: "relatedCourseIds",
+};
 
 function invalid(error: Parameters<typeof firstIssue>[0]): TeacherActionState {
   const { field, message } = firstIssue(error);
@@ -59,6 +70,7 @@ export const createPostAction = withRateLimit(
           title: v.title,
           excerpt: v.excerpt || null,
           body: v.body,
+          category: v.category,
         })
         .select("id")
         .single();
@@ -98,7 +110,7 @@ export const updatePostAction = withRateLimit(
       const supabase = await createClient();
       const { error } = await supabase
         .from("diario_posts")
-        .update({ slug: v.slug, title: v.title, excerpt: v.excerpt || null, body: v.body })
+        .update({ slug: v.slug, title: v.title, excerpt: v.excerpt || null, body: v.body, category: v.category })
         .eq("id", postId);
 
       if (error) {
@@ -106,12 +118,16 @@ export const updatePostAction = withRateLimit(
         if (error.code === "23514" || error.code === "42501") return BODY_LOCATOR;
         return { error: `No se pudo guardar: ${error.message}`, success: null };
       }
+      const link = await syncRelatedCourses(postId, v.relatedCourseIds);
+      if (link.error) return RELATED_ERROR;
     } catch (err) {
       return { error: err instanceof Error ? err.message : "No se pudo guardar el post.", success: null };
     }
 
     revalidatePath(`/panel/docente/diario/${postId}`);
     revalidatePath("/panel/docente/diario");
+    revalidatePath("/diario");
+    revalidatePath("/diario/[slug]", "page");
     return { error: null, success: "Post actualizado." };
   },
   limitedState,
@@ -130,8 +146,13 @@ export const deletePostAction = withRateLimit(
     try {
       await assertOwnsPost(postId, teacher.id);
       const supabase = await createClient();
+      const { data: current } = await supabase.from("diario_posts").select("cover_path").eq("id", postId).maybeSingle();
       const { error } = await supabase.from("diario_posts").delete().eq("id", postId);
       if (error) return { error: `No se pudo borrar el post: ${error.message}`, success: null };
+      if (current?.cover_path) {
+        const { error: removeError } = await createServiceRoleClient().storage.from(UPLOADS_BUCKET).remove([current.cover_path]);
+        if (removeError) log.error("diario_cover_orphan", { reason: "post_deleted", path: current.cover_path, message: removeError.message });
+      }
     } catch (err) {
       return { error: err instanceof Error ? err.message : "No se pudo borrar el post.", success: null };
     }
@@ -171,6 +192,86 @@ export const setPostPublishedAction = withRateLimit(
     revalidatePath("/panel/docente/diario");
     revalidatePath("/diario");
     return { error: null, success: nextStatus === "published" ? "Post publicado." : "Post pasado a borrador." };
+  },
+  limitedState,
+);
+
+// ==================================================================== portada (B3)
+
+function revalidatePostCover(postId: string) {
+  revalidatePath(`/panel/docente/diario/${postId}`);
+  revalidatePath("/diario");
+  revalidatePath("/diario/[slug]", "page");
+}
+
+export const uploadPostCoverAction = withRateLimit(
+  "uploadPostCoverAction",
+  async function uploadPostCoverAction(_prevState: TeacherActionState, formData: FormData): Promise<TeacherActionState> {
+    const postId = String(formData.get("postId") ?? "");
+    if (!isUuid(postId)) return { error: "Falta el post.", success: null };
+    const file = formData.get("cover");
+    if (!(file instanceof File)) return { error: "Elegí una imagen.", success: null };
+
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const check = checkCoverBytes(bytes);
+    if (!check.ok) return { error: check.error, success: null };
+
+    const teacher = await requireTeacher();
+    try {
+      await assertOwnsPost(postId, teacher.id);
+      const supabase = await createClient();
+      const { data: current } = await supabase.from("diario_posts").select("cover_path").eq("id", postId).single();
+      const path = buildDiarioCoverPath(postId, crypto.randomUUID(), check.kind);
+
+      // D-34: sube service_role con el path armado acá; el UPDATE va con la sesión y el CHECK de 0075.
+      const { error: uploadError } = await uploadAsServer(path, bytes, IMAGE_MIME[check.kind]);
+      if (uploadError) return { error: "No se pudo subir la portada.", success: null };
+
+      const service = createServiceRoleClient();
+      const { error: updateError } = await supabase.from("diario_posts").update({ cover_path: path }).eq("id", postId);
+      if (updateError) {
+        await service.storage.from(UPLOADS_BUCKET).remove([path]);
+        return { error: "No se pudo guardar la portada en el post.", success: null };
+      }
+      if (current?.cover_path) {
+        const { error: removeError } = await service.storage.from(UPLOADS_BUCKET).remove([current.cover_path]);
+        if (removeError) log.error("diario_cover_orphan", { reason: "replaced", path: current.cover_path, message: removeError.message });
+      }
+    } catch (err) {
+      return { error: err instanceof Error ? err.message : "No se pudo subir la portada.", success: null };
+    }
+
+    revalidatePostCover(postId);
+    return { error: null, success: "Portada actualizada." };
+  },
+  limitedState,
+);
+
+export const removePostCoverAction = withRateLimit(
+  "removePostCoverAction",
+  async function removePostCoverAction(_prevState: TeacherActionState, formData: FormData): Promise<TeacherActionState> {
+    const postId = String(formData.get("postId") ?? "");
+    if (!isUuid(postId)) return { error: "Falta el post.", success: null };
+
+    const teacher = await requireTeacher();
+    try {
+      await assertOwnsPost(postId, teacher.id);
+      const supabase = await createClient();
+      const { data: current } = await supabase.from("diario_posts").select("cover_path").eq("id", postId).single();
+      if (!current?.cover_path) return { error: null, success: "El post no tenía portada." };
+
+      const { error } = await supabase.from("diario_posts").update({ cover_path: null }).eq("id", postId);
+      if (error) return { error: "No se pudo quitar la portada.", success: null };
+
+      // Sin policy de Storage para `diario/`: borra service_role tras verificar la titularidad.
+      const { error: removeError } = await createServiceRoleClient().storage.from(UPLOADS_BUCKET).remove([current.cover_path]);
+      if (removeError) log.error("diario_cover_orphan", { reason: "removed", path: current.cover_path, message: removeError.message });
+    } catch (err) {
+      return { error: err instanceof Error ? err.message : "No se pudo quitar la portada.", success: null };
+    }
+
+    revalidatePostCover(postId);
+    return { error: null, success: "Portada quitada." };
   },
   limitedState,
 );

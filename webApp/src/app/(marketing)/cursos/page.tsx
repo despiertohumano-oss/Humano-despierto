@@ -5,6 +5,7 @@ import Link from "next/link";
 import CourseCard from "@/components/molecules/CourseCard";
 import PageIntro from "@/components/layout/PageIntro";
 import { cn } from "@/lib/utils/cn";
+import { filterChipClass } from "@/lib/utils/chip";
 import { getPublishedCourses, signCatalogCovers } from "@/lib/server/courses";
 import { CATALOGO } from "@/content/site-copy";
 import { getWishlistIds } from "@/lib/server/wishlist";
@@ -35,11 +36,7 @@ interface CatalogPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-const chip = (active: boolean) =>
-  cn(
-    "inline-flex min-h-10 items-center gap-2 rounded-pill border-[1.5px] px-4 py-2 text-sm font-medium transition-colors",
-    active ? "border-bosque bg-bosque text-white" : "border-salvia bg-papel text-bosque hover:border-bosque",
-  );
+const chip = filterChipClass;
 
 function FilterGroup({
   title,

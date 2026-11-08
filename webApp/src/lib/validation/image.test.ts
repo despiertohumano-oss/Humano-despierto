@@ -2,10 +2,12 @@ import { describe, expect, it } from "vitest";
 import {
   AVATAR_PATH_RE,
   COVER_PATH_RE,
+  DIARIO_COVER_PATH_RE,
   MAX_AVATAR_BYTES,
   MAX_COVER_BYTES,
   buildAvatarPath,
   buildCoverPath,
+  buildDiarioCoverPath,
   checkAvatarBytes,
   checkCoverBytes,
   detectImageKind,
@@ -118,5 +120,17 @@ describe("isUuid", () => {
     expect(isUuid("tarot-iniciatico")).toBe(false);
     expect(isUuid("")).toBe(false);
     expect(isUuid(`${COURSE}/../x`)).toBe(false);
+  });
+});
+
+describe("portada del Diario (B3)", () => {
+  const POST = "90000000-0000-4000-8000-00000000000a";
+  const FILE = "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee";
+  it("arma el path en la carpeta del post y el regex lo acepta", () => {
+    const p = buildDiarioCoverPath(POST, FILE, "webp");
+    expect(p).toBe(`diario/${POST}/${FILE}.webp`);
+    expect(DIARIO_COVER_PATH_RE.test(p)).toBe(true);
+    expect(DIARIO_COVER_PATH_RE.test(`covers/${POST}/${FILE}.webp`)).toBe(false);
+    expect(DIARIO_COVER_PATH_RE.test(`diario/${POST}/${FILE}.svg`)).toBe(false);
   });
 });

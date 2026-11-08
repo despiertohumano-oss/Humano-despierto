@@ -71,6 +71,9 @@ export const RATE_LIMITS = {
   saveAnnouncementDraft: { max: 30, windowSeconds: 600 },
   publishAnnouncement: MAILS_OTHERS,
   withdrawAnnouncement: { max: 30, windowSeconds: 600 },
+  // Portada del Diario (B3): cada subida escribe en Storage con service_role.
+  uploadPostCoverAction: { max: 10, windowSeconds: 600 },
+  removePostCoverAction: { max: 10, windowSeconds: 600 },
   // Diario (T-022)
   createPostAction: STAFF,
   updatePostAction: STAFF,
