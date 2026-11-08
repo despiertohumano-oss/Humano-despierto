@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  PLACEHOLDER_PHOTOS,
-  placeholderForDiscipline,
-  unsplashUrl,
-} from "./placeholder-photos";
+import { PLACEHOLDER_PHOTOS, unsplashUrl } from "./placeholder-photos";
 
 // Los 16 ids verificados a mano en design_handoff_humano_humano/reference/brote/README.md.
 const README_IDS = [
@@ -21,44 +17,29 @@ describe("PLACEHOLDER_PHOTOS", () => {
     expect(PLACEHOLDER_PHOTOS.map((p) => p.id)).not.toContain("1469474968028-56623f02e42e");
   });
 
+  it("quedan sólo las dos que usa el costado de las pantallas de acceso", () => {
+    expect(PLACEHOLDER_PHOTOS.map((p) => p.id).sort()).toEqual([
+      "1441974231531-c6227db76b6e",
+      "1470252649378-9c29740c9fa8",
+    ]);
+  });
+
   it("toda foto describe lo que se ve", () => {
     for (const p of PLACEHOLDER_PHOTOS) expect(p.alt.trim().length).toBeGreaterThan(10);
   });
 
   it("unsplashUrl arma la URL del host listado en remotePatterns", () => {
-    expect(unsplashUrl("1545840716-c82e9eec6930")).toBe("https://images.unsplash.com/photo-1545840716-c82e9eec6930");
-  });
-});
-
-describe("placeholderForDiscipline", () => {
-  it.each([
-    ["Tarot", "1600429991827-5224817554f8"],
-    ["tarot iniciático", "1600429991827-5224817554f8"],
-    ["Astrología", "1519681393784-d120267933ba"],
-    ["ASTROLOGIA", "1519681393784-d120267933ba"],
-    ["Herbal", "1545840716-c82e9eec6930"],
-    ["Herbolaria", "1545840716-c82e9eec6930"],
-    ["Reiki", "1447619297994-b829cc1ab44a"],
-    ["Magia", "1762162623066-89e462b3d8f0"],
-  ])("%s → foto de su oficio", (discipline, id) => {
-    expect(placeholderForDiscipline(discipline).id).toBe(id);
-  });
-
-  it("una disciplina desconocida o ausente cae en una foto neutra", () => {
-    for (const d of ["Numerología", "", null, undefined]) {
-      expect(placeholderForDiscipline(d).id).toBe("1567922045116-2a00fae2ed03");
-    }
+    expect(unsplashUrl("1470252649378-9c29740c9fa8")).toBe("https://images.unsplash.com/photo-1470252649378-9c29740c9fa8");
   });
 });
 
 describe("sin retratos de stock (decisión 3 del PO, QA T-060 D1)", () => {
-  it("ninguna foto de muestra es una persona: nunca va una cara ajena junto al nombre de una guía real", async () => {
+  it("ninguna foto de muestra es una persona: nunca va una cara ajena junto al nombre de una docente real", async () => {
     expect(PLACEHOLDER_PHOTOS.every((p) => (p.use as string) !== "retrato")).toBe(true);
     const mod: Record<string, unknown> = await import("./placeholder-photos");
     expect(mod.placeholderPortrait).toBeUndefined();
   });
 
-  // QA T-060 r2: el `use` no alcanza; un retrato del README reintroducido como "oficio" pasaría.
   it.each([
     "1746410848551-ca40cdb57674",
     "1544005313-94ddf0286df2",
