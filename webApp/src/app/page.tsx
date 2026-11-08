@@ -10,7 +10,6 @@ import Testimonios from "@/components/landing/Testimonios";
 import Empezar from "@/components/landing/Empezar";
 import LunarCalendar from "@/components/landing/LunarCalendar";
 import { lunarDays } from "@/lib/lunar";
-import { freeClassClaim } from "@/lib/catalog/free-class";
 import { getLandingData } from "@/lib/server/landing";
 import { getPublishedCourses, signCatalogCovers } from "@/lib/server/courses";
 import { getPublicTeachers, signTeacherAvatars } from "@/lib/server/guias";
@@ -30,8 +29,6 @@ export default async function LandingPage() {
   const guiasVisibles = guias.slice(0, 3);
   const [covers, avatars] = await Promise.all([signCatalogCovers(featured), signTeacherAvatars(guiasVisibles)]);
 
-  const claim = freeClassClaim({ total: courses.length, withPreview: courses.filter((c) => c.hasPreview).length });
-
   return (
     <div className="min-h-screen overflow-x-clip bg-fondo text-tinta">
       <SiteHeader overHero />
@@ -40,10 +37,10 @@ export default async function LandingPage() {
         <Manifiesto />
         <FeaturedCourses courses={featured} covers={covers} total={courses.length} disciplines={disciplines} />
         <Cifras stats={stats} disciplines={disciplines} />
-        <LunarCalendar days={lunarDays(new Date())} />
         <GuiasSection guias={guiasVisibles} total={guias.length} avatars={avatars} />
         <Testimonios items={testimonials} />
-        <Empezar claim={claim} />
+        <LunarCalendar days={lunarDays(new Date())} />
+        <Empezar />
       </main>
       <SiteFooter />
     </div>

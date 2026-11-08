@@ -5,18 +5,18 @@ describe("buildHeroStats", () => {
   it("muestra los tres con rotulo", () => {
     expect(buildHeroStats({ courses: 3, teachers: 2, students: 5 })).toEqual([
       { num: "3", label: "Cursos" },
-      { num: "2", label: "Guías" },
+      { num: "2", label: "Docentes" },
       { num: "5", label: "Inscriptas" },
     ]);
   });
   it("omite la que vale 0", () => {
     const s = buildHeroStats({ courses: 3, teachers: 2, students: 0 });
-    expect(s.map((x) => x.label)).toEqual(["Cursos", "Guías"]);
+    expect(s.map((x) => x.label)).toEqual(["Cursos", "Docentes"]);
   });
   it("singular con 1", () => {
     expect(buildHeroStats({ courses: 1, teachers: 1, students: 1 }).map((x) => x.label)).toEqual([
       "Curso",
-      "Guía",
+      "Docente",
       "Inscripta",
     ]);
   });

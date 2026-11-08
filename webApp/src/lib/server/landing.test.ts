@@ -48,11 +48,11 @@ describe("getLandingData · conteos (D-41)", () => {
     wire(publicClient, () => ({ data: [], error: null }), []);
   });
 
-  it("cuenta cursos, guías y alumnas con count exact + head, sin traer filas que PostgREST trunca a 1000", async () => {
+  it("cuenta cursos, docentes y alumnas con count exact + head, sin traer filas que PostgREST trunca a 1000", async () => {
     const data = await getLandingData();
     expect(data.stats).toEqual([
       { num: "1500", label: "Cursos" },
-      { num: "12", label: "Guías" },
+      { num: "12", label: "Docentes" },
       { num: "2400", label: "Inscriptas" },
     ]);
     expect(data.disciplines.map((d) => [d.key, d.count])).toEqual([["tarot", 2], ["reiki", 1]]);

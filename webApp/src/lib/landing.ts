@@ -21,7 +21,7 @@ export interface DisciplineCount {
 export function buildHeroStats({ courses, teachers, students }: LandingCounts): HeroStat[] {
   const stats: (HeroStat & { n: number })[] = [
     { n: courses, num: String(courses), label: courses === 1 ? "Curso" : "Cursos" },
-    { n: teachers, num: String(teachers), label: teachers === 1 ? "Guía" : "Guías" },
+    { n: teachers, num: String(teachers), label: teachers === 1 ? "Docente" : "Docentes" },
     { n: students, num: String(students), label: students === 1 ? "Inscripta" : "Inscriptas" },
   ];
   return stats.filter((s) => s.n > 0).map(({ num, label }) => ({ num, label }));

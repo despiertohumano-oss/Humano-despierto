@@ -34,7 +34,7 @@ export default function FeaturedCourses({ courses, covers, total, disciplines }:
         </header>
 
         {disciplines.length > 0 && (
-          <ul aria-label="Cursos por oficio" className="mb-10 flex flex-wrap gap-2">
+          <ul aria-label="Cursos por disciplina" className="mb-10 flex flex-wrap gap-2">
             {disciplines.map((d) => (
               <li key={d.key}>
                 <Link

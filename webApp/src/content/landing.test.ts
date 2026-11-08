@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { LANDING } from "./landing";
+import { COURSE_FAQ, LANDING } from "./landing";
 
 describe("LANDING · portada (pantallas 1 y 2)", () => {
   it("hero: título con sus comillas, subtítulo y botones", () => {
@@ -30,5 +30,32 @@ describe("LANDING · portada (pantallas 1 y 2)", () => {
     );
     expect(LANDING.guias.title).toBe("Nuestros docentes");
     expect(LANDING.guias.verTodas).toBe("Ver todos los docentes");
+  });
+});
+
+describe("LANDING · programa (pantalla 3)", () => {
+  it("título, bajada y los tres pasos", () => {
+    expect(LANDING.empezar.title).toBe("Explorá cada propuesta y elegí tu camino de aprendizaje.");
+    expect(LANDING.empezar.lead).toBe(
+      "Cada formación tiene su propio recorrido. Conocé los contenidos, explorá los módulos y descubrí qué herramientas y conocimientos vas a incorporar en cada propuesta.",
+    );
+    expect(LANDING.empezar.pasos).toEqual([
+      { n: "01", title: "Elegí tu formación", detail: "Explorá las propuestas y conocé sus contenidos, objetivos y modalidades." },
+      { n: "02", title: "Conocé cómo vas a aprender", detail: "Cada curso detalla su modalidad, materiales, clases y recursos disponibles." },
+      { n: "03", title: "Comenzá tu recorrido", detail: "Inscribite y accedé a los contenidos de tu formación." },
+    ]);
+    expect(LANDING.empezar.cta).toBe("Elegir un curso");
+  });
+
+  it("el calendario lunar conserva su título", () => {
+    expect(LANDING.lunar.title).toBe("Calendario lunar");
+  });
+});
+
+describe("el texto de la portada y la ficha no promete acceso ilimitado ni certificado general", () => {
+  const BANNED = /herbolar|herborist|reiki|\boficios\b|sin vencimiento|acceso ilimitado|queda tu certificado|certificado con tu nombre|no vence/i;
+  it("LANDING y COURSE_FAQ", () => {
+    expect(JSON.stringify(LANDING)).not.toMatch(BANNED);
+    expect(JSON.stringify(COURSE_FAQ)).not.toMatch(BANNED);
   });
 });

@@ -3,11 +3,11 @@ import CifraRotativa from "./CifraRotativa";
 import { LANDING } from "@/content/landing";
 import { joinSpanish, type DisciplineCount, type HeroStat } from "@/lib/landing";
 
-/** Cifra B4 con datos reales: cuántos cursos y de qué oficios, y la fila de conteos de la base. */
+/** Cifra B4 con datos reales: cuántos cursos y de qué disciplinas, y la fila de conteos de la base. */
 export default function Cifras({ stats, disciplines }: { stats: HeroStat[]; disciplines: DisciplineCount[] }) {
   const cursos = stats.find((s) => /^Cursos?$/.test(s.label));
   if (!cursos) return null;
-  const oficios = disciplines.map((d) => d.label.toLocaleLowerCase("es"));
+  const disciplinas = disciplines.map((d) => d.label.toLocaleLowerCase("es"));
   return (
     <section aria-labelledby="cifras-titulo" className="py-[90px] md:py-[120px]">
       <div className="mx-auto max-w-[1200px] px-6">
@@ -15,10 +15,10 @@ export default function Cifras({ stats, disciplines }: { stats: HeroStat[]; disc
         <Reveal>
           <p className="max-w-[18ch] text-[clamp(30px,4.5vw,56px)] font-semibold leading-[1.15] tracking-[-0.02em] text-bosque">
             {cursos.num} {cursos.label.toLocaleLowerCase("es")} {LANDING.cifra.verbo}{" "}
-            {oficios.length > 0 && (
+            {disciplinas.length > 0 && (
               <>
-                <span className="sr-only">{joinSpanish(oficios)}.</span>
-                <CifraRotativa words={oficios.map((o) => `${o}.`)} />
+                <span className="sr-only">{joinSpanish(disciplinas)}.</span>
+                <CifraRotativa words={disciplinas.map((o) => `${o}.`)} />
               </>
             )}
           </p>

@@ -13,13 +13,11 @@ export interface LandingContent {
   cifra: { verbo: string; nota: string };
   guias: { title: string; lead: string; verPerfil: string; verTodas: string };
   testimonios: { title: string };
+  lunar: { title: string; lead: string };
   empezar: {
     title: string;
-    /** Por FreeClassClaim: sólo «todos» afirma que cada curso tiene una. */
-    lead: { todos: string; prudente: string; ninguno: string };
-    titleSinClase: string;
-    pasos: readonly { title: string; detail: string }[];
-    pasosSinClase: readonly { title: string; detail: string }[];
+    lead: string;
+    pasos: readonly { n: string; title: string; detail: string }[];
     cta: string;
   };
 }
@@ -55,23 +53,17 @@ export const LANDING: LandingContent = {
     verTodas: DOCENTES.verTodos,
   },
   testimonios: { title: "Lo que dicen las alumnas" },
+  lunar: {
+    title: "Calendario lunar",
+    lead: "Las próximas fases de la luna, para acompañar la práctica. No son fechas de clase.",
+  },
   empezar: {
-    title: "Empezá por la clase gratuita.",
-    lead: {
-      todos: "Cada curso tiene una para ver sin inscribirte. Mirala, y si te gusta cómo enseña la guía, pedí el curso entero.",
-      prudente: "Muchos cursos tienen una clase gratuita. Mirala, y si te gusta cómo enseña la guía, pedí el curso entero.",
-      ninguno: "En la página de cada curso está el programa completo: cada clase, cuánto dura y qué material trae.",
-    },
-    titleSinClase: "Empezá por el programa.",
+    title: "Explorá cada propuesta y elegí tu camino de aprendizaje.",
+    lead: "Cada formación tiene su propio recorrido. Conocé los contenidos, explorá los módulos y descubrí qué herramientas y conocimientos vas a incorporar en cada propuesta.",
     pasos: [
-      { title: "Mirás la clase gratuita", detail: "En la página del curso, cuando el curso la tiene." },
-      { title: "Pedís la inscripción", detail: "La escuela la revisa y te avisa por mail." },
-      { title: "Lo ves a tu ritmo", detail: "Completo desde el primer día y sin vencimiento. Al terminar queda tu certificado." },
-    ],
-    pasosSinClase: [
-      { title: "Mirás el programa", detail: "Cada clase, su duración y su material." },
-      { title: "Pedís la inscripción", detail: "La escuela la revisa y te avisa por mail." },
-      { title: "Lo ves a tu ritmo", detail: "Completo desde el primer día y sin vencimiento. Al terminar queda tu certificado." },
+      { n: "01", title: "Elegí tu formación", detail: "Explorá las propuestas y conocé sus contenidos, objetivos y modalidades." },
+      { n: "02", title: "Conocé cómo vas a aprender", detail: "Cada curso detalla su modalidad, materiales, clases y recursos disponibles." },
+      { n: "03", title: "Comenzá tu recorrido", detail: "Inscribite y accedé a los contenidos de tu formación." },
     ],
     cta: "Elegir un curso",
   },
@@ -81,7 +73,7 @@ export const LANDING: LandingContent = {
 export const COURSE_FAQ = [
   {
     q: "¿Cuánto tiempo tengo para ver el curso?",
-    a: "Todo el que quieras. Cuando la escuela habilita tu inscripción, el curso queda completo en tu panel y no vence. Tu avance se guarda solo.",
+    a: "Depende de cada formación: en su ficha están la modalidad y las condiciones de acceso. Cuando la escuela habilita tu inscripción, el curso queda en tu panel y tu avance se guarda solo.",
   },
   {
     q: "¿Cómo me inscribo?",
@@ -89,7 +81,7 @@ export const COURSE_FAQ = [
   },
   {
     q: "¿El certificado tiene validez oficial?",
-    a: "No. Acredita que recorriste el curso completo, no que rendiste una evaluación. Lleva tu nombre, la fecha y un código que cualquiera puede verificar.",
+    a: "No. Cuando una formación ofrece certificado, acredita que recorriste el curso completo, no que rendiste una evaluación. Lleva tu nombre, la fecha y un código que cualquiera puede verificar.",
   },
   {
     q: "¿Le puedo hacer preguntas a la guía?",
