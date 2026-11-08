@@ -183,7 +183,11 @@ const INSERT_ESPERADO = {
 
   courses: ['slug', 'title', 'title_em', 'subtitle', 'intro', 'discipline', 'level', 'price_cents',
             'currency', 'moon_glyph', 'includes', 'teacher_id',
-            'learning_objectives', 'prerequisites', 'description', 'language', 'promo_video_id'],
+            'learning_objectives', 'prerequisites', 'description', 'language', 'promo_video_id',
+            // B2 · modalidad informativa: la docente la declara en el alta. `access_terms` lleva las
+            // dos mitades de ADR-009 (0074); el resto son booleanos.
+            'includes_recorded', 'includes_pdf', 'includes_downloads', 'includes_live',
+            'access_terms', 'issues_certificate'],
 
   // Guard nuevo (c.3): is_published, video_id y —desde T-012— duration_seconds fuera del grant
   // Y bloqueadas por trigger. La duracion la trae YouTube, no el docente (decision del PO).
