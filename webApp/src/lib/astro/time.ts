@@ -1,4 +1,3 @@
-// webApp/src/lib/astro/time.ts
 import { Temporal } from "@js-temporal/polyfill";
 
 export type ClockChoice = "earlier" | "later";
@@ -39,12 +38,6 @@ export function utcFromOffset(date: string, time: string, offsetSeconds: number)
   const [y, m, d] = date.split("-").map(Number);
   const [hh, mm] = time.split(":").map(Number);
   return new Date(Date.UTC(y!, m! - 1, d!, hh!, mm!) - offsetSeconds * 1000);
-}
-
-export function tzdbOffsetSeconds(date: string, time: string, timeZone: string): number {
-  const p = plain(date, time);
-  if (!p) throw new RangeError("fecha inválida");
-  return p.toZonedDateTime(timeZone, { disambiguation: "compatible" }).offsetNanoseconds / 1e9;
 }
 
 export function localToUtc(b: LocalBirth, choice: ClockChoice | null): TimeResolution {

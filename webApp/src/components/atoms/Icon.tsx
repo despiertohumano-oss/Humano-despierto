@@ -79,7 +79,7 @@ export type IconName = keyof typeof PATHS | AstroIconName;
 const ASTRO_PREFIX = "astro-";
 
 export function astroIcon(id: AstroGlyphId): AstroIconName {
-  return `astro-${id}`;
+  return `${ASTRO_PREFIX}${id}`;
 }
 
 export function iconPath(name: IconName): string {

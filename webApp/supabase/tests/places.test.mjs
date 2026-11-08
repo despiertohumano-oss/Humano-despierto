@@ -1,4 +1,3 @@
-// webApp/supabase/tests/places.test.mjs
 // Carta natal (T-024) · places es dato abierto (GeoNames, CC BY 4.0): lectura pública, escritura de nadie.
 import { test, describe, before, after } from 'node:test';
 import assert from 'node:assert/strict';

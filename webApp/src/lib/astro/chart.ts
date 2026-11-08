@@ -1,4 +1,3 @@
-// webApp/src/lib/astro/chart.ts
 import { type AstroTime, MakeTime } from "astronomy-engine";
 import { computeAngles } from "./angles";
 import { type Aspect, type AspectPoint, findAspects } from "./aspects";

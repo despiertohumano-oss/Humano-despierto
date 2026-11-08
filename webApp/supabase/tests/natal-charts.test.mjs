@@ -1,4 +1,3 @@
-// webApp/supabase/tests/natal-charts.test.mjs
 // Carta natal (T-024) · natal_charts y profiles.*_sign. Dato reforzado: la dueña lee y borra;
 // nadie más ve nada; escribir es solo de service_role vía save_natal_chart/set_self_natal_chart.
 import { test, describe, before, after } from 'node:test';

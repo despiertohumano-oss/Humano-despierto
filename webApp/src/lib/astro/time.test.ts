@@ -1,6 +1,6 @@
-// webApp/src/lib/astro/time.test.ts
 import { describe, expect, it } from "vitest";
-import { formatOffset, isValidTimeZone, localToUtc, tzdbOffsetSeconds, utcFromOffset } from "./time";
+import { Temporal } from "@js-temporal/polyfill";
+import { formatOffset, isValidTimeZone, localToUtc, utcFromOffset } from "./time";
 
 const BA = "America/Argentina/Buenos_Aires";
 const BA_LON = -58.38159;
@@ -57,7 +57,7 @@ describe("lugar-y-hora.md §6 · horas ambiguas: se pregunta, nunca se elige", (
 
 describe("LMT (lugar-y-hora.md §5)", () => {
   it("11 · el tzdb da el LMT de la ciudad cabecera: −3:53:48", () => {
-    expect(tzdbOffsetSeconds("1880-01-01", "12:00", BA)).toBe(-14028);
+    expect(Temporal.PlainDateTime.from("1880-01-01T12:00").toZonedDateTime(BA).offsetNanoseconds / 1e9).toBe(-14028);
   });
 
   it("antes de la primera transición usa la hora media del LUGAR: Rosario (−60,64°) = −4:02:34", () => {

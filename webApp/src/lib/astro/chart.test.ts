@@ -1,4 +1,3 @@
-// webApp/src/lib/astro/chart.test.ts
 import { describe, expect, it } from "vitest";
 import horizons from "./__fixtures__/horizons.json";
 import { computeChart } from "./chart";

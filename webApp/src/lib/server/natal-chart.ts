@@ -6,7 +6,7 @@ import { log } from "@/lib/server/log";
 import { type ChartFacts, computeChart } from "@/lib/astro/chart";
 import { type ChartText, renderChart } from "@/lib/astro/prose";
 import { type ClockChoice, NOON, type TimeResolution, formatOffset, isValidTimeZone, localToUtc, tzdataVersion, utcFromOffset } from "@/lib/astro/time";
-import type { HouseSystem, SignId } from "@/lib/astro/zodiac";
+import type { HouseSystem } from "@/lib/astro/zodiac";
 
 export type ChartFormInput = { date: string; time: string | null; placeId: number | null; lat: number | null; lon: number | null; timeZone: string | null; houseSystem: HouseSystem; clock: ClockChoice | null };
 // `name` nombra el huso antes y después de calcular («Hora de El Paso», no la provincia).
@@ -209,10 +209,6 @@ export async function viewFromSaved(s: SavedChart): Promise<ChartView> {
   return { facts, text: renderChart(facts), placeLabel: place ? placeLabel(place) : coordLabel(s.lat, s.lon), zoneLabel: `Huso usado: ${formatOffset(s.offsetSeconds)}` };
 }
 
-function signsOf(facts: ChartFacts): { sun: SignId; moon: SignId; asc: SignId | null } {
-  return facts.big3;
-}
-
 export type InsertResult = { ok: true; id: string } | { ok: false; reason: "tope" | "error" };
 type RpcError = { code?: string; message?: string } | null;
 
@@ -227,7 +223,7 @@ function logRpcFailure(event: string, error: RpcError): void {
 
 /** `userId` tiene que salir de la sesión del servidor (`getUser()`), nunca del request. */
 export async function insertNatalChart(userId: string, birth: ResolvedBirth, facts: ChartFacts, opts: { label: string; isSelf: boolean }): Promise<InsertResult> {
-  const s = signsOf(facts);
+  const s = facts.big3;
   const { data, error } = await createServiceRoleClient().rpc("save_natal_chart", {
     p_user_id: userId, p_label: opts.label, p_birth_date: birth.date, p_birth_time: birth.time,
     p_place_id: birth.placeId, p_lat: birth.lat, p_lon: birth.lon, p_timezone: birth.timeZone,
@@ -244,7 +240,7 @@ export async function insertNatalChart(userId: string, birth: ResolvedBirth, fac
 
 /** `userId` tiene que salir de la sesión del servidor; `saved` leída por la sesión (RLS). */
 export async function markSelfChart(userId: string, saved: SavedChart): Promise<boolean> {
-  const s = signsOf(factsFromSaved(saved));
+  const s = factsFromSaved(saved).big3;
   const { error } = await createServiceRoleClient().rpc("set_self_natal_chart", {
     p_user_id: userId, p_chart_id: saved.id, p_sun: s.sun, p_moon: s.moon, p_asc: s.asc,
   });
