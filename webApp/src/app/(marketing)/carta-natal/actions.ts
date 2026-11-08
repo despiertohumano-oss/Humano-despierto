@@ -93,6 +93,7 @@ export const borrarCarta = withRateLimit(
     if (error) return { error: "No se pudo borrar la carta.", success: null };
     if (!data || data.length === 0) return { error: "No encontramos esa carta.", success: null };
     revalidatePath("/panel/carta-natal");
+    revalidatePath("/panel/docente", "layout");
     return { error: null, success: "Carta borrada." };
   },
   limitedState,

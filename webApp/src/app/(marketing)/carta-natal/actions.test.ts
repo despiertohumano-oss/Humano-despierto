@@ -169,6 +169,8 @@ describe("borrarCarta y marcarMiCarta", () => {
     const r = await borrarCarta(INITIAL, form({ id: CHART }));
     expect(r).toMatchObject({ error: null, success: "Carta borrada." });
     expect(createServiceRoleClient).not.toHaveBeenCalled();
+    // Borrar la carta propia vacía el perfil (trigger de 0072): el panel docente vuelve al bloqueo.
+    expect(revalidatePath).toHaveBeenCalledWith("/panel/docente", "layout");
   });
 
   it("marcar: la carta se lee por la sesión y se marca con el id de la sesión", async () => {
