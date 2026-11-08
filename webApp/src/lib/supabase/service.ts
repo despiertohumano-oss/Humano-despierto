@@ -13,6 +13,8 @@ import { createClient } from "@supabase/supabase-js";
  * portada, después de validar bytes y titularidad) y el que borra la portada de un curso recién
  * borrado (`deleteCourseAction`). Lee los bytes de la portada de un curso PUBLICADO para su
  * imagen Open Graph (`loadCoverForOg`, T-052; el path sale de la fila, nunca del request).
+ * Guarda y marca cartas natales (`save_natal_chart`, `set_self_natal_chart`, T-024) después de
+ * `getUser()` y del consentimiento, con el `user.id` de la sesión, nunca uno del request.
  * Cualquier otro uso de este cliente anula RLS sin que
  * nadie lo note; el llamador es responsable de verificar el permiso ANTES de invocarlo (este
  * cliente no verifica nada por sí mismo, sólo bypassa).
