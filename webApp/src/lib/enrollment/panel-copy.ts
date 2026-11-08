@@ -20,7 +20,7 @@ export function enrollmentPanelCopy(state: StudentEnrollmentState): EnrollmentPa
     case "requested":
       return { title: "Tu pedido está en revisión", lead: null };
     case "active":
-      return { title: "Ya estás inscripta", lead: "Tenés el curso completo en tu panel, a tu ritmo y sin vencimiento." };
+      return { title: "Ya estás inscripta", lead: "Tenés el curso en tu panel, a tu ritmo." };
     case "revoked":
     case "rejected":
       return { title: "Tu inscripción", lead: null };

@@ -1,7 +1,7 @@
 // `courses.discipline` y `courses.level` son texto libre sin CHECK (Q-05, engram/01_requirements.md
 // §6). T-001 los dejó así a propósito antes que inventar una taxonomía sin el PO (P-3). Consecuencia
 // medida en la base real (2026-08-11): entre cursos PUBLICADOS los valores hoy son consistentes
-// ("Astrología", "Herbal", "Reiki", "Tarot" / "Inicial", "Intermedio", "Maestría"), pero hay filas en
+// ("Astrología", "Tarot", "Magia" / "Inicial", "Intermedio", "Maestría"), pero hay filas en
 // `draft` con variantes de casing ("tarot", "inicial") y hasta un nombre de nivel distinto
 // ("Iniciacion") — residuo de fixtures de QA (T-005). Nada impide que ese residuo se publique mañana.
 //
