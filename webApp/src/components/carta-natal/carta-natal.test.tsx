@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { computeChart } from "@/lib/astro/chart";
 import { AVISO_MARCO, AVISO_SIN_HORA, renderChart } from "@/lib/astro/prose";
-import ChartWheel from "./ChartWheel";
+import ChartWheel, { BODY_RINGS, layoutGlyphs } from "./ChartWheel";
 import PositionsTable from "./PositionsTable";
 import ChartResult from "./ChartResult";
 
@@ -87,5 +87,31 @@ describe("tablas y resultado", () => {
     const view = { facts: conHora, text: renderChart(conHora), placeLabel: "Buenos Aires, Argentina", zoneLabel: "UTC−3" };
     const html = renderToStaticMarkup(<ChartResult view={view} />);
     for (const t of ["sextil", "cuadratura", "trigono", "oposicion"]) expect(html).toContain(`data-leyenda="${t}"`);
+  });
+});
+
+describe("layoutGlyphs", () => {
+  const xy = (s: { angulo: number; radio: number }) => ({ x: -s.radio * Math.cos((s.angulo * Math.PI) / 180), y: s.radio * Math.sin((s.angulo * Math.PI) / 180) });
+  const verificar = (lons: number[]) => {
+    const slots = layoutGlyphs(lons);
+    expect(slots).toHaveLength(lons.length);
+    for (const s of slots) {
+      expect(s.radio).toBeGreaterThanOrEqual(Math.min(...BODY_RINGS));
+      expect(s.radio).toBeLessThanOrEqual(Math.max(...BODY_RINGS));
+    }
+    for (let i = 0; i < slots.length; i++)
+      for (let j = i + 1; j < slots.length; j++) {
+        const a = xy(slots[i]!), b = xy(slots[j]!);
+        expect(Math.hypot(a.x - b.x, a.y - b.y)).toBeGreaterThanOrEqual(18);
+      }
+  };
+  it("stellium de 5 cuerpos en 8 grados", () => verificar([0, 2, 4, 6, 8]));
+  it("grupo a caballo de 0 grados de Aries", () => verificar([358, 0, 2]));
+  it("13 cuerpos casi juntos", () => verificar(Array.from({ length: 13 }, (_, i) => 100 + i * 0.5)));
+  it("carta normal: los aislados quedan en su longitud y el anillo exterior", () => {
+    verificar(conHora.bodies.map((b) => b.lon));
+    const solo = layoutGlyphs([10, 100, 200]);
+    for (const s of solo) expect(s).toMatchObject({ radio: BODY_RINGS[0] });
+    expect(solo.map((s) => s.angulo)).toEqual([10, 100, 200]);
   });
 });

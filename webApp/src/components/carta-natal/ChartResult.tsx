@@ -35,6 +35,10 @@ export default function ChartResult({ view }: { view: ChartView }) {
 
       <figure aria-labelledby="carta-figura" className="space-y-8">
         <div className="mx-auto max-w-[600px]"><ChartWheel facts={facts} /></div>
+        <div className="grid gap-8 lg:grid-cols-2">
+          <PositionsTable facts={facts} />
+          <AspectsTable facts={facts} />
+        </div>
         <figcaption id="carta-figura" className="text-sm text-suave">
           Rueda de la carta: {facts.angles ? "el Ascendente (AC) a la izquierda y las casas en sentido antihorario" : "0° de Aries a la izquierda, sin casas ni ángulos"}. Las tablas de abajo muestran lo mismo en texto.
           <span className="mt-2 flex flex-wrap gap-4">
@@ -47,10 +51,6 @@ export default function ChartResult({ view }: { view: ChartView }) {
             ))}
           </span>
         </figcaption>
-        <div className="grid gap-8 lg:grid-cols-2">
-          <PositionsTable facts={facts} />
-          <AspectsTable facts={facts} />
-        </div>
       </figure>
 
       <div className="space-y-8">

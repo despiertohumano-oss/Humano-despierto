@@ -7,9 +7,45 @@ const C = 300;
 const R_OUT = 290;
 const R_SIGN = 250;
 const R_HOUSE = 170;
-const R_BODY = 224;
-const RING_STEP = 20;
 const GLYPH = 18;
+/** Radios de los tres anillos de cuerpos: el exterior deja pasar la marca (hasta R_SIGN - 5) y el
+ *  interior queda por encima de los números de casa (R_HOUSE + 9, de alto 11). */
+export const BODY_RINGS = [234, 215.5, 197] as const;
+const TICK_END = R_SIGN - 5;
+const HOUSE_NUM_R = R_HOUSE + 9;
+
+export type GlyphSlot = { lon: number; radio: number; angulo: number };
+
+/** Ubica cada cuerpo sin que dos glifos queden a menos de `GLYPH` de centro a centro. Primero
+ *  prueba su longitud real en cada anillo; si no entra, lo corre de a 1° (a un lado y al otro)
+ *  hasta encontrar lugar. La distancia se mide en el plano, así que el cierre en 0° Aries
+ *  funciona sin tratarlo aparte. Devuelve un lugar por entrada, en el mismo orden. */
+export function layoutGlyphs(lons: readonly number[]): GlyphSlot[] {
+  const placed: { x: number; y: number }[] = [];
+  const xy = (angulo: number, radio: number) => {
+    const th = (angulo * Math.PI) / 180;
+    return { x: -radio * Math.cos(th), y: radio * Math.sin(th) };
+  };
+  const libre = (p: { x: number; y: number }) => placed.every((q) => Math.hypot(p.x - q.x, p.y - q.y) >= GLYPH);
+  const out: GlyphSlot[] = new Array(lons.length);
+  const orden = lons.map((lon, i) => ({ lon: norm360(lon), i })).sort((a, b) => a.lon - b.lon);
+  for (const { lon, i } of orden) {
+    let slot: GlyphSlot | null = null;
+    for (let d = 0; d <= 90 && !slot; d++) {
+      for (const sg of d === 0 ? [1] : [1, -1]) {
+        for (const radio of BODY_RINGS) {
+          const angulo = norm360(lon + sg * d);
+          if (libre(xy(angulo, radio))) { slot = { lon, radio, angulo }; break; }
+        }
+        if (slot) break;
+      }
+    }
+    slot ??= { lon, radio: BODY_RINGS[0], angulo: lon };
+    placed.push(xy(slot.angulo, slot.radio));
+    out[i] = slot;
+  }
+  return out;
+}
 
 export const ASPECT_STYLE: Record<Exclude<AspectId, "conjuncion">, { cls: string; dash: string | null; label: string }> = {
   trigono: { cls: "stroke-musgo", dash: null, label: "Trígono" },
@@ -33,12 +69,7 @@ export default function ChartWheel({ facts }: { facts: ChartFacts }) {
     lonOf.set("mc", facts.angles.mc);
   }
 
-  const ordenados = [...facts.bodies].sort((a, b) => a.lon - b.lon);
-  const anillo = new Map<string, number>();
-  ordenados.forEach((b, i) => {
-    const prev = ordenados[i - 1];
-    anillo.set(b.id, prev && norm360(b.lon - prev.lon) < 7 ? Math.min((anillo.get(prev.id) ?? 0) + 1, 2) : 0);
-  });
+  const slots = layoutGlyphs(facts.bodies.map((b) => b.lon));
 
   return (
     <svg viewBox="0 0 600 600" role="img" aria-label="Rueda de la carta natal" className="h-auto w-full max-w-[600px]">
@@ -65,7 +96,7 @@ export default function ChartWheel({ facts }: { facts: ChartFacts }) {
         const next = facts.houses!.cusps[(i + 1) % 12]!;
         const a = polar(cusp, R_HOUSE, anchor);
         const b = polar(cusp, R_SIGN, anchor);
-        const n = polar(cusp + norm360(next - cusp) / 2, R_HOUSE + 14, anchor);
+        const n = polar(cusp + norm360(next - cusp) / 2, HOUSE_NUM_R, anchor);
         return (
           <g key={i}>
             <line data-casa={i + 1} x1={a.x} y1={a.y} x2={b.x} y2={b.y} className="stroke-linea" />
@@ -87,7 +118,7 @@ export default function ChartWheel({ facts }: { facts: ChartFacts }) {
       {facts.angles && (["asc", "mc"] as const).map((id) => {
         const lon = facts.angles![id];
         const a = polar(lon, R_HOUSE, anchor);
-        const b = polar(lon, R_OUT, anchor);
+        const b = polar(lon, R_SIGN, anchor);
         const t = polar(lon, R_HOUSE - 16, anchor);
         return (
           <g key={id}>
@@ -99,13 +130,16 @@ export default function ChartWheel({ facts }: { facts: ChartFacts }) {
         );
       })}
 
-      {facts.bodies.map((b) => {
+      {facts.bodies.map((b, i) => {
+        const slot = slots[i]!;
         const tick1 = polar(b.lon, R_SIGN, anchor);
-        const tick2 = polar(b.lon, R_SIGN - 8, anchor);
-        const t = polar(b.lon, R_BODY - RING_STEP * (anillo.get(b.id) ?? 0), anchor);
+        const tick2 = polar(b.lon, TICK_END, anchor);
+        const t = polar(slot.angulo, slot.radio, anchor);
+        const apartado = slot.angulo !== slot.lon || slot.radio !== BODY_RINGS[0];
         return (
           <g key={b.id}>
             <line x1={tick1.x} y1={tick1.y} x2={tick2.x} y2={tick2.y} className="stroke-tinta" />
+            {apartado && <line x1={tick2.x} y1={tick2.y} x2={t.x} y2={t.y} className="stroke-suave" strokeWidth={0.75} />}
             <g data-cuerpo={b.id}>
               <title>{`${BODY_NAMES[b.id]} a ${formatDegree(b.lon)} de ${SIGNS[b.sign].nombre}${b.retrograde ? ", retrógrado" : ""}`}</title>
               <SvgGlyph name={astroIcon(b.id)} x={t.x} y={t.y} size={GLYPH} className="text-tinta" />
