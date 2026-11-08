@@ -62,6 +62,7 @@ const CASOS = {
   lessons_locator_not_public: 'service_role asigna un video_id que no esta en ningun texto publico',
   lesson_resources_locator_not_public: 'service_role carga drive_file_id y url de un recurso nuevo',
   diario_posts_guard: 'service_role publica un post del diario',
+  diario_post_courses_guard: 'la autora vincula un curso propio publicado a su post',
   enrollments_guard: 'service_role aprueba, rechaza con motivo, reconsidera y revoca',
   enrollments_guard_insert: 'la alumna pide un curso publicado y la fila nace requested',
   profiles_guard: 'la docente edita su bio sin tocar su rol',
@@ -976,5 +977,23 @@ describe('ADR-011 · borrar la cuenta del admin que modero no queda bloqueado', 
     assert.notEqual(fila.hidden_at, null, 'la resena se desoculto al borrar a quien la oculto');
     assert.equal(fila.hidden_by, null);
     assert.equal(fila.hidden_reason, 'spam');
+  });
+});
+
+// B3 · el vinculo post↔curso tiene camino legitimo.
+describe('ADR-011 · contenidos de la duena (B3)', () => {
+  let db;
+  before(async () => {
+    ({ db } = await bootDatabase());
+    await seed(db);
+  });
+  after(async () => db?.close());
+
+  test(`diario_post_courses_guard · ${CASOS.diario_post_courses_guard}`, async () => {
+    const r = await asUser(db, { sub: ID.teacherA, userRole: 'teacher' }, () =>
+      attempt(db, `insert into public.diario_post_courses (post_id, course_id) values ($1, $2) returning post_id`, [ID.postA, ID.courseA]),
+    );
+    assert.equal(r.ok, true, `la autora no pudo vincular su curso: ${r.message}`);
+    assert.equal(r.rows.length, 1);
   });
 });

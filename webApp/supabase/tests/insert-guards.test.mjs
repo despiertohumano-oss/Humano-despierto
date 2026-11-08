@@ -230,7 +230,13 @@ const INSERT_ESPERADO = {
   // publicar es privilegio de service_role, mismo patron que `courses`. `body` SI viaja en el
   // INSERT — es contenido, no metadata de servidor — y lo protege `guard_diario_posts`
   // (`body_has_known_locator`), no el grant.
-  diario_posts: ['teacher_id', 'slug', 'title', 'excerpt', 'body'],
+  diario_posts: ['teacher_id', 'slug', 'title', 'excerpt', 'body',
+                 // B3 · la categoria es dominio cerrado (0075). `cover_path` fuera: necesita el id.
+                 'category'],
+
+  // B3 · vinculo post↔curso. Lo compuertan la policy (post propio) y `diario_post_courses_guard`
+  // (curso propio y publicado, sin bypass).
+  diario_post_courses: ['post_id', 'course_id'],
 };
 
 const listaEsperada = Object.entries(INSERT_ESPERADO)

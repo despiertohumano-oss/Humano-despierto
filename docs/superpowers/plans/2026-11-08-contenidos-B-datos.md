@@ -16,7 +16,7 @@
 - Grants de columnas nuevas: se declaran **en la migración nueva**, no reescribiendo `0003_privileges.sql` (precedente escrito en `0030_course_cover.sql`: «una migracion aplicada no se reescribe; precedente 0011/0023/0028»).
 - Toda migración que crea funciones termina con `revoke execute on all functions in schema public from public;` (regla de 0005).
 - Disciplinas (clave · etiqueta, en este orden): `astrologia` Astrología · `tarot` Tarot · `constelaciones` Constelaciones familiares · `magia` Magia · `gemoterapia` Gemoterapia · `simbologia` Simbología y símbolos de poder · `talleres-lunares` Talleres lunares.
-- Categorías del Diario (claves): `astrologia` · `tarot-arquetipos` · `gemoterapia` · `simbologia` · `ciclos-lunares` · `conciencia`. Posts existentes → `conciencia`.
+- Categorías del Diario (clave · etiqueta, literales del documento de la dueña, decisión del orquestador 2026-11-08): `astrologia` «Astrología» · `tarot-arquetipos` «Tarot y arquetipos» · `gemoterapia` «Gemoterapia y minerales» · `simbologia` «Simbología y símbolos de poder» · `ciclos-lunares` «Ciclos lunares» · `conciencia` «Conciencia y transformación personal». Posts existentes → `conciencia`. Las etiquetas viven sólo en la app (`src/lib/taxonomy/diario.ts`, Task 8).
 - Modalidad: `includes_recorded` boolean not null default true · `includes_pdf` false · `includes_downloads` false · `includes_live` false · `access_terms` text `char_length <= 500` null · `issues_certificate` boolean not null default true. `includes_live` es **sólo informativo** (ADR-004 intacto).
 - `profiles.is_founder` boolean not null default false, sin UPDATE para ningún rol cliente; una sola; sólo `role = 'teacher'`.
 - Clave desconocida en `?disciplina=` / `?categoria=` → se ignora (no 404).
@@ -2098,10 +2098,10 @@ describe("categorías del Diario · paridad con la migración 0075", () => {
 export const DIARIO_CATEGORIES = [
   { key: "astrologia", label: "Astrología" },
   { key: "tarot-arquetipos", label: "Tarot y arquetipos" },
-  { key: "gemoterapia", label: "Gemoterapia" },
-  { key: "simbologia", label: "Simbología" },
+  { key: "gemoterapia", label: "Gemoterapia y minerales" },
+  { key: "simbologia", label: "Simbología y símbolos de poder" },
   { key: "ciclos-lunares", label: "Ciclos lunares" },
-  { key: "conciencia", label: "Conciencia" },
+  { key: "conciencia", label: "Conciencia y transformación personal" },
 ] as const;
 
 export type DiarioCategoryKey = (typeof DIARIO_CATEGORIES)[number]["key"];
