@@ -185,6 +185,16 @@ describe("portada del post (B3)", () => {
     expect(remove).toHaveBeenCalledWith([OLD]);
   });
 
+  it("quitar portada en un post ajeno no actualiza ni borra nada en Storage", async () => {
+    // El post publicado es legible por todos: sin assertOwnsPost el select devolvería la portada ajena.
+    const update = session(OLD);
+    assertOwnsPost.mockRejectedValue(new Error("No autorizado: ese post no te pertenece."));
+    const r = await removePostCoverAction(INITIAL, coverForm(null));
+    expect(r.error).toMatch(/No autorizado/);
+    expect(update).not.toHaveBeenCalled();
+    expect(remove).not.toHaveBeenCalled();
+  });
+
   it("quitar: pone null y borra el archivo", async () => {
     const update = session(OLD);
     const r = await removePostCoverAction(INITIAL, coverForm(null));
