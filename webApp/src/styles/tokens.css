@@ -19,6 +19,15 @@
   --error: #a8322a;
   --exito: #2f6b45;
 
+  /* Acentos cósmicos (ADR-015 extendido, 2026-11-08). Existen sólo dentro de `.cosmico`
+     (hero, calendario lunar, cabecera y bloque final de /tarot). Pares verificados en
+     src/lib/ui/cosmic-tokens.test.ts. */
+  --noche: #0e1430;
+  --indigo: #2a2f6b;
+  --oro: #d9b45a;
+  /* Opacidad mínima del velo `noche` sobre una imagen: con menos, el título pierde contraste. */
+  --velo-min: 0.78;
+
   --radio-sm: 8px;
   --radio-md: 12px;
   --radio-lg: 18px;
