@@ -15,7 +15,7 @@ title_of() { curl -s "$BASE$1" | grep -o '<title>[^<]*</title>' | head -1 | sed 
 
 echo "== titles unicos por ruta publica =="
 seen_titles=""
-for p in / /cursos /diario /guias /entrar /tarot /tarot/cartas /tarot/cartas/el-loco; do
+for p in / /cursos /diario /guias /entrar /tarot /tarot/cartas /tarot/cartas/el-loco /carta-natal /carta-natal/signos/aries /carta-natal/planetas/nodo-norte /carta-natal/casas/7; do
   t=$(title_of "$p")
   if [ -z "$t" ]; then
     echo "  FALLA  $p — sin <title>"; fail=1; continue
@@ -52,6 +52,14 @@ for ruta in /cursos /guias; do
   if [ -n "$a" ] && [ -n "$b" ]; then check_dinamica "$ruta" "$a" "$b"
   else echo "  aviso  $ruta — menos de dos publicados, no hay con que comparar"; fi
 done
+
+# Fichas de carta natal (T-024): el param decide el contenido.
+check_dinamica /carta-natal/signos aries tauro
+check_dinamica /carta-natal/planetas sol nodo-norte
+check_dinamica /carta-natal/casas 1 12
+if curl -s "$BASE/sitemap.xml" | grep -Eq "<loc>[^<]*/carta-natal/[0-9]"; then
+  echo "  FALLA  el sitemap expone una carta personal"; fail=1
+else echo "  ok     sitemap sin cartas personales"; fi
 
 echo "== robots.txt =="
 r=$(curl -s "$BASE/robots.txt")
@@ -114,7 +122,7 @@ og_check() {
   if [ "$code" = "200 image/png" ]; then echo "  ok     $p -> $path"
   else echo "  FALLA  $p -> $path respondio '$code'"; fail=1; fi
 }
-for p in / /cursos /guias /diario /entrar; do og_check "$p"; done
+for p in / /cursos /guias /diario /entrar /carta-natal/signos/aries; do og_check "$p"; done
 for ruta in /cursos /guias /diario; do
   s=$(slugs_de "$ruta" | sed -n 1p)
   if [ -n "$s" ]; then og_check "$ruta/$s"
