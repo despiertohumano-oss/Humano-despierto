@@ -29,7 +29,8 @@ test("B4 · la admin marca a una docente como creadora y /guias la destaca prime
   }
 });
 
-test("B4 · sin creadora, /guias muestra solo la grilla", async ({ page }) => {
+test("B4 · sin creadora, /guias muestra solo la grilla", async ({ page, request }) => {
+  await assertStackUp(request);
   psql(UNMARK);
   await page.goto("/guias");
   await expect(page.getByText("Creadora de Humano Despierto")).toHaveCount(0);

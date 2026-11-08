@@ -13,14 +13,16 @@ test("B1 · el catálogo muestra las siete disciplinas en orden, con conteo", as
   for (let i = 0; i < ORDEN.length; i++) await expect(chips.nth(i)).toContainText(ORDEN[i]);
 });
 
-test("B1 · una disciplina sin cursos muestra la leyenda y el link a todas", async ({ page }) => {
+test("B1 · una disciplina sin cursos muestra la leyenda y el link a todas", async ({ page, request }) => {
+  await assertStackUp(request);
   await page.goto("/cursos?disciplina=gemoterapia");
   await expect(page.getByText(/Todavía no hay formaciones de Gemoterapia\. Muy pronto/)).toBeVisible();
   await page.getByRole("link", { name: "Ver todas las formaciones" }).click();
   await expect(page).toHaveURL(/\/cursos$/);
 });
 
-test("B1 · una clave desconocida se ignora y ?disciplina=tarot filtra", async ({ page }) => {
+test("B1 · una clave desconocida se ignora y ?disciplina=tarot filtra", async ({ page, request }) => {
+  await assertStackUp(request);
   const res = await page.goto("/cursos?disciplina=xyz");
   expect(res?.status()).toBe(200);
   await expect(page.getByText(/Todavía no hay formaciones/)).toHaveCount(0);
@@ -29,7 +31,8 @@ test("B1 · una clave desconocida se ignora y ?disciplina=tarot filtra", async (
   await expect(page.locator('a[href="/cursos/carta-natal-esencial"]')).toHaveCount(0);
 });
 
-test("B1 · la búsqueda sin tildes encuentra por disciplina", async ({ page }) => {
+test("B1 · la búsqueda sin tildes encuentra por disciplina", async ({ page, request }) => {
+  await assertStackUp(request);
   await page.goto("/cursos?q=astrologia");
   await expect(page.locator('a[href="/cursos/carta-natal-esencial"]')).toBeVisible();
   await expect(page.locator('a[href="/cursos/tarot-iniciatico"]')).toHaveCount(0);
