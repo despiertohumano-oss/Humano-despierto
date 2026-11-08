@@ -5,7 +5,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { CSV_HEADER, keep, parseAdmin1, parseGeonamesLine, toCsvRow } from './places-lib.mjs';
+import { CSV_HEADER, keep, parseAdmin1, parseGeonamesLine, psqlInvocation, toCsvRow } from './places-lib.mjs';
 
 const BASE = 'https://download.geonames.org/export/dump/';
 const dir = await mkdtemp(join(tmpdir(), 'geonames-'));
@@ -25,6 +25,8 @@ async function download(name) {
 const unzipText = (zip, entry) => execFileSync('unzip', ['-p', zip, entry], { maxBuffer: 1 << 30, encoding: 'utf8' });
 
 try {
+  // Antes de bajar nada: una DATABASE_URL que no se puede pasar corta acá.
+  const { cmd, args: base, env } = psqlInvocation(process.env);
   const admin1 = parseAdmin1(await (await fetchOk('admin1CodesASCII.txt')).text());
   const sources = [
     ['AR', await download('AR.zip'), 'AR.txt'],
@@ -48,9 +50,6 @@ try {
   console.log(counts, 'total', total);
   if (total < 80000 || total > 95000) throw new Error(`total ${total} fuera de lo esperado (~86.600, lugar-y-hora.md §3.3)`);
 
-  const [cmd, base] = process.env.DATABASE_URL
-    ? ['psql', [process.env.DATABASE_URL]]
-    : ['docker', ['exec', '-i', process.env.DBC ?? 'supabase_db_webApp', 'psql', '-U', 'postgres', '-d', 'postgres']];
   const sql = [
     'create temp table places_stage (like public.places including defaults) on commit drop',
     '\\copy places_stage (id, name, ascii_name, admin1, country_code, lat, lon, timezone, population) from pstdin with (format csv, header true)',
@@ -63,6 +62,7 @@ try {
   ];
   const r = spawnSync(cmd, [...base, '-v', 'ON_ERROR_STOP=1', '--single-transaction', ...sql.flatMap((c) => ['-c', c])], {
     input: lines.join('\n') + '\n',
+    env,
     encoding: 'utf8',
     maxBuffer: 1 << 26,
   });

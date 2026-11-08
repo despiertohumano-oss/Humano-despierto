@@ -59,3 +59,22 @@ export function toCsvRow(row, admin1) {
     .map(csvField)
     .join(',');
 }
+
+// La URL lleva la contraseña: en argv la vería cualquiera con `ps`. Se pasa por las PG* de libpq.
+export function psqlInvocation(processEnv) {
+  const { DATABASE_URL, ...rest } = processEnv;
+  if (!DATABASE_URL) {
+    return { cmd: 'docker', args: ['exec', '-i', processEnv.DBC ?? 'supabase_db_webApp', 'psql', '-U', 'postgres', '-d', 'postgres'], env: rest };
+  }
+  const u = new URL(DATABASE_URL);
+  if (u.protocol !== 'postgresql:' && u.protocol !== 'postgres:') throw new Error('DATABASE_URL tiene que ser postgres:// o postgresql://');
+  const env = { ...rest, PGHOST: u.hostname.replace(/^\[|\]$/g, ''), PGUSER: decodeURIComponent(u.username), PGPASSWORD: decodeURIComponent(u.password) };
+  if (u.port) env.PGPORT = u.port;
+  const db = decodeURIComponent(u.pathname.slice(1));
+  if (db) env.PGDATABASE = db;
+  for (const [k, v] of u.searchParams) {
+    if (k !== 'sslmode') throw new Error(`DATABASE_URL: el parámetro ${k} no se sabe pasar por el entorno`);
+    env.PGSSLMODE = v;
+  }
+  return { cmd: 'psql', args: [], env };
+}
