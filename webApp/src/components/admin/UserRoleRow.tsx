@@ -41,7 +41,8 @@ export default function UserRoleRow({ user, isFounder = false }: { user: AdminUs
       {/* B4 · solo una docente puede ser la creadora; la base lo exige igual (0076). */}
       {user.role === "teacher" && (
         <form action={founderAction} className="flex items-center gap-2">
-          {isFounder ? <input type="hidden" name="clear" value="1" /> : <input type="hidden" name="userId" value={user.id} />}
+          <input type="hidden" name="userId" value={user.id} />
+          {isFounder && <input type="hidden" name="clear" value="1" />}
           <Button type="submit" variant={isFounder ? "ghost" : "outline"} size="sm" disabled={founderPending} aria-busy={founderPending}>
             {isFounder ? "Quitar creadora" : "Marcar como creadora"}
           </Button>

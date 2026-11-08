@@ -6,7 +6,7 @@ import { z } from "zod";
 import { notifyEnrollmentActivated, notifyEnrollmentRejected } from "@/lib/server/mail/notify";
 import { hasLocator } from "@/lib/validation/locator.mjs";
 import { ENROLLMENT_COPY, NO_ROWS, REASON_MAX, translateEnrollmentError } from "@/lib/enrollment/messages";
-import { requireAdmin } from "@/lib/server/admin";
+import { getFounderId, requireAdmin } from "@/lib/server/admin";
 import { getAdminSupabaseClient } from "@/lib/server/supabase-admin";
 import { resolveGrantTarget } from "@/lib/server/enrollment-grant";
 import { normalizeEmail } from "@/lib/admin/email";
@@ -459,8 +459,13 @@ export const setFounderAction = withRateLimit(
   async function setFounderAction(_prevState: AdminActionState, formData: FormData): Promise<AdminActionState> {
     await requireAdmin();
     const clear = formData.get("clear") === "1";
+    // Marcar y quitar llevan el id que la admin ve en pantalla.
     const userId = String(formData.get("userId") ?? "");
-    if (!clear && !z.uuid().safeParse(userId).success) return { error: "Datos inválidos.", success: null };
+    if (!z.uuid().safeParse(userId).success) return { error: "Datos inválidos.", success: null };
+
+    // G-4 · quitar solo a la creadora que se mostró: con la página vieja no se desmarca a la que
+    // otra admin acaba de marcar. Lectura y desmarca no son atómicas; la ventana es de milisegundos.
+    if (clear && (await getFounderId()) !== userId) return { error: FOUNDER_ERRORS["23505"], success: null };
 
     const { error } = await getAdminSupabaseClient().rpc("admin_set_founder", { p_profile_id: clear ? null : userId });
     if (error) {

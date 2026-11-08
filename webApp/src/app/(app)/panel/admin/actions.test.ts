@@ -315,11 +315,31 @@ describe("setFounderAction (B4)", () => {
     expect(revalidatePath).toHaveBeenCalledWith("/guias");
   });
 
-  it("clear=1 desmarca con null", async () => {
-    const rpc = rpcReturning({ data: null, error: null });
-    const out = await setFounderAction(INICIAL, form({ clear: "1" }));
+  // G-4 · «Quitar» lleva el id de la creadora que la admin ve; solo desmarca si sigue siendo ella.
+  function founderIs(currentId: string | null) {
+    const rpc = vi.fn().mockResolvedValue({ data: null, error: null });
+    const { chain } = queryChain(() => ({ data: currentId ? { id: currentId } : null, error: null }));
+    getAdminSupabaseClient.mockReturnValue({ rpc, from: () => chain });
+    return rpc;
+  }
+
+  it("clear=1 con el id de la creadora vigente desmarca con null", async () => {
+    const rpc = founderIs(TEACHER);
+    const out = await setFounderAction(INICIAL, form({ clear: "1", userId: TEACHER }));
     expect(rpc).toHaveBeenCalledWith("admin_set_founder", { p_profile_id: null });
     expect(out.success).toBe("Ya no hay creadora destacada.");
+  });
+
+  it("clear=1 si la creadora cambió entretanto: no desmarca a la nueva", async () => {
+    const rpc = founderIs("d0000000-0000-4000-8000-000000000009");
+    const out = await setFounderAction(INICIAL, form({ clear: "1", userId: TEACHER }));
+    expect(rpc).not.toHaveBeenCalled();
+    expect(out).toEqual({ error: "Otra persona cambió la creadora al mismo tiempo. Recargá la página y probá de nuevo.", success: null });
+  });
+
+  it("clear=1 sin id no llega a la base", async () => {
+    expect((await setFounderAction(INICIAL, form({ clear: "1" }))).error).toBe("Datos inválidos.");
+    expect(getAdminSupabaseClient).not.toHaveBeenCalled();
   });
 
   it("22023 (no es docente) da un mensaje legible", async () => {
