@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect, useMemo, useState } from "react";
+import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/atoms/Button";
 import { ACTION_INITIAL_STATE } from "@/lib/action-state";
@@ -38,8 +38,40 @@ function offsetLabel(zone: string, date: string, time: string): string | null {
   }
 }
 
+// Un guardado por cálculo: el padre lo monta con key={firma}, así un guardado anterior (su id, su
+// error, el consentimiento tildado) no sobrevive a un cambio de datos.
+function GuardarCarta({ perfilPublico }: { perfilPublico: boolean }) {
+  const [save, saveAction, guardando] = useActionState(guardarCarta, ACTION_INITIAL_STATE as SaveState);
+  const [etiqueta, setEtiqueta] = useState("");
+  const [propia, setPropia] = useState(false);
+  const [consiento, setConsiento] = useState(false);
+  if (save.id) return <Link href={`/carta-natal/${save.id}`} className="font-semibold text-exito underline">Guardada. Verla</Link>;
+  const error = save.error ?? (save.ambigua ? "Elegí si naciste antes o después del atraso y volvé a calcular." : null);
+  return (
+    <div className="tarjeta space-y-4 p-6">
+      <h2 className="text-xl font-bold text-bosque">Guardar esta carta</h2>
+      <label className={ETIQUETA}>
+        Nombre para esta carta (opcional)
+        <input name="etiqueta" maxLength={60} value={etiqueta} onChange={(e) => setEtiqueta(e.target.value)} className={CAMPO} />
+      </label>
+      <label className="flex min-h-10 items-center gap-2 text-sm text-tinta">
+        <input type="checkbox" name="propia" value="1" checked={propia} onChange={(e) => setPropia(e.target.checked)} /> Es mi carta (si ya tenías una marcada, la reemplaza)
+      </label>
+      <label className="flex items-start gap-2 text-sm text-tinta">
+        <input type="checkbox" name="consiento" checked={consiento} onChange={(e) => setConsiento(e.target.checked)} className="mt-1" />
+        <span>{perfilPublico && propia ? `${CONSENTIMIENTO} ${CONSENTIMIENTO_GUIA}` : CONSENTIMIENTO}</span>
+      </label>
+      <Button type="submit" variant="outline" formAction={saveAction} disabled={guardando}>
+        {guardando ? "Guardando…" : "Guardar en mi panel"}
+      </Button>
+      {error && <p role="alert" className="text-sm text-error">{error}</p>}
+    </div>
+  );
+}
+
 export default function ChartForm({ mode, signedIn, perfilPublico }: Props) {
   const router = useRouter();
+  const form = useRef<HTMLFormElement>(null);
   const [calc, calcAction, calculando] = useActionState(calcularCarta, ACTION_INITIAL_STATE as CalcState);
   const [save, saveAction, guardando] = useActionState(guardarCarta, ACTION_INITIAL_STATE as SaveState);
   const [fecha, setFecha] = useState("");
@@ -53,8 +85,6 @@ export default function ChartForm({ mode, signedIn, perfilPublico }: Props) {
   const [corregir, setCorregir] = useState(false);
   const [casas, setCasas] = useState("placidus");
   const [elegido, setElegido] = useState<{ valor: "earlier" | "later"; datos: string } | null>(null);
-  const [etiqueta, setEtiqueta] = useState("");
-  const [propia, setPropia] = useState(false);
   const [consiento, setConsiento] = useState(false);
   const [calculada, setCalculada] = useState<string | null>(null);
   const zonas = useMemo(() => (manual || corregir ? Intl.supportedValuesOf("timeZone") : []), [manual, corregir]);
@@ -63,22 +93,36 @@ export default function ChartForm({ mode, signedIn, perfilPublico }: Props) {
     if (mode === "propia" && save.id) router.replace("/panel/docente");
   }, [mode, save.id, router]);
 
+  // Lo que se escribió antes de hidratar está en el DOM y no en el estado: se copia al montar,
+  // antes de que el primer render controlado lo pise.
+  useEffect(() => {
+    const campos = form.current?.elements;
+    if (!campos) return;
+    const valor = (n: string) => (campos.namedItem(n) as HTMLInputElement | HTMLSelectElement | null)?.value ?? "";
+    const tildado = (n: string) => (campos.namedItem(n) as HTMLInputElement | null)?.checked === true;
+    const copiar: [string, (v: string) => void][] = [["fecha", setFecha], ["hora", setHora], ["lat", setLat], ["lon", setLon], ["huso", setHuso], ["casas", setCasas]];
+    for (const [n, set] of copiar) if (valor(n) !== "") set(valor(n));
+    if (tildado("sinHora")) setSinHora(true);
+    if (tildado("consiento")) setConsiento(true);
+  }, []);
+
   // La elección de «antes/después del atraso» vale solo para estos datos: si cambian, se vuelve a preguntar.
   const datos = JSON.stringify([fecha, sinHora ? null : hora, manual ? [lat, lon, huso] : [place?.id ?? null, corregir ? huso : null]]);
   const firma = JSON.stringify([datos, casas]);
   const reloj = elegido && elegido.datos === datos ? elegido.valor : "";
   const vigente = calculada === firma;
 
-  const ambigua = !vigente ? undefined : mode === "propia" ? save.ambigua : (save.ambigua ?? calc.ambigua);
-  const error = mode === "propia" ? save.error : calc.error;
-  const consentimiento = `${CONSENTIMIENTO}${perfilPublico && (mode === "propia" || propia) ? ` ${CONSENTIMIENTO_GUIA}` : ""}`;
+  // Ni la pregunta del atraso ni un error valen para datos distintos de los que se mandaron.
+  const ambigua = !vigente ? undefined : mode === "propia" ? save.ambigua : calc.ambigua;
+  const error = !vigente ? null : mode === "propia" ? save.error : calc.error;
+  const consentimiento = perfilPublico ? `${CONSENTIMIENTO} ${CONSENTIMIENTO_GUIA}` : CONSENTIMIENTO;
   const zonaElegida = manual ? huso.trim() : place ? (corregir ? huso.trim() : place.timeZone) : "";
   const desfase = zonaElegida ? offsetLabel(zonaElegida, fecha, sinHora ? "" : hora) : null;
   const nombreHuso = !manual && place && !corregir ? `Hora de ${place.name}` : `Huso ${zonaElegida}`;
   const verResultado = mode === "libre" && calc.view && vigente;
 
   return (
-    <form action={mode === "propia" ? saveAction : calcAction} onSubmit={() => setCalculada(firma)} className="space-y-6">
+    <form ref={form} action={mode === "propia" ? saveAction : calcAction} onSubmit={() => setCalculada(firma)} className="space-y-6">
       <div className="grid gap-5 sm:grid-cols-2">
         <label className={ETIQUETA}>
           Fecha de nacimiento
@@ -183,27 +227,8 @@ export default function ChartForm({ mode, signedIn, perfilPublico }: Props) {
             <p className="text-sm text-tinta">
               Para guardarla, <Link href="/entrar?next=/carta-natal" className="font-semibold text-miel-800 underline">entrá a tu cuenta</Link>. Si no la guardás, tus datos no quedan en ningún lado.
             </p>
-          ) : save.id ? (
-            <Link href={`/carta-natal/${save.id}`} className="font-semibold text-exito underline">Guardada. Verla</Link>
           ) : (
-            <div className="tarjeta space-y-4 p-6">
-              <h2 className="text-xl font-bold text-bosque">Guardar esta carta</h2>
-              <label className={ETIQUETA}>
-                Nombre para esta carta (opcional)
-                <input name="etiqueta" maxLength={60} value={etiqueta} onChange={(e) => setEtiqueta(e.target.value)} className={CAMPO} />
-              </label>
-              <label className="flex min-h-10 items-center gap-2 text-sm text-tinta">
-                <input type="checkbox" name="propia" value="1" checked={propia} onChange={(e) => setPropia(e.target.checked)} /> Es mi carta (si ya tenías una marcada, la reemplaza)
-              </label>
-              <label className="flex items-start gap-2 text-sm text-tinta">
-                <input type="checkbox" name="consiento" checked={consiento} onChange={(e) => setConsiento(e.target.checked)} className="mt-1" />
-                <span>{consentimiento}</span>
-              </label>
-              <Button type="submit" variant="outline" formAction={saveAction} disabled={guardando}>
-                {guardando ? "Guardando…" : "Guardar en mi panel"}
-              </Button>
-              {save.error && <p role="alert" className="text-sm text-error">{save.error}</p>}
-            </div>
+            <GuardarCarta key={firma} perfilPublico={perfilPublico} />
           )}
         </div>
       )}

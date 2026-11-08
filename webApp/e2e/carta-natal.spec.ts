@@ -88,7 +88,13 @@ test("la búsqueda «purma» encuentra Purmamarca y calcula con su huso", async 
   await abrir(page, "/carta-natal");
   await page.getByLabel("Fecha de nacimiento").fill("1990-06-15");
   await page.getByLabel("Hora de nacimiento").fill("09:00");
-  await elegirLugar(page, "purma", /^Purmamarca, Jujuy/);
+  await page.getByLabel("Lugar de nacimiento").fill("purma");
+  // Aviso para lectores de pantalla (sr-only): se afirma que está, no que se ve.
+  await expect(page.getByText(/^\d+ lugare?s? encontrados?$/)).toBeAttached();
+  // Una lista de botones, sin combobox/listbox: role="option" no puede envolver un botón.
+  await expect(page.getByLabel("Lugar de nacimiento")).not.toHaveAttribute("role", /./);
+  await expect(page.locator('[role="option"] button, [role="listbox"]')).toHaveCount(0);
+  await page.getByRole("button", { name: /^Purmamarca, Jujuy/ }).first().click();
   await expect(page.getByText(/^Hora de Purmamarca, UTC−4\./)).toBeVisible();
   await calcular(page);
   await expect(posiciones(page)).toBeVisible();
@@ -175,6 +181,53 @@ test("alumna: sin consentimiento no guarda; con consentimiento guarda, reabre re
 
   await page.getByRole("button", { name: "Borrar carta" }).click();
   await expect.poll(() => contarCartas(ALUMNA_ID)).toBe("0");
+});
+
+test("guardar, cambiar la hora y recalcular vuelve a ofrecer guardar, sin el consentimiento anterior", async ({ page }) => {
+  await login(page, ALUMNA);
+  await abrir(page, "/carta-natal");
+  await datosConLugar(page);
+  await calcular(page);
+  await page.getByLabel("Nombre para esta carta (opcional)").fill("Primera");
+  await page.getByLabel(/Acepto que guarden mis datos de nacimiento/).check();
+  await page.getByRole("button", { name: "Guardar en mi panel" }).click();
+  await expect(page.getByRole("link", { name: "Guardada. Verla" })).toBeVisible();
+  await expect.poll(() => contarCartas(ALUMNA_ID)).toBe("1");
+
+  await page.getByLabel("Hora de nacimiento").fill("10:00");
+  await calcular(page);
+  await expect(page.getByRole("heading", { name: "Guardar esta carta" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Guardada. Verla" })).toHaveCount(0);
+  await expect(page.getByLabel(/Acepto que guarden mis datos de nacimiento/)).not.toBeChecked();
+  await expect(page.getByLabel("Nombre para esta carta (opcional)")).toHaveValue("");
+
+  await page.getByLabel(/Acepto que guarden mis datos de nacimiento/).check();
+  await page.getByRole("button", { name: "Guardar en mi panel" }).click();
+  await expect(page.getByRole("link", { name: "Guardada. Verla" })).toBeVisible();
+  await expect.poll(() => contarCartas(ALUMNA_ID)).toBe("2");
+  const segunda = psql(`select id from public.natal_charts where user_id = '${ALUMNA_ID}' and birth_time = '10:00';`);
+  await expect(page.getByRole("link", { name: "Guardada. Verla" })).toHaveAttribute("href", `/carta-natal/${segunda}`);
+  psql(`delete from public.natal_charts where user_id = '${ALUMNA_ID}';`);
+});
+
+test("lo que se escribe antes de hidratar cuenta: el desfase aparece antes de calcular", async ({ page }) => {
+  // Se retiene el JS hasta haber escrito: la fecha y la hora quedan en el DOM antes de que React exista.
+  let soltar!: () => void;
+  const js = new Promise<void>((r) => (soltar = r));
+  await page.route("**/_next/static/**/*.js", async (route) => {
+    await js;
+    await route.continue();
+  });
+  await page.goto("/carta-natal", { waitUntil: "commit" });
+  await page.getByLabel("Fecha de nacimiento").fill("1990-06-15");
+  await page.getByLabel("Hora de nacimiento").fill("09:00");
+  soltar();
+  await page.waitForLoadState("networkidle");
+  await elegirLugar(page);
+  await expect(page.getByText(/^Hora de Ciudad de Prueba, UTC−3\./)).toBeVisible();
+  await expect(page.getByLabel("Fecha de nacimiento")).toHaveValue("1990-06-15");
+  await calcular(page);
+  await expect(posiciones(page)).toBeVisible();
 });
 
 test("hora ambigua elegida: al guardar se conserva la elección", async ({ page }) => {
