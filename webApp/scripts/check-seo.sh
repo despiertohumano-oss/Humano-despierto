@@ -57,8 +57,14 @@ done
 check_dinamica /carta-natal/signos aries tauro
 check_dinamica /carta-natal/planetas sol nodo-norte
 check_dinamica /carta-natal/casas 1 12
-if curl -s "$BASE/sitemap.xml" | grep -Eq "<loc>[^<]*/carta-natal/[0-9]"; then
-  echo "  FALLA  el sitemap expone una carta personal"; fail=1
+# Un sitemap caido o vacio no es uno limpio. Toda URL bajo /carta-natal/ que no sea una ficha
+# (signos, planetas, casas) es una carta personal, tenga el id la forma que tenga.
+sm_code=$(curl -s -o /dev/null -w '%{http_code}' "$BASE/sitemap.xml")
+sm_cn=$(curl -s "$BASE/sitemap.xml")
+if [ "$sm_code" != "200" ] || ! grep -q "<loc>" <<<"$sm_cn"; then
+  echo "  FALLA  sitemap.xml respondio '$sm_code' o vino sin <loc>: no se pudo verificar"; fail=1
+elif personales=$(grep -oE '/carta-natal/[^<]+' <<<"$sm_cn" | grep -Ev '^/carta-natal/(signos|planetas|casas)/'); then
+  echo "  FALLA  el sitemap expone una carta personal: $(head -1 <<<"$personales")"; fail=1
 else echo "  ok     sitemap sin cartas personales"; fi
 
 echo "== robots.txt =="
