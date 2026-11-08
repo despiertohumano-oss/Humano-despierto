@@ -138,8 +138,10 @@ describe("portada del post (B3)", () => {
     return fd;
   }
 
-  function session(current: string | null) {
-    const update = vi.fn((_row: Record<string, unknown>) => ({ eq: async () => ({ error: null }) }));
+  // `affected` = filas que devuelve el UPDATE: 0 es lo que da RLS sobre un post que no es tuyo.
+  function session(current: string | null, affected = 1) {
+    const rows = Array.from({ length: affected }, () => ({ id: POST }));
+    const update = vi.fn((_row: Record<string, unknown>) => ({ eq: () => ({ select: async () => ({ data: rows, error: null }) }) }));
     createClient.mockResolvedValue({
       from: () => ({
         select: () => ({ eq: () => ({ single: async () => ({ data: { cover_path: current }, error: null }) }) }),
@@ -192,6 +194,20 @@ describe("portada del post (B3)", () => {
     const r = await removePostCoverAction(INITIAL, coverForm(null));
     expect(r.error).toMatch(/No autorizado/);
     expect(update).not.toHaveBeenCalled();
+    expect(remove).not.toHaveBeenCalled();
+  });
+
+  it("subida: si el UPDATE no afecta filas, no borra la portada anterior y avisa", async () => {
+    session(OLD, 0);
+    const r = await uploadPostCoverAction(INITIAL, coverForm(PNG));
+    expect(r).toEqual({ error: "No se pudo guardar la portada en el post.", success: null });
+    expect(remove).not.toHaveBeenCalledWith([OLD]);
+  });
+
+  it("quitar: si el UPDATE no afecta filas, no toca Storage y avisa", async () => {
+    session(OLD, 0);
+    const r = await removePostCoverAction(INITIAL, coverForm(null));
+    expect(r).toEqual({ error: "No se pudo quitar la portada.", success: null });
     expect(remove).not.toHaveBeenCalled();
   });
 

@@ -228,8 +228,13 @@ export const uploadPostCoverAction = withRateLimit(
       if (uploadError) return { error: "No se pudo subir la portada.", success: null };
 
       const service = createServiceRoleClient();
-      const { error: updateError } = await supabase.from("diario_posts").update({ cover_path: path }).eq("id", postId);
-      if (updateError) {
+      // 0 filas sin error es lo que da RLS sobre un post ajeno: no se toca la portada anterior.
+      const { data: updated, error: updateError } = await supabase
+        .from("diario_posts")
+        .update({ cover_path: path })
+        .eq("id", postId)
+        .select("id");
+      if (updateError || !updated?.length) {
         await service.storage.from(UPLOADS_BUCKET).remove([path]);
         return { error: "No se pudo guardar la portada en el post.", success: null };
       }
@@ -260,8 +265,12 @@ export const removePostCoverAction = withRateLimit(
       const { data: current } = await supabase.from("diario_posts").select("cover_path").eq("id", postId).single();
       if (!current?.cover_path) return { error: null, success: "El post no tenía portada." };
 
-      const { error } = await supabase.from("diario_posts").update({ cover_path: null }).eq("id", postId);
-      if (error) return { error: "No se pudo quitar la portada.", success: null };
+      const { data: updated, error } = await supabase
+        .from("diario_posts")
+        .update({ cover_path: null })
+        .eq("id", postId)
+        .select("id");
+      if (error || !updated?.length) return { error: "No se pudo quitar la portada.", success: null };
 
       // Sin policy de Storage para `diario/`: borra service_role tras verificar la titularidad.
       const { error: removeError } = await createServiceRoleClient().storage.from(UPLOADS_BUCKET).remove([current.cover_path]);
