@@ -6,6 +6,7 @@ import CourseCard from "@/components/molecules/CourseCard";
 import PageIntro from "@/components/layout/PageIntro";
 import { cn } from "@/lib/utils/cn";
 import { getPublishedCourses, signCatalogCovers } from "@/lib/server/courses";
+import { CATALOGO } from "@/content/site-copy";
 import { getWishlistIds } from "@/lib/server/wishlist";
 import { formatPriceCents } from "@/lib/utils/format";
 import {
@@ -88,7 +89,7 @@ const ORDER_OPTIONS: { key: CatalogOrder; label: string }[] = [
 
 export const metadata: Metadata = {
   title: "Cursos",
-  description: "Tarot, astrología, herbolaria, reiki y magia. Cursos completos desde el primer día, con guías que practican lo que enseñan.",
+  description: CATALOGO.metaDescription,
 };
 
 export default async function CatalogPage({ searchParams }: CatalogPageProps) {
@@ -152,8 +153,8 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
   return (
     <div className="min-h-screen bg-fondo">
       <PageIntro
-        title="Cursos"
-        lead={`${allCourses.length} curso${allCourses.length === 1 ? "" : "s"} de ${disciplineFacets.length} oficio${disciplineFacets.length === 1 ? "" : "s"}. Completos desde el primer día, sin fechas y sin vencimiento.`}
+        title={CATALOGO.title}
+        lead={CATALOGO.lead}
       >
         {/* Búsqueda: form GET nativo, sin JS, enlazable y compatible con el botón atrás. */}
         <form action="/cursos" method="get" role="search" className="max-w-xl">
@@ -169,7 +170,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
               name="q"
               defaultValue={state.query}
               aria-label="Buscar cursos"
-              placeholder="Buscar por tema, por ejemplo «carta natal»"
+              placeholder={CATALOGO.searchPlaceholder}
               className="min-w-0 flex-1 bg-transparent py-2 text-[15px] text-tinta outline-none"
             />
             <button type="submit" className="grid h-10 w-10 flex-none cursor-pointer place-items-center rounded-full bg-bosque text-white">
@@ -182,7 +183,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
 
       <div className="mx-auto max-w-[1200px] px-6 pb-24">
         {disciplineFacets.length > 0 && (
-          <ul aria-label="Filtrar por oficio" className="mb-6 flex flex-wrap gap-2">
+          <ul aria-label="Filtrar por disciplina" className="mb-6 flex flex-wrap gap-2">
             {disciplineFacets.map((f) => (
               <li key={f.key}>
                 <Link href={hrefFor(toggleListParam(current, "disciplina", f.key))} aria-pressed={f.active} className={chip(f.active)}>
@@ -254,9 +255,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
 
             {filtered.length === 0 ? (
               <div className="tarjeta flex flex-col items-center gap-5 px-6 py-16 text-center">
-                <p className="max-w-sm text-suave">
-                  Ningún curso coincide con estos filtros. Probá con otra combinación o empezá de nuevo.
-                </p>
+                <p className="max-w-sm text-suave">{CATALOGO.empty}</p>
                 <ButtonLink href="/cursos" variant="outline">
                   Limpiar filtros
                 </ButtonLink>
