@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "@/components/atoms/Icon";
 import PageIntro from "@/components/layout/PageIntro";
+import { DIARIO } from "@/content/site-copy";
 import { getPublishedPosts } from "@/lib/server/diario";
 import { formatCertificateDate } from "@/lib/utils/format";
 
@@ -10,8 +11,8 @@ import { formatCertificateDate } from "@/lib/utils/format";
 // `getPublishedPosts` (RLS `diario_posts_read`, migración 0018).
 
 export const metadata: Metadata = {
-  title: "Diario",
-  description: "Lo que escriben las guías de la escuela entre clase y clase.",
+  title: DIARIO.title,
+  description: DIARIO.metaDescription,
 };
 
 export default async function DiarioPage() {
@@ -19,16 +20,12 @@ export default async function DiarioPage() {
 
   return (
     <div className="min-h-screen bg-fondo">
-      <PageIntro
-        title="Diario"
-        lead="Lo que las guías escriben entre clase y clase: ensayos, cartas a sus alumnas y notas de la práctica."
-      />
+      <PageIntro title={DIARIO.title} lead={DIARIO.lead} />
       <div className="mx-auto max-w-[1200px] px-6 pb-24">
         {posts.length === 0 ? (
-          // Criterio 5: estado vacío digno, no roto.
+          // Estado vacío digno, no roto (criterio 5): el mensaje es el de la dueña, sin título aparte.
           <div className="rounded-lg bg-salvia-100 p-10">
-            <p className="text-lg font-semibold text-bosque">Todavía no hay escritos publicados.</p>
-            <p className="mt-1 text-suave">Las guías están escribiendo. Volvé pronto.</p>
+            <p className="max-w-[60ch] text-lg text-bosque">{DIARIO.empty}</p>
           </div>
         ) : (
           <ul className="max-w-3xl divide-y divide-linea border-y border-linea">
