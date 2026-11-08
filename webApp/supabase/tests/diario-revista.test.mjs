@@ -135,6 +135,42 @@ describe('B3 · diario_post_courses', () => {
     assert.equal(r.rows.length, 1);
   });
 
+  test('docente degradada a alumna no inserta vinculos (can_author en la policy de insert)', async () => {
+    await db.query(`update public.profiles set role = 'student' where id = $1`, [ID.teacherA]);
+    try {
+      // El JWT todavia dice teacher: la policy lee profiles.role (regla 3), no el claim.
+      const r = await vincular(SOL, ID.postA, ID.courseA);
+      assert.equal(r.code, PRIV_DENIED, r.message);
+    } finally {
+      await db.query(`update public.profiles set role = 'teacher' where id = $1`, [ID.teacherA]);
+      await db.query(`delete from public.diario_post_courses where post_id = $1`, [ID.postA]);
+    }
+  });
+
+  test('vinculo de un post en borrador: 0 filas para anon, alumna, otra docente y admin', async () => {
+    const BORRADOR = '90000000-0000-4000-8000-0000000000ff';
+    await db.query(
+      `insert into public.diario_posts (id, teacher_id, slug, title, body) values ($1, $2, 'borrador-sol', 'Borrador', 'cuerpo')`,
+      [BORRADOR, ID.teacherA],
+    );
+    await db.query(`insert into public.diario_post_courses (post_id, course_id) values ($1, $2)`, [BORRADOR, ID.courseA]);
+    try {
+      const leer = `select course_id from public.diario_post_courses where post_id = $1`;
+      const anon = await asAnon(db, () => attempt(db, leer, [BORRADOR]));
+      assert.equal(anon.ok, true, anon.message);
+      assert.deepEqual(anon.rows, [], 'anon');
+      for (const quien of [{ sub: ID.student, userRole: 'student' }, LUNA, { sub: ID.admin, userRole: 'admin' }]) {
+        const r = await asUser(db, quien, () => attempt(db, leer, [BORRADOR]));
+        assert.equal(r.ok, true, r.message);
+        assert.deepEqual(r.rows, [], quien.userRole);
+      }
+      const autora = await asUser(db, SOL, () => attempt(db, leer, [BORRADOR]));
+      assert.equal(autora.rows.length, 1, 'la autora si lo ve');
+    } finally {
+      await db.query(`delete from public.diario_posts where id = $1`, [BORRADOR]);
+    }
+  });
+
   test('borrar el post borra sus vinculos', async () => {
     await vincular(SOL, ID.postA, ID.courseA);
     await db.query(`delete from public.diario_posts where id = $1`, [ID.postA]);
