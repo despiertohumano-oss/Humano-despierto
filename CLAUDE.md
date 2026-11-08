@@ -65,7 +65,7 @@ npm run test:e2e # Playwright; needs `npx supabase start`; starts its own `next 
 ```bash
 cd webApp/supabase
 npm install
-npm test         # 881 tests, ~1-4 min, no Docker and no credentials needed
+npm test         # 931 tests, ~1-4 min, no Docker and no credentials needed
 ```
 Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply in filename order.
 
@@ -73,8 +73,8 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 
 | Area | State |
 |------|-------|
-| `webApp/src` | **~24.0k LOC** (non-test). 40 routes (`page.tsx`), 136 non-test files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`; 78 card scans in `public/tarot/rws/`; the owner's 9 brand images in `public/brand/` (WebP, `CREDITS.md`). Tests: Vitest (1000 unit tests in 136 files, next to the file) + Playwright (`e2e/`), T-039. |
-| `webApp/supabase` | **Schema live.** 43 migrations (last `0071`; `0032` applies before `0031` by timestamp, independent), 23 tables (`tarot_readings`, ADR-016), RLS + per-column grants + guard triggers, 881 mutation tests (PGlite). Private Storage bucket `uploads`: `avatars/` (T-042) and `covers/` (T-047), uploads only via service_role; its policies are only tested over HTTP by b1. Fixtures `@test.local` (admin, docente, alumna) in `seed.fixtures.sql`, content seed in `seed.sql`, demo data in `demo.sql`: all **local only**, never run in the cloud (see `webApp/supabase/README.md`). |
+| `webApp/src` | **~24.9k LOC** (non-test). 40 routes (`page.tsx`), 146 non-test files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`; 78 card scans in `public/tarot/rws/`; the owner's 9 brand images in `public/brand/` (WebP, `CREDITS.md`). Tests: Vitest (1063 unit tests in 145 files, next to the file) + Playwright (`e2e/`), T-039. |
+| `webApp/supabase` | **Schema live.** 47 migrations (last `0076`; `0032` applies before `0031` by timestamp, independent), 24 tables (`diario_post_courses`, B3), RLS + per-column grants + guard triggers, 931 mutation tests (PGlite). Private Storage bucket `uploads`: `avatars/` (T-042), `covers/` (T-047) and `diario/` (B3), uploads only via service_role; its policies are only tested over HTTP by b1. Fixtures `@test.local` (admin, docente, alumna) in `seed.fixtures.sql`, content seed in `seed.sql`, demo data in `demo.sql`: all **local only**, never run in the cloud (see `webApp/supabase/README.md`). |
 | `mobileApp/` | **Empty directory.** No Expo scaffold. **Out of scope for Phase 2.** |
 | `packages/tokens` | 763 LOC of the old Cosmos palette (marked historical in its README, D-66) — **consumed by nobody**: `webApp` does not import it (it uses its own `src/styles/tokens.css`) and `mobileApp` does not exist. Kept for when mobile returns. |
 | `Gentleman-Skills/` | **Empty directory.** Referenced by the old CLAUDE.md; there is nothing in it. |
@@ -83,9 +83,11 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 ### Routes that exist
 ```
 /                                   Landing (stats, disciplines, testimonials from the DB; lunar calendar computed)
-/cursos  ·  /cursos/[slug]          Catalogue · course page (objectives, promo video, reviews)
-/guias  ·  /guias/[slug]            «Nuestros docentes»: directory + profile (route kept, label renamed)
-/diario  ·  /diario/[slug]          Blog, written by teachers
+/cursos  ·  /cursos/[slug]          Catalogue (7 discipline chips, ?disciplina=<key>) · course page
+                                    (objectives, promo video, modality, reviews)
+/guias  ·  /guias/[slug]            «Nuestros docentes»: founder card first (B4), then the grid;
+                                    profile (route kept, label renamed)
+/diario  ·  /diario/[slug]          Magazine by teachers: ?categoria=<key>, signed cover, related courses
 /entrar                             Login + register; honours ?next=, else lands by role
 /entrar/recuperar                   Request a password-reset link (neutral reply)
 /entrar/nueva-clave                 Choose a new password                     [link session]
@@ -151,6 +153,11 @@ under `(app)/`, which re-read `profiles.role`.
   `delete from mail_log where sent_at is null and last_error ~ '^permanent:(401|403|535)/'` —
   never delete the `409` rows: that mail may already have gone out.
 - **No error capture** (SP-6). The CSP ships Report-Only (T-052) until its enforce criterion is met.
+- **Founder content is on HOLD** (B4): the flag and the card exist, but no founder profile is
+  seeded; the owner loads her own photo and bio. `/guias` shows only the grid until the admin
+  marks her.
+- **Block B e2e specs never ran** (`catalogo-disciplinas`, `modalidad`, `diario-revista`,
+  `creadora`): written and listed by Playwright, pending a local stack with 0073-0076 applied.
 
 ## Architecture
 ADRs live in `engram/02_architecture.md` (ADR-001..013).
@@ -209,6 +216,9 @@ covered by mutation tests that fail loudly if you regress them.
    through the Server Action with `service_role` (`uploadAsServer`) after validating magic bytes
    and ownership; sessions keep only SELECT (owner signs her own) and DELETE.
    `courses.cover_path` is tied to `covers/<id>/` by the CHECK `courses_cover_path_no_locator`.
+   `diario_posts.cover_path` is tied to `diario/<post_id>/` by `diario_posts_cover_path_no_locator`
+   (B3); there is no Storage policy for `diario/`: upload, sign (panel) and delete go through
+   `service_role` after `assertOwnsPost`.
    Every `uploads` URL is signed server-side for 1 h; public pages sign through
    `signPublicUploadUrls`, which calls `connection()`: a page that shows a signed URL must never
    be prerendered.
@@ -250,6 +260,23 @@ covered by mutation tests that fail loudly if you regress them.
     `x-forwarded-for` (a non-Netlify proxy must REPLACE both). If the limiter is down or mute the action
     proceeds and logs `rate_limit_backend_down` (fail-open, on purpose). `sendMail` has its own
     global and per-recipient cap. Auth flows are limited by GoTrue, not here.
+12. **Disciplines and Diario categories are closed lists** (B1/B3, migrations 0073/0075).
+    `courses.discipline` stores a key from `src/lib/taxonomy/disciplines.ts` and
+    `diario_posts.category` one from `src/lib/taxonomy/diario.ts`; each list is mirrored by a CHECK
+    and `src/lib/taxonomy/*.test.ts` reads the migration and fails if they differ. Adding a
+    discipline is a migration plus the list, never one of the two. Server mappers return the
+    label (`disciplineLabel`); only the teacher form, the catalog filter and the brand image
+    (`brandImageForDiscipline`) use the key. An unknown `?disciplina=`/`?categoria=` is ignored.
+13. **The founder is curated, not self-declared** (B4, migration 0076). `profiles.is_founder` has no
+    client UPDATE grant; only `setFounderAction` writes it, through `admin_set_founder`
+    (`service_role` only, one transaction, at most one founder, `role = 'teacher'` by CHECK). A role
+    change away from teacher unmarks her (`profiles_founder_follows_role`).
+
+**Course modality** (B2, migration 0074): `includes_*`, `access_terms`, `issues_certificate` are
+public course data written by the owner teacher. `includes_live` is informative only (ADR-004
+intact). `guard_certificates_insert` rejects a certificate for a course with
+`issues_certificate = false`, also for `service_role`; switching it off never revokes issued ones.
+`ensureCertificate` returns null before the insert for such a course.
 
 **Review moderation** (T-037, ADR-012): only the course's teacher or an admin can report a review
 (`course_review_reports`, RLS via `can_report_review`, which reads `profiles.role`). Hiding,
