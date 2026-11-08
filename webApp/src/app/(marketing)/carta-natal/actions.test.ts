@@ -152,7 +152,7 @@ describe("buscarLugar", () => {
     createClient.mockResolvedValue({ rpc });
     const r = await buscarLugar("mend");
     expect(rpc).toHaveBeenCalledWith("search_places", { p_q: "mend" });
-    expect(r).toEqual({ places: [{ id: 3844421, label: "Mendoza, Argentina", lat: -32.89, lon: -68.83, timeZone: "America/Argentina/Mendoza" }], error: null });
+    expect(r).toEqual({ places: [{ id: 3844421, label: "Mendoza, Argentina", name: "Mendoza", lat: -32.89, lon: -68.83, timeZone: "America/Argentina/Mendoza" }], error: null });
   });
 });
 

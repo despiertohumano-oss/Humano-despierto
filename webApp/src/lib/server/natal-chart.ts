@@ -9,7 +9,8 @@ import { type ClockChoice, NOON, type TimeResolution, formatOffset, isValidTimeZ
 import type { HouseSystem, SignId } from "@/lib/astro/zodiac";
 
 export type ChartFormInput = { date: string; time: string | null; placeId: number | null; lat: number | null; lon: number | null; timeZone: string | null; houseSystem: HouseSystem; clock: ClockChoice | null };
-export type PlaceOption = { id: number; label: string; lat: number; lon: number; timeZone: string };
+// `name` nombra el huso antes y después de calcular («Hora de El Paso», no la provincia).
+export type PlaceOption = { id: number; label: string; name: string; lat: number; lon: number; timeZone: string };
 export type ResolvedBirth = { date: string; time: string | null; placeId: number | null; lat: number; lon: number; timeZone: string; offsetSeconds: number; clock: ClockChoice | null; houseSystem: HouseSystem };
 export type ChartView = { facts: ChartFacts; text: ChartText; placeLabel: string; zoneLabel: string };
 export type PrepareResult = { kind: "ok"; birth: ResolvedBirth; view: ChartView } | { kind: "ambigua"; earlier: string; later: string } | { kind: "error"; error: string };
@@ -97,7 +98,7 @@ export async function prepareChart(input: ChartFormInput): Promise<PrepareResult
     lon = p.lon === -180 ? 180 : p.lon;
     timeZone = input.timeZone ?? p.timezone;
     label = placeLabel(p);
-    zoneName = input.timeZone && input.timeZone !== p.timezone ? null : (p.admin1 ?? p.name);
+    zoneName = input.timeZone && input.timeZone !== p.timezone ? null : p.name;
   } else {
     lat = input.lat!;
     lon = input.lon!;
@@ -142,7 +143,7 @@ export async function searchPlaces(q: string): Promise<PlaceOption[]> {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("search_places", { p_q: query });
   if (error || !Array.isArray(data)) return [];
-  return (data as PlaceRow[]).map((p) => ({ id: Number(p.id), label: placeLabel(p), lat: p.lat, lon: p.lon, timeZone: p.timezone }));
+  return (data as PlaceRow[]).map((p) => ({ id: Number(p.id), label: placeLabel(p), name: p.name, lat: p.lat, lon: p.lon, timeZone: p.timezone }));
 }
 
 const rowSchema = z.object({

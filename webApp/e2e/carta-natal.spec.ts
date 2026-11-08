@@ -78,7 +78,7 @@ test("anónima con hora: lugar de la lista, rueda y tablas, y nada viaja en la U
   await expect(posiciones(page)).toBeVisible();
   await expect(page.getByRole("table", { name: "Aspectos" })).toBeVisible();
   await expect(page.getByRole("rowheader", { name: "Ascendente" })).toBeVisible();
-  await expect(page.getByText("Hora de Buenos Aires, UTC−3")).toBeVisible();
+  await expect(page.getByText("Hora de Ciudad de Prueba, UTC−3").last()).toBeVisible();
   expect(new URL(page.url()).pathname).toBe("/carta-natal");
   expect(new URL(page.url()).search).toBe("");
   await expect(page.getByText(/Para guardarla/)).toBeVisible();
@@ -94,7 +94,8 @@ test("la búsqueda «purma» encuentra Purmamarca y calcula con su huso", async 
   await expect(posiciones(page)).toBeVisible();
   await expect(page.getByText(/Purmamarca, Jujuy/).last()).toBeVisible();
   // En junio de 1990 Jujuy estaba en UTC−4 y Buenos Aires en UTC−3 (tzdata): el huso es el del lugar, no el del país.
-  await expect(page.getByText("Hora de Jujuy, UTC−4")).toBeVisible();
+  // El resultado nombra el huso igual que el aviso previo: por la ciudad.
+  await expect(page.getByText("Hora de Purmamarca, UTC−4").last()).toBeVisible();
   expect(new URL(page.url()).pathname).toBe("/carta-natal");
 });
 

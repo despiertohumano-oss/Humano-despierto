@@ -73,7 +73,7 @@ export default function ChartForm({ mode, signedIn, isTeacher }: Props) {
   const consentimiento = `${CONSENTIMIENTO}${isTeacher && (mode === "propia" || propia) ? ` ${CONSENTIMIENTO_GUIA}` : ""}`;
   const zonaElegida = manual ? huso.trim() : place ? (corregir ? huso.trim() : place.timeZone) : "";
   const desfase = zonaElegida ? offsetLabel(zonaElegida, fecha, sinHora ? "" : hora) : null;
-  const nombreHuso = !manual && place && !corregir ? `Hora de ${place.label.split(",")[0]}` : `Huso ${zonaElegida}`;
+  const nombreHuso = !manual && place && !corregir ? `Hora de ${place.name}` : `Huso ${zonaElegida}`;
   const verResultado = mode === "libre" && calc.view && vigente;
 
   return (

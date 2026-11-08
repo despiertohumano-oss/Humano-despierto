@@ -98,6 +98,13 @@ describe("prepareChart", () => {
     expect(c.kind === "ok" && c.birth.offsetSeconds).toBe(-10800);
   });
 
+  it("el huso se nombra por la ciudad, igual que antes de calcular, no por la provincia", async () => {
+    const maybeSingle = vi.fn().mockResolvedValue({ data: { id: 3, name: "El Paso", admin1: "Texas", country_code: "US", lat: 31.75872, lon: -106.48693, timezone: "America/Denver" }, error: null });
+    createClient.mockResolvedValue({ from: () => ({ select: () => ({ eq: () => ({ maybeSingle }) }) }) });
+    const r = await prepareChart(manual({ placeId: 3, lat: null, lon: null, timeZone: null, date: "2004-01-15", time: "12:00" }));
+    expect(r.kind === "ok" && r.view.zoneLabel).toBe("Hora de El Paso, UTC−7");
+  });
+
   it("lugar fuera del rango que acepta natal_charts: error, no un insert que falla", async () => {
     const maybeSingle = vi.fn().mockResolvedValue({ data: { id: 2, name: "Polo", admin1: null, country_code: "AQ", lat: -89.995, lon: 0, timezone: "Antarctica/McMurdo" }, error: null });
     createClient.mockResolvedValue({ from: () => ({ select: () => ({ eq: () => ({ maybeSingle }) }) }) });
