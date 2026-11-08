@@ -13,22 +13,22 @@ export type Element = "fuego" | "tierra" | "aire" | "agua";
 export type Modality = "cardinal" | "fijo" | "mutable";
 export type HouseSystem = "placidus" | "whole_sign";
 
-type SignInfo = { nombre: string; abbr: string; elemento: Element; modalidad: Modality; regente: PlanetId };
+type SignInfo = { nombre: string; elemento: Element; modalidad: Modality; regente: PlanetId };
 
 // Regente TRADICIONAL: el regente de la carta prioriza el tradicional (fundamentos §5.1).
 export const SIGNS: Record<SignId, SignInfo> = {
-  aries: { nombre: "Aries", abbr: "Ari", elemento: "fuego", modalidad: "cardinal", regente: "marte" },
-  tauro: { nombre: "Tauro", abbr: "Tau", elemento: "tierra", modalidad: "fijo", regente: "venus" },
-  geminis: { nombre: "Géminis", abbr: "Gém", elemento: "aire", modalidad: "mutable", regente: "mercurio" },
-  cancer: { nombre: "Cáncer", abbr: "Cán", elemento: "agua", modalidad: "cardinal", regente: "luna" },
-  leo: { nombre: "Leo", abbr: "Leo", elemento: "fuego", modalidad: "fijo", regente: "sol" },
-  virgo: { nombre: "Virgo", abbr: "Vir", elemento: "tierra", modalidad: "mutable", regente: "mercurio" },
-  libra: { nombre: "Libra", abbr: "Lib", elemento: "aire", modalidad: "cardinal", regente: "venus" },
-  escorpio: { nombre: "Escorpio", abbr: "Esc", elemento: "agua", modalidad: "fijo", regente: "marte" },
-  sagitario: { nombre: "Sagitario", abbr: "Sag", elemento: "fuego", modalidad: "mutable", regente: "jupiter" },
-  capricornio: { nombre: "Capricornio", abbr: "Cap", elemento: "tierra", modalidad: "cardinal", regente: "saturno" },
-  acuario: { nombre: "Acuario", abbr: "Acu", elemento: "aire", modalidad: "fijo", regente: "saturno" },
-  piscis: { nombre: "Piscis", abbr: "Pis", elemento: "agua", modalidad: "mutable", regente: "jupiter" },
+  aries: { nombre: "Aries", elemento: "fuego", modalidad: "cardinal", regente: "marte" },
+  tauro: { nombre: "Tauro", elemento: "tierra", modalidad: "fijo", regente: "venus" },
+  geminis: { nombre: "Géminis", elemento: "aire", modalidad: "mutable", regente: "mercurio" },
+  cancer: { nombre: "Cáncer", elemento: "agua", modalidad: "cardinal", regente: "luna" },
+  leo: { nombre: "Leo", elemento: "fuego", modalidad: "fijo", regente: "sol" },
+  virgo: { nombre: "Virgo", elemento: "tierra", modalidad: "mutable", regente: "mercurio" },
+  libra: { nombre: "Libra", elemento: "aire", modalidad: "cardinal", regente: "venus" },
+  escorpio: { nombre: "Escorpio", elemento: "agua", modalidad: "fijo", regente: "marte" },
+  sagitario: { nombre: "Sagitario", elemento: "fuego", modalidad: "mutable", regente: "jupiter" },
+  capricornio: { nombre: "Capricornio", elemento: "tierra", modalidad: "cardinal", regente: "saturno" },
+  acuario: { nombre: "Acuario", elemento: "aire", modalidad: "fijo", regente: "saturno" },
+  piscis: { nombre: "Piscis", elemento: "agua", modalidad: "mutable", regente: "jupiter" },
 };
 
 export const BODY_NAMES: Record<BodyId, string> = {
