@@ -13,7 +13,9 @@ export default async function PanelCartaNatalPage() {
   return (
     <div className="min-h-screen bg-fondo text-tinta">
       <SiteHeader />
-      <AppPageHeader eyebrow="Carta natal" title="Mis cartas natales" subtitle="Tus datos de nacimiento son privados. Borrar una carta la elimina en el acto." />
+      <AppPageHeader eyebrow="Carta natal" title="Mis cartas natales" subtitle="Tus datos de nacimiento son privados. Borrar una carta la elimina en el acto.">
+        {charts.length > 0 && <ButtonLink href="/carta-natal" size="sm" arrow>Calcular una carta nueva</ButtonLink>}
+      </AppPageHeader>
       <main className="mx-auto max-w-[1200px] px-6 py-12">
         {charts.length === 0 ? (
           <div className="tarjeta flex flex-col items-start gap-4 p-8">
@@ -30,7 +32,11 @@ export default async function PanelCartaNatalPage() {
                     <p className="text-sm text-suave">{d}/{m}/{y} · {c.birthTime ?? "sin hora"}{c.isSelf ? " · Mi carta" : ""}</p>
                     <Link href={`/carta-natal/${c.id}`} className="font-semibold text-bosque hover:underline">{c.label}</Link>
                   </div>
-                  <ChartListActions id={c.id} isSelf={c.isSelf} />
+                  <div className="flex flex-wrap items-center gap-2">
+                    <ButtonLink href={`/carta-natal/${c.id}`} variant="ghost" size="sm">Ver</ButtonLink>
+                    <ButtonLink href={`/carta-natal?editar=${c.id}`} variant="ghost" size="sm">Editar</ButtonLink>
+                    <ChartListActions id={c.id} isSelf={c.isSelf} />
+                  </div>
                 </li>
               );
             })}

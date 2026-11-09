@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ChartResult from "@/components/carta-natal/ChartResult";
+import { ButtonLink } from "@/components/atoms/Button";
 import { getNatalChart, viewFromSaved } from "@/lib/server/natal-chart";
 
 export const metadata: Metadata = { title: "Carta guardada", robots: { index: false, follow: false } };
@@ -20,6 +21,10 @@ export default async function CartaGuardadaPage({ params }: { params: Promise<{ 
           {saved.isSelf ? "Mi carta" : "Carta guardada"} · {d}/{m}/{y} · {saved.birthTime ?? "sin hora"}
         </p>
         <h1 className="mt-2 text-display-lg leading-[1.08] tracking-[-0.025em]">{saved.label}</h1>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <ButtonLink href={`/carta-natal?editar=${saved.id}`} variant="outline" size="sm">Editar datos</ButtonLink>
+          <ButtonLink href="/carta-natal" variant="ghost" size="sm" arrow>Calcular otra carta</ButtonLink>
+        </div>
         <div className="mt-10"><ChartResult view={view} /></div>
       </main>
     </div>

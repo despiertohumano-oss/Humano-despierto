@@ -307,3 +307,42 @@ test("la ficha de un signo es indexable", async ({ page }) => {
   const robots = await page.locator('meta[name="robots"]').evaluateAll((ms) => ms.map((m) => m.getAttribute("content") ?? ""));
   for (const r of robots) expect(r).not.toMatch(/noindex/);
 });
+
+test("alumna edita una carta guardada: abre precargada, cambia la hora y la reemplaza", async ({ page }) => {
+  psql(`delete from public.natal_charts where user_id = '${ALUMNA_ID}';`);
+  await login(page, ALUMNA);
+  await abrir(page, "/carta-natal");
+  await datosConLugar(page);
+  await calcular(page);
+  await page.getByLabel("Nombre para esta carta (opcional)").fill("Para editar");
+  await page.getByLabel(/Acepto que guarden mis datos de nacimiento/).check();
+  await page.getByRole("button", { name: "Guardar en mi panel" }).click();
+  await expect.poll(() => contarCartas(ALUMNA_ID)).toBe("1");
+  const vieja = psql(`select id from public.natal_charts where user_id = '${ALUMNA_ID}';`);
+
+  await abrir(page, "/panel/carta-natal");
+  await page.getByRole("link", { name: "Editar", exact: true }).click();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Editar carta natal");
+  await expect(page.getByLabel("Fecha de nacimiento")).toHaveValue("1990-06-15");
+  await expect(page.getByLabel("Hora de nacimiento")).toHaveValue("09:00");
+  await expect(page.getByLabel("Lugar de nacimiento")).toHaveValue(/Ciudad de Prueba/);
+
+  await page.getByLabel("Hora de nacimiento").fill("10:30");
+  await calcular(page);
+  await expect(page.getByLabel("Nombre para esta carta (opcional)")).toHaveValue("Para editar");
+  await page.getByLabel(/Acepto que guarden mis datos de nacimiento/).check();
+  await page.getByRole("button", { name: "Guardar cambios" }).click();
+
+  await expect(page).toHaveURL(/\/carta-natal\/[0-9a-f-]{36}$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Para editar");
+  await expect(page.getByText(/10:30/).first()).toBeVisible();
+  expect(contarCartas(ALUMNA_ID)).toBe("1");
+  expect(psql(`select count(*) from public.natal_charts where id = '${vieja}';`)).toBe("0");
+  expect(psql(`select to_char(birth_time, 'HH24:MI') from public.natal_charts where user_id = '${ALUMNA_ID}';`)).toBe("10:30");
+});
+
+test("el menú de arriba lleva a la carta natal", async ({ page }) => {
+  await abrir(page, "/cursos");
+  await page.getByRole("navigation").getByRole("link", { name: "Carta natal" }).first().click();
+  await expect(page).toHaveURL(/\/carta-natal$/);
+});

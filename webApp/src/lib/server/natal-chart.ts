@@ -209,6 +209,24 @@ export async function viewFromSaved(s: SavedChart): Promise<ChartView> {
   return { facts, text: renderChart(facts), placeLabel: place ? placeLabel(place) : coordLabel(s.lat, s.lon), zoneLabel: `Huso usado: ${formatOffset(s.offsetSeconds)}` };
 }
 
+// Datos para precargar el formulario al editar una carta guardada. El huso solo se "corrige" si
+// el guardado no es el de la localidad (lo había corregido a mano).
+export type ChartEditInitial = {
+  id: string; label: string; isSelf: boolean; fecha: string; hora: string | null; casas: HouseSystem;
+  reloj: ClockChoice | null; place: PlaceOption | null; husoCorregido: string | null;
+  manual: { lat: string; lon: string; huso: string } | null;
+};
+
+export async function editInitialFromSaved(s: SavedChart): Promise<ChartEditInitial> {
+  const base = { id: s.id, label: s.label, isSelf: s.isSelf, fecha: s.birthDate, hora: s.birthTime, casas: s.houseSystem, reloj: s.clock };
+  const p = s.placeId !== null ? await placeById(s.placeId) : null;
+  if (p) {
+    const place: PlaceOption = { id: Number(p.id), label: placeLabel(p), name: p.name, lat: p.lat, lon: p.lon, timeZone: p.timezone };
+    return { ...base, place, husoCorregido: s.timeZone !== p.timezone ? s.timeZone : null, manual: null };
+  }
+  return { ...base, place: null, husoCorregido: null, manual: { lat: String(s.lat), lon: String(s.lon), huso: s.timeZone } };
+}
+
 export type InsertResult = { ok: true; id: string } | { ok: false; reason: "tope" | "error" };
 type RpcError = { code?: string; message?: string } | null;
 

@@ -3,6 +3,8 @@ import Link from "next/link";
 import ChartForm from "@/components/carta-natal/ChartForm";
 import { SITE_OG_IMAGE } from "@/lib/og/site";
 import { getCurrentUser } from "@/lib/server/auth";
+import { editInitialFromSaved, getNatalChart } from "@/lib/server/natal-chart";
+import { z } from "@/lib/validation/zod";
 import { HOUSE_KEYS } from "@/lib/astro/prose";
 import { BODY_IDS, BODY_NAMES, SIGNS, SIGN_IDS, bodySlug } from "@/lib/astro/zodiac";
 
@@ -26,19 +28,32 @@ function Indice({ titulo, links }: { titulo: string; links: { href: string; labe
   );
 }
 
-export default async function CartaNatalPage() {
+export default async function CartaNatalPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const user = await getCurrentUser();
+  // ?editar=<id>: solo una carta propia (getNatalChart lee con la sesión, RLS); si no, form vacío.
+  const editarId = z.string().uuid().safeParse((await searchParams).editar);
+  const saved = user && editarId.success ? await getNatalChart(editarId.data) : null;
+  const editing = saved ? await editInitialFromSaved(saved) : undefined;
   return (
     <div className="min-h-screen bg-fondo text-tinta">
       <div className="mx-auto max-w-[1000px] px-6 pb-8 pt-10">
         <p className="text-sm font-semibold text-miel-800">Carta natal</p>
-        <h1 className="mt-3 max-w-[20ch] text-display-lg leading-[1.08] tracking-[-0.025em]">Calculá tu carta natal</h1>
+        <h1 className="mt-3 max-w-[20ch] text-display-lg leading-[1.08] tracking-[-0.025em]">{editing ? "Editar carta natal" : "Calculá tu carta natal"}</h1>
         <p className="mt-5 max-w-[60ch] text-lg text-suave">
           Con la fecha, la hora y el lugar de nacimiento armamos tu rueda, las posiciones de los planetas y una lectura para empezar a conocerla. Si no sabés la hora, también se puede: te mostramos lo que se puede calcular sin ella.
         </p>
       </div>
       <main className="mx-auto max-w-[1000px] space-y-16 px-6 pb-20">
-        <ChartForm mode="libre" signedIn={user !== null} perfilPublico={user !== null && user.role !== "student"} />
+        <ChartForm key={editing?.id ?? "nueva"} mode="libre" signedIn={user !== null} perfilPublico={user !== null && user.role !== "student"} editing={editing} />
+        {user && (
+          <p className="text-sm text-tinta">
+            <Link href="/panel/carta-natal" className="font-semibold text-miel-800 hover:underline">Ver mis cartas guardadas</Link>
+          </p>
+        )}
         <div className="space-y-8">
           <Indice titulo="Los signos" links={SIGN_IDS.map((s) => ({ href: `/carta-natal/signos/${s}`, label: SIGNS[s].nombre }))} />
           <Indice titulo="Planetas y puntos" links={BODY_IDS.map((b) => ({ href: `/carta-natal/planetas/${bodySlug(b)}`, label: BODY_NAMES[b] }))} />
