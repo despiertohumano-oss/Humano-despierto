@@ -34,7 +34,7 @@ describe("Diario (pantalla 7)", () => {
 describe("Diario · revista (B3)", () => {
   beforeEach(() => getPublishedPosts.mockClear());
 
-  it("las seis categorías como filtro, con «Todas» marcada sin categoría", async () => {
+  it("las seis categorías como filtro, con \"Todas\" marcada sin categoría", async () => {
     const html = await render();
     for (const label of ["Astrología", "Tarot y arquetipos", "Gemoterapia y minerales", "Simbología y símbolos de poder", "Ciclos lunares", "Conciencia y transformación personal"]) {
       expect(html).toContain(label);

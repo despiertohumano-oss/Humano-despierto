@@ -46,7 +46,7 @@ export default async function TiradaPage({ params, searchParams }: { params: Pro
         <p className="mt-3 max-w-[56ch] text-suave">{spread.descripcion}</p>
         {first(sp.listo) === "1" ? (
           <div className="mt-10">
-            {question && <p className="mb-6 text-center text-tinta">Tu pregunta: «{question}»</p>}
+            {question && <p className="mb-6 text-center text-tinta">Tu pregunta: &quot;{question}&quot;</p>}
             <Picker spread={spread} count={count} reversedEnabled={reversedEnabled} question={question} names={names} />
           </div>
         ) : (

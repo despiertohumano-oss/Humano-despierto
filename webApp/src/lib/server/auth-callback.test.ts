@@ -82,6 +82,24 @@ describe("resolveAuthCallback", () => {
     expect(exchange).not.toHaveBeenCalled();
   });
 
+  // GoTrue vuelve al callback sin code cuando el proveedor o el alta fallan (PKCE: error en la query).
+  it("Google con alta cerrada (signup_disabled) va a /entrar?error=signup y no llama a GoTrue", async () => {
+    const out = await resolveAuthCallback(
+      client,
+      qs("error=access_denied&error_code=signup_disabled&error_description=Signups+not+allowed+for+this+instance"),
+    );
+    expect(out).toEqual({ kind: "error", destination: "/entrar?error=signup" });
+    expect(exchange).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    "error=access_denied&error_description=The+user+denied",
+    "error=server_error&error_description=Database+error+saving+new+user",
+  ])("otro error del proveedor (%s) va a /entrar?error=oauth, no al de link vencido", async (q) => {
+    expect(await resolveAuthCallback(client, qs(q))).toEqual({ kind: "error", destination: "/entrar?error=oauth" });
+    expect(exchange).not.toHaveBeenCalled();
+  });
+
   it("code inválido o ya usado va al mismo error neutro (c.6, c.7)", async () => {
     exchange.mockResolvedValue({ data: { user: null }, error: { code: "flow_state_not_found" } });
     expect(await resolveAuthCallback(client, qs("code=usado"))).toEqual({

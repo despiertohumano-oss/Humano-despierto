@@ -19,7 +19,7 @@ export default function Testimonios({ items }: { items: LandingTestimonial[] }) 
               <li key={t.id}>
                 <figure>
                   <blockquote className="text-lg font-medium leading-relaxed text-white">
-                    <p>«{t.quote}»</p>
+                    <p>&quot;{t.quote}&quot;</p>
                   </blockquote>
                   <figcaption className="mt-5 text-[15px]">
                     <b className="block font-semibold text-white">{t.who}</b>

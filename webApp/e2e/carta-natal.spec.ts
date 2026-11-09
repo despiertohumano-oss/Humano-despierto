@@ -84,7 +84,7 @@ test("anónima con hora: lugar de la lista, rueda y tablas, y nada viaja en la U
   await expect(page.getByText(/Para guardarla/)).toBeVisible();
 });
 
-test("la búsqueda «purma» encuentra Purmamarca y calcula con su huso", async ({ page }) => {
+test("la búsqueda \"purma\" encuentra Purmamarca y calcula con su huso", async ({ page }) => {
   await abrir(page, "/carta-natal");
   await page.getByLabel("Fecha de nacimiento").fill("1990-06-15");
   await page.getByLabel("Hora de nacimiento").fill("09:00");

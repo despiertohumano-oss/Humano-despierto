@@ -17,7 +17,7 @@ export default async function PanelCartaNatalPage() {
       <main className="mx-auto max-w-[1200px] px-6 py-12">
         {charts.length === 0 ? (
           <div className="tarjeta flex flex-col items-start gap-4 p-8">
-            <p className="max-w-[46ch]">Todavía no guardaste ninguna carta. Calculala y, al final, tocá «Guardar en mi panel».</p>
+            <p className="max-w-[46ch]">Todavía no guardaste ninguna carta. Calculala y, al final, tocá &quot;Guardar en mi panel&quot;.</p>
             <ButtonLink href="/carta-natal" arrow>Calcular una carta</ButtonLink>
           </div>
         ) : (

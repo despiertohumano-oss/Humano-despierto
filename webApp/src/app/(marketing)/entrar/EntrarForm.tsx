@@ -6,7 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { fullNameSchema } from "@/lib/validation/profile";
 import { AUTH_COPY, authErrorMessage } from "@/lib/auth/messages";
-import { DEFAULT_NEXT, RECOVER_PATH, callbackUrl, needsDocumentNavigation } from "@/lib/auth/paths";
+import { DEFAULT_NEXT, RECOVER_PATH, callbackUrl, needsDocumentNavigation, type EntrarError } from "@/lib/auth/paths";
 import AuthField from "@/components/molecules/AuthField";
 import AuthFrame from "@/components/molecules/AuthFrame";
 import { AuthHeading } from "@/components/molecules/AuthShell";
@@ -22,16 +22,22 @@ const TABS: Tab[] = ["entrar", "registro"];
 interface Props {
   // Ya saneado en el servidor; `null` si faltaba o no era interno (el destino sale del rol).
   next: string | null;
-  linkError: boolean;
+  initialError: EntrarError | null;
 }
 
-export default function EntrarForm({ next, linkError }: Props) {
+const INITIAL_ERROR_COPY: Record<EntrarError, string> = {
+  link: AUTH_COPY.linkExpired,
+  signup: AUTH_COPY.signupClosed,
+  oauth: AUTH_COPY.oauthFailed,
+};
+
+export default function EntrarForm({ next, initialError }: Props) {
   const [tab, setTab] = useState<Tab>("entrar");
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(linkError ? AUTH_COPY.linkExpired : null);
+  const [error, setError] = useState<string | null>(initialError ? INITIAL_ERROR_COPY[initialError] : null);
   const [nombreError, setNombreError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
 

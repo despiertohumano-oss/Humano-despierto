@@ -65,7 +65,7 @@ test("B3 · post con categoría, portada y curso relacionado; /diario filtra por
     await expect(pub.locator(`a[href="/diario/${SLUG}"]`)).toHaveCount(1);
 
     await pub.goto(`/diario/${SLUG}`);
-    await expect(pub.getByRole("img", { name: `Portada de «${TITULO}»` })).toHaveAttribute("src", FIRMADA);
+    await expect(pub.getByRole("img", { name: `Portada de "${TITULO}"` })).toHaveAttribute("src", FIRMADA);
     const relacionados = pub.getByRole("region", { name: "Cursos relacionados" });
     await expect(relacionados.locator('a[href="/cursos/arcanos-menores"]')).toBeVisible();
   } finally {

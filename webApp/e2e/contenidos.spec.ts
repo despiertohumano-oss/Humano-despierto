@@ -31,7 +31,7 @@ test.beforeEach(async ({ request }) => {
 test("portada: textos de la dueña, ancla del hero y sin términos viejos en el chrome", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    "«Solo hay una pequeña parte del universo que sabrás con certeza que puede ser mejorada, y esa parte eres tú».",
+    "\"Solo hay una pequeña parte del universo que sabrás con certeza que puede ser mejorada, y esa parte eres tú\".",
   );
   await expect(
     page.getByText("Un espacio de aprendizaje y transformación que integra astrología, tarot, constelaciones familiares, magia y herramientas para el autoconocimiento."),
@@ -58,7 +58,7 @@ test("portada: axe sin violaciones de contraste, alt ni nombres", async ({ page 
   expect(await axeViolations(page)).toEqual([]);
 });
 
-test("calendario lunar: banda cósmica, «Hoy» en oro y axe limpio", async ({ page }) => {
+test("calendario lunar: banda cósmica, \"Hoy\" en oro y axe limpio", async ({ page }) => {
   await page.goto("/");
   const luna = page.locator('section[aria-labelledby="luna-titulo"]');
   await expect(luna.getByRole("heading", { name: "Calendario lunar" })).toBeVisible();

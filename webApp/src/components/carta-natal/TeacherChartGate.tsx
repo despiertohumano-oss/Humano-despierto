@@ -9,7 +9,7 @@ export default function TeacherChartGate() {
       <AppPageHeader
         eyebrow="Panel docente"
         title="Antes de entrar, cargá tu carta natal"
-        subtitle="Toda docente de la escuela tiene su carta cargada. En tu perfil público se ven solo los signos de tu Sol, tu Luna y tu Ascendente; la fecha, la hora y el lugar quedan privados. Si no sabés la hora, marcá «No sé la hora»."
+        subtitle="Toda docente de la escuela tiene su carta cargada. En tu perfil público se ven solo los signos de tu Sol, tu Luna y tu Ascendente; la fecha, la hora y el lugar quedan privados. Si no sabés la hora, marcá &quot;No sé la hora&quot;."
       />
       <main className="mx-auto max-w-[900px] px-6 py-12">
         <ChartForm mode="propia" signedIn perfilPublico />

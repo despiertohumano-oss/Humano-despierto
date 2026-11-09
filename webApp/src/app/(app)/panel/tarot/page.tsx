@@ -20,7 +20,7 @@ export default async function PanelTarotPage() {
       <main className="mx-auto max-w-[1200px] px-6 py-12">
         {readings.length === 0 ? (
           <div className="tarjeta flex flex-col items-start gap-4 p-8">
-            <p className="max-w-[46ch]">Todavía no guardaste ninguna tirada. Tirá las cartas y, al final de la lectura, tocá «Guardar en mi panel».</p>
+            <p className="max-w-[46ch]">Todavía no guardaste ninguna tirada. Tirá las cartas y, al final de la lectura, tocá &quot;Guardar en mi panel&quot;.</p>
             <ButtonLink href="/tarot" arrow>Tirar las cartas</ButtonLink>
           </div>
         ) : (

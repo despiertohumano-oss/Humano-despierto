@@ -89,7 +89,7 @@ export default function CourseForm({ course }: Props) {
             defaultChecked={course ? course.modality[f.key] : f.key === "recorded"}
           />
         ))}
-        <p className="text-sm text-suave">«Encuentros en vivo» es informativo: la fecha y el enlace se coordinan por anuncios.</p>
+        <p className="text-sm text-suave">&quot;Encuentros en vivo&quot; es informativo: la fecha y el enlace se coordinan por anuncios.</p>
       </fieldset>
       <PanelTextarea
         label="Condiciones de acceso (opcional)"

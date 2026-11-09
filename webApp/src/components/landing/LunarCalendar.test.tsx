@@ -17,7 +17,7 @@ describe("portada · calendario lunar cósmico", () => {
     expect(html).not.toContain("bg-papel");
   });
 
-  it("las fases van en blanco y sólo la de hoy en oro, con su etiqueta «Hoy»", () => {
+  it("las fases van en blanco y sólo la de hoy en oro, con su etiqueta \"Hoy\"", () => {
     expect(html.match(/fill-oro/g)).toHaveLength(1);
     expect(html).toContain("fill-papel");
     expect(html).toContain("Hoy");

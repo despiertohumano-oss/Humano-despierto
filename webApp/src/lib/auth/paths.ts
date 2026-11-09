@@ -3,6 +3,13 @@ export const DEFAULT_NEXT = "/panel";
 export const RECOVER_PATH = "/entrar/recuperar";
 export const RECOVERY_NEXT = "/entrar/nueva-clave";
 export const LINK_ERROR_PATH = "/entrar?error=link";
+export const SIGNUP_ERROR_PATH = "/entrar?error=signup";
+export const OAUTH_ERROR_PATH = "/entrar?error=oauth";
+
+export type EntrarError = "link" | "signup" | "oauth";
+export function entrarError(value: unknown): EntrarError | null {
+  return value === "link" || value === "signup" || value === "oauth" ? value : null;
+}
 
 // `null` deja el callback sin `next` para que elija por `profiles.role` (c.9); `**` en
 // `additional_redirect_urls` también acepta la URL sin query.

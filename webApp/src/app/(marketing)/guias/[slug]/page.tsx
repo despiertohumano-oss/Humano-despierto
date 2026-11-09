@@ -112,7 +112,7 @@ export default async function GuiaPage({ params }: { params: Promise<{ slug: str
             {M.quote && (
               <figure className="rounded-lg bg-salvia-100 p-8">
                 <blockquote className="text-xl font-medium leading-relaxed text-bosque">
-                  <p>«{M.quote}»</p>
+                  <p>&quot;{M.quote}&quot;</p>
                 </blockquote>
                 <figcaption className="mt-4 text-sm text-suave">{M.fullName}</figcaption>
               </figure>
@@ -179,7 +179,7 @@ export default async function GuiaPage({ params }: { params: Promise<{ slug: str
                 <li key={`${t.who}-${i}`}>
                   <figure className="h-full rounded-lg bg-salvia-100 p-6">
                     <blockquote className="text-[17px] leading-relaxed text-tinta">
-                      <p>«{t.quote}»</p>
+                      <p>&quot;{t.quote}&quot;</p>
                     </blockquote>
                     <figcaption className="mt-4 text-sm">
                       <b className="block font-semibold text-bosque">{t.who}</b>

@@ -77,7 +77,7 @@ export default async function DiarioPostPage({ params }: Props) {
           </p>
         </header>
         {coverUrl && (
-          <SignedImage src={coverUrl} alt={`Portada de «${post.title}»`} loading="eager" className="mt-10 aspect-[16/9] w-full rounded-lg object-cover" />
+          <SignedImage src={coverUrl} alt={`Portada de "${post.title}"`} loading="eager" className="mt-10 aspect-[16/9] w-full rounded-lg object-cover" />
         )}
         <div className="mt-10 space-y-5 text-[18px] leading-[1.8] text-tinta [overflow-wrap:anywhere]">
           {paragraphs.map((para, i) => (

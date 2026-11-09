@@ -43,7 +43,7 @@ export function parseChartForm(fd: FormData): { ok: true; input: ChartFormInput 
   }
   const sinHora = fd.get("sinHora") === "on";
   const time = sinHora ? null : text(fd, "hora");
-  if (!sinHora && (time === null || !TIME_RE.test(time))) return { ok: false, error: "Escribí la hora (HH:MM) o marcá «No sé la hora»." };
+  if (!sinHora && (time === null || !TIME_RE.test(time))) return { ok: false, error: "Escribí la hora (HH:MM) o marcá \"No sé la hora\"." };
   const casas = text(fd, "casas") ?? "placidus";
   if (casas !== "placidus" && casas !== "whole_sign") return { ok: false, error: "Sistema de casas inválido." };
   const reloj = text(fd, "reloj");

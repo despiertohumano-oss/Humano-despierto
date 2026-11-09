@@ -4,7 +4,7 @@ import { COURSE_FAQ, LANDING } from "./landing";
 describe("LANDING · portada (pantallas 1 y 2)", () => {
   it("hero: título con sus comillas, subtítulo y botones", () => {
     expect(LANDING.hero.title).toBe(
-      "«Solo hay una pequeña parte del universo que sabrás con certeza que puede ser mejorada, y esa parte eres tú».",
+      "\"Solo hay una pequeña parte del universo que sabrás con certeza que puede ser mejorada, y esa parte eres tú\".",
     );
     expect(LANDING.hero.lead).toBe(
       "Un espacio de aprendizaje y transformación que integra astrología, tarot, constelaciones familiares, magia y herramientas para el autoconocimiento.",
