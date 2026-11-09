@@ -3,6 +3,8 @@ import { getPublicSupabaseClient } from "@/lib/server/supabase-public";
 import { aggregateRatings } from "@/lib/reviews/rating";
 import { signPublicUploadUrls } from "@/lib/server/uploads";
 import { log } from "@/lib/server/log";
+import { MODALITY_COLUMNS, toModality, type CourseModality, type ModalityRow } from "@/lib/catalog/modality";
+import { disciplineLabel } from "@/lib/taxonomy/disciplines";
 
 export interface PublishedCourseSummary {
   id: string;
@@ -12,6 +14,8 @@ export interface PublishedCourseSummary {
   subtitle: string | null;
   desc: string | null;
   discipline: string;
+  /** Clave de la lista cerrada (B1): la usa el filtro del catálogo. `discipline` es la etiqueta. */
+  disciplineKey: string;
   level: string;
   priceCents: number;
   currency: string;
@@ -26,6 +30,8 @@ export interface PublishedCourseSummary {
   coverPath: string | null;
   /** Tiene al menos una lección publicada `is_preview`: lo único que habilita decir «clase gratis» (spec Brote). */
   hasPreview: boolean;
+  /** B2 · qué incluye según su docente; la tarjeta lo resume con la duración. */
+  modality: CourseModality;
   /** Derivados de `course_reviews` (ocultas ya filtradas por RLS); ausentes sin reseñas. */
   rating?: number;
   reviewCount?: number;
@@ -49,6 +55,7 @@ export interface CourseDetailModule {
 
 export interface CourseDetail {
   id: string;
+  modality: CourseModality;
   slug: string;
   title: string;
   titleEm: string | null;
@@ -98,7 +105,7 @@ interface PublishedCourseModuleRow {
   lessons: PublishedCourseLessonRow[] | null;
 }
 
-interface PublishedCourseRow {
+interface PublishedCourseRow extends ModalityRow {
   id: string;
   published_at: string | null;
   slug: string;
@@ -133,7 +140,7 @@ interface CourseDetailModuleRow {
   lessons: CourseDetailLessonRow[] | null;
 }
 
-interface CourseDetailRow {
+interface CourseDetailRow extends ModalityRow {
   id: string;
   slug: string;
   title: string;
@@ -168,6 +175,7 @@ export async function getPublishedCourses(): Promise<PublishedCourseSummary[]> {
     .select(
       `id, published_at, slug, title, title_em, subtitle, intro, discipline, level, price_cents,
        currency, moon_glyph, featured, cover_path,
+       ${MODALITY_COLUMNS},
        teacher:profiles!courses_teacher_id_fkey(full_name, bio),
        course_modules(lessons(duration_seconds, is_published, is_preview))`
     )
@@ -205,7 +213,9 @@ export async function getPublishedCourses(): Promise<PublishedCourseSummary[]> {
       titleEm: row.title_em,
       subtitle: row.subtitle,
       desc: row.intro,
-      discipline: row.discipline,
+      discipline: disciplineLabel(row.discipline),
+      disciplineKey: row.discipline,
+      modality: toModality(row),
       level: row.level,
       priceCents: row.price_cents,
       currency: row.currency,
@@ -228,7 +238,7 @@ export async function getCourseBySlug(slug: string): Promise<CourseDetail | null
     .select(
       `id, slug, title, title_em, subtitle, intro, discipline, level, price_cents, currency, includes,
        learning_objectives, prerequisites, description, language, promo_video_id, updated_at,
-       cover_path,
+       cover_path, ${MODALITY_COLUMNS},
        teacher:profiles!courses_teacher_id_fkey(full_name, bio, slug, avatar_path),
        course_modules(position, title, description,
          lessons(id, position, title, duration_seconds, is_preview, is_published))`
@@ -292,7 +302,8 @@ export async function getCourseBySlug(slug: string): Promise<CourseDetail | null
     titleEm: row.title_em,
     subtitle: row.subtitle,
     intro: row.intro,
-    discipline: row.discipline,
+    discipline: disciplineLabel(row.discipline),
+    modality: toModality(row),
     level: row.level,
     priceCents: row.price_cents,
     currency: row.currency,

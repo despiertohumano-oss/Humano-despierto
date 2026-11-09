@@ -4,6 +4,11 @@ import { headerLinks } from "./nav-links";
 const hrefs = (s: Parameters<typeof headerLinks>[0]) => headerLinks(s).map((l) => l.href);
 
 describe("headerLinks", () => {
+  it("la ruta /guias se rotula «Docentes» en el menú", () => {
+    const labels = headerLinks(null).map((l) => l.label);
+    expect(labels).toEqual(["Cursos", "Docentes", "Diario", "Tarot"]);
+  });
+
   it("sin sesión: sólo destinos públicos", () => {
     expect(hrefs(null)).toEqual(["/cursos", "/guias", "/diario", "/tarot"]);
   });

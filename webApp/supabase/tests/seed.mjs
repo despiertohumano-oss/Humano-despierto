@@ -48,7 +48,7 @@ export async function seed(db) {
     insert into public.courses (id, slug, title, discipline, level, price_cents, teacher_id, status, published_at) values
       ('${ID.courseA}', 'tarot-iniciacion',  'Tarot · Iniciacion',  'tarot',      'iniciacion', 24000, '${ID.teacherA}', 'published', now()),
       ('${ID.courseB}', 'astrologia-natal',  'Astrologia natal',    'astrologia', 'intermedio', 31000, '${ID.teacherB}', 'published', now()),
-      ('${ID.courseDraft}', 'herbolaria-borrador', 'Herbolaria',    'herbolaria', 'iniciacion', 18000, '${ID.teacherB}', 'draft',     null);
+      ('${ID.courseDraft}', 'herbolaria-borrador', 'Herbolaria',    'magia',      'iniciacion', 18000, '${ID.teacherB}', 'draft',     null);
 
     insert into public.course_modules (id, course_id, position, title) values
       ('${ID.moduleA}', '${ID.courseA}', 1, 'Los arcanos mayores');

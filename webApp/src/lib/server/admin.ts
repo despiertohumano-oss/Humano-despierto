@@ -121,3 +121,10 @@ export async function listPendingEnrollmentRequests(): Promise<AdminEnrollmentRe
     };
   });
 }
+
+/** B4 · id de la creadora destacada, o null. Lectura con service_role tras `requireAdmin` del llamador. */
+export async function getFounderId(): Promise<string | null> {
+  const { data, error } = await getAdminSupabaseClient().from("profiles").select("id").eq("is_founder", true).maybeSingle();
+  if (error) throw new Error(`No se pudo leer la creadora: ${error.message}`);
+  return (data?.id as string | undefined) ?? null;
+}

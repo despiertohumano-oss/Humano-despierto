@@ -7,6 +7,7 @@ import TeacherPortrait from "@/components/atoms/TeacherPortrait";
 import { formationYear } from "@/lib/ui/formation-year";
 import SectionHeading from "@/components/atoms/SectionHeading";
 import { SITE_OG_IMAGE } from "@/lib/og/site";
+import { DOCENTES } from "@/content/site-copy";
 import { getTeacherBySlug } from "@/lib/server/guias";
 import { SIGNS } from "@/lib/astro/zodiac";
 
@@ -16,7 +17,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await params;
   const teacher = await getTeacherBySlug(slug);
-  if (!teacher) return { title: "Guía no encontrada" };
+  if (!teacher) return { title: "Docente no encontrado" };
   const description = teacher.headline ?? teacher.bio ?? undefined;
   return {
     title: teacher.fullName,
@@ -49,7 +50,7 @@ export default async function GuiaPage({ params }: { params: Promise<{ slug: str
       <div className="mx-auto max-w-[1200px] px-6 pt-8">
         <Link href="/guias" className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-miel-800 hover:underline">
           <Icon name="arrow-left" />
-          Todas las guías
+          {DOCENTES.volver}
         </Link>
       </div>
 

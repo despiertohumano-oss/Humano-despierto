@@ -1,9 +1,9 @@
 import Image from "next/image";
 import SignedImage from "@/components/atoms/SignedImage";
-import { placeholderForDiscipline, unsplashUrl } from "@/content/placeholder-photos";
+import { brandImageForDiscipline } from "@/content/brand-images";
 
-/** Foto de un curso dentro de un contenedor `relative`: su portada firmada o, sin ella, la foto de
- *  muestra de su disciplina. `alt` vacío: quien la usa ya nombra el curso al lado. */
+/** Imagen de un curso dentro de un contenedor `relative`: su portada firmada o, sin ella, la imagen
+ *  de marca de su disciplina. `alt` vacío: quien la usa ya nombra el curso al lado. */
 export default function CourseCover({
   coverUrl,
   discipline,
@@ -29,7 +29,7 @@ export default function CourseCover({
   }
   return (
     <Image
-      src={unsplashUrl(placeholderForDiscipline(discipline).id)}
+      src={brandImageForDiscipline(discipline).src}
       alt=""
       fill
       loading={eager ? "eager" : "lazy"}

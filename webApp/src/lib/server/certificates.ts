@@ -55,7 +55,8 @@ export async function getPublicCertificate(code: string): Promise<PublicCertific
 /**
  * Emite (o recupera) el certificado del usuario logueado para `courseId`, solo si ya completó
  * TODAS las lecciones publicadas del curso (ADR-007: derivado, nunca declarado — acá tampoco).
- * `null` sin sesión, sin lecciones publicadas, o si todavía no completó el curso.
+ * `null` sin sesión, si el curso no emite certificado (B2), sin lecciones publicadas, o si todavía
+ * no completó el curso.
  */
 export async function ensureCertificate(courseId: string): Promise<string | null> {
   const supabase = await createClient();
@@ -74,6 +75,18 @@ export async function ensureCertificate(courseId: string): Promise<string | null
     throw new Error(`No se pudo leer el certificado: ${existingError.message}`);
   }
   if (existing) return existing.code;
+
+  // B2 · lo ya emitido se respeta (arriba); si el curso dejó de emitir, no se emite uno nuevo. El
+  // guard de 0074 lo rechaza igual, también para service_role: esto evita el viaje y el error.
+  const { data: course, error: courseError } = await supabase
+    .from("courses")
+    .select("issues_certificate")
+    .eq("id", courseId)
+    .maybeSingle();
+  if (courseError) {
+    throw new Error(`No se pudo leer el curso: ${courseError.message}`);
+  }
+  if (!course?.issues_certificate) return null;
 
   const { data: publishedLessons, error: lessonsError } = await supabase
     .from("lessons")

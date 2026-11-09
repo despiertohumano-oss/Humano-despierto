@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceRoleClient } from "@/lib/supabase/service";
 import { getCurrentUser } from "@/lib/server/auth";
 import type { AuthUser } from "@/lib/stores/useAuthStore";
+import { MODALITY_COLUMNS, toModality, type CourseModality, type ModalityRow } from "@/lib/catalog/modality";
 
 /**
  * Puerta única de lectura/escritura del panel docente (T-005). Mismo patrón que
@@ -85,6 +86,7 @@ export interface TeacherCourseFields {
   status: "draft" | "published" | "archived";
   teacherId: string;
   coverPath: string | null;
+  modality: CourseModality;
 }
 
 export interface TeacherLessonSummary {
@@ -109,7 +111,7 @@ export interface TeacherCourseDetail extends TeacherCourseFields {
   modules: TeacherModuleWithLessons[];
 }
 
-interface CourseFieldsRow {
+interface CourseFieldsRow extends ModalityRow {
   id: string;
   slug: string;
   title: string;
@@ -154,6 +156,7 @@ function mapCourseFields(row: CourseFieldsRow): TeacherCourseFields {
     status: row.status,
     teacherId: row.teacher_id,
     coverPath: row.cover_path ?? null,
+    modality: toModality(row),
   };
 }
 
@@ -173,6 +176,7 @@ export async function getTeacherCourseDetail(
       `id, slug, title, title_em, subtitle, intro, discipline, level, price_cents, currency,
        moon_glyph, includes, status, teacher_id, cover_path,
        learning_objectives, prerequisites, description, language, promo_video_id,
+       ${MODALITY_COLUMNS},
        course_modules(id, position, title, description,
          lessons(id, position, title, is_preview, is_published, duration_seconds))`
     )

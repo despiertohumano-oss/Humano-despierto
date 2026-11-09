@@ -176,6 +176,12 @@ describe('ADR-009/010 · la clase con sesion no acepta localizadores', () => {
     assert.deepEqual(faltan, [], `el recorte no ve: ${faltan.join(', ')}`);
   });
 
+  test('B2/B3 · las columnas nuevas de texto son de la clase de anon, no de esta', () => {
+    const nombres = columnas.map((c) => c.columna);
+    const intrusas = ['courses.access_terms', 'diario_posts.category', 'diario_posts.cover_path'].filter((c) => nombres.includes(c));
+    assert.deepEqual(intrusas, [], `cayeron en la clase con sesion: ${intrusas.join(', ')}`);
+  });
+
   test('mutacion · sin course_announcements_locator_guard el video_id entra', async () => {
     const id = await borradorFresco(db);
     await db.exec(`reset role; begin;`);

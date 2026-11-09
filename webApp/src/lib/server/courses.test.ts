@@ -106,7 +106,7 @@ describe("getPublishedCourses · hasPreview (D-67)", () => {
     const reviews = { select: () => ({ in: async () => ({ data: [], error: null }) }) };
     return { select, client: { from: (t: string) => (t === "courses" ? { select } : reviews) } };
   }
-  const base = { slug: "s", title: "T", discipline: "Tarot", level: "Inicial", price_cents: 100, currency: "ARS", teacher: null };
+  const base = { slug: "s", title: "T", discipline: "tarot", level: "Inicial", price_cents: 100, currency: "ARS", teacher: null };
 
   beforeEach(() => getPublicSupabaseClient.mockReset());
 
@@ -124,5 +124,53 @@ describe("getPublishedCourses · hasPreview (D-67)", () => {
     expect(Object.fromEntries(courses.map((c) => [c.id, c.hasPreview]))).toEqual({
       con: true, sin: false, borrador: false, vacio: false,
     });
+  });
+});
+
+describe("getPublishedCourses · disciplina (B1)", () => {
+  it("devuelve la clave para filtrar y la etiqueta para mostrar", async () => {
+    const order = vi.fn(async () => ({
+      data: [{ id: "c1", slug: "s", title: "T", discipline: "simbologia", level: "Inicial", price_cents: 100, currency: "ARS", featured: false, teacher: null, course_modules: [] }],
+      error: null,
+    }));
+    getPublicSupabaseClient.mockReturnValue({
+      from: (t: string) =>
+        t === "courses"
+          ? { select: () => ({ eq: () => ({ order }) }) }
+          : { select: () => ({ in: async () => ({ data: [], error: null }) }) },
+    });
+    const [c] = await getPublishedCourses();
+    expect(c.disciplineKey).toBe("simbologia");
+    expect(c.discipline).toBe("Simbología y símbolos de poder");
+  });
+});
+
+describe("modalidad (B2)", () => {
+  it("getCourseBySlug pide las columnas y devuelve la modalidad", async () => {
+    const { client, select } = publicClientReturning({
+      id: "x", slug: "tarot", title: "Tarot", discipline: "tarot", cover_path: null, teacher: null, course_modules: [],
+      includes_pdf: true, issues_certificate: false,
+    });
+    getPublicSupabaseClient.mockReturnValue(client);
+    const course = await getCourseBySlug("tarot");
+    expect(String((select.mock.calls[0] as unknown[])[0])).toMatch(/issues_certificate/);
+    expect(course?.modality).toMatchObject({ pdf: true, issuesCertificate: false, recorded: true });
+  });
+
+  it("getPublishedCourses trae la modalidad para la tarjeta", async () => {
+    const select = vi.fn(() => ({
+      eq: () => ({
+        order: async () => ({
+          data: [{ id: "c1", slug: "s", title: "T", discipline: "tarot", level: "Inicial", price_cents: 1, currency: "ARS", teacher: null, course_modules: [], includes_live: true }],
+          error: null,
+        }),
+      }),
+    }));
+    getPublicSupabaseClient.mockReturnValue({
+      from: (t: string) => (t === "courses" ? { select } : { select: () => ({ in: async () => ({ data: [], error: null }) }) }),
+    });
+    const [c] = await getPublishedCourses();
+    expect(String((select.mock.calls[0] as unknown[])[0])).toMatch(/includes_live/);
+    expect(c.modality.live).toBe(true);
   });
 });

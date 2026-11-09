@@ -49,7 +49,7 @@ test("crear curso, editarlo, armar módulo y lección, editar recursos y capítu
   await page.goto("/panel/docente/nuevo", { waitUntil: "networkidle" });
   await page.getByLabel("Slug (URL)").fill(SLUG);
   await page.getByLabel("Título", { exact: true }).fill(TITULO);
-  await page.getByLabel("Disciplina").fill("Tarot");
+  await page.getByLabel("Disciplina").selectOption("tarot");
   await page.getByLabel("Nivel").fill("Iniciación");
   await page.getByLabel("Precio").fill("240");
   await page.getByRole("button", { name: "Crear curso" }).click();
@@ -140,7 +140,7 @@ test("la docente retira un anuncio publicado con motivo y queda en Retirados", a
   // Curso y anuncio propios sembrados como postgres: publicar por la UI manda mails y no es lo que se prueba acá.
   const courseId = psql(
     `insert into public.courses (slug, title, discipline, level, teacher_id)
-     values ('${SLUG_ANUNCIO}', 'Curso de anuncio e2e ${STAMP}', 'Tarot', 'Iniciación', 'a0000000-0000-4000-8000-000000000002')
+     values ('${SLUG_ANUNCIO}', 'Curso de anuncio e2e ${STAMP}', 'tarot', 'Iniciación', 'a0000000-0000-4000-8000-000000000002')
      returning id`,
   ).split("\n")[0];
   psql(

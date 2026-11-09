@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import PanelFrame from "@/components/panel/PanelFrame";
 import PanelSection from "@/components/panel/PanelSection";
-import { requireTeacher } from "@/lib/server/teacher";
-import { getTeacherPost } from "@/lib/server/diario";
+import { listTeacherCourses, requireTeacher } from "@/lib/server/teacher";
+import { getTeacherPost, signOwnPostCover } from "@/lib/server/diario";
+import PostCoverForm from "@/components/teacher/PostCoverForm";
 import PostForm from "@/components/teacher/PostForm";
 import PublishPostControl from "@/components/teacher/PublishPostControl";
 import DeletePostControl from "@/components/teacher/DeletePostControl";
@@ -23,6 +24,8 @@ export default async function TeacherDiarioEditorPage({ params }: Props) {
   const post = await getTeacherPost(postId, teacher.id);
 
   if (!post) notFound();
+  const [courses, coverUrl] = await Promise.all([listTeacherCourses(teacher.id), signOwnPostCover(post.coverPath)]);
+  const published = courses.filter((c) => c.status === "published").map((c) => ({ id: c.id, title: c.title }));
 
   return (
     <PanelFrame
@@ -32,8 +35,10 @@ export default async function TeacherDiarioEditorPage({ params }: Props) {
       actions={<PublishPostControl postId={post.id} status={post.status} />}
     >
       <PanelSection id="post-titulo" title="El post">
-        <PostForm post={post} />
+        <PostForm post={post} courses={published} />
       </PanelSection>
+
+      <PostCoverForm postId={post.id} coverUrl={coverUrl} postTitle={post.title} />
 
       <DeletePostControl postId={post.id} postTitle={post.title} />
     </PanelFrame>

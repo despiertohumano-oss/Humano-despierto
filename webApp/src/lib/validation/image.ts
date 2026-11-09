@@ -24,6 +24,8 @@ export const AVATAR_PATH_RE = new RegExp(`^avatars/${UUID}/${UUID}\\.(jpg|png|we
 
 /** Espejo de `courses_cover_path_no_locator` (0030), sin la pertenencia: esa la ata el CHECK al id. */
 export const COVER_PATH_RE = new RegExp(`^covers/${UUID}/${UUID}\\.(jpg|png|webp)$`);
+/** Espejo de `diario_posts_cover_path_no_locator` (0075), sin la pertenencia. */
+export const DIARIO_COVER_PATH_RE = new RegExp(`^diario/${UUID}/${UUID}\\.(jpg|png|webp)$`);
 
 const UUID_RE = new RegExp(`^${UUID}$`);
 export const isUuid = (value: string) => UUID_RE.test(value);
@@ -70,4 +72,8 @@ export function buildAvatarPath(userId: string, fileId: string, kind: ImageKind)
 
 export function buildCoverPath(courseId: string, fileId: string, kind: ImageKind): string {
   return `covers/${courseId}/${fileId}.${kind}`;
+}
+
+export function buildDiarioCoverPath(postId: string, fileId: string, kind: ImageKind): string {
+  return `diario/${postId}/${fileId}.${kind}`;
 }

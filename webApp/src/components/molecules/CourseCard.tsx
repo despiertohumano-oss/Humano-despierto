@@ -23,6 +23,8 @@ export interface CourseCardData {
   coverUrl?: string;
   /** Sólo con una lección `is_preview` publicada se dice «Clase gratis» (spec Brote, D-67). */
   hasPreview?: boolean;
+  /** Modalidad resumida + duración (B2); sin ella la tarjeta no la dibuja (landing). */
+  meta?: string;
 }
 
 interface Props extends CourseCardData {
@@ -37,7 +39,7 @@ interface Props extends CourseCardData {
  *  camino de navegación principal del producto. El botón de guardar es HERMANO del link (un
  *  <button> dentro de un <a> es HTML inválido). */
 export default function CourseCard({
-  tag, title, titleEm, teacher, price, level, featured, slug, rating, reviewCount, coverUrl, hasPreview,
+  tag, title, titleEm, teacher, price, level, featured, slug, rating, reviewCount, coverUrl, hasPreview, meta,
   className, wishlist, eager,
 }: Props) {
   return (
@@ -68,6 +70,7 @@ export default function CourseCard({
             {titleEm && <> {titleEm}</>}
           </h3>
           <p className="text-sm leading-normal text-suave">Con {teacher}</p>
+          {meta && <p className="mt-1 text-sm leading-normal text-suave">{meta}</p>}
           <Rating average={rating} count={reviewCount} className="mt-1.5" />
           <div className="mt-3.5 flex items-center justify-end gap-3 border-t border-linea pt-3.5 text-sm">
             {hasPreview && (

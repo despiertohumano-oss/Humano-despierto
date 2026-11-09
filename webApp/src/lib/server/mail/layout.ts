@@ -100,7 +100,7 @@ export function renderEmailHtml({ preheader, eyebrow, heading, bodyHtml, cta }: 
               <td style="padding: 28px 32px 28px; text-align:center;">
                 <div style="height:1px; background:${COLORS.border}; margin: 0 0 18px;"></div>
                 <p style="margin:0; font-family:${FONT}; font-size:12px; color:${COLORS.inkFaint};">
-                  Humano Despierto · escuela de oficios holísticos
+                  Humano Despierto · espacio de aprendizaje y transformación
                 </p>
               </td>
             </tr>
@@ -126,6 +126,6 @@ export function renderEmailText({ eyebrow, heading, bodyLines, cta }: EmailTextI
   if (cta) {
     lines.push("", `${cta.label}: ${cta.url}`);
   }
-  lines.push("", "--", "Humano Despierto · escuela de oficios holísticos");
+  lines.push("", "--", "Humano Despierto · espacio de aprendizaje y transformación");
   return lines.join("\n");
 }

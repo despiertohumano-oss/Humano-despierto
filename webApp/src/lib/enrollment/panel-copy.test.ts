@@ -21,6 +21,7 @@ describe("enrollmentPanelCopy (D-109)", () => {
     const copy = enrollmentPanelCopy({ status: "active" });
     expect(copy.title).toBe("Ya estás inscripta");
     expect(copy.lead).toMatch(/panel/);
+    expect(copy.lead).not.toMatch(/vencimiento/);
   });
 
   it("dada de baja o no aprobada: no ofrece pedir de nuevo y el detalle queda al estado", () => {
