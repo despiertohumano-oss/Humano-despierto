@@ -49,7 +49,7 @@ for (const entrar of ["/entrar?next=https%3A%2F%2Fevil.tld", "/entrar"]) {
   });
 }
 
-test("c.4 cancelar en Google vuelve al error neutro de T-040 y sin sesión", async ({ page }) => {
+test("c.4 cancelar en Google vuelve con el error de Google y sin sesión", async ({ page }) => {
   const { authorize } = await clickGoogle(page, "/entrar?next=%2Fpanel");
   await page.unroute(`${AUTHORIZE}**`);
 
@@ -60,8 +60,9 @@ test("c.4 cancelar en Google vuelve al error neutro de T-040 y sin sesión", asy
   back.searchParams.set("error_description", "The user denied the request");
   await page.goto(back.toString());
 
-  await expect(page).toHaveURL(/\/entrar\?error=link$/);
-  await expect(page.getByText("El enlace venció o ya se usó")).toBeVisible();
+  // Desde 77ab530 un error del proveedor tiene su propio mensaje: no es un link vencido.
+  await expect(page).toHaveURL(/\/entrar\?error=oauth$/);
+  await expect(page.getByText("Google no completó el ingreso. Probá de nuevo.")).toBeVisible();
   expect((await page.context().cookies()).some((c) => SESSION_COOKIE.test(c.name))).toBe(false);
 });
 

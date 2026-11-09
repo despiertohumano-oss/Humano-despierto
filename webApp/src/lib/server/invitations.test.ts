@@ -6,6 +6,7 @@ type Result = { data: unknown; error: { code?: string; message: string } | null 
 const mocks = vi.hoisted(() => ({
   rpc: vi.fn(),
   notify: vi.fn(),
+  generateLink: vi.fn(),
   insertResult: { data: null, error: null } as Result,
   updateResult: { data: [], error: null } as Result,
   inserts: [] as { table: string; row: Record<string, unknown> }[],
@@ -16,6 +17,7 @@ vi.mock("@/lib/server/mail/notify", () => ({ notifyTeacherInvitation: mocks.noti
 vi.mock("@/lib/server/supabase-admin", () => ({
   getAdminSupabaseClient: () => ({
     rpc: mocks.rpc,
+    auth: { admin: { generateLink: mocks.generateLink } },
     from: (table: string) => ({
       insert: (row: Record<string, unknown>) => {
         mocks.inserts.push({ table, row });
@@ -53,6 +55,7 @@ beforeEach(() => {
   mocks.updateResult = { data: [{ id: "inv-1" }], error: null };
   mocks.rpc.mockResolvedValue({ data: [], error: null });
   mocks.notify.mockResolvedValue(true);
+  mocks.generateLink.mockReset().mockResolvedValue({ data: { properties: { hashed_token: "f".repeat(56), verification_type: "signup" } }, error: null });
 });
 
 describe("inviteTeacher", () => {
@@ -65,7 +68,7 @@ describe("inviteTeacher", () => {
     expect(row).toEqual({ email: "nueva@mail.com", token_hash: expect.stringMatching(/^[0-9a-f]{64}$/), invited_by: ADMIN.adminId });
 
     const [arg] = mocks.notify.mock.calls[0];
-    const token = arg.acceptUrl.replace("http://localhost:3101/invitacion/", "");
+    const token = arg.acceptUrl.replace("http://localhost:3101/invitacion/", "").replace(/\?.*$/, "");
     expect(token).toMatch(/^[A-Za-z0-9_-]{43}$/);
     expect(sha(token)).toBe(row.token_hash);
     expect(JSON.stringify(row)).not.toContain(token);
@@ -101,6 +104,39 @@ describe("inviteTeacher", () => {
   it("una alumna con cuenta sí se invita", async () => {
     mocks.rpc.mockResolvedValue({ data: [{ id: "u", role: "student" }], error: null });
     await expect(inviteTeacher({ email: "alumna@mail.com", ...ADMIN })).resolves.toMatchObject({ kind: "created" });
+  });
+});
+
+describe("acceso directo desde el mail", () => {
+  it("cuenta nueva: el link lleva el acceso de GoTrue y avisa que hay que elegir clave", async () => {
+    await inviteTeacher({ email: "nueva@mail.com", ...ADMIN });
+    expect(mocks.generateLink).toHaveBeenCalledWith({ type: "magiclink", email: "nueva@mail.com" });
+    expect(mocks.notify.mock.calls[0][0].acceptUrl).toMatch(new RegExp(`/invitacion/[A-Za-z0-9_-]{43}\\?acceso=${"f".repeat(56)}&tipo=signup$`));
+  });
+
+  it("alumna con cuenta: acceso de tipo magiclink (sin elegir clave)", async () => {
+    mocks.rpc.mockResolvedValue({ data: [{ id: "u", role: "student" }], error: null });
+    mocks.generateLink.mockResolvedValue({ data: { properties: { hashed_token: "f".repeat(56), verification_type: "magiclink" } }, error: null });
+    await inviteTeacher({ email: "alumna@mail.com", ...ADMIN });
+    expect(mocks.notify.mock.calls[0][0].acceptUrl).toMatch(new RegExp(`\\?acceso=${"f".repeat(56)}&tipo=magiclink$`));
+  });
+
+  it("un tipo de verificación inesperado no viaja en el link", async () => {
+    mocks.generateLink.mockResolvedValue({ data: { properties: { hashed_token: "f".repeat(56), verification_type: "recovery" } }, error: null });
+    await inviteTeacher({ email: "nueva@mail.com", ...ADMIN });
+    expect(mocks.notify.mock.calls[0][0].acceptUrl).toMatch(/\/invitacion\/[A-Za-z0-9_-]{43}$/);
+  });
+
+  it("si GoTrue no da el acceso, el mail sale igual con el link de siempre", async () => {
+    mocks.generateLink.mockResolvedValue({ data: { properties: null }, error: { message: "boom" } });
+    await expect(inviteTeacher({ email: "nueva@mail.com", ...ADMIN })).resolves.toMatchObject({ kind: "created", mailSent: true });
+    expect(mocks.notify.mock.calls[0][0].acceptUrl).toMatch(/\/invitacion\/[A-Za-z0-9_-]{43}$/);
+  });
+
+  it("ya docente o pendiente: no pide acceso", async () => {
+    mocks.rpc.mockResolvedValue({ data: [{ id: "u", role: "teacher" }], error: null });
+    await inviteTeacher({ email: "sol@mail.com", ...ADMIN });
+    expect(mocks.generateLink).not.toHaveBeenCalled();
   });
 });
 

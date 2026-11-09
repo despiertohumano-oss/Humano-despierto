@@ -70,7 +70,8 @@ export async function invitationLinkFor(request: APIRequestContext, email: strin
       async () => {
         for (const summary of (await messagesTo(request, email)).filter((m) => m.Subject === INVITATION_SUBJECT)) {
           const msg = (await (await request.get(`${MAILPIT}/api/v1/message/${summary.ID}`)).json()) as MailpitMessage;
-          link = (msg.Text || msg.HTML).match(/https?:\/\/[^\s"'<>]+\/invitacion\/[A-Za-z0-9_-]{43}/)?.[0] ?? null;
+          // Con el acceso directo (?acceso=…&nueva=1); el texto plano no escapa el &.
+          link = msg.Text.match(/https?:\/\/[^\s"'<>]+\/invitacion\/[A-Za-z0-9_-]{43}(\?[^\s"'<>]*)?/)?.[0] ?? null;
           if (link) return true;
         }
         return false;
