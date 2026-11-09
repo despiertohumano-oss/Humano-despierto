@@ -1,7 +1,7 @@
 import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { internalNext } from "@/lib/auth/safe-next";
-import { DEFAULT_NEXT, LINK_ERROR_PATH, RECOVERY_NEXT, homeForRole } from "@/lib/auth/paths";
+import { DEFAULT_NEXT, LINK_ERROR_PATH, OAUTH_ERROR_PATH, RECOVERY_NEXT, SIGNUP_ERROR_PATH, homeForRole } from "@/lib/auth/paths";
 import { log } from "@/lib/server/log";
 
 // Solo lo que se usa: el test pasa un fake con el canje y la lectura de `profiles`.
@@ -38,7 +38,15 @@ export async function resolveAuthCallback(
   params: URLSearchParams,
 ): Promise<CallbackOutcome> {
   const code = params.get("code");
-  if (!code) return LINK_ERROR;
+  if (!code) {
+    // GoTrue vuelve sin code cuando el proveedor o el alta fallan; no es un link vencido.
+    const providerError = params.get("error_code") ?? params.get("error");
+    if (providerError) {
+      log.error("auth_callback_provider_error", { error_code: providerError });
+      return { kind: "error", destination: providerError === "signup_disabled" ? SIGNUP_ERROR_PATH : OAUTH_ERROR_PATH };
+    }
+    return LINK_ERROR;
+  }
 
   // auth-js solo agrega sb_flow_id con un flag experimental; sin él lee la cookie legacy del
   // verificador. Reenviarlo cuando viene evita quemar el code con el verificador de otro flujo.

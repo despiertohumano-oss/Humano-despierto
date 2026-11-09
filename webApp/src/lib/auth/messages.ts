@@ -2,6 +2,9 @@
 // casos y la pantalla no puede ser la que filtre esa diferencia.
 export const AUTH_COPY = {
   linkExpired: "El enlace venció o ya se usó. Pedí uno nuevo.",
+  signupClosed:
+    "No pudimos crear tu cuenta con Google. Probá de nuevo en un rato o creala con tu mail en \"Crear cuenta\".",
+  oauthFailed: "Google no completó el ingreso. Probá de nuevo.",
   confirmEmail: "Confirmá tu mail para entrar.",
   checkEmail:
     "Si el mail es válido, te mandamos un enlace para confirmar la cuenta. Abrilo desde este mismo navegador.",
