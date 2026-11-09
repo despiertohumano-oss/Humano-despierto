@@ -8,7 +8,7 @@ export default function BrandMark({ className, onClick }: { className?: string; 
       href="/"
       onClick={onClick}
       aria-label="Humano Despierto, inicio"
-      className={cn("flex items-center gap-2.5 text-[19px] font-bold tracking-[-0.01em]", className)}
+      className={cn("flex flex-none items-center gap-2.5 whitespace-nowrap text-[19px] font-bold tracking-[-0.01em]", className)}
     >
       <svg viewBox="0 0 34 34" className="h-8 w-8 flex-none" fill="none" stroke="currentColor" strokeWidth={2}
         strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

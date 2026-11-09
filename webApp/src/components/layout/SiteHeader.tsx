@@ -10,6 +10,7 @@ import { isHeaderSolid } from "@/lib/ui/header";
 import { useAuthStore } from "@/lib/stores/useAuthStore";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils/cn";
+import AccountMenu from "./AccountMenu";
 import MobileMenu from "./MobileMenu";
 import { headerLinks } from "@/lib/ui/nav-links";
 
@@ -50,20 +51,11 @@ export default function SiteHeader({ overHero = false }: Props) {
 
   const session = isSignedIn && user ? { role: user.role } : null;
   const links = headerLinks(session);
-  const linkCls = "rounded-md px-1 py-1 transition-opacity hover:opacity-70";
+  // Un ítem del menú nunca se parte en dos líneas: si no entran, se pasa a la hamburguesa (xl).
+  const linkCls = "whitespace-nowrap rounded-md px-1 py-1 transition-opacity hover:opacity-70";
 
   const account = session ? (
-    <>
-      <Link href="/panel" className={cn(linkCls, "max-w-[16ch] truncate")}>
-        {user?.fullName || "Mi panel"}
-      </Link>
-      <Link href="/panel/perfil" className={linkCls}>
-        Mi perfil
-      </Link>
-      <button type="button" onClick={handleSignOut} className={cn(linkCls, "cursor-pointer")}>
-        Salir
-      </button>
-    </>
+    <AccountMenu name={user?.fullName || "Mi cuenta"} solid={solid} onSignOut={handleSignOut} />
   ) : (
     <>
       <Link href="/entrar" className={linkCls}>
@@ -88,7 +80,7 @@ export default function SiteHeader({ overHero = false }: Props) {
       <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-6 px-6">
         <BrandMark />
 
-        <nav aria-label="Principal" className="hidden items-center gap-6 text-[15px] font-medium lg:flex">
+        <nav aria-label="Principal" className="hidden flex-none items-center gap-5 text-[15px] font-medium xl:flex">
           {links.map((l) => (
             <Link key={l.href} href={l.href} className={linkCls}>
               {l.label}
@@ -105,7 +97,7 @@ export default function SiteHeader({ overHero = false }: Props) {
           aria-label="Abrir menú"
           aria-expanded={open}
           aria-controls={menuId}
-          className="grid h-11 w-11 place-items-center rounded-full lg:hidden"
+          className="grid h-11 w-11 place-items-center rounded-full xl:hidden"
         >
           <Icon name="menu" className="h-6 w-6" />
         </button>
