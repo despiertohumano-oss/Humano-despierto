@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ChartForm from "@/components/carta-natal/ChartForm";
+import ChartResult from "@/components/carta-natal/ChartResult";
+import { ButtonLink } from "@/components/atoms/Button";
 import { SITE_OG_IMAGE } from "@/lib/og/site";
 import { getCurrentUser } from "@/lib/server/auth";
-import { editInitialFromSaved, getNatalChart } from "@/lib/server/natal-chart";
+import { editInitialFromSaved, getMainNatalChart, getNatalChart, viewFromSaved, type SavedChart } from "@/lib/server/natal-chart";
 import { z } from "@/lib/validation/zod";
 import { HOUSE_KEYS } from "@/lib/astro/prose";
 import { BODY_IDS, BODY_NAMES, SIGNS, SIGN_IDS, bodySlug } from "@/lib/astro/zodiac";
@@ -34,10 +36,14 @@ export default async function CartaNatalPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const user = await getCurrentUser();
+  const params = await searchParams;
   // ?editar=<id>: solo una carta propia (getNatalChart lee con la sesión, RLS); si no, form vacío.
-  const editarId = z.string().uuid().safeParse((await searchParams).editar);
+  const editarId = z.string().uuid().safeParse(params.editar);
   const saved = user && editarId.success ? await getNatalChart(editarId.data) : null;
   const editing = saved ? await editInitialFromSaved(saved) : undefined;
+  // Con una carta guardada se ve esa carta; el formulario, solo para editarla o pedir otra (?nueva=1).
+  const main = user && !editing && params.nueva !== "1" ? await getMainNatalChart() : null;
+  if (main) return <MainChart chart={main} />;
   return (
     <div className="min-h-screen bg-fondo text-tinta">
       <div className="mx-auto max-w-[1000px] px-6 pb-8 pt-10">
@@ -59,6 +65,27 @@ export default async function CartaNatalPage({
           <Indice titulo="Planetas y puntos" links={BODY_IDS.map((b) => ({ href: `/carta-natal/planetas/${bodySlug(b)}`, label: BODY_NAMES[b] }))} />
           <Indice titulo="Las casas" links={HOUSE_KEYS.map((n) => ({ href: `/carta-natal/casas/${n}`, label: `Casa ${n}` }))} />
         </div>
+      </main>
+    </div>
+  );
+}
+
+async function MainChart({ chart }: { chart: SavedChart }) {
+  const view = await viewFromSaved(chart);
+  const [y, m, d] = chart.birthDate.split("-");
+  return (
+    <div className="min-h-screen bg-fondo text-tinta">
+      <main className="mx-auto max-w-[1000px] px-6 pb-20 pt-10">
+        <p className="text-sm font-semibold text-miel-800">
+          {chart.isSelf ? "Tu carta natal" : "Tu última carta"} · {d}/{m}/{y} · {chart.birthTime ?? "sin hora"}
+        </p>
+        <h1 className="mt-3 text-display-lg leading-[1.08] tracking-[-0.025em]">{chart.label}</h1>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <ButtonLink href={`/carta-natal?editar=${chart.id}`} variant="outline" size="sm">Editar datos</ButtonLink>
+          <ButtonLink href="/carta-natal?nueva=1" variant="ghost" size="sm" arrow>Calcular otra carta</ButtonLink>
+          <ButtonLink href="/panel/carta-natal" variant="ghost" size="sm">Mis cartas guardadas</ButtonLink>
+        </div>
+        <div className="mt-10"><ChartResult view={view} /></div>
       </main>
     </div>
   );

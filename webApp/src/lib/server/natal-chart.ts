@@ -189,6 +189,20 @@ export async function listNatalCharts(): Promise<SavedChart[]> {
   return rows.map(toSaved).filter((c): c is SavedChart => c !== null);
 }
 
+/** La carta que se muestra al entrar a /carta-natal: la marcada «mi carta», si no la más reciente. */
+export async function getMainNatalChart(): Promise<SavedChart | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("natal_charts")
+    .select(COLUMNS)
+    .order("is_self", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) throw new Error(`No se pudo leer la carta: ${error.message}`);
+  return data ? toSaved(data) : null;
+}
+
 export async function hasSelfChart(): Promise<boolean> {
   const supabase = await createClient();
   const { data, error } = await supabase.from("natal_charts").select("id").eq("is_self", true).limit(1);
