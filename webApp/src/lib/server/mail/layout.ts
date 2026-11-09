@@ -1,20 +1,20 @@
 import "server-only";
 
-// Mail con la paleta Brote (D-60): fondo cálido, papel blanco, tinta bosque, botón miel. Sin emojis
+// Mail con la paleta Noche y oro (2026-11-09; D-60): fondo cálido, papel blanco, tinta bosque, botón miel. Sin emojis
 // ni imágenes remotas: el brote de la marca va como SVG inline (Gmail y Apple Mail lo muestran; los
 // clientes que lo filtran, como Outlook, quedan con el nombre en texto, que está al lado). Tabla +
 // estilos inline porque los clientes de mail no cargan hojas externas y Gmail poda el <style> de
 // bloque. Plus Jakarta Sans solo se ve donde el cliente la tenga: el fallback es system sans.
 
 const COLORS = {
-  bg: "#FCFBF8",
+  bg: "#F7F5F0",
   paper: "#FFFFFF",
-  border: "#E8E4DA",
-  ink: "#2C3A31",
-  inkFaint: "#6B7A70",
-  forest: "#1F2E24",
-  honey: "#E6A93A",
-  link: "#8A6219",
+  border: "#E2E0EA",
+  ink: "#262B45",
+  inkFaint: "#555B78",
+  forest: "#141A38",
+  honey: "#D9B45A",
+  link: "#7A5A12",
 } as const;
 
 const FONT = "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif";

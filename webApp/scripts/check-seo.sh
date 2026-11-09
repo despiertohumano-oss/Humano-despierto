@@ -96,6 +96,12 @@ if grep -rq 'href="#"' "$(dirname "$0")/../src" --include='*.tsx'; then
   echo "  FALLA  hay href=\"#\" en src/"; fail=1
 else echo "  ok     sin href=\"#\""; fi
 
+echo "== CSS publicado al día con globals.css =="
+css_url=$(curl -s "$BASE/" | grep -oE '/_next/static/[^"]+\.css' | head -1)
+if [ -z "$css_url" ]; then echo "  FALLA  / sin hoja de estilos"; fail=1
+elif curl -s "$BASE$css_url" | grep -q '\.cosmico'; then echo "  ok     la hoja de / trae las reglas .cosmico"
+else echo "  FALLA  la hoja de / no trae .cosmico (build con caché vieja de globals.css)"; fail=1; fi
+
 echo "== CSP con nonce por request (S-04) =="
 csp_nonce() { curl -sD - -o /dev/null "$BASE$1" | tr -d '\r' | grep -i '^content-security-policy' | grep -o "'nonce-[A-Za-z0-9+/=]*'" | head -1; }
 for p in / /cursos /guias /diario /entrar; do

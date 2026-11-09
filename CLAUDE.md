@@ -316,17 +316,17 @@ visual reference: `design_handoff_humano_humano/reference/brote/b4-brote2.html`.
   `noche`). Every pair is checked in that test (>= 4.5:1 text, >= 3:1 focus). The `primary` button
   (`miel` + `bosque` text) does not change. The footer stays `bosque`.
 - **Semantic tokens only**, defined once in `webApp/src/styles/tokens.css` and exposed to Tailwind
-  by `@theme inline` in `src/styles/globals.css`: `fondo` `#FCFBF8` · `papel` `#FFFFFF` ·
-  `salvia-100` `#EEF3EC` · `salvia` `#CFDCCB` · `linea` `#E3E8E1` · `tinta` `#2C3A31` (body text) ·
-  `bosque` `#1F2E24` (headings, secondary button, footer) · `bosque-700` · `suave` `#5F6E65`
-  (secondary text) · `miel` `#E6A93A` (primary button, `bosque` text on it: 6.85:1) · `miel-hover` `#F0B955` ·
-  `miel-800` `#8A6219` (links, accent text) · `miel-100` (tags) · `musgo` `#5E7A66` (**icons and
-  illustration only, never text**) · `error` `#A8322A` · `exito` `#2F6B45` · `noche`/`indigo`/`oro` (cosmic
-  surfaces only, see above). No `cosmos`, `lila`,
-  `ink`, `gold` or `hh-` class names in `webApp/src`; the one exception is the mail layout
-  (`src/lib/server/mail/layout.ts`, a `COLORS` object with `bg #0a0418`, `lila`, `gold`), which keeps
-  the Cosmos palette until D-60. Tailwind's default palette (`red-400`…) is not used for text either:
-  errors are `text-error`. Radii `sm` 8 · `md` 12 · `lg` 18 · `pill`.
+  by `@theme inline` in `src/styles/globals.css`. Palette **«Noche y oro»** (owner, 2026-11-09); the
+  token names are historical (`bosque` is now night blue, `salvia` lavender-grey, `miel` gold):
+  `fondo` `#F7F5F0` · `papel` `#FFFFFF` · `salvia-100` `#ECEBF3` · `salvia` `#D9D7E6` · `linea` `#E2E0EA` ·
+  `tinta` `#262B45` (body text) · `bosque` `#141A38` (headings, secondary button, footer) · `bosque-700` ·
+  `suave` `#555B78` (secondary text) · `miel` `#D9B45A` (primary button, `bosque` text on it: 8.6:1) ·
+  `miel-hover` `#E4C373` · `miel-800` `#7A5A12` (links, accent text) · `miel-100` (tags) · `musgo` `#5A6390`
+  (**icons and illustration only, never text**) · `error` `#A8322A` · `exito` `#2F6B45`. Cosmic accents
+  `noche`/`indigo`/`oro` live only inside `.cosmico`. No `cosmos`, `lila`,
+  `ink`, `gold` or `hh-` class names in `webApp/src`. The mail layout (`src/lib/server/mail/layout.ts`)
+  and the OG images (`src/lib/og/brand.tsx`) carry the same palette as literals. Tailwind's default
+  palette (`red-400`…) is not used for text either: errors are `text-error`. Radii `sm` 8 · `md` 12 · `lg` 18 · `pill`.
 - **Text contrast ≥ 4.5:1.** No light text on light backgrounds, no opacity on text colours and no
   `opacity-*` on a container that holds text (a state such as «Completado» or «Mensaje borrado» is a
   background plus a label). Only genuinely inactive controls (`disabled:`, locked lessons) and

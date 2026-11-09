@@ -4,7 +4,9 @@
 # variables (ver docs/deploy-netlify.md).
 [build]
   base = "webApp"
-  command = "npm run build"
+  # Sin caché de Next entre builds: el 2026-11-09 un build reusó globals.css viejo con tokens.css
+  # nuevo y producción salió sin las reglas .cosmico (títulos oscuros sobre el cielo). check-seo lo vigila.
+  command = "rm -rf .next/cache && npm run build"
   publish = ".next"
 
 [build.environment]
