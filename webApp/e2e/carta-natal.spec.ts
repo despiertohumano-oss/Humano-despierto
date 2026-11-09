@@ -2,6 +2,7 @@ import type { Page } from "@playwright/test";
 import { expect, test, ALUMNA, assertStackUp, login, loginAs } from "./fixtures";
 import { DOCENTE } from "./account";
 import { psql } from "./db";
+import { escribirFecha, escribirHora, esperarValor } from "./campos";
 
 const ALUMNA_ID = "d0000000-0000-4000-8000-000000000003";
 const DOCENTE_ID = "d0000000-0000-4000-8000-000000000002";
@@ -50,8 +51,8 @@ async function elegirLugar(page: Page, busqueda = "Ciudad de Pru", nombre: RegEx
 }
 
 async function datosConLugar(page: Page, { fecha = "1990-06-15", hora = "09:00" }: { fecha?: string; hora?: string } = {}) {
-  await page.getByLabel("Fecha de nacimiento").fill(fecha);
-  if (hora) await page.getByLabel("Hora de nacimiento").fill(hora);
+  await escribirFecha(page, "Fecha de nacimiento", fecha);
+  if (hora) await escribirHora(page, "Hora de nacimiento", hora);
   else await page.getByLabel("No sé la hora").check();
   await elegirLugar(page);
 }
@@ -86,8 +87,8 @@ test("anónima con hora: lugar de la lista, rueda y tablas, y nada viaja en la U
 
 test("la búsqueda \"purma\" encuentra Purmamarca y calcula con su huso", async ({ page }) => {
   await abrir(page, "/carta-natal");
-  await page.getByLabel("Fecha de nacimiento").fill("1990-06-15");
-  await page.getByLabel("Hora de nacimiento").fill("09:00");
+  await escribirFecha(page, "Fecha de nacimiento", "1990-06-15");
+  await escribirHora(page, "Hora de nacimiento", "09:00");
   await page.getByLabel("Lugar de nacimiento").fill("purma");
   // Aviso para lectores de pantalla (sr-only): se afirma que está, no que se ve.
   await expect(page.getByText(/^\d+ lugare?s? encontrados?$/)).toBeAttached();
@@ -107,7 +108,7 @@ test("la búsqueda \"purma\" encuentra Purmamarca y calcula con su huso", async 
 
 test("anónima sin hora, lugar a mano: sin Ascendente ni casas y con el aviso", async ({ page }) => {
   await abrir(page, "/carta-natal");
-  await page.getByLabel("Fecha de nacimiento").fill("1990-06-15");
+  await escribirFecha(page, "Fecha de nacimiento", "1990-06-15");
   await page.getByLabel("No sé la hora").check();
   await lugarAMano(page);
   await calcular(page);
@@ -117,8 +118,8 @@ test("anónima sin hora, lugar a mano: sin Ascendente ni casas y con el aviso", 
 
 test("hora ambigua: pregunta antes o después del atraso, nunca elige sola, y vuelve a preguntar si cambia la hora", async ({ page }) => {
   await abrir(page, "/carta-natal");
-  await page.getByLabel("Fecha de nacimiento").fill("2008-03-15");
-  await page.getByLabel("Hora de nacimiento").fill("23:30");
+  await escribirFecha(page, "Fecha de nacimiento", "2008-03-15");
+  await escribirHora(page, "Hora de nacimiento", "23:30");
   await lugarAMano(page);
   await calcular(page);
   await expect(preguntaAmbigua(page)).toBeVisible();
@@ -128,7 +129,7 @@ test("hora ambigua: pregunta antes o después del atraso, nunca elige sola, y vu
   await expect(posiciones(page)).toBeVisible();
   await expect(page.getByText("Huso America/Argentina/Buenos_Aires, UTC−3").last()).toBeVisible();
 
-  await page.getByLabel("Hora de nacimiento").fill("23:45");
+  await escribirHora(page, "Hora de nacimiento", "23:45");
   await expect(posiciones(page)).toHaveCount(0);
   await calcular(page);
   await expect(preguntaAmbigua(page)).toBeVisible();
@@ -140,8 +141,8 @@ test("hora ambigua: pregunta antes o después del atraso, nunca elige sola, y vu
 
 test("hora inexistente: avisa que esa hora no existió y no calcula", async ({ page }) => {
   await abrir(page, "/carta-natal");
-  await page.getByLabel("Fecha de nacimiento").fill("2007-12-30");
-  await page.getByLabel("Hora de nacimiento").fill("00:30");
+  await escribirFecha(page, "Fecha de nacimiento", "2007-12-30");
+  await escribirHora(page, "Hora de nacimiento", "00:30");
   await lugarAMano(page);
   await calcular(page);
   await expect(page.getByRole("alert").filter({ hasText: INEXISTENTE })).toBeVisible();
@@ -194,7 +195,7 @@ test("guardar, cambiar la hora y recalcular vuelve a ofrecer guardar, sin el con
   await expect(page.getByRole("link", { name: "Guardada. Verla" })).toBeVisible();
   await expect.poll(() => contarCartas(ALUMNA_ID)).toBe("1");
 
-  await page.getByLabel("Hora de nacimiento").fill("10:00");
+  await escribirHora(page, "Hora de nacimiento", "10:00");
   await calcular(page);
   await expect(page.getByRole("heading", { name: "Guardar esta carta" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Guardada. Verla" })).toHaveCount(0);
@@ -210,22 +211,13 @@ test("guardar, cambiar la hora y recalcular vuelve a ofrecer guardar, sin el con
   psql(`delete from public.natal_charts where user_id = '${ALUMNA_ID}';`);
 });
 
-test("lo que se escribe antes de hidratar cuenta: el desfase aparece antes de calcular", async ({ page }) => {
-  // Se retiene el JS hasta haber escrito: la fecha y la hora quedan en el DOM antes de que React exista.
-  let soltar!: () => void;
-  const js = new Promise<void>((r) => (soltar = r));
-  await page.route("**/_next/static/**/*.js", async (route) => {
-    await js;
-    await route.continue();
-  });
-  await page.goto("/carta-natal", { waitUntil: "commit" });
-  await page.getByLabel("Fecha de nacimiento").fill("1990-06-15");
-  await page.getByLabel("Hora de nacimiento").fill("09:00");
-  soltar();
-  await page.waitForLoadState("networkidle");
+test("el desfase aparece antes de calcular", async ({ page }) => {
+  await page.goto("/carta-natal", { waitUntil: "networkidle" });
+  await escribirFecha(page, "Fecha de nacimiento", "1990-06-15");
+  await escribirHora(page, "Hora de nacimiento", "09:00");
   await elegirLugar(page);
   await expect(page.getByText(/^Hora de Ciudad de Prueba, UTC−3\./)).toBeVisible();
-  await expect(page.getByLabel("Fecha de nacimiento")).toHaveValue("1990-06-15");
+  await esperarValor(page, "fecha", "1990-06-15");
   await calcular(page);
   await expect(posiciones(page)).toBeVisible();
 });
@@ -285,7 +277,7 @@ test("docente sin carta ve el bloqueo y al guardarla entra al panel", async ({ p
   await loginAs(page, DOCENTE, "/panel/docente");
   await abrir(page, "/panel/docente");
   await expect(page.getByRole("heading", { name: BLOQUEO })).toBeVisible();
-  await page.getByLabel("Fecha de nacimiento").fill("1985-03-21");
+  await escribirFecha(page, "Fecha de nacimiento", "1985-03-21");
   await page.getByLabel("No sé la hora").check();
   await elegirLugar(page);
   await page.getByLabel(/Acepto que guarden mis datos de nacimiento/).check();
@@ -323,11 +315,11 @@ test("alumna edita una carta guardada: abre precargada, cambia la hora y la reem
   await abrir(page, "/panel/carta-natal");
   await page.getByRole("link", { name: "Editar", exact: true }).click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Editar carta natal");
-  await expect(page.getByLabel("Fecha de nacimiento")).toHaveValue("1990-06-15");
-  await expect(page.getByLabel("Hora de nacimiento")).toHaveValue("09:00");
+  await esperarValor(page, "fecha", "1990-06-15");
+  await esperarValor(page, "hora", "09:00");
   await expect(page.getByLabel("Lugar de nacimiento")).toHaveValue(/Ciudad de Prueba/);
 
-  await page.getByLabel("Hora de nacimiento").fill("10:30");
+  await escribirHora(page, "Hora de nacimiento", "10:30");
   await calcular(page);
   await expect(page.getByLabel("Nombre para esta carta (opcional)")).toHaveValue("Para editar");
   await page.getByLabel(/Acepto que guarden mis datos de nacimiento/).check();

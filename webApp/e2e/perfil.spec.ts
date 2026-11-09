@@ -1,5 +1,6 @@
 import type { Page } from "@playwright/test";
 import { expect, test, ALUMNA, assertStackUp, login } from "./fixtures";
+import { escribirFecha, esperarValor } from "./campos";
 
 // Sol Mayor es la docente sembrada con ficha publica y cursos (seed.sql, bloque de docentes).
 const SOL = {
@@ -23,7 +24,7 @@ async function guardarPerfil(page: Page, campos: { nombre?: string; telefono?: s
   await page.goto("/panel/perfil", { waitUntil: "networkidle" });
   if (campos.nombre !== undefined) await page.getByLabel("Nombre", { exact: true }).fill(campos.nombre);
   if (campos.telefono !== undefined) await page.getByLabel("Teléfono").fill(campos.telefono);
-  if (campos.fecha !== undefined) await page.getByLabel("Fecha de nacimiento").fill(campos.fecha);
+  if (campos.fecha !== undefined) await escribirFecha(page, "Fecha de nacimiento", campos.fecha);
   const guardar = page.getByRole("button", { name: "Guardar perfil" });
   // Sin cambios el botón está deshabilitado: el valor ya estaba guardado de una corrida anterior.
   if (await guardar.isDisabled()) return;
@@ -36,9 +37,10 @@ test("c.1 · la alumna ve su perfil sin rol editable", async ({ page, request })
   await login(page, ALUMNA);
   await page.goto("/panel/perfil");
   await expect(page.locator("h1")).toContainText("perfil");
-  for (const label of ["Nombre", "Bio", "Teléfono", "Fecha de nacimiento"]) {
+  for (const label of ["Nombre", "Bio", "Teléfono"]) {
     await expect(page.getByLabel(label, { exact: true })).toBeVisible();
   }
+  await expect(page.getByRole("group", { name: "Fecha de nacimiento", exact: true })).toBeVisible();
   await expect(page.getByLabel(/rol/i)).toHaveCount(0);
 });
 
@@ -59,10 +61,10 @@ test("c.8 · la alumna carga y borra su fecha de nacimiento", async ({ page, req
   await login(page, ALUMNA);
   await guardarPerfil(page, { fecha: "1990-05-04" });
   await page.reload();
-  await expect(page.getByLabel("Fecha de nacimiento")).toHaveValue("1990-05-04");
+  await esperarValor(page, "birthDate", "1990-05-04");
   await guardarPerfil(page, { fecha: "" });
   await page.reload();
-  await expect(page.getByLabel("Fecha de nacimiento")).toHaveValue("");
+  await esperarValor(page, "birthDate", "");
 });
 
 // PNG 1x1 real: la action mira la firma de 8 bytes, pero un PNG valido deja que el navegador lo pinte.

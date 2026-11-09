@@ -7,6 +7,8 @@ import Button from "@/components/atoms/Button";
 import { ACTION_INITIAL_STATE } from "@/lib/action-state";
 import { calcularCarta, guardarCarta, type CalcState, type SaveState } from "@/app/(marketing)/carta-natal/actions";
 import type { ChartEditInitial, PlaceOption } from "@/lib/server/natal-chart";
+import DateField from "@/components/molecules/DateField";
+import TimeField from "@/components/molecules/TimeField";
 import ChartResult from "./ChartResult";
 import PlaceSearch from "./PlaceSearch";
 
@@ -82,8 +84,10 @@ export default function ChartForm({ mode, signedIn, perfilPublico, editing }: Pr
   const form = useRef<HTMLFormElement>(null);
   const [calc, calcAction, calculando] = useActionState(calcularCarta, ACTION_INITIAL_STATE as CalcState);
   const [save, saveAction, guardando] = useActionState(guardarCarta, ACTION_INITIAL_STATE as SaveState);
+  // AAAA-MM-DD y HH:MM; "" mientras la fecha o la hora estén incompletas.
   const [fecha, setFecha] = useState(editing?.fecha ?? "");
   const [hora, setHora] = useState(editing?.hora ?? "");
+  const hoy = useMemo(() => new Date().toLocaleDateString("sv-SE"), []);
   const [sinHora, setSinHora] = useState(editing ? editing.hora === null : false);
   const [place, setPlace] = useState<PlaceOption | null>(editing?.place ?? null);
   const [manual, setManual] = useState(editing?.manual != null);
@@ -113,7 +117,9 @@ export default function ChartForm({ mode, signedIn, perfilPublico, editing }: Pr
     if (!campos) return;
     const valor = (n: string) => (campos.namedItem(n) as HTMLInputElement | HTMLSelectElement | null)?.value ?? "";
     const tildado = (n: string) => (campos.namedItem(n) as HTMLInputElement | null)?.checked === true;
-    const copiar: [string, (v: string) => void][] = [["fecha", setFecha], ["hora", setHora], ["lat", setLat], ["lon", setLon], ["huso", setHuso], ["casas", setCasas]];
+    const copiar: [string, (v: string) => void][] = [
+      ["lat", setLat], ["lon", setLon], ["huso", setHuso], ["casas", setCasas],
+    ];
     for (const [n, set] of copiar) if (valor(n) !== "") set(valor(n));
     if (tildado("sinHora")) setSinHora(true);
     if (tildado("consiento")) setConsiento(true);
@@ -142,15 +148,19 @@ export default function ChartForm({ mode, signedIn, perfilPublico, editing }: Pr
         </p>
       )}
       <div className="grid gap-5 sm:grid-cols-2">
-        <label className={ETIQUETA}>
-          Fecha de nacimiento
-          <input type="date" name="fecha" required min="1900-01-01" max="2100-12-31" value={fecha} onChange={(e) => setFecha(e.target.value)} className={CAMPO} />
-        </label>
         <div>
-          <label className={ETIQUETA}>
-            Hora de nacimiento
-            <input type="time" name="hora" step={60} required={!sinHora} disabled={sinHora} value={hora} onChange={(e) => setHora(e.target.value)} className={CAMPO} />
-          </label>
+          <DateField
+            id="fecha" label="Fecha de nacimiento" hint="Día, mes y año. También podés elegirla en el calendario."
+            value={fecha} onChange={setFecha} min="1900-01-01" max={hoy} openAt="1990-01-01" required
+          />
+          <input type="hidden" name="fecha" value={fecha} />
+        </div>
+        <div>
+          <TimeField
+            id="hora" label="Hora de nacimiento" hint={sinHora ? "Sin hora, la carta se calcula al mediodía y sin casas." : "En 24 horas. Por ejemplo: 21:30."}
+            value={sinHora ? "" : hora} onChange={setHora} required={!sinHora} disabled={sinHora}
+          />
+          {!sinHora && <input type="hidden" name="hora" value={hora} />}
           <label className="mt-2 flex min-h-10 items-center gap-2 text-sm text-tinta">
             <input type="checkbox" name="sinHora" checked={sinHora} onChange={(e) => setSinHora(e.target.checked)} />
             No sé la hora
