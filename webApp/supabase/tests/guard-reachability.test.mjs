@@ -88,6 +88,9 @@ const CASOS = {
   course_review_reports_guard: 'la guia duena reporta con prosa normal y la cuenta de quien resolvio se puede borrar',
   // --- tarot
   tarot_readings_guard: 'la alumna guarda una tirada valida y user_id lo fija el guard',
+  // --- carta natal (T-024)
+  natal_charts_guard: 'service_role guarda la carta de una usuaria con menos de 100',
+  natal_charts_clear_self_signs: 'la duena borra su carta propia; borrar la cuenta con carta propia no queda bloqueado',
   // --- anuncios (T-031)
   course_announcements_guard: 'la duena escribe un borrador, lo corrige y retira otro con motivo; el admin modera uno publicado',
   course_announcements_freeze_published: 'service_role publica un borrador y el publicado se puede retirar',
@@ -1005,5 +1008,37 @@ describe('ADR-011 · contenidos de la duena (B3, B4)', () => {
     );
     assert.equal(r.ok, true, `el cambio de rol de la creadora quedo bloqueado: ${r.message}`);
     assert.deepEqual(r.rows, [{ role: 'student', is_founder: false }]);
+  });
+});
+
+// T-024 · la cadena de 0017 sobre natal_charts: el trigger AFTER DELETE actualiza `profiles`, y el
+// borrado de la cuenta llega por cascada desde ese mismo perfil.
+describe('ADR-011 · carta natal: guardar y borrar siguen siendo posibles', () => {
+  let db;
+  before(async () => {
+    ({ db } = await bootDatabase());
+    await seed(db);
+  });
+  after(async () => db?.close());
+
+  const guardarPropia = (user) =>
+    asService(db, () => attempt(db,
+      `select public.save_natal_chart($1, 'Mi carta', '1990-06-15', '09:30', null, -34.6, -58.4,
+         'America/Argentina/Buenos_Aires', -10800, null, '2026e', 'placidus', true, 'geminis', 'piscis', 'leo') as id`, [user]));
+
+  test(`natal_charts_guard · ${CASOS.natal_charts_guard}`, async () => {
+    const r = await guardarPropia(ID.teacherA);
+    assert.equal(r.ok, true, `el guard bloqueo una carta legitima: ${r.message}`);
+  });
+
+  test(`natal_charts_clear_self_signs · ${CASOS.natal_charts_clear_self_signs}`, async () => {
+    const borrar = await asUser(db, { sub: ID.teacherA, userRole: 'teacher' }, () =>
+      attempt(db, `delete from public.natal_charts where user_id = $1 returning id`, [ID.teacherA]));
+    assert.equal(borrar.rows.length, 1, borrar.message);
+    // `otro` y no una docente: los cursos de una docente bloquean el borrado de su cuenta (RESTRICT).
+    await guardarPropia(ID.otro);
+    await db.exec(`reset role;`);
+    const cuenta = await attempt(db, `delete from auth.users where id = $1`, [ID.otro]);
+    assert.equal(cuenta.ok, true, `la cuenta con carta propia quedo imborrable: ${cuenta.message}`);
   });
 });

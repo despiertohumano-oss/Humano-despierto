@@ -2,6 +2,8 @@ import { readFile, readdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PGlite } from '@electric-sql/pglite';
+import { pg_trgm } from '@electric-sql/pglite/contrib/pg_trgm';
+import { unaccent } from '@electric-sql/pglite/contrib/unaccent';
 
 const here = dirname(fileURLToPath(import.meta.url));
 export const MIGRATIONS_DIR = join(here, '..', 'migrations');
@@ -18,7 +20,8 @@ export const BASELINE_SQL = join(here, '00_supabase_baseline.sql');
  * si no, se aplicaria todo y el test pasaria sin probar nada.
  */
 export async function bootDatabase({ afterMigrations = [], until = null } = {}) {
-  const db = await PGlite.create();
+  // 0072 usa pg_trgm y unaccent (búsqueda de lugares). PGlite las trae como contrib cargables.
+  const db = await PGlite.create({ extensions: { pg_trgm, unaccent } });
   await db.exec(await readFile(BASELINE_SQL, 'utf8'));
 
   const files = (await readdir(MIGRATIONS_DIR)).filter((f) => f.endsWith('.sql')).sort();

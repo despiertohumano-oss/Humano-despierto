@@ -32,3 +32,21 @@ describe("T-091 · /sitemap.xml no se prerenderiza", () => {
     expect(urls).toContain("http://localhost:3000/cursos/tarot-1");
   });
 });
+
+describe("T-024 · fichas de carta natal en el sitemap", () => {
+  it("lista la portada y las 37 fichas", async () => {
+    connection.mockResolvedValue(undefined);
+    const urls = (await sitemap()).map((e) => e.url);
+    expect(urls).toContain("http://localhost:3000/carta-natal");
+    expect(urls).toContain("http://localhost:3000/carta-natal/signos/aries");
+    expect(urls).toContain("http://localhost:3000/carta-natal/planetas/lilith-media");
+    expect(urls).toContain("http://localhost:3000/carta-natal/casas/12");
+    expect(urls.filter((u) => u.includes("/carta-natal/")).length).toBe(37);
+  });
+
+  it("no incluye cartas personales", async () => {
+    connection.mockResolvedValue(undefined);
+    const urls = (await sitemap()).map((e) => e.url);
+    expect(urls.filter((u) => /\/carta-natal\/(?!signos|planetas|casas)/.test(u))).toEqual([]);
+  });
+});

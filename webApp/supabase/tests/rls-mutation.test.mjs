@@ -485,9 +485,11 @@ describe('T-001 · RLS y privilegios contra un JWT de student', () => {
       // Lo que la vuelve defendible como oraculo es el filtro `c.status = 'published'` de su
       // cuerpo (0023): un curso en borrador devuelve 0 pase lo que pase, asi que tampoco
       // delata la existencia ni el tamaño de lo que todavia no se publico.
+      // T-024 suma `search_places`: SECURITY INVOKER sobre `places`, que es dato abierto (GeoNames)
+      // con SELECT para `anon`. No lee nada que `anon` no pueda leer por select directo.
       const ESPERADO_ANON = [
         'can_read_course', 'course_student_count', 'current_app_role', 'is_admin',
-        'lesson_is_preview', 'owns_course',
+        'lesson_is_preview', 'owns_course', 'search_places',
       ];
       // `is_service_context` sigue siendo la unica excepcion: la llaman `guard_courses_insert` y
       // `guard_lessons`, que son SECURITY INVOKER. `lesson_progress_completes` (T-011) estuvo aca
