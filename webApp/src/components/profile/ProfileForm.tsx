@@ -1,39 +1,47 @@
 "use client";
 
-import { useActionState, useState, type FormEvent } from "react";
+import { useActionState, useEffect, useRef, useState, type FormEvent } from "react";
 import Button from "@/components/atoms/Button";
 import FormField from "@/components/molecules/FormField";
 import FormStatus from "@/components/molecules/FormStatus";
-import { clearBirthDateAction, updateProfileAction } from "@/app/(app)/panel/perfil/actions";
+import { updateProfileAction } from "@/app/(app)/panel/perfil/actions";
 import { ACTION_INITIAL_STATE } from "@/lib/action-state";
 import { profileFieldErrors, type ProfileField } from "@/lib/validation/profile-fields";
+import { profileFormIsDirty, type ProfileFormFields, type ProfileFormValues } from "@/lib/ui/profile-form";
 
-export interface ProfileFormFields {
-  fullName: string;
-  bio: string | null;
-  phone: string | null;
-  birthDate: string | null;
-}
+export type { ProfileFormFields } from "@/lib/ui/profile-form";
 
 const FIELDS: readonly ProfileField[] = ["fullName", "bio", "phone", "birthDate"];
 
+function readValues(form: HTMLFormElement): ProfileFormValues {
+  const data = new FormData(form);
+  return {
+    fullName: String(data.get("fullName") ?? ""),
+    bio: String(data.get("bio") ?? ""),
+    phone: String(data.get("phone") ?? ""),
+    birthDate: String(data.get("birthDate") ?? ""),
+  };
+}
+
 export default function ProfileForm({ profile, today }: { profile: ProfileFormFields; today: string }) {
   const [saveState, saveAction, saving] = useActionState(updateProfileAction, ACTION_INITIAL_STATE);
-  const [clearState, clearAction, clearing] = useActionState(clearBirthDateAction, ACTION_INITIAL_STATE);
   const [errors, setErrors] = useState<Partial<Record<ProfileField, string>>>({});
+  const [values, setValues] = useState<ProfileFormValues | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Tras guardar, React resetea el form a sus defaultValue (ya con el perfil nuevo) sin evento
+  // `input`: se vuelve a leer el DOM para que el botón quede deshabilitado.
+  useEffect(() => {
+    const id = setTimeout(() => formRef.current && setValues(readValues(formRef.current)), 0);
+    return () => clearTimeout(id);
+  }, [saveState, profile]);
+
+  const dirty = values !== null && profileFormIsDirty(profile, values);
 
   // La action devuelve un solo mensaje sin decir de qué campo es; validar acá con los mismos
-  // schemas deja cada error junto a su campo. «Borrar fecha» no valida: no manda el resto.
+  // schemas deja cada error junto a su campo.
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    const submitter = (e.nativeEvent as SubmitEvent).submitter;
-    if (submitter?.dataset.sinValidar !== undefined) return;
-    const data = new FormData(e.currentTarget);
-    const found = profileFieldErrors({
-      fullName: String(data.get("fullName") ?? ""),
-      bio: String(data.get("bio") ?? ""),
-      phone: String(data.get("phone") ?? ""),
-      birthDate: String(data.get("birthDate") ?? ""),
-    });
+    const found = profileFieldErrors(readValues(e.currentTarget));
     setErrors(found);
     const first = FIELDS.find((f) => found[f]);
     if (first) {
@@ -43,7 +51,14 @@ export default function ProfileForm({ profile, today }: { profile: ProfileFormFi
   }
 
   return (
-    <form action={saveAction} onSubmit={handleSubmit} noValidate className="tarjeta grid gap-6 p-6 md:p-8">
+    <form
+      ref={formRef}
+      action={saveAction}
+      onSubmit={handleSubmit}
+      onInput={(e) => setValues(readValues(e.currentTarget))}
+      noValidate
+      className="tarjeta grid gap-6 p-6 md:p-8"
+    >
       <h2 className="text-xl">Tus datos</h2>
       <FormField id="fullName" label="Nombre" error={errors.fullName}>
         {(c) => <input {...c} name="fullName" defaultValue={profile.fullName} required maxLength={120} autoComplete="name" />}
@@ -70,17 +85,12 @@ export default function ProfileForm({ profile, today }: { profile: ProfileFormFi
       </fieldset>
 
       <div className="flex flex-wrap items-center gap-3">
-        <Button type="submit" disabled={saving} aria-busy={saving}>
+        <Button type="submit" disabled={saving || !dirty} aria-busy={saving}>
           {saving ? "Guardando…" : "Guardar perfil"}
         </Button>
-        {profile.birthDate && (
-          <Button type="submit" variant="outline" formAction={clearAction} formNoValidate data-sin-validar="" disabled={clearing}>
-            Borrar fecha
-          </Button>
-        )}
+        {!dirty && !saving && <span className="text-sm text-suave">No hay cambios para guardar.</span>}
       </div>
       <FormStatus state={saveState} />
-      <FormStatus state={clearState} />
     </form>
   );
 }

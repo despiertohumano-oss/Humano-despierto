@@ -41,13 +41,22 @@ export default function AvatarForm({ avatarUrl, fullName }: Props) {
           required
           aria-invalid={a11y["aria-invalid"]}
           aria-describedby={a11y["aria-describedby"]}
-          onChange={(e) => setTooBig(exceedsAvatarLimit(e.currentTarget.files?.[0]?.size ?? 0))}
-          className="w-full max-w-full rounded-md border border-dashed border-suave bg-fondo p-3 text-sm text-tinta file:mr-3 file:min-h-10 file:cursor-pointer file:rounded-pill file:border-0 file:bg-salvia-100 file:px-4 file:font-semibold file:text-bosque"
+          disabled={uploading}
+          aria-busy={uploading}
+          onChange={(e) => {
+            const input = e.currentTarget;
+            const file = input.files?.[0];
+            const big = exceedsAvatarLimit(file?.size ?? 0);
+            setTooBig(big);
+            // Elegir la imagen ya es la decisión: se sube sola si es válida.
+            if (file && !big) input.form?.requestSubmit();
+          }}
+          className="w-full max-w-full rounded-md border border-dashed border-suave bg-fondo p-3 text-sm text-tinta file:mr-3 file:min-h-10 file:cursor-pointer file:rounded-pill file:border-0 file:bg-salvia-100 file:px-4 file:font-semibold file:text-bosque disabled:cursor-wait"
         />
         <FieldError id={a11y.errorId} error={tooBig ? TOO_BIG : null} />
-        <Button type="submit" full disabled={uploading || tooBig} aria-busy={uploading}>
-          {uploading ? "Subiendo…" : "Subir imagen"}
-        </Button>
+        <p aria-live="polite" className="text-sm font-medium text-suave">
+          {uploading ? "Subiendo imagen…" : ""}
+        </p>
         <FormStatus state={uploadState} />
       </form>
       {avatarUrl && (

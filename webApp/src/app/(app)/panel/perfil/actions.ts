@@ -66,21 +66,6 @@ export const updateProfileAction = withRateLimit(
   limitedState,
 );
 
-export const clearBirthDateAction = withRateLimit(
-  "clearBirthDateAction",
-  async function clearBirthDateAction(): Promise<ActionState> {
-    const { supabase, user } = await sessionUser();
-    if (!user) return SESSION_EXPIRED;
-
-    const { error } = await supabase.from("profiles").update({ birth_date: null }).eq("id", user.id);
-    if (error) return { error: "No se pudo borrar la fecha.", success: null };
-
-    revalidatePath("/panel/perfil");
-    return { error: null, success: "Fecha de nacimiento borrada." };
-  },
-  limitedState,
-);
-
 export const uploadAvatarAction = withRateLimit(
   "uploadAvatarAction",
   async function uploadAvatarAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
