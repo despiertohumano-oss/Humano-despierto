@@ -250,7 +250,12 @@ covered by mutation tests that fail loudly if you regress them.
 9. **A role change outside `updateUserRoleAction` exists only in `accept_teacher_invitation`**
    (T-049; `service_role` only, mail confirmed and equal to the invited one, only
    `student -> teacher`). `teacher_invitations` has no client access at all. The invitation
-   token lives only in the mail; the DB keeps its sha256. The admin lists (`admin_list_*`,
+   token lives only in the mail; the DB keeps its sha256. The mail link also carries a one-time
+   GoTrue access (`?acceso=<hashed_token>&tipo=magiclink|signup`, from `auth.admin.generateLink`;
+   for a mail without account GoTrue creates it): `/invitacion/[token]` redeems it with
+   `verifyOtp` (replacing any other session in that browser) before accepting, and a `signup`
+   account goes to `/entrar/nueva-clave?invitacion=1` to choose its password. When the access
+   expired (OTP expiry) the link still works by logging in by hand. The admin lists (`admin_list_*`,
    `admin_user_by_email`) are `service_role`-only SQL functions: the mail lives in `auth.users`.
 10. **The CSP lives in `src/proxy.ts`, built by `buildCsp` (`src/lib/security/csp.ts`), with a
     nonce per request** (T-052). That is why the root layout calls `await connection()`: a
@@ -407,6 +412,8 @@ Several things block work and require the repo owner's accounts:
   Check `select extname, extnamespace::regnamespace from pg_extension` first (`pg_trgm`/`unaccent`).
 - **Legal consultation on birth data** and **the owner's review of the 78 texts**
   (`templates.json`, `_meta.estado`): they block the T-024 release, not development.
+- **Auth OTP expiry = 86400** (24 h) in the cloud dashboard (Authentication > Email): the direct
+  access of the teacher-invitation mail lives that long (default 1 h). Local: `config.toml`.
 - **Gmail App Password** (T-090, stopgap until a domain exists): 2-step verification on
   `despiertohumano@gmail.com`, an App Password, then `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`,
   `SMTP_SECURE=true`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM_ADDRESS=despiertohumano@gmail.com`.

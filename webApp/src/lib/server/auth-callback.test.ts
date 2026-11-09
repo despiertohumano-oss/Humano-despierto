@@ -99,6 +99,13 @@ describe("resolveAuthCallback", () => {
     expect(await resolveAuthCallback(client, qs(q))).toEqual({ kind: "error", destination: "/entrar?error=oauth" });
     expect(exchange).not.toHaveBeenCalled();
   });
+  it.each(["otp_expired", "flow_state_expired"])("link de mail vencido o usado (%s) va al error de link, no al de Google", async (code) => {
+    expect(await resolveAuthCallback(client, qs(`error=access_denied&error_code=${code}&error_description=Email+link+is+invalid+or+has+expired`))).toEqual({
+      kind: "error",
+      destination: "/entrar?error=link",
+    });
+  });
+
 
   it("code inválido o ya usado va al mismo error neutro (c.6, c.7)", async () => {
     exchange.mockResolvedValue({ data: { user: null }, error: { code: "flow_state_not_found" } });

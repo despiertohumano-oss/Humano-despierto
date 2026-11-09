@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { newPasswordSchema } from "@/lib/validation/auth";
 import { firstIssueMessage } from "@/lib/validation/teacher";
 import { AUTH_COPY, authErrorMessage } from "@/lib/auth/messages";
-import { DEFAULT_NEXT } from "@/lib/auth/paths";
+import { homeForRole } from "@/lib/auth/paths";
 import type { PasswordUpdateState } from "@/lib/auth/action-state";
 
 export async function updatePasswordAction(
@@ -27,5 +27,7 @@ export async function updatePasswordAction(
   const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
   if (error) return { error: authErrorMessage(error) ?? AUTH_COPY.generic };
 
-  redirect(DEFAULT_NEXT);
+  // Cada rol a su panel: una docente recién invitada elige su clave acá y sigue a /panel/docente.
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+  redirect(homeForRole(profile?.role));
 }

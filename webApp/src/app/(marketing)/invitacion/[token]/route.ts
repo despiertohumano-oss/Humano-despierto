@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getAdminSupabaseClient } from "@/lib/server/supabase-admin";
 import { acceptInvitation } from "@/lib/server/invitations";
 import { resolveInvitationVisit } from "@/lib/server/invitation-visit";
+import { readAccess } from "@/lib/server/invitation-token";
 import { withRateLimit } from "@/lib/server/rate-limit";
 import type { RateLimitDenied } from "@/lib/rate-limit/core";
 
@@ -22,6 +23,10 @@ export const GET = withRateLimit(
     const supabase = await createClient();
 
     const destination = await resolveInvitationVisit(token, {
+      signInWithAccess: async ({ hash, type }) => {
+        const { error } = await supabase.auth.verifyOtp({ token_hash: hash, type });
+        return !error;
+      },
       userId: async () => (await supabase.auth.getUser()).data.user?.id ?? null,
       accept: (t, userId) => acceptInvitation({ token: t, userId }),
       refreshSession: async () => {
@@ -32,7 +37,7 @@ export const GET = withRateLimit(
         const { data } = await getAdminSupabaseClient().from("profiles").select("role").eq("id", userId).maybeSingle();
         return data?.role ?? null;
       },
-    });
+    }, readAccess(request.nextUrl.searchParams));
 
     const response = NextResponse.redirect(new URL(destination, request.nextUrl.origin));
     for (const [k, v] of Object.entries(HEADERS)) response.headers.set(k, v);

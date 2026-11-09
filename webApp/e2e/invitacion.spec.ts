@@ -1,6 +1,6 @@
 import type { Page } from "@playwright/test";
 import { expect, test, ALUMNA, assertStackUp, userIdByEmail } from "./fixtures";
-import { ADMIN, PASSWORD, fillLogin, fillRegister, freshEmail, loginAt, register } from "./account";
+import { ADMIN, PASSWORD, fillLogin, freshEmail, loginAt, register } from "./account";
 import { authLinkFor, invitationLinkFor } from "./mailpit";
 
 try {
@@ -12,7 +12,7 @@ const SUPABASE = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "http://127.0.0.1:54321
 const SERVICE = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
 const H = { apikey: SERVICE, Authorization: `Bearer ${SERVICE}` };
 
-// D-113: 5 mails por hora por admin con ventana fija. El spec hace 5 por corrida y no limpiaba su cubo:
+// D-113: 5 mails por hora por admin con ventana fija. El spec hace más de 5 por corrida y no limpiaba su cubo:
 // dos corridas en la misma hora fallaban. Se vacía al entrar y al salir.
 async function limpiarCupo(request: import("@playwright/test").APIRequestContext): Promise<void> {
   const uid = await userIdByEmail(request, ADMIN.email);
@@ -39,32 +39,45 @@ async function invite(page: Page, email: string): Promise<void> {
   await expect(page.getByRole("status").first()).toContainText(/Invitación enviada a .+, vence el \d+ de \w+ de \d{4}/);
 }
 
+// Cada test invita al menos una vez y el spec supera el tope de 5 por hora: el cupo se vacía antes de cada uno.
 test.beforeEach(async ({ page }) => {
   await assertStackUp(page.request);
+  if (SERVICE) await limpiarCupo(page.request);
 });
 
-test("c.1 c.2 cuenta nueva: invitar, registrarse con ese mail, confirmar y entrar a /panel/docente", async ({ page, browser }) => {
+// El link del mail trae un acceso de un solo uso (?acceso=…&tipo=…): entra con la cuenta invitada sin pasar por /entrar.
+const sinAcceso = (link: string) => link.replace(/\?.*$/, "");
+
+test("c.1 c.2 cuenta nueva: el link del mail entra solo, elige su clave y queda en /panel/docente", async ({ page, browser }) => {
   const email = freshEmail("invitada");
   await invite(page, email);
   const link = await invitationLinkFor(page.request, email);
+  expect(link).toMatch(/\?acceso=[^&]+&tipo=signup$/);
 
   const ctx = await browser.newContext();
   const invitada = await ctx.newPage();
   await invitada.goto(link);
-  await expect(invitada).toHaveURL(/\/entrar\?next=%2Finvitacion%2F/);
-  await fillRegister(invitada, email, "Docente de Prueba");
-  await expect(invitada.getByRole("status")).toContainText(/revisá tu mail/i);
-
-  await invitada.goto(await authLinkFor(invitada.request, email, "signup"));
+  await expect(invitada).toHaveURL(/\/entrar\/nueva-clave\?invitacion=1$/);
+  await expect(invitada.getByText("Ya sos docente de Humano Despierto.", { exact: false })).toBeVisible();
+  await invitada.getByLabel("Clave nueva", { exact: true }).fill(PASSWORD);
+  await invitada.getByLabel(/Repet/).fill(PASSWORD);
+  await invitada.getByRole("button", { name: /Guardar/ }).click();
   await expect(invitada).toHaveURL(/\/panel\/docente$/);
 
-  // Recargar el link es idempotente para quien ya aceptó.
+  // Recargar el link (acceso ya usado) es idempotente para quien ya aceptó.
   await invitada.goto(link);
   await expect(invitada).toHaveURL(/\/panel\/docente$/);
   await ctx.close();
+
+  // Y la clave que eligió sirve para entrar.
+  const otra = await browser.newContext();
+  const vuelta = await otra.newPage();
+  await loginAt(vuelta, "/entrar", email, PASSWORD);
+  await expect(vuelta).toHaveURL(/\/panel\/docente$/);
+  await otra.close();
 });
 
-test("c.2 cuenta existente: entra con su clave desde el link y queda docente", async ({ page, browser }) => {
+test("c.2 cuenta existente: el link entra directo con su cuenta y queda docente", async ({ page, browser }) => {
   const email = freshEmail("existente");
   const previa = await browser.newContext();
   const alumna = await previa.newPage();
@@ -75,27 +88,62 @@ test("c.2 cuenta existente: entra con su clave desde el link y queda docente", a
 
   await invite(page, email);
   const link = await invitationLinkFor(page.request, email);
+  expect(link).toMatch(/\?acceso=[^&]+&tipo=magiclink$/);
 
   const ctx = await browser.newContext();
   const invitada = await ctx.newPage();
   await invitada.goto(link);
+  await expect(invitada).toHaveURL(/\/panel\/docente$/);
+  await ctx.close();
+});
+
+test("sin acceso (vencido): el link pide entrar a mano y después acepta", async ({ page, browser }) => {
+  const email = freshEmail("vencido");
+  const previa = await browser.newContext();
+  const alumna = await previa.newPage();
+  await register(alumna, email);
+  await alumna.goto(await authLinkFor(alumna.request, email, "signup"));
+  await previa.close();
+
+  await invite(page, email);
+  const link = sinAcceso(await invitationLinkFor(page.request, email));
+
+  const ctx = await browser.newContext();
+  const invitada = await ctx.newPage();
+  await invitada.goto(link);
+  await expect(invitada).toHaveURL(/\/entrar\?next=%2Finvitacion%2F/);
   await fillLogin(invitada, email, PASSWORD);
   await expect(invitada).toHaveURL(/\/panel\/docente$/);
   await ctx.close();
 });
 
-test("c.3 otra cuenta con el link: mensaje neutro y sigue alumna", async ({ page, browser }) => {
-  const email = freshEmail("ajena");
+test("abierto con otra sesión: el acceso la reemplaza por la cuenta invitada", async ({ page, browser }) => {
+  const email = freshEmail("otrasesion");
   await invite(page, email);
   const link = await invitationLinkFor(page.request, email);
+
+  const ctx = await browser.newContext();
+  const nav = await ctx.newPage();
+  await loginAt(nav, "/entrar", ALUMNA.email, ALUMNA.password);
+  await expect(nav).toHaveURL(/\/panel$/);
+  await nav.goto(link);
+  await expect(nav).toHaveURL(/\/entrar\/nueva-clave\?invitacion=1$/);
+  await ctx.close();
+});
+
+test("c.3 otra cuenta sin acceso: mensaje neutro que sugiere salir, y sigue alumna", async ({ page, browser }) => {
+  const email = freshEmail("ajena");
+  await invite(page, email);
+  const link = sinAcceso(await invitationLinkFor(page.request, email));
 
   const ctx = await browser.newContext();
   const intrusa = await ctx.newPage();
   await loginAt(intrusa, "/entrar", ALUMNA.email, ALUMNA.password);
   await expect(intrusa).toHaveURL(/\/panel$/);
   await intrusa.goto(link);
-  await expect(intrusa).toHaveURL(/\/invitacion\/invalida$/);
+  await expect(intrusa).toHaveURL(/\/invitacion\/invalida\?sesion=1$/);
   await expect(intrusa.getByRole("heading", { level: 1 })).toContainText("no es válida o venció");
+  await expect(intrusa.getByText(/Puede que la hayas abierto con otra cuenta/)).toBeVisible();
   await intrusa.goto("/panel/docente");
   await expect(intrusa).toHaveURL(/\/panel$/);
   await ctx.close();

@@ -14,6 +14,7 @@ export type CallbackOutcome =
   | { kind: "session"; destination: string; userId: string; sendWelcome: boolean }
   | { kind: "error"; destination: string };
 
+const EMAIL_LINK_ERRORS = new Set(["otp_expired", "flow_state_expired", "flow_state_not_found"]);
 const LINK_ERROR: CallbackOutcome = { kind: "error", destination: LINK_ERROR_PATH };
 
 // c.9 de T-040 para todo login que pasa por acá (Google, confirmación de mail). El rol sale de
@@ -39,8 +40,10 @@ export async function resolveAuthCallback(
 ): Promise<CallbackOutcome> {
   const code = params.get("code");
   if (!code) {
-    // GoTrue vuelve sin code cuando el proveedor o el alta fallan; no es un link vencido.
+    // GoTrue vuelve sin code cuando el proveedor o el alta fallan, y también cuando un link de mail
+    // venció o ya se usó (otp_expired): eso sí es el error de link, no el de Google.
     const providerError = params.get("error_code") ?? params.get("error");
+    if (providerError && EMAIL_LINK_ERRORS.has(providerError)) return LINK_ERROR;
     if (providerError) {
       log.error("auth_callback_provider_error", { error_code: providerError });
       return { kind: "error", destination: providerError === "signup_disabled" ? SIGNUP_ERROR_PATH : OAUTH_ERROR_PATH };

@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
-import { hashInvitationToken, invitationPath, newInvitationToken } from "./invitation-token";
+import { accessQuery, hashInvitationToken, invitationPath, newInvitationToken, readAccess } from "./invitation-token";
 
 describe("token de invitación", () => {
   it("son 32 bytes en base64url (43 caracteres) y la base guarda su sha256 hex", () => {
@@ -28,5 +28,21 @@ describe("token de invitación", () => {
 
   it("el path del link", () => {
     expect(invitationPath("A".repeat(43))).toBe(`/invitacion/${"A".repeat(43)}`);
+  });
+});
+
+describe("acceso del link", () => {
+  it("arma y lee la query", () => {
+    const hash = "a1b2".repeat(14);
+    for (const type of ["magiclink", "signup"] as const) {
+      expect(readAccess(new URLSearchParams(accessQuery({ hash, type }).slice(1)))).toEqual({ hash, type });
+    }
+  });
+  it.each(["", "corto", "con espacios y más largo que veinte", "x".repeat(129)])("%s no es un acceso", (h) => {
+    expect(readAccess(new URLSearchParams({ acceso: h, tipo: "magiclink" }))).toBeNull();
+  });
+  it("un tipo fuera de la lista no se canjea", () => {
+    expect(readAccess(new URLSearchParams({ acceso: "a".repeat(56), tipo: "recovery" }))).toBeNull();
+    expect(readAccess(new URLSearchParams({ acceso: "a".repeat(56) }))).toBeNull();
   });
 });

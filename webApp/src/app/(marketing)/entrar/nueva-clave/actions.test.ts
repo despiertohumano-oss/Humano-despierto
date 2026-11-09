@@ -4,6 +4,7 @@ const mocks = vi.hoisted(() => ({
   getUser: vi.fn(),
   updateUser: vi.fn(),
   createClient: vi.fn(),
+  role: { value: "student" as string | null },
   redirect: vi.fn((to: string) => {
     throw new Error(`NEXT_REDIRECT:${to}`);
   }),
@@ -25,8 +26,10 @@ const submit = (password: string, confirm = password) => {
 
 describe("updatePasswordAction", () => {
   beforeEach(() => {
-    Object.values(mocks).forEach((m) => m.mockClear());
-    mocks.createClient.mockResolvedValue({ auth: { getUser: mocks.getUser, updateUser: mocks.updateUser } });
+    [mocks.getUser, mocks.updateUser, mocks.createClient, mocks.redirect].forEach((m) => m.mockClear());
+    mocks.role.value = "student";
+    const perfil = { select: () => perfil, eq: () => perfil, maybeSingle: async () => ({ data: mocks.role.value ? { role: mocks.role.value } : null, error: null }) };
+    mocks.createClient.mockResolvedValue({ auth: { getUser: mocks.getUser, updateUser: mocks.updateUser }, from: () => perfil });
     mocks.getUser.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
     mocks.updateUser.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
   });
@@ -49,7 +52,12 @@ describe("updatePasswordAction", () => {
   });
 
   it("éxito: actualiza con la clave y redirige a /panel", async () => {
-    await expect(submit("clave-nueva")).rejects.toThrow("NEXT_REDIRECT:/panel");
+    await expect(submit("clave-nueva")).rejects.toThrow(/NEXT_REDIRECT:\/panel$/);
     expect(mocks.updateUser).toHaveBeenCalledWith({ password: "clave-nueva" });
+  });
+
+  it("una docente (recién invitada) va a su panel", async () => {
+    mocks.role.value = "teacher";
+    await expect(submit("clave-nueva")).rejects.toThrow(/NEXT_REDIRECT:\/panel\/docente$/);
   });
 });

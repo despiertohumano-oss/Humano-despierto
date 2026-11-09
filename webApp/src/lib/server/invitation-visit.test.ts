@@ -1,11 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
-import { INVALID_INVITATION_PATH, resolveInvitationVisit, type VisitDeps } from "./invitation-visit";
+import { INVALID_INVITATION_PATH, INVALID_WITH_SESSION_PATH, INVITED_NEW_PASSWORD_PATH, resolveInvitationVisit, type VisitDeps } from "./invitation-visit";
 
 const TOKEN = "A".repeat(43);
 
 function deps(over: Partial<VisitDeps> = {}) {
   const calls: string[] = [];
   const d: VisitDeps = {
+    signInWithAccess: vi.fn(async () => (calls.push("access"), true)),
     userId: vi.fn(async () => (calls.push("userId"), "u-1")),
     accept: vi.fn(async () => (calls.push("accept"), true)),
     refreshSession: vi.fn(async () => void calls.push("refresh")),
@@ -28,9 +29,9 @@ describe("resolveInvitationVisit", () => {
     expect(d.accept).not.toHaveBeenCalled();
   });
 
-  it("ajena, vencida o revocada (accept=false): página neutra, sin refrescar (c.3, c.4)", async () => {
+  it("ajena, vencida o revocada (accept=false): página neutra que sugiere salir, sin refrescar (c.3, c.4)", async () => {
     const { d } = deps({ accept: vi.fn(async () => false) });
-    await expect(resolveInvitationVisit(TOKEN, d)).resolves.toBe(INVALID_INVITATION_PATH);
+    await expect(resolveInvitationVisit(TOKEN, d)).resolves.toBe(INVALID_WITH_SESSION_PATH);
     expect(d.refreshSession).not.toHaveBeenCalled();
   });
 
@@ -53,5 +54,47 @@ describe("resolveInvitationVisit", () => {
       }),
     });
     await expect(resolveInvitationVisit(TOKEN, d)).resolves.toBe("/panel/docente");
+  });
+
+  describe("con acceso en el link", () => {
+    const ACCESO = { hash: "h".repeat(56), type: "magiclink" as const };
+
+    it("entra con la cuenta invitada ANTES de mirar la sesión y acepta", async () => {
+      const { d, calls } = deps();
+      await expect(resolveInvitationVisit(TOKEN, d, ACCESO)).resolves.toBe("/panel/docente");
+      expect(d.signInWithAccess).toHaveBeenCalledWith(ACCESO);
+      expect(calls).toEqual(["access", "userId", "accept", "refresh", "roleOf"]);
+    });
+
+    it("cuenta creada por la invitación: va a elegir su clave", async () => {
+      const { d } = deps();
+      await expect(resolveInvitationVisit(TOKEN, d, { ...ACCESO, type: "signup" as const })).resolves.toBe(INVITED_NEW_PASSWORD_PATH);
+    });
+
+    it("acceso vencido o usado, sin sesión: a entrar a mano, como sin acceso", async () => {
+      const { d } = deps({ signInWithAccess: vi.fn(async () => false), userId: vi.fn(async () => null) });
+      await expect(resolveInvitationVisit(TOKEN, d, { ...ACCESO, type: "signup" as const })).resolves.toBe(`/entrar?next=%2Finvitacion%2F${TOKEN}`);
+      expect(d.accept).not.toHaveBeenCalled();
+    });
+
+    it("acceso vencido con una sesión ya aceptada: al panel, nunca a elegir clave", async () => {
+      const { d } = deps({ signInWithAccess: vi.fn(async () => false) });
+      await expect(resolveInvitationVisit(TOKEN, d, { ...ACCESO, type: "signup" as const })).resolves.toBe("/panel/docente");
+    });
+
+    it("si el canje tira error, sigue como sin acceso", async () => {
+      const { d } = deps({
+        signInWithAccess: vi.fn(async () => {
+          throw new Error("red");
+        }),
+      });
+      await expect(resolveInvitationVisit(TOKEN, d, ACCESO)).resolves.toBe("/panel/docente");
+    });
+
+    it("token con otra forma: ni siquiera canjea el acceso", async () => {
+      const { d } = deps();
+      await expect(resolveInvitationVisit("corto", d, ACCESO)).resolves.toBe(INVALID_INVITATION_PATH);
+      expect(d.signInWithAccess).not.toHaveBeenCalled();
+    });
   });
 });
