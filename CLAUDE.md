@@ -2,7 +2,7 @@
 
 Guidance for Claude Code when working in this repository.
 
-> **Every claim in this file was verified against the repo on 2026-10-21** (T-038). The previous
+> **Every claim in this file was verified against the repo on 2026-11-08** (T-024; previously T-038). The previous
 > version described a project that did not exist (see "History" at the bottom). If you change
 > the code, change this file — a wrong CLAUDE.md is worse than none, because it is trusted.
 
@@ -65,7 +65,8 @@ npm run test:e2e # Playwright; needs `npx supabase start`; starts its own `next 
 ```bash
 cd webApp/supabase
 npm install
-npm test         # 881 tests, ~1-4 min, no Docker and no credentials needed
+npm run places:load  # loads `places` from GeoNames (CC BY): local via `docker exec`, cloud via DATABASE_URL (needs psql)
+npm test         # 907 tests, ~1-4 min, no Docker and no credentials needed
 ```
 Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply in filename order.
 
@@ -73,8 +74,8 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 
 | Area | State |
 |------|-------|
-| `webApp/src` | **~24.0k LOC** (non-test). 40 routes (`page.tsx`), 143 files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`; 78 card scans in `public/tarot/rws/`. Tests: Vitest (894 unit tests in 117 files, next to the file) + Playwright (`e2e/`), T-039. |
-| `webApp/supabase` | **Schema live.** 43 migrations (last `0071`; `0032` applies before `0031` by timestamp, independent), 23 tables (`tarot_readings`, ADR-016), RLS + per-column grants + guard triggers, 881 mutation tests (PGlite). Private Storage bucket `uploads`: `avatars/` (T-042) and `covers/` (T-047), uploads only via service_role; its policies are only tested over HTTP by b1. Fixtures `@test.local` (admin, docente, alumna) in `seed.fixtures.sql`, content seed in `seed.sql`, demo data in `demo.sql`: all **local only**, never run in the cloud (see `webApp/supabase/README.md`). |
+| `webApp/src` | **~26.2k LOC** (non-test). 46 routes (`page.tsx`), 156 files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`; 78 card scans in `public/tarot/rws/`. Natal-chart engine (pure, no DB) in `src/lib/astro/` on `astronomy-engine` (MIT, ADR-017; credits in `src/lib/astro/CREDITS.md`). Tests: Vitest (1077 unit tests in 139 files, next to the file) + Playwright (`e2e/`), T-039. |
+| `webApp/supabase` | **Schema live.** 45 migrations (last `0073`; `0032` applies before `0031` by timestamp, independent), 25 tables (`tarot_readings`, ADR-016; `places`, `natal_charts`, T-024), RLS + per-column grants + guard triggers, 907 mutation tests (PGlite). Private Storage bucket `uploads`: `avatars/` (T-042) and `covers/` (T-047), uploads only via service_role; its policies are only tested over HTTP by b1. Fixtures `@test.local` (admin, docente, alumna) in `seed.fixtures.sql`, content seed in `seed.sql`, demo data in `demo.sql`: all **local only**, never run in the cloud (see `webApp/supabase/README.md`). |
 | `mobileApp/` | **Empty directory.** No Expo scaffold. **Out of scope for Phase 2.** |
 | `packages/tokens` | 763 LOC of the old Cosmos palette (marked historical in its README, D-66) — **consumed by nobody**: `webApp` does not import it (it uses its own `src/styles/tokens.css`) and `mobileApp` does not exist. Kept for when mobile returns. |
 | `Gentleman-Skills/` | **Empty directory.** Referenced by the old CLAUDE.md; there is nothing in it. |
@@ -103,7 +104,10 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 /panel/docente/**                   Teacher panel: courses, modules, lessons, [teacher]
                                     chapters, resources, diario posts,
                                     announcements (`/panel/docente/anuncios`,
-                                    T-031: drafts, publish + mail, withdraw)
+                                    T-031: drafts, publish + mail, withdraw).
+                                    A teacher without her own chart
+                                    (`natal_charts.is_self`) sees only the
+                                    chart form (T-024, product rule)
 /panel/admin                        Enrollments tab: request queue, grant by  [admin]
                                     mail + slug, searchable paged history
 /panel/admin/{usuarios,cursos,invitaciones}  Admin tabs, ?q= search,     [admin]
@@ -116,6 +120,10 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 /tarot/lectura/[id]                 Tirada guardada                           [auth]
 /tarot/cartas  ·  /tarot/cartas/[slug]   Las 78 fichas
 /panel/tarot                        Mis tiradas                               [auth]
+/carta-natal                        Carta natal: form + result (POST, nothing in the URL)
+/carta-natal/[id]                   Saved chart, recomputed on open           [auth, owner; noindex]
+/carta-natal/signos/[slug] · /planetas/[slug] · /casas/[n]   Indexable fact sheets (37)
+/panel/carta-natal                  Mis cartas natales: delete, mark «mi carta»  [auth]
 /invitacion/[token]                 Route Handler: accepts a teacher          [auth]
                                     invitation, refreshes the session claim
 /invitacion/invalida                Neutral "invalid or expired" page
@@ -191,8 +199,9 @@ covered by mutation tests that fail loudly if you regress them.
 1. **`REVOKE ALL` then `GRANT` per column — never revoke a single column.** Supabase ships
    `ALTER DEFAULT PRIVILEGES ... GRANT ALL ON TABLES`, so every new table is born with
    table-level UPDATE, against which a per-column revoke is a no-op.
-2. **Grants are a whitelist.** A new column is not exposed by accident — you must add it by
-   hand to `0003_privileges.sql`. That is deliberate friction.
+2. **Grants are a whitelist.** A new column is not exposed by accident — you must grant it by
+   hand, column by column, in the migration that adds it (as `0011`, `0028` and `0072` do);
+   applied migrations are never edited. That is deliberate friction.
 3. **RLS policies read `profiles.role`, never the JWT claim.** A claim is a snapshot taken when
    the token was issued and survives a role downgrade until refresh. The claim is for routing
    and optimistic UI only.
@@ -202,7 +211,8 @@ covered by mutation tests that fail loudly if you regress them.
    Action after checking enrollment. A `select *` on `lessons` from the client fails with 42501.
    Same for personal data: `profiles.phone` and `profiles.birth_date` have no SELECT for any
    client role; the owner reads them through `my_private_profile()`. A `select *` on `profiles`
-   from the client fails with 42501. Avatars and course covers live in the private bucket
+   from the client fails with 42501. The locator sweep skips `places` (GeoNames data, public by
+   design; migration `0073`). Avatars and course covers live in the private bucket
    `uploads` (`avatars/<uid>/<uuid>.<ext>`, `covers/<course_id>/<uuid>.<ext>`).
    **No session writes to `uploads`** (D-34, migration 0030): the bucket only checks size and the
    declared MIME, so a client INSERT policy let users bypass the server's byte check. Uploads go
@@ -250,6 +260,13 @@ covered by mutation tests that fail loudly if you regress them.
     `x-forwarded-for` (a non-Netlify proxy must REPLACE both). If the limiter is down or mute the action
     proceeds and logs `rate_limit_backend_down` (fail-open, on purpose). `sendMail` has its own
     global and per-recipient cap. Auth flows are limited by GoTrue, not here.
+
+12. **Birth data is reinforced personal data** (T-024). `natal_charts` has no grant for `anon`;
+    the owner reads and deletes; no client inserts or updates: writing is `save_natal_chart` /
+    `set_self_natal_chart`, `service_role` only, after `getUser()` and the consent.
+    `profiles.sun_sign/moon_sign/asc_sign` are public and only those functions and the trigger
+    that clears them when the own chart is deleted write them. Birth date, time and place never
+    go in the URL. `src/lib/astro/time.ts` is the only place that converts local time.
 
 **Review moderation** (T-037, ADR-012): only the course's teacher or an admin can report a review
 (`course_review_reports`, RLS via `can_report_review`, which reads `profiles.role`). Hiding,
@@ -331,6 +348,11 @@ Several things block work and require the repo owner's accounts:
   `webApp/.env.local`; read by the Supabase CLI on `supabase start`, not by Next). Local
   authorised redirect URI: `http://127.0.0.1:54321/auth/v1/callback`. Without them the Google
   button ends in a Google error page.
+- **`places` load in the cloud** (T-024): run `npm run places:load` (in `webApp/supabase`) with the
+  project's `DATABASE_URL` after applying `0072`; without it the place search returns nothing.
+  Check `select extname, extnamespace::regnamespace from pg_extension` first (`pg_trgm`/`unaccent`).
+- **Legal consultation on birth data** and **the owner's review of the 78 texts**
+  (`templates.json`, `_meta.estado`): they block the T-024 release, not development.
 - **Gmail App Password** (T-090, stopgap until a domain exists): 2-step verification on
   `despiertohumano@gmail.com`, an App Password, then `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`,
   `SMTP_SECURE=true`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM_ADDRESS=despiertohumano@gmail.com`.

@@ -10,7 +10,7 @@ vi.mock("@/lib/server/uploads", () => ({ signPublicUploadUrls }));
 vi.mock("@/lib/supabase/service", () => ({ createServiceRoleClient: vi.fn() }));
 vi.mock("@/lib/server/avatar", () => ({ signAvatarUrl: vi.fn() }));
 
-import { getPublicTeachers, signTeacherAvatars } from "./guias";
+import { getPublicTeachers, getTeacherBySlug, signTeacherAvatars } from "./guias";
 
 const AVATAR = "avatars/11111111-1111-4111-8111-111111111111/22222222-2222-4222-8222-222222222222.jpg";
 
@@ -58,5 +58,18 @@ describe("signTeacherAvatars", () => {
     expect(signPublicUploadUrls).toHaveBeenCalledTimes(1);
     expect(signPublicUploadUrls).toHaveBeenCalledWith([AVATAR, null]);
     expect(urls.get(AVATAR)).toBe("https://s/a?token=1");
+  });
+});
+
+describe("T-024 · signos públicos de la guía", () => {
+  it("pide sun_sign, moon_sign y asc_sign y descarta valores que no son signos", async () => {
+    const c = client(
+      [{ id: "t1", full_name: "Luna", slug: "luna", avatar_path: null, sun_sign: "leo", moon_sign: "piscis", asc_sign: "ofiuco" }],
+      [{ slug: "a", teacher_id: "t1", discipline: "Astrología" }],
+    );
+    getPublicSupabaseClient.mockReturnValue(c);
+    const t = await getTeacherBySlug("luna");
+    expect(c.select.mock.calls[0][0]).toMatch(/sun_sign, moon_sign, asc_sign/);
+    expect(t?.signs).toEqual({ sun: "leo", moon: "piscis", asc: null });
   });
 });

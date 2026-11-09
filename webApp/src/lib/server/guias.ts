@@ -4,6 +4,7 @@ import { getPublicSupabaseClient } from "@/lib/server/supabase-public";
 import { createServiceRoleClient } from "@/lib/supabase/service";
 import { signAvatarUrl } from "@/lib/server/avatar";
 import { signPublicUploadUrls } from "@/lib/server/uploads";
+import { isSignId, type SignId } from "@/lib/astro/zodiac";
 
 // T-017 · lectura publica de la ficha de docente (`/guias`, `/guias/[slug]`, la seccion
 // "Maestra" de la landing). Reemplaza el mock `guia.ts`.
@@ -48,6 +49,8 @@ export interface PublicTeacherProfile extends PublicTeacherCard {
   testimonials: { quote: string; who: string; course: string }[];
   avatarUrl: string | null;
   courses: PublicTeacherCourse[];
+  /** Solo signos: sin grados, rueda ni lugar (decisión del PO). `asc` es null si la carta no tiene hora. */
+  signs: { sun: SignId | null; moon: SignId | null; asc: SignId | null };
 }
 
 interface TeacherRow {
@@ -63,6 +66,9 @@ interface TeacherRow {
   formations: { year: string; title: string; place: string }[] | null;
   testimonials: { quote: string; who: string; course: string }[] | null;
   avatar_path: string | null;
+  sun_sign: string | null;
+  moon_sign: string | null;
+  asc_sign: string | null;
 }
 
 interface CourseRow {
@@ -90,7 +96,7 @@ async function fetchTeachersAndCourses() {
       supabase
         .from("profiles")
         .select(
-          "id, full_name, slug, glyph, headline, location, quote, years_practice, bio, formations, testimonials, avatar_path"
+          "id, full_name, slug, glyph, headline, location, quote, years_practice, bio, formations, testimonials, avatar_path, sun_sign, moon_sign, asc_sign"
         )
         .eq("role", "teacher")
         .not("slug", "is", null),
@@ -156,6 +162,11 @@ export const getTeacherBySlug = cache(async (slug: string): Promise<PublicTeache
     bio: row.bio,
     formations: row.formations ?? [],
     testimonials: row.testimonials ?? [],
+    signs: {
+      sun: row.sun_sign && isSignId(row.sun_sign) ? row.sun_sign : null,
+      moon: row.moon_sign && isSignId(row.moon_sign) ? row.moon_sign : null,
+      asc: row.asc_sign && isSignId(row.asc_sign) ? row.asc_sign : null,
+    },
     // service_role solo FIRMA: `anon` no tiene SELECT sobre storage.objects, y el path ya paso por
     // el guard de carpeta de 0028, asi que no puede apuntar al archivo de otra persona.
     avatarUrl: await signAvatarUrl(createServiceRoleClient(), row.avatar_path),

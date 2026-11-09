@@ -70,6 +70,10 @@ as $$
 $$;
 
 grant usage on schema auth to anon, authenticated, service_role, supabase_auth_admin;
+
+-- Supabase instala las extensiones en el esquema `extensions` y da USAGE a los roles de la API.
+create schema if not exists extensions;
+grant usage on schema extensions to anon, authenticated, service_role;
 grant select on auth.users to service_role, supabase_auth_admin;
 
 -- ---------------------------------------------------------------- esquema public: defaults permisivos
