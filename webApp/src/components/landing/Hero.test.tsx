@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import Hero from "./Hero";
 
 const TITULO =
-  "«Solo hay una pequeña parte del universo que sabrás con certeza que puede ser mejorada, y esa parte eres tú».";
+  "\"Solo hay una pequeña parte del universo que sabrás con certeza que puede ser mejorada, y esa parte eres tú\".";
 
 describe("portada · hero cósmico", () => {
   const html = renderToStaticMarkup(<Hero />);
@@ -12,7 +12,7 @@ describe("portada · hero cósmico", () => {
     expect(html.match(/<h1[ >]/g)).toHaveLength(1);
     const h1 = /<h1[^>]*>/.exec(html)![0];
     expect(h1).not.toContain("sr-only");
-    expect(html).toContain(TITULO);
+    expect(html).toContain(TITULO.replaceAll("\"", "&quot;"));
   });
 
   it("subtítulo y botones literales", () => {

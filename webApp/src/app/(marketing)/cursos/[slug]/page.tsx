@@ -169,7 +169,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
             )}
             {preview && (
               <p className="mt-5 rounded-md bg-miel-100 px-4 py-3 text-sm leading-normal text-bosque">
-                La clase «{preview.title}» se puede ver gratis, sin inscribirte.
+                La clase &quot;{preview.title}&quot; se puede ver gratis, sin inscribirte.
               </p>
             )}
             <ul className="mt-5 grid gap-2.5 border-t border-linea pt-5 text-[15px] leading-snug">
@@ -197,7 +197,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
               title="Así es un curso por dentro"
               lead={
                 course.modules.length > 0
-                  ? `El programa completo: ${course.modules.length} ${course.modules.length === 1 ? "módulo" : "módulos"} y ${course.lessonCount} ${course.lessonCount === 1 ? "clase" : "clases"}${course.totalDurationSeconds > 0 ? `, ${formatTotalDuration(course.totalDurationSeconds)} de video` : ""}.${preview ? " La marcada «Gratis» se puede ver sin inscribirte." : ""}`
+                  ? `El programa completo: ${course.modules.length} ${course.modules.length === 1 ? "módulo" : "módulos"} y ${course.lessonCount} ${course.lessonCount === 1 ? "clase" : "clases"}${course.totalDurationSeconds > 0 ? `, ${formatTotalDuration(course.totalDurationSeconds)} de video` : ""}.${preview ? " La marcada \"Gratis\" se puede ver sin inscribirte." : ""}`
                   : undefined
               }
               className="mb-8"

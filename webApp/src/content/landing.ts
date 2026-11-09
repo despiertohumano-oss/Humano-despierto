@@ -24,7 +24,7 @@ export interface LandingContent {
 
 export const LANDING: LandingContent = {
   hero: {
-    title: "«Solo hay una pequeña parte del universo que sabrás con certeza que puede ser mejorada, y esa parte eres tú».",
+    title: "\"Solo hay una pequeña parte del universo que sabrás con certeza que puede ser mejorada, y esa parte eres tú\".",
     lead: "Un espacio de aprendizaje y transformación que integra astrología, tarot, constelaciones familiares, magia y herramientas para el autoconocimiento.",
     ctaCursos: "Explorar los cursos",
     ctaProyecto: "Conocé Humano Despierto",

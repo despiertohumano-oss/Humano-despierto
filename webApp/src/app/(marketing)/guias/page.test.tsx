@@ -18,7 +18,7 @@ const card = (slug: string, fullName: string, isFounder = false): PublicTeacherC
 describe("Nuestros docentes (pantalla 6)", () => {
   beforeEach(() => getGuiasDirectory.mockClear());
 
-  it("título y bajada de la dueña; el <title> dice «Docentes»", async () => {
+  it("título y bajada de la dueña; el <title> dice \"Docentes\"", async () => {
     const html = renderToStaticMarkup(await GuiasPage());
     expect(html).toContain("Nuestros docentes");
     expect(html).toContain("Detrás de cada formación hay conocimientos, experiencias y diferentes caminos de aprendizaje.");

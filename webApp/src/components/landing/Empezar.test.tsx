@@ -13,7 +13,7 @@ describe("portada · programa", () => {
     }
   });
 
-  it("conserva el botón «Elegir un curso» hacia el catálogo y es el destino del ancla #empezar", () => {
+  it("conserva el botón \"Elegir un curso\" hacia el catálogo y es el destino del ancla #empezar", () => {
     expect(html).toContain('id="empezar"');
     expect(html).toMatch(/href="\/cursos"[^>]*>Elegir un curso/);
   });

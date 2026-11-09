@@ -41,7 +41,7 @@ export default function TypeToConfirmZone({ confirmText, heading, children, acti
           ))}
           <PanelInput
             className="flex-1"
-            label={`Escribí «${confirmText}» para confirmar`}
+            label={`Escribí "${confirmText}" para confirmar`}
             type="text"
             value={typed}
             onChange={(e) => setTyped(e.target.value)}

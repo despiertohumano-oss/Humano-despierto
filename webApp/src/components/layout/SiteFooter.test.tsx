@@ -15,7 +15,7 @@ describe("footer (pantalla 4)", () => {
     );
   });
 
-  it("«Guías» pasa a «Docentes» y la ruta no cambia; el resto de las columnas se conserva", () => {
+  it("\"Guías\" pasa a \"Docentes\" y la ruta no cambia; el resto de las columnas se conserva", () => {
     expect(html).toMatch(/href="\/guias"[^>]*>Docentes</);
     for (const l of ["Cursos", "Diario", "Círculo", "Entrar", "Mi panel", "Mi perfil"]) expect(html).toContain(`>${l}<`);
     expect(html).not.toContain(">Guías<");

@@ -15,7 +15,7 @@ describe("Tarot (pantalla 8)", () => {
     expect(html).toContain("hero-galaxia");
   });
 
-  it("«Qué es el tarot y cómo leerlo»: título conservado y texto nuevo", () => {
+  it("\"Qué es el tarot y cómo leerlo\": título conservado y texto nuevo", () => {
     expect(html).toContain("Qué es el tarot y cómo leerlo");
     expect(html).toContain("El Tarot es un lenguaje de imágenes, símbolos y arquetipos que nos invita a explorar distintas dimensiones de la experiencia humana.");
     expect(html).toContain("Sus 78 arcanos conforman un universo simbólico que puede ayudarnos a reflexionar sobre situaciones, procesos, desafíos y posibilidades.");
@@ -23,7 +23,7 @@ describe("Tarot (pantalla 8)", () => {
     expect(html).not.toContain("Italia del siglo XV");
   });
 
-  it("conserva «Cómo leer esto», las cuatro tiradas y el enlace a las 78 cartas", () => {
+  it("conserva \"Cómo leer esto\", las cuatro tiradas y el enlace a las 78 cartas", () => {
     expect(html).toContain("Cómo leer esto");
     expect(html).toContain("No reemplaza a una profesional");
     expect(html).toContain("Ver las 78 cartas y sus significados");

@@ -5,9 +5,9 @@
     "Tomate un momento con cada carta antes de leer su texto. Lo que ya sentiste al verla también cuenta."
   ],
   "apertura_pregunta": [
-    "Preguntaste: «{pregunta}». Las cartas responden en el lenguaje de las imágenes; vamos de a una.",
-    "Sobre «{pregunta}», esto es lo que aparece. Leelo como un espejo, no como una sentencia.",
-    "«{pregunta}». Con eso en mente, mirá primero las cartas y después el texto."
+    "Preguntaste: \"{pregunta}\". Las cartas responden en el lenguaje de las imágenes; vamos de a una.",
+    "Sobre \"{pregunta}\", esto es lo que aparece. Leelo como un espejo, no como una sentencia.",
+    "\"{pregunta}\". Con eso en mente, mirá primero las cartas y después el texto."
   ],
   "panorama_mayores": [
     "Hay más arcanos mayores que menores: lo que se mueve acá es grande, de fondo, y no depende solo de lo cotidiano.",
@@ -74,14 +74,14 @@
     "Varias cartas con el {numero}: un mismo ritmo atraviesa toda la tirada."
   ],
   "posicion_derecha": [
-    "{Nombre} en «{posicion}». {significado}",
-    "En «{posicion}» aparece {nombre}. {significado}",
-    "{Nombre}, para «{posicion}». {significado}"
+    "{Nombre} en \"{posicion}\". {significado}",
+    "En \"{posicion}\" aparece {nombre}. {significado}",
+    "{Nombre}, para \"{posicion}\". {significado}"
   ],
   "posicion_invertida": [
-    "{Nombre} al revés en «{posicion}». {significado}",
-    "En «{posicion}», {nombre} al revés: {significado}",
-    "{Nombre}, en posición invertida, para «{posicion}». {significado}"
+    "{Nombre} al revés en \"{posicion}\". {significado}",
+    "En \"{posicion}\", {nombre} al revés: {significado}",
+    "{Nombre}, en posición invertida, para \"{posicion}\". {significado}"
   ],
   "posicion_dominio": {
     "amor": [
@@ -155,7 +155,7 @@
     ],
     "depende": [
       "No hay un sí ni un no claros: depende de lo que hagas con esto. {detalle}",
-      "La respuesta es «depende»: hay condiciones. {detalle}",
+      "La respuesta es \"depende\": hay condiciones. {detalle}",
       "Ni sí ni no: mirá la carta y lo que te pide. {detalle}"
     ]
   },
