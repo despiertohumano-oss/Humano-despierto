@@ -1,0 +1,436 @@
+{
+  "_meta": { "estado": "borrador", "revision": null },
+  "cuerpos": {
+    "sol": {
+      "nombre": "Sol",
+      "palabras_clave": ["identidad", "vitalidad", "propósito consciente"],
+      "frase": "Sol habla de tu centro: lo que te da energía y el propósito que querés poner en el mundo.",
+      "ficha": [
+        "El Sol es el punto de partida de casi toda lectura. Representa la identidad que vas construyendo a lo largo de la vida: aquello que te enciende, lo que querés expresar y el modo en que buscás reconocerte en lo que hacés. No es todo lo que sos, pero sí el hilo que ordena el resto.",
+        "En la carta, el signo del Sol muestra el estilo de esa energía y la casa, el ámbito donde más se juega. Muchas personas sienten que su Sol describe más una meta que un punto de llegada: algo que se despliega con los años y con las experiencias.",
+        "En la tradición, el Sol tiene su domicilio en Leo y su exaltación en Aries, dos signos de fuego donde su luz se expresa con naturalidad. En Acuario y en Libra, sus signos de exilio y de caída, suele brillar de un modo menos directo, más atento a los demás o a lo colectivo."
+      ]
+    },
+    "luna": {
+      "nombre": "Luna",
+      "palabras_clave": ["emoción", "necesidades", "hábitos", "receptividad"],
+      "frase": "Luna habla de lo que sentís y necesitás para estar en calma: tus emociones, tus hábitos y la forma en que buscás refugio.",
+      "ficha": [
+        "La Luna es el otro gran luminar de la carta. Si el Sol muestra hacia dónde querés ir, la Luna muestra qué necesitás para sentirte en casa: el mundo emocional, las reacciones más espontáneas, los hábitos que te sostienen y la manera en que recibís y das cuidado.",
+        "Su signo describe el tono de esas necesidades y su casa, el ámbito donde más las buscás. Como la Luna se mueve rápido y cambia de signo cada dos días y medio, la hora de nacimiento importa: sin ella, a veces no se puede saber con certeza en qué signo estaba.",
+        "En la tradición, la Luna tiene su domicilio en Cáncer y su exaltación en Tauro, dos signos que favorecen la contención y la estabilidad. En Capricornio y en Escorpio, sus signos de exilio y de caída, sus necesidades suelen pedir más trabajo para ser reconocidas y expresadas."
+      ]
+    },
+    "mercurio": {
+      "nombre": "Mercurio",
+      "palabras_clave": ["mente", "comunicación", "aprendizaje"],
+      "frase": "Mercurio habla de tu manera de pensar, de aprender y de comunicarte: cómo ordenás las ideas y cómo las ponés en palabras.",
+      "ficha": [
+        "Mercurio es el planeta de la mente y del intercambio. Representa el modo en que percibís, conectás datos, preguntás y contás lo que pensás. También se lo asocia con el aprendizaje, los trayectos cortos, el comercio y todo lo que circula de un lado a otro.",
+        "Nunca se aleja más de unos 28° del Sol, así que suele compartir signo con él o estar en uno vecino. En la tradición tiene dos domicilios, Géminis y Virgo, y en Virgo también su exaltación. En Sagitario y en Piscis, sus signos de exilio, el pensamiento tiende a ser más amplio o más intuitivo que preciso.",
+        "Cuando Mercurio aparece retrógrado en una carta natal, muchas lecturas lo toman como una mente que vuelve sobre sí misma: revisa, reformula y procesa por dentro antes de hablar. No es un defecto ni una mala señal, sino otro ritmo para pensar, a menudo más reflexivo y original."
+      ]
+    },
+    "venus": {
+      "nombre": "Venus",
+      "palabras_clave": ["amor", "vínculo", "belleza", "placer", "valores"],
+      "frase": "Venus habla de cómo amás y qué valorás: el placer, la belleza, los vínculos y lo que te hace sentir a gusto.",
+      "ficha": [
+        "Venus representa el deseo de unión y de disfrute. En la carta describe cómo te vinculás afectivamente, qué te resulta bello, qué valorás y qué necesitás para sentir armonía, tanto en las relaciones como en los espacios y en las cosas que elegís.",
+        "En la tradición es el benéfico menor y tiene dos domicilios: Tauro, donde se vuelve sensorial y constante, y Libra, donde se vuelve relacional y estética. Su exaltación está en Piscis. En Escorpio y en Aries, sus signos de exilio, el amor suele vivirse con más intensidad o con más urgencia.",
+        "Como Mercurio, Venus acompaña de cerca al Sol: nunca se aparta más de unos 47° de él. Por eso su signo suele coincidir con el del Sol o estar a uno o dos signos de distancia, y su lectura se combina naturalmente con la de tu identidad solar."
+      ]
+    },
+    "marte": {
+      "nombre": "Marte",
+      "palabras_clave": ["acción", "deseo", "coraje", "afirmación"],
+      "frase": "Marte habla de tu forma de actuar y de desear: dónde ponés el empuje, cómo te afirmás y cómo enfrentás los obstáculos.",
+      "ficha": [
+        "Marte es el planeta de la acción. Representa el deseo que pone el cuerpo en movimiento, el coraje para defender lo propio y la capacidad de decir que no. En la carta muestra cómo encarás lo que querés conseguir y cómo te llevás con el enojo y con la competencia.",
+        "En la tradición es el maléfico menor, una palabra antigua que habla de su filo y no de un destino. Tiene domicilio en Aries y en Escorpio, y exaltación en Capricornio, donde su energía se vuelve estratégica. En Libra y en Tauro, sus signos de exilio, tiende a actuar con más rodeos o con más lentitud."
+      ]
+    },
+    "jupiter": {
+      "nombre": "Júpiter",
+      "palabras_clave": ["expansión", "crecimiento", "sentido", "oportunidad"],
+      "frase": "Júpiter habla de dónde buscás crecer y encontrar sentido: la confianza, la generosidad y las ganas de ir más allá.",
+      "ficha": [
+        "Júpiter es el planeta de la expansión. Representa la búsqueda de sentido, la confianza en que las cosas pueden crecer y la apertura a lo que todavía no conocés: el estudio, los viajes, las creencias y la filosofía de vida. Donde está Júpiter suele haber ganas de más.",
+        "En la tradición es el benéfico mayor. Tiene domicilio en Sagitario y en Piscis, y exaltación en Cáncer. Su lado menos amable es el exceso: el entusiasmo que promete demasiado o que se dispersa. Tarda unos doce años en recorrer el zodíaco, así que pasa cerca de un año en cada signo."
+      ]
+    },
+    "saturno": {
+      "nombre": "Saturno",
+      "palabras_clave": ["estructura", "límite", "responsabilidad", "tiempo"],
+      "frase": "Saturno habla de la estructura y del tiempo: los límites, las responsabilidades y lo que se construye con paciencia.",
+      "ficha": [
+        "Saturno es el planeta de la forma y de los límites. Representa la responsabilidad, la disciplina, la experiencia que solo llega con los años y las estructuras que te sostienen. Donde aparece Saturno, muchas personas sienten al principio exigencia o inseguridad y, con el tiempo, una autoridad propia.",
+        "En la tradición es el maléfico mayor, aunque las lecturas modernas lo ven sobre todo como un maestro. Tiene domicilio en Capricornio y en Acuario, y exaltación en Libra. Tarda unos veintinueve años y medio en dar la vuelta al zodíaco, un ciclo que muchas personas asocian con etapas de maduración."
+      ]
+    },
+    "urano": {
+      "nombre": "Urano",
+      "palabras_clave": ["originalidad", "cambio súbito", "reforma", "independencia"],
+      "frase": "Urano habla de lo que en vos busca libertad y cambio: la originalidad, las ideas nuevas y la necesidad de hacer las cosas a tu manera.",
+      "ficha": [
+        "Urano fue descubierto en 1781, y la astrología moderna lo asoció con la originalidad, la independencia, la reforma y los cambios repentinos. Representa la parte de vos que no entra en el molde y que necesita espacio para inventar, cuestionar y despertar.",
+        "Tarda unos ochenta y cuatro años en recorrer el zodíaco y pasa alrededor de siete años en cada signo, así que su signo lo comparte toda una generación. Lo más personal de Urano en tu carta es su casa y los aspectos que forma con tus planetas personales. Su domicilio moderno es Acuario."
+      ]
+    },
+    "neptuno": {
+      "nombre": "Neptuno",
+      "palabras_clave": ["ideal", "inspiración", "disolución", "empatía", "ilusión"],
+      "frase": "Neptuno habla de tus ideales y de tu sensibilidad: la inspiración, la empatía y el anhelo de algo más grande que vos.",
+      "ficha": [
+        "Neptuno, descubierto en 1846, quedó asociado con lo ideal, la inspiración, la empatía y la disolución de los límites. Representa la capacidad de imaginar, de conmoverte y de sentirte parte de algo mayor, y también la tendencia a idealizar o a confundir lo que deseás con lo que es.",
+        "Pasa unos catorce años en cada signo, de modo que su signo describe más a una generación que a una persona. En la lectura individual pesan su casa y sus aspectos. Su domicilio moderno es Piscis. Donde está Neptuno conviene combinar sensibilidad con claridad: soñar y, también, chequear."
+      ]
+    },
+    "pluton": {
+      "nombre": "Plutón",
+      "palabras_clave": ["transformación", "poder", "regeneración"],
+      "frase": "Plutón habla de los procesos profundos de cambio: el poder, la intensidad y la capacidad de regenerarte.",
+      "ficha": [
+        "Plutón, descubierto en 1930, representa en la astrología moderna la transformación, el poder y la regeneración: aquello que se desarma para renacer de otra manera. Señala los lugares de la vida donde las cosas se viven a fondo y donde los cambios, cuando llegan, suelen ser profundos.",
+        "Su órbita es muy excéntrica y puede pasar entre doce y treinta años en un mismo signo, por lo que su signo es generacional. En la carta individual importan su casa y sus aspectos con los planetas personales. Su domicilio moderno es Escorpio. Su lectura invita a mirar la propia sombra sin miedo."
+      ]
+    },
+    "quiron": {
+      "nombre": "Quirón",
+      "palabras_clave": ["sanador herido", "herida que no termina de cerrar", "acompañar a otros"],
+      "frase": "Quirón habla de una herida sensible que no termina de cerrar y del saber que nace de ella para acompañar a otros.",
+      "ficha": [
+        "Quirón fue descubierto en 1977 por Charles Kowal. Es un cuerpo menor que orbita entre Saturno y Urano, y la astrología tomó su nombre del mito del centauro sabio, maestro y sanador, que cargaba con una herida que no podía curar. Por eso se lo asocia con la figura del sanador herido.",
+        "En la carta señala un punto sensible, una experiencia que duele y no se resuelve del todo, y que con el tiempo puede volverse fuente de comprensión y de cuidado hacia los demás. Se lee con delicadeza y en clave de aprendizaje: no habla de un daño fijo, sino de un lugar desde donde crecer."
+      ]
+    },
+    "nodo_norte": {
+      "nombre": "Nodo Norte",
+      "palabras_clave": ["dirección de crecimiento", "lo que cuesta desarrollar", "camino evolutivo"],
+      "frase": "Nodo Norte marca una dirección de crecimiento: aquello que te cuesta desarrollar y que, justamente por eso, te hace crecer.",
+      "ficha": [
+        "Los nodos lunares son los dos puntos donde la órbita de la Luna cruza la eclíptica, el camino aparente del Sol. El Nodo Norte señala una dirección de desarrollo: experiencias y cualidades que no salen solas, que piden esfuerzo y que, con el tiempo, amplían tu manera de estar en el mundo.",
+        "El Nodo Sur está siempre en el punto opuesto y habla de lo conocido, de los talentos que ya tenés a mano y de la zona de confort. La lectura moderna propone apoyarse en esos recursos sin quedarse ahí. En esta carta usamos el nodo verdadero, la posición instantánea, que es también la que muestran por defecto sitios de referencia como astro.com."
+      ]
+    },
+    "lilith_media": {
+      "nombre": "Lilith (Luna Negra media)",
+      "palabras_clave": ["lo reprimido", "sombra", "rebeldía", "deseo no domesticado", "integración"],
+      "frase": "Lilith (Luna Negra media) señala lo que aprendiste a callar: deseos, enojos o rebeldías que piden ser reconocidos e integrados.",
+      "ficha": [
+        "Lilith, también llamada Luna Negra, no es un astro: es un punto matemático, el apogeo de la órbita de la Luna, el lugar donde la Luna queda más lejos de la Tierra. En esta carta usamos la Luna Negra media, la posición promedio de ese apogeo, que es la que usan por defecto astro.com y otros sitios de referencia.",
+        "Su lectura es una incorporación del siglo XX y se asocia con lo reprimido, la sombra, la rebeldía frente a lo impuesto y el deseo que no se deja domesticar. Conviene leerla en clave de integración y no de condena: muestra una zona tuya que gana fuerza cuando deja de esconderse.",
+        "Existen otras versiones con el mismo nombre, como la Lilith verdadera u osculante, que puede diferir varios grados de la media, y el asteroide 1181 Lilith, que es un cuerpo físico distinto. Por eso otras calculadoras pueden mostrarla en otro signo, y no es un error: miden cosas diferentes."
+      ]
+    }
+  },
+  "signos": {
+    "aries": {
+      "nombre": "Aries",
+      "palabras_clave": ["afirmación del yo", "coraje", "audacia"],
+      "frase": "En Aries, esa energía puede expresarse de forma directa, con ganas de empezar y de animarse primero.",
+      "ficha": [
+        "Aries abre el zodíaco: es el signo de fuego cardinal, el impulso que inaugura el ciclo. Su regente es Marte. Se lo asocia con la afirmación de uno mismo, el coraje y la audacia, con esa chispa que empuja a hacer antes de dudar demasiado.",
+        "Cuando un planeta está en Aries, su forma de manifestarse suele ser franca, rápida y directa. Puede aparecer como valentía y entusiasmo, y también como impaciencia o choque. La tarea, muchas veces, es encauzar ese fuego sin apagarlo y darle a cada impulso un rumbo que valga la pena."
+      ]
+    },
+    "tauro": {
+      "nombre": "Tauro",
+      "palabras_clave": ["posesión", "sensualidad", "placer"],
+      "frase": "En Tauro, esa energía tiende a expresarse con calma y constancia, buscando placer, seguridad y algo concreto que se pueda sostener.",
+      "ficha": [
+        "Tauro es el signo de tierra fijo y su regente es Venus. Se lo asocia con lo que se tiene y se cuida, con los sentidos y el disfrute, con la paciencia de quien construye de a poco. Es el signo que pregunta qué vale la pena conservar y cómo hacerlo durar.",
+        "Cuando un planeta está en Tauro, suele expresarse de manera estable, práctica y sensorial: necesita tiempo, contacto con lo material y un ritmo propio. Esa firmeza es un recurso enorme y, a veces, también una resistencia al cambio que conviene revisar con cariño."
+      ]
+    },
+    "geminis": {
+      "nombre": "Géminis",
+      "palabras_clave": ["pensamiento", "comunicación", "expresión"],
+      "frase": "En Géminis, esa energía puede expresarse con curiosidad y movimiento, a través de preguntas, palabras e intercambios.",
+      "ficha": [
+        "Géminis es el signo de aire mutable y su regente es Mercurio. Se lo asocia con el pensamiento, la comunicación y la expresión, con la mente que conecta ideas, personas y lugares. Es el signo del intercambio y de la pregunta que abre otra pregunta.",
+        "Cuando un planeta está en Géminis, suele manifestarse de forma ágil, versátil y conversadora. Le gusta probar, aprender y contar. Su desafío habitual es la dispersión: tantas puertas abiertas que cuesta elegir una y quedarse el tiempo suficiente para conocerla de verdad."
+      ]
+    },
+    "cancer": {
+      "nombre": "Cáncer",
+      "palabras_clave": ["emoción", "hogar", "raíces", "protección"],
+      "frase": "En Cáncer, esa energía tiende a expresarse desde la emoción y el cuidado, buscando un lugar seguro donde sentirse en casa.",
+      "ficha": [
+        "Cáncer es el signo de agua cardinal y su regente es la Luna. Se lo asocia con el sentir, la emoción, el hogar, las raíces y la protección. Es el signo que cuida, que recuerda de dónde viene y que necesita pertenecer para animarse a salir al mundo.",
+        "Cuando un planeta está en Cáncer, suele expresarse de forma sensible, protectora y atenta a los vínculos cercanos. Puede dar mucha contención y también replegarse cuando se siente expuesto. Su tarea suele ser cuidar sin cerrarse y sentir sin quedar a merced de cada ola."
+      ]
+    },
+    "leo": {
+      "nombre": "Leo",
+      "palabras_clave": ["autoexpresión", "confianza", "brillo"],
+      "frase": "En Leo, esa energía puede expresarse con calidez y brillo, con ganas de crear, de mostrarse y de ser reconocida.",
+      "ficha": [
+        "Leo es el signo de fuego fijo y su regente es el Sol. Se lo asocia con la autoexpresión, la confianza y el brillo, con el corazón que se pone en juego en lo que crea. Es el signo del juego, de la generosidad y del deseo de dejar una huella propia.",
+        "Cuando un planeta está en Leo, suele manifestarse de forma cálida, expresiva y orgullosa de lo que hace. Necesita un escenario, aunque sea pequeño, y alguien que lo mire con aprecio. Su aprendizaje frecuente es brillar sin depender del aplauso y dejar brillar también a los demás."
+      ]
+    },
+    "virgo": {
+      "nombre": "Virgo",
+      "palabras_clave": ["servicio", "análisis", "perfeccionismo", "trabajo minucioso"],
+      "frase": "En Virgo, esa energía tiende a expresarse con atención al detalle y ganas de mejorar las cosas, ordenando y siendo útil.",
+      "ficha": [
+        "Virgo es el signo de tierra mutable y su regente es Mercurio. Se lo asocia con el servicio, el análisis y el trabajo minucioso, con la mirada que distingue, ajusta y perfecciona. Es el signo del oficio y de las pequeñas mejoras de todos los días.",
+        "Cuando un planeta está en Virgo, suele expresarse de manera práctica, cuidadosa y discreta. Encuentra sentido en lo bien hecho y en ayudar de forma concreta. Su lado más exigente es el perfeccionismo, que se alivia cuando aprende a mirar con la misma amabilidad lo propio y lo ajeno."
+      ]
+    },
+    "libra": {
+      "nombre": "Libra",
+      "palabras_clave": ["equilibrio", "armonía", "vínculo"],
+      "frase": "En Libra, esa energía puede expresarse a través del encuentro con otros, buscando equilibrio, armonía y un trato justo.",
+      "ficha": [
+        "Libra es el signo de aire cardinal y su regente es Venus. Se lo asocia con el equilibrio, la armonía y el vínculo, con la capacidad de ver los dos lados de una cuestión y de tender puentes. Es el signo del otro: se descubre a sí mismo en la relación.",
+        "Cuando un planeta está en Libra, suele manifestarse de forma diplomática, estética y atenta a la reciprocidad. Valora la belleza, la cortesía y los acuerdos. Su desafío habitual es la indecisión o el miedo al conflicto, que se trabaja animándose a elegir aunque no todos queden conformes."
+      ]
+    },
+    "escorpio": {
+      "nombre": "Escorpio",
+      "palabras_clave": ["intensidad", "pasión", "profundidad"],
+      "frase": "En Escorpio, esa energía tiende a expresarse con intensidad y profundidad, yendo al fondo de lo que siente sin quedarse en la superficie.",
+      "ficha": [
+        "Escorpio es el signo de agua fijo. Su regente tradicional es Marte y su regente moderno, Plutón. Se lo asocia con la intensidad, la pasión y la profundidad, con la mirada que quiere ver lo que está debajo y con la capacidad de transformarse a partir de las crisis.",
+        "Cuando un planeta está en Escorpio, suele expresarse de forma reservada, magnética y comprometida, con un estilo de todo o nada. Puede dar una lealtad enorme y también costarle soltar o confiar. Su camino suele ser el de la regeneración: dejar ir lo que ya no sirve para que algo nuevo crezca."
+      ]
+    },
+    "sagitario": {
+      "nombre": "Sagitario",
+      "palabras_clave": ["exploración", "aventura", "optimismo"],
+      "frase": "En Sagitario, esa energía puede expresarse con entusiasmo y amplitud, buscando aventura, horizontes nuevos y un sentido que la guíe.",
+      "ficha": [
+        "Sagitario es el signo de fuego mutable y su regente es Júpiter. Se lo asocia con la exploración, la aventura y el optimismo, con la búsqueda de una verdad o de una filosofía que le dé sentido a la experiencia. Es el signo del viajero y del estudiante.",
+        "Cuando un planeta está en Sagitario, suele manifestarse de forma abierta, franca y generosa, con necesidad de libertad y de horizonte. Contagia confianza. Su desafío frecuente es prometer más de lo que puede sostener o perder de vista los detalles en el camino hacia lo grande."
+      ]
+    },
+    "capricornio": {
+      "nombre": "Capricornio",
+      "palabras_clave": ["ambición", "metas", "responsabilidad", "estructura"],
+      "frase": "En Capricornio, esa energía tiende a expresarse con seriedad y paciencia, poniéndose metas y construyendo paso a paso.",
+      "ficha": [
+        "Capricornio es el signo de tierra cardinal y su regente es Saturno. Se lo asocia con la ambición, las metas, la responsabilidad y la estructura, con quien sube la montaña sin apuro pero sin pausa. Es el signo de los logros que se sostienen en el tiempo.",
+        "Cuando un planeta está en Capricornio, suele expresarse de forma prudente, organizada y comprometida con los resultados. Inspira confianza porque cumple lo que promete. Su aprendizaje habitual es aflojar la exigencia y darse permiso para disfrutar el camino, no solo la cima."
+      ]
+    },
+    "acuario": {
+      "nombre": "Acuario",
+      "palabras_clave": ["originalidad", "innovación", "altruismo", "lo colectivo"],
+      "frase": "En Acuario, esa energía puede expresarse de un modo original e independiente, pensando en lo colectivo y en lo que todavía no existe.",
+      "ficha": [
+        "Acuario es el signo de aire fijo. Su regente tradicional es Saturno y su regente moderno, Urano. Se lo asocia con la originalidad, la innovación, el altruismo y lo colectivo, con las ideas que miran hacia adelante y con la amistad entre iguales.",
+        "Cuando un planeta está en Acuario, suele manifestarse de forma libre, inventiva y algo distante, más cómoda con las ideas que con la emoción a flor de piel. Aporta visión y espíritu de comunidad. Su desafío frecuente es sostener la cercanía íntima sin sentir que pierde su independencia."
+      ]
+    },
+    "piscis": {
+      "nombre": "Piscis",
+      "palabras_clave": ["compasión", "imaginación", "arte"],
+      "frase": "En Piscis, esa energía tiende a expresarse con sensibilidad e imaginación, desde la compasión y la conexión con lo sutil.",
+      "ficha": [
+        "Piscis es el signo de agua mutable y cierra el zodíaco. Su regente tradicional es Júpiter y su regente moderno, Neptuno. Se lo asocia con la compasión, la imaginación y el arte, con la capacidad de sentir lo que siente el otro y de fundirse con algo más grande.",
+        "Cuando un planeta está en Piscis, suele expresarse de forma intuitiva, receptiva y poética. Tiene una gran capacidad de empatía y de inspiración. Su aprendizaje habitual es cuidar los propios límites: estar abierto al mundo sin perderse en él ni cargar con lo que no le corresponde."
+      ]
+    }
+  },
+  "casas": {
+    "1": {
+      "nombre": "Casa 1",
+      "palabras_clave": ["identidad", "cuerpo", "imagen de sí", "comienzos"],
+      "frase": "En la casa 1, esto se pone en juego en tu manera de presentarte, en el cuerpo y en cómo empezás las cosas.",
+      "ficha": [
+        "La casa 1 es la casa del Ascendente y habla de la forma en que te mostrás y entrás en contacto con el mundo: la primera impresión, el cuerpo, el estilo personal y el impulso con el que iniciás algo nuevo. En latín se la llamaba Vita, la vida.",
+        "Es una casa angular, de las más fuertes de la carta, y los planetas que caen en ella suelen ser muy visibles en la personalidad. Sin hora de nacimiento esta casa no se puede calcular, porque depende del Ascendente, que avanza un grado cada cuatro minutos, más o menos."
+      ]
+    },
+    "2": {
+      "nombre": "Casa 2",
+      "palabras_clave": ["recursos propios", "posesiones", "autoestima"],
+      "frase": "En la casa 2, esto se vive en tu relación con los recursos propios: lo que tenés, lo que sabés hacer y lo que valés para vos.",
+      "ficha": [
+        "La casa 2 habla de los recursos propios: lo que tenés, lo que conseguís con tu esfuerzo y, sobre todo, lo que valorás. Además de lo material, incluye los talentos con los que contás y la autoestima, la sensación de que lo que sos y lo que hacés tiene valor.",
+        "Es una casa sucedente, que consolida lo que la casa 1 inicia. Los planetas que caen acá describen cómo te relacionás con la seguridad y con lo material. No anticipa ganancias ni pérdidas: muestra actitudes y valores que podés observar y trabajar."
+      ]
+    },
+    "3": {
+      "nombre": "Casa 3",
+      "palabras_clave": ["pensamiento", "aprendizaje", "comunicación", "entorno cercano"],
+      "frase": "En la casa 3, esto se pone en juego en cómo pensás, aprendés y te comunicás, y en el trato con tu entorno cercano.",
+      "ficha": [
+        "La casa 3 habla del pensamiento cotidiano, el aprendizaje, la comunicación y el entorno cercano: hermanas y hermanos, vecinos, compañeros, el barrio y los trayectos cortos. Es el ámbito de la conversación de todos los días y de la curiosidad por lo que está a mano.",
+        "Es una casa cadente, asociada con la transición y el aprendizaje. En la tradición helenística se la llamaba la casa de la Diosa. Los planetas que caen acá describen tu estilo para estudiar, escribir, hablar y moverte por tu mundo inmediato."
+      ]
+    },
+    "4": {
+      "nombre": "Casa 4",
+      "palabras_clave": ["hogar", "familia", "raíces", "vida privada"],
+      "frase": "En la casa 4, esto se vive en lo más íntimo: el hogar, la familia, tus raíces y tu vida privada.",
+      "ficha": [
+        "La casa 4 está ligada al Fondo del Cielo, el punto más bajo de la carta, y habla del hogar, la familia, las raíces y la vida privada. Es el lugar al que volvés para recargarte, la historia de la que venís y la base emocional sobre la que se apoya todo lo demás.",
+        "Es una casa angular, una de las cuatro columnas de la carta. Los planetas que caen acá suelen hablar de lo que necesitás para sentirte en casa y de lo que aprendiste en tus primeros años. También se la asocia con la manera de construir un hogar propio."
+      ]
+    },
+    "5": {
+      "nombre": "Casa 5",
+      "palabras_clave": ["placer", "juego", "creatividad", "romance"],
+      "frase": "En la casa 5, esto se expresa en lo que hacés por puro placer: el juego, la creatividad, el romance y lo que te hace sentir con vida.",
+      "ficha": [
+        "La casa 5 habla del placer, el juego, la creatividad y el romance: todo lo que hacés porque te entusiasma y no porque haga falta. Es el ámbito de la expresión personal, los pasatiempos, el arte, el enamoramiento y la alegría de crear algo propio.",
+        "Es una casa sucedente. Tradicionalmente también se la vincula con los hijos y, en un sentido amplio, con todo lo que una persona trae al mundo desde sí: obras, proyectos, ideas. Los planetas que caen acá describen cómo te animás a jugar y a mostrarte."
+      ]
+    },
+    "6": {
+      "nombre": "Casa 6",
+      "palabras_clave": ["rutinas", "trabajo cotidiano", "servicio"],
+      "frase": "En la casa 6, esto se pone en juego en tus rutinas, en el trabajo de todos los días y en los hábitos que te sostienen.",
+      "ficha": [
+        "La casa 6 habla de la vida cotidiana: las rutinas, el trabajo de todos los días, los hábitos y la forma de ser útil a los demás. Es el ámbito de la organización, del oficio que se perfecciona con la práctica y del cuidado que le das a tu propio ritmo.",
+        "Es una casa cadente, asociada con el ajuste y el aprendizaje. En esta carta la leemos en clave de hábitos y de bienestar cotidiano, nunca como un pronóstico sobre el cuerpo. Los planetas que caen acá describen cómo organizás tus días y qué tipo de tarea te resulta más propia."
+      ]
+    },
+    "7": {
+      "nombre": "Casa 7",
+      "palabras_clave": ["pareja", "vínculos de igual a igual", "contratos"],
+      "frase": "En la casa 7, esto se vive en la pareja y en los vínculos de igual a igual: socios, acuerdos y encuentros que te muestran otra parte de vos.",
+      "ficha": [
+        "La casa 7 es la casa del Descendente, el punto opuesto al Ascendente, y habla de los vínculos de igual a igual: la pareja, las sociedades, los acuerdos y los contratos. Si la casa 1 es cómo te presentás, la casa 7 es cómo te encontrás con el otro.",
+        "Es una casa angular. Los planetas que caen acá suelen describir qué buscás en tus relaciones cercanas y qué tipo de personas te atraen. Muchas veces también muestran cualidades propias que al principio reconocés con más facilidad en los demás."
+      ]
+    },
+    "8": {
+      "nombre": "Casa 8",
+      "palabras_clave": ["recursos compartidos", "sexualidad", "crisis y transformación"],
+      "frase": "En la casa 8, esto se vive en la intimidad y en lo compartido: los vínculos profundos, los recursos en común y los procesos de transformación.",
+      "ficha": [
+        "La casa 8 habla de lo que se comparte a fondo: la intimidad, la sexualidad, los recursos en común y los acuerdos de confianza. Es también el ámbito de las crisis que transforman, de los momentos en que algo termina para que otra cosa pueda empezar.",
+        "Es una casa sucedente. Su nombre latino era Mors y por eso tiene mala fama, pero en esta carta la leemos en clave de transformación y de vínculo profundo, nunca como un pronóstico. Los planetas que caen acá describen cómo atravesás los cambios y cómo te entregás en la intimidad."
+      ]
+    },
+    "9": {
+      "nombre": "Casa 9",
+      "palabras_clave": ["estudios superiores", "filosofía", "creencias", "viajes largos"],
+      "frase": "En la casa 9, esto se pone en juego en tu búsqueda de sentido: los estudios, las creencias, los viajes y otras culturas.",
+      "ficha": [
+        "La casa 9 habla de lo que amplía tu horizonte: los estudios superiores, la filosofía, las creencias, los viajes largos y el contacto con otras culturas. Es el ámbito de las preguntas grandes y de la búsqueda de un sentido que oriente el camino.",
+        "Es una casa cadente. En la tradición helenística se la llamaba la casa del Dios. Los planetas que caen acá describen cómo aprendés lo que va más allá de lo cotidiano y qué ideas te inspiran, ya sea en un aula, en un viaje o en una práctica espiritual."
+      ]
+    },
+    "10": {
+      "nombre": "Casa 10",
+      "palabras_clave": ["vocación", "carrera", "imagen pública"],
+      "frase": "En la casa 10, esto se expresa en tu vocación y en tu lugar en el mundo: la carrera, los logros y la imagen pública.",
+      "ficha": [
+        "La casa 10 está ligada al Medio Cielo, el punto más alto de la carta, y habla de la vocación, la carrera, los logros y la imagen pública. Es el ámbito de lo que querés construir a la vista de los demás y de la manera en que el mundo te reconoce.",
+        "Es una casa angular, una de las más visibles. Los planetas que caen acá suelen marcar el tono de tu camino profesional y de tu relación con la autoridad y la responsabilidad. No define una profesión puntual: muestra el estilo con que te gusta ocupar tu lugar."
+      ]
+    },
+    "11": {
+      "nombre": "Casa 11",
+      "palabras_clave": ["amistades", "grupos", "ideales", "proyectos"],
+      "frase": "En la casa 11, esto se vive con tus amistades, en los grupos y en los proyectos e ideales que compartís.",
+      "ficha": [
+        "La casa 11 habla de las amistades, los grupos, las comunidades y los ideales que compartís con otras personas. Es el ámbito de los proyectos a futuro y de las redes que se arman alrededor de un interés o de una causa común, donde cada quien aporta lo suyo.",
+        "Es una casa sucedente; su nombre latino, Benefacta, la vinculaba con los buenos amigos y los apoyos. Los planetas que caen acá describen cómo te sumás a lo colectivo, qué lugar ocupás en un grupo y qué sueños te gusta construir junto con otros."
+      ]
+    },
+    "12": {
+      "nombre": "Casa 12",
+      "palabras_clave": ["vida interior", "retiro", "finales", "lo oculto"],
+      "frase": "En la casa 12, esto se vive hacia adentro: en la vida interior, en los momentos de retiro y en lo que todavía no se muestra.",
+      "ficha": [
+        "La casa 12 habla de la vida interior: el retiro, el silencio, los sueños, lo que no está a la vista y lo que se procesa en soledad. Es el ámbito de los finales y de los cierres, y también de la espiritualidad y de la conexión con algo más amplio que la propia historia.",
+        "Es una casa cadente y la tradición la cargó de temores. En esta carta la leemos en clave de vida interior y de introspección, nunca como un pronóstico. Los planetas que caen acá suelen expresarse de forma más reservada y piden momentos de pausa para encontrar su voz."
+      ]
+    }
+  },
+  "aspectos": {
+    "conjuncion": {
+      "nombre": "conjunción",
+      "palabras_clave": ["fusión", "intensidad", "foco"],
+      "frase": "{a} y {b} están en conjunción: sus temas tienden a mezclarse y a expresarse juntos, como una sola voz.",
+      "ficha": [
+        "La conjunción une dos puntos que están en el mismo lugar del cielo, a 0° de distancia. En esta carta la tomamos con un orbe de hasta 8°. Sus significados se funden: lo que representa uno tiñe al otro, para bien y también en lo que cuesta.",
+        "Es el aspecto más intenso y el más difícil de separar en partes. Su tono depende mucho de los dos puntos que reúne. Para leerla conviene preguntarse cómo conviven esas dos funciones en tu vida y cuál de las dos tiende a llevar la delantera."
+      ]
+    },
+    "sextil": {
+      "nombre": "sextil",
+      "palabras_clave": ["oportunidad", "colaboración", "armonía"],
+      "frase": "{a} y {b} forman un sextil: se ofrecen oportunidades y pueden colaborar con facilidad cuando les das un empujón.",
+      "ficha": [
+        "El sextil une dos puntos separados por 60°, la sexta parte del círculo. En esta carta lo tomamos con un orbe de hasta 4°. Ptolomeo lo consideraba un aspecto armónico, porque suele unir signos de elementos compatibles, como fuego con aire o tierra con agua.",
+        "Es un aspecto amable y abierto, más suave que el trígono. Señala una oportunidad: dos funciones que se entienden y que pueden potenciarse, aunque muchas veces hace falta un gesto propio, una decisión o una práctica, para que esa ayuda mutua se active."
+      ]
+    },
+    "cuadratura": {
+      "nombre": "cuadratura",
+      "palabras_clave": ["tensión", "desafío", "impulso"],
+      "frase": "{a} y {b} están en cuadratura: sus temas tiran en direcciones distintas y esa fricción puede volverse motor de crecimiento.",
+      "ficha": [
+        "La cuadratura une dos puntos separados por 90°, un cuarto del círculo. En esta carta la tomamos con un orbe de hasta 5°. La tradición la consideraba un aspecto inarmónico, porque suele unir signos de la misma modalidad pero de elementos que no se entienden con facilidad.",
+        "Se siente como tensión, como dos necesidades que compiten o se interrumpen. Por eso mismo es un aspecto muy dinámico: empuja a tomar decisiones y a buscar soluciones creativas. Muchas personas encuentran en sus cuadraturas los aprendizajes que más las hicieron crecer."
+      ]
+    },
+    "trigono": {
+      "nombre": "trígono",
+      "palabras_clave": ["fluidez", "facilidad", "talento"],
+      "frase": "{a} y {b} forman un trígono: sus temas fluyen juntos con naturalidad y se apoyan sin esfuerzo.",
+      "ficha": [
+        "El trígono une dos puntos separados por 120°, un tercio del círculo. En esta carta lo tomamos con un orbe de hasta 5°. Ptolomeo lo consideraba armónico porque, en general, une signos del mismo elemento, que comparten un mismo tono de base.",
+        "Señala talentos y facilidades: dos funciones que se entienden casi solas. Su único riesgo es dar por sentado lo que sale fácil y no desarrollarlo. Muchas veces un trígono se vuelve un verdadero recurso cuando lo ponés a trabajar de forma consciente."
+      ]
+    },
+    "oposicion": {
+      "nombre": "oposición",
+      "palabras_clave": ["polaridad", "conciencia", "equilibrio"],
+      "frase": "{a} y {b} están en oposición: se miran desde extremos opuestos y te invitan a encontrar un equilibrio entre los dos.",
+      "ficha": [
+        "La oposición une dos puntos enfrentados, a 180° de distancia, en signos opuestos del zodíaco. En esta carta la tomamos con un orbe de hasta 8°. La tradición la consideraba inarmónica, porque pone a dos funciones a tirar desde lados contrarios.",
+        "Suele sentirse como una polaridad: a veces gana un extremo y después el otro, o uno de los dos aparece proyectado en otras personas. Su trabajo es la conciencia y el equilibrio: reconocer que ambas partes son tuyas y encontrar la manera de que dialoguen."
+      ]
+    }
+  },
+  "sol_en": {
+    "aries": "Con el Sol en Aries, tu identidad puede crecer al animarte a empezar, a decir lo que querés y a poner el cuerpo en lo que te importa. Muchas personas con esta posición encuentran su fuerza en la iniciativa y aprenden, con el tiempo, a darle lugar también a la pausa.",
+    "tauro": "Con el Sol en Tauro, tu identidad suele afirmarse en lo que construís con paciencia y en lo que disfrutás con todos los sentidos. Muchas personas con esta posición necesitan tiempo para decidir y, una vez que eligen, sostienen lo elegido con una constancia admirable.",
+    "geminis": "Con el Sol en Géminis, tu identidad puede crecer en el intercambio: aprender, preguntar, conversar y conectar ideas que parecían lejanas. Es habitual sentir muchas vocaciones a la vez; el desafío es encontrar un hilo que las una sin renunciar a la curiosidad.",
+    "cancer": "Con el Sol en Cáncer, tu identidad suele expresarse a través del cuidado y de los vínculos que sentís como propios. Muchas personas con esta posición brillan cuando crean un espacio seguro para otros y aprenden, con los años, a pedir para sí la misma ternura que ofrecen.",
+    "leo": "Con el Sol en Leo, el Sol está en su propio signo y tu identidad puede expresarse con calidez, creatividad y ganas de dejar una marca personal. Muchas personas con esta posición se encienden cuando crean algo propio y descubren que su luz crece cuando también celebra la de los demás.",
+    "virgo": "Con el Sol en Virgo, tu identidad suele encontrar sentido en lo bien hecho y en ser útil de verdad. Muchas personas con esta posición tienen un ojo fino para el detalle y descubren con el tiempo que mejorar también incluye descansar y tratarse con amabilidad.",
+    "libra": "Con el Sol en Libra, tu identidad puede crecer en el encuentro con otras personas, en la búsqueda de acuerdos justos y en el gusto por lo bello. Muchas personas con esta posición tienen un don para mediar y trabajan, a lo largo de la vida, en animarse a elegir aunque no todos estén de acuerdo.",
+    "escorpio": "Con el Sol en Escorpio, tu identidad suele forjarse en la intensidad: en lo que sentís a fondo, en los vínculos verdaderos y en tu capacidad de atravesar las crisis y reinventarte. La profundidad es tu terreno, y la confianza, algo que se gana de a poco.",
+    "sagitario": "Con el Sol en Sagitario, tu identidad puede crecer en la búsqueda: viajes, estudios, ideas y experiencias que amplían tu mirada. Muchas personas con esta posición contagian entusiasmo y aprenden a darle raíz a esa libertad para que sus planes lleguen a buen puerto.",
+    "capricornio": "Con el Sol en Capricornio, tu identidad suele afirmarse en las metas que te proponés y en la responsabilidad con que las sostenés. Muchas personas con esta posición maduran temprano y descubren con los años que también tienen derecho a disfrutar del camino, no solo de la cima.",
+    "acuario": "Con el Sol en Acuario, tu identidad puede expresarse a través de ideas propias, de la libertad de pensar distinto y del compromiso con lo colectivo. Muchas personas con esta posición se sienten un poco fuera de molde y encuentran su lugar en grupos que comparten su visión.",
+    "piscis": "Con el Sol en Piscis, tu identidad suele expresarse desde la sensibilidad, la imaginación y la compasión. Muchas personas con esta posición tienen una vida interior muy rica y una gran capacidad para el arte o el cuidado, y aprenden a poner límites para no diluirse en los demás."
+  },
+  "luna_en": {
+    "aries": "Con la Luna en Aries, tus emociones suelen ser rápidas, directas y honestas: sentís algo y necesitás moverte. Podés necesitar acción y autonomía para estar en calma, y te ayuda darte espacio para descargar esa energía antes de conversar lo que te pasa.",
+    "tauro": "Con la Luna en Tauro, la calma suele llegar a través de lo concreto: un lugar estable, rutinas conocidas, buena comida y el contacto con la naturaleza y con el cuerpo. La tradición la considera una posición fuerte para la Luna, que se siente segura cuando el ritmo es pausado.",
+    "geminis": "Con la Luna en Géminis, tus emociones pueden necesitar palabras para ordenarse: hablar, escribir o pensar en voz alta te ayuda a entender lo que sentís. Muchas personas con esta posición se tranquilizan con estímulos nuevos, buenas conversaciones y un poco de movimiento.",
+    "cancer": "Con la Luna en Cáncer, la Luna está en su propio signo y tu mundo emocional suele ser profundo, protector y muy ligado al hogar y a la familia, la de origen o la elegida. Te hace bien tener un refugio y vínculos donde el cuidado vaya en las dos direcciones.",
+    "leo": "Con la Luna en Leo, tus emociones suelen ser cálidas, expresivas y generosas. Podés necesitar reconocimiento y afecto visible para estar en calma, y te hace bien tener espacios donde jugar, crear y compartir lo que te entusiasma con quienes querés.",
+    "virgo": "Con la Luna en Virgo, la calma suele llegar cuando las cosas están en orden y sentís que sos útil. Muchas personas con esta posición cuidan a través de gestos prácticos, y les hace bien recordar que no todo lo que sienten necesita ser resuelto o corregido.",
+    "libra": "Con la Luna en Libra, tu bienestar emocional suele estar muy ligado a la armonía de tus vínculos y de tu entorno. Podés necesitar compañía, belleza y un clima amable para sentirte bien, y aprender que un desacuerdo dicho a tiempo también cuida la relación.",
+    "escorpio": "Con la Luna en Escorpio, tus emociones suelen ser intensas, profundas y muy privadas. La tradición consideraba difícil esta posición para la Luna, y muchas personas la viven como una gran capacidad para acompañar momentos fuertes y para transformarse a partir de lo que sienten.",
+    "sagitario": "Con la Luna en Sagitario, la calma suele llegar con espacio, horizonte y libertad: un viaje, una idea nueva, una conversación que abre la cabeza. Muchas personas con esta posición atraviesan lo difícil con humor y optimismo, y les hace bien darle lugar también a la tristeza.",
+    "capricornio": "Con la Luna en Capricornio, tus emociones suelen expresarse con mesura y sentido de responsabilidad. Podés sentir seguridad cuando tenés las cosas bajo control y un plan claro, y te hace bien aprender a mostrar tu vulnerabilidad sin sentir que perdés firmeza.",
+    "acuario": "Con la Luna en Acuario, tus emociones pueden necesitar algo de distancia para entenderse: primero las pensás y después las sentís. Te hace bien tener libertad, amistades que te acepten tal como sos y espacios colectivos donde tus ideas tengan lugar.",
+    "piscis": "Con la Luna en Piscis, tu sensibilidad suele ser enorme: percibís climas, estados de ánimo y lo que no se dice. Te hace bien el silencio, la música, el arte o el contacto con el agua, y cuidar tus límites para no absorber emociones que no son tuyas."
+  },
+  "asc_en": {
+    "aries": "Con el Ascendente en Aries, tu forma de presentarte suele ser directa, enérgica y espontánea. Muchas personas te perciben con iniciativa y franqueza, y tu manera natural de encarar algo nuevo es animarte primero y pensar los detalles en el camino.",
+    "tauro": "Con el Ascendente en Tauro, tu presencia suele transmitir calma, estabilidad y cierta solidez. Solés acercarte a lo nuevo con prudencia y a tu ritmo, y tu forma de estar en el mundo tiene algo sensorial que hace sentir cómodas a las demás personas.",
+    "geminis": "Con el Ascendente en Géminis, tu forma de presentarte suele ser curiosa, conversadora y ágil. A muchas personas les resulta fácil acercarse a vos, y tu manera natural de entrar en contacto con algo nuevo es preguntar, probar y conectar.",
+    "cancer": "Con el Ascendente en Cáncer, tu presencia suele transmitir cercanía y cuidado, aunque al principio te muestres con cierta reserva. Solés entrar en confianza de a poco, y tu manera de encarar el mundo está muy guiada por lo que sentís en cada momento.",
+    "leo": "Con el Ascendente en Leo, tu forma de presentarte suele ser cálida, expresiva y difícil de pasar por alto. Muchas personas perciben en vos confianza y generosidad, y tu manera natural de encarar lo nuevo es con entusiasmo y con ganas de ponerle tu sello.",
+    "virgo": "Con el Ascendente en Virgo, tu presencia suele transmitir atención, prolijidad y criterio. Solés observar antes de actuar y acercarte a lo nuevo buscando entenderlo bien, y muchas personas encuentran en vos a alguien confiable que se fija en lo que otros pasan por alto.",
+    "libra": "Con el Ascendente en Libra, tu forma de presentarte suele ser amable, diplomática y atenta a la otra persona. Cuidás la armonía y la estética del encuentro, y tu manera natural de encarar algo nuevo es buscar el equilibrio y el acuerdo antes de avanzar.",
+    "escorpio": "Con el Ascendente en Escorpio, tu presencia suele ser intensa y magnética, con una reserva que despierta curiosidad. Solés observar mucho antes de abrirte, y tu manera de encarar lo nuevo es ir al fondo, con una mirada que detecta lo que no se dice.",
+    "sagitario": "Con el Ascendente en Sagitario, tu forma de presentarte suele ser abierta, entusiasta y franca. Muchas personas perciben en vos optimismo y ganas de aventura, y tu manera natural de encarar lo nuevo es lanzarte con confianza a explorar.",
+    "capricornio": "Con el Ascendente en Capricornio, tu presencia suele transmitir seriedad, responsabilidad y una madurez que se nota desde temprano. Solés encarar lo nuevo con un plan y paso firme, y con el tiempo muchas personas descubren el humor y la calidez que hay detrás de esa compostura.",
+    "acuario": "Con el Ascendente en Acuario, tu forma de presentarte suele ser original, independiente y algo inesperada. Muchas personas perciben en vos una mirada propia y amistosa, y tu manera natural de encarar lo nuevo es cuestionar lo establecido y proponer otra cosa.",
+    "piscis": "Con el Ascendente en Piscis, tu presencia suele transmitir sensibilidad, suavidad y una cualidad algo soñadora. Solés captar el clima de un lugar apenas entrás, y tu manera de encarar lo nuevo es intuitiva, más guiada por lo que percibís que por un plan."
+  }
+}

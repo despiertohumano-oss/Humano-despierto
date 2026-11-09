@@ -25,8 +25,20 @@ describe("resourceFormSchema.link", () => {
 
 describe("firstIssue (D-100)", () => {
   it("devuelve el campo del primer problema y su mensaje", () => {
-    const r = courseFormSchema.safeParse({ slug: "ok-slug", title: "", discipline: "T", level: "I", price: "1" });
+    const r = courseFormSchema.safeParse({ slug: "ok-slug", title: "", discipline: "tarot", level: "I", price: "1" });
     expect(r.success).toBe(false);
     if (!r.success) expect(firstIssue(r.error)).toEqual({ field: "title", message: "El título es obligatorio." });
+  });
+});
+
+describe("courseFormSchema · disciplina cerrada (B1)", () => {
+  const base = { slug: "ok-slug", title: "T", level: "Inicial", price: "1" };
+  it("acepta una clave de la lista", () => {
+    expect(courseFormSchema.safeParse({ ...base, discipline: "constelaciones" }).success).toBe(true);
+  });
+  it("rechaza texto libre con un mensaje legible", () => {
+    const r = courseFormSchema.safeParse({ ...base, discipline: "Reiki" });
+    expect(r.success).toBe(false);
+    expect(r.error?.issues[0]).toMatchObject({ path: ["discipline"], message: "Elegí una disciplina de la lista." });
   });
 });

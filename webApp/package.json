@@ -15,8 +15,10 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@js-temporal/polyfill": "0.5.1",
     "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.112.2",
+    "astronomy-engine": "2.1.19",
     "clsx": "^2.1.1",
     "next": "^16.2.12",
     "react": "19.2.4",
@@ -33,6 +35,7 @@
     "@types/node": "^22.20.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "axe-core": "^4.11.4",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",

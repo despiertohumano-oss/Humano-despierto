@@ -2,12 +2,12 @@
 
 Guidance for Claude Code when working in this repository.
 
-> **Every claim in this file was verified against the repo on 2026-10-21** (T-038). The previous
+> **Every claim in this file was verified against the repo on 2026-11-08** (T-024; previously T-038). The previous
 > version described a project that did not exist (see "History" at the bottom). If you change
 > the code, change this file — a wrong CLAUDE.md is worse than none, because it is trusted.
 
 ## What this is
-Online school for holistic trades: tarot, astrology, herbalism, reiki, magic.
+Online school of learning and self-knowledge: astrology, tarot, family constellations, magic, gemotherapy and the universe of symbols (herbalism and reiki are NOT taught: owner's decision, 2026-11-08).
 Teachers publish courses whose lessons are **YouTube** videos with downloadable **Google Drive**
 resources. Students take them through a Udemy-style curriculum and get persisted progress.
 Three roles: `student`, `teacher`, `admin`.
@@ -65,7 +65,8 @@ npm run test:e2e # Playwright; needs `npx supabase start`; starts its own `next 
 ```bash
 cd webApp/supabase
 npm install
-npm test         # 881 tests, ~1-4 min, no Docker and no credentials needed
+npm run places:load  # loads `places` from GeoNames (CC BY): local via `docker exec`, cloud via DATABASE_URL (needs psql)
+npm test         # 958 tests, ~1-4 min, no Docker and no credentials needed
 ```
 Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply in filename order.
 
@@ -73,8 +74,8 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 
 | Area | State |
 |------|-------|
-| `webApp/src` | **~24.0k LOC** (non-test). 40 routes (`page.tsx`), 143 files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`; 78 card scans in `public/tarot/rws/`. Tests: Vitest (894 unit tests in 117 files, next to the file) + Playwright (`e2e/`), T-039. |
-| `webApp/supabase` | **Schema live.** 43 migrations (last `0071`; `0032` applies before `0031` by timestamp, independent), 23 tables (`tarot_readings`, ADR-016), RLS + per-column grants + guard triggers, 881 mutation tests (PGlite). Private Storage bucket `uploads`: `avatars/` (T-042) and `covers/` (T-047), uploads only via service_role; its policies are only tested over HTTP by b1. Fixtures `@test.local` (admin, docente, alumna) in `seed.fixtures.sql`, content seed in `seed.sql`, demo data in `demo.sql`: all **local only**, never run in the cloud (see `webApp/supabase/README.md`). |
+| `webApp/src` | **~27.1k LOC** (non-test). 46 routes (`page.tsx`), 156 non-test files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`; 78 card scans in `public/tarot/rws/`; the owner's 9 brand images in `public/brand/` (WebP, `CREDITS.md`). Natal-chart engine (pure, no DB) in `src/lib/astro/` on `astronomy-engine` (MIT, ADR-017; credits in `src/lib/astro/CREDITS.md`). Tests: Vitest (1210 unit tests in 163 files, next to the file) + Playwright (`e2e/`), T-039. |
+| `webApp/supabase` | **Schema live.** 49 migrations (last `0077`; `0032` applies before `0031` by timestamp, independent), 26 tables (`tarot_readings`, ADR-016; `places`, `natal_charts`, T-024; `diario_post_courses`, B3), RLS + per-column grants + guard triggers, 958 mutation tests (PGlite). Private Storage bucket `uploads`: `avatars/` (T-042), `covers/` (T-047) and `diario/` (B3), uploads only via service_role; its policies are only tested over HTTP by b1. Fixtures `@test.local` (admin, docente, alumna) in `seed.fixtures.sql`, content seed in `seed.sql`, demo data in `demo.sql`: all **local only**, never run in the cloud (see `webApp/supabase/README.md`). |
 | `mobileApp/` | **Empty directory.** No Expo scaffold. **Out of scope for Phase 2.** |
 | `packages/tokens` | 763 LOC of the old Cosmos palette (marked historical in its README, D-66) — **consumed by nobody**: `webApp` does not import it (it uses its own `src/styles/tokens.css`) and `mobileApp` does not exist. Kept for when mobile returns. |
 | `Gentleman-Skills/` | **Empty directory.** Referenced by the old CLAUDE.md; there is nothing in it. |
@@ -83,9 +84,11 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 ### Routes that exist
 ```
 /                                   Landing (stats, disciplines, testimonials from the DB; lunar calendar computed)
-/cursos  ·  /cursos/[slug]          Catalogue · course page (objectives, promo video, reviews)
-/guias  ·  /guias/[slug]            Teacher directory + public profile
-/diario  ·  /diario/[slug]          Blog, written by teachers
+/cursos  ·  /cursos/[slug]          Catalogue (7 discipline chips, ?disciplina=<key>) · course page
+                                    (objectives, promo video, modality, reviews)
+/guias  ·  /guias/[slug]            «Nuestros docentes»: founder card first (B4), then the grid;
+                                    profile (route kept, label renamed)
+/diario  ·  /diario/[slug]          Magazine by teachers: ?categoria=<key>, signed cover, related courses
 /entrar                             Login + register; honours ?next=, else lands by role
 /entrar/recuperar                   Request a password-reset link (neutral reply)
 /entrar/nueva-clave                 Choose a new password                     [link session]
@@ -103,7 +106,10 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 /panel/docente/**                   Teacher panel: courses, modules, lessons, [teacher]
                                     chapters, resources, diario posts,
                                     announcements (`/panel/docente/anuncios`,
-                                    T-031: drafts, publish + mail, withdraw)
+                                    T-031: drafts, publish + mail, withdraw).
+                                    A teacher without her own chart
+                                    (`natal_charts.is_self`) sees only the
+                                    chart form (T-024, product rule)
 /panel/admin                        Enrollments tab: request queue, grant by  [admin]
                                     mail + slug, searchable paged history
 /panel/admin/{usuarios,cursos,invitaciones}  Admin tabs, ?q= search,     [admin]
@@ -116,6 +122,10 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 /tarot/lectura/[id]                 Tirada guardada                           [auth]
 /tarot/cartas  ·  /tarot/cartas/[slug]   Las 78 fichas
 /panel/tarot                        Mis tiradas                               [auth]
+/carta-natal                        Carta natal: form + result (POST, nothing in the URL)
+/carta-natal/[id]                   Saved chart, recomputed on open           [auth, owner; noindex]
+/carta-natal/signos/[slug] · /planetas/[slug] · /casas/[n]   Indexable fact sheets (37)
+/panel/carta-natal                  Mis cartas natales: delete, mark «mi carta»  [auth]
 /invitacion/[token]                 Route Handler: accepts a teacher          [auth]
                                     invitation, refreshes the session claim
 /invitacion/invalida                Neutral "invalid or expired" page
@@ -151,6 +161,11 @@ under `(app)/`, which re-read `profiles.role`.
   `delete from mail_log where sent_at is null and last_error ~ '^permanent:(401|403|535)/'` —
   never delete the `409` rows: that mail may already have gone out.
 - **No error capture** (SP-6). The CSP ships Report-Only (T-052) until its enforce criterion is met.
+- **Founder content is on HOLD** (B4): the flag and the card exist, but no founder profile is
+  seeded; the owner loads her own photo and bio. `/guias` shows only the grid until the admin
+  marks her.
+- **Block B e2e specs never ran** (`catalogo-disciplinas`, `modalidad`, `diario-revista`,
+  `creadora`): written and listed by Playwright, pending a local stack with 0074-0077 applied.
 
 ## Architecture
 ADRs live in `engram/02_architecture.md` (ADR-001..013).
@@ -191,8 +206,9 @@ covered by mutation tests that fail loudly if you regress them.
 1. **`REVOKE ALL` then `GRANT` per column — never revoke a single column.** Supabase ships
    `ALTER DEFAULT PRIVILEGES ... GRANT ALL ON TABLES`, so every new table is born with
    table-level UPDATE, against which a per-column revoke is a no-op.
-2. **Grants are a whitelist.** A new column is not exposed by accident — you must add it by
-   hand to `0003_privileges.sql`. That is deliberate friction.
+2. **Grants are a whitelist.** A new column is not exposed by accident — you must grant it by
+   hand, column by column, in the migration that adds it (as `0011`, `0028` and `0072` do);
+   applied migrations are never edited. That is deliberate friction.
 3. **RLS policies read `profiles.role`, never the JWT claim.** A claim is a snapshot taken when
    the token was issued and survives a role downgrade until refresh. The claim is for routing
    and optimistic UI only.
@@ -202,13 +218,17 @@ covered by mutation tests that fail loudly if you regress them.
    Action after checking enrollment. A `select *` on `lessons` from the client fails with 42501.
    Same for personal data: `profiles.phone` and `profiles.birth_date` have no SELECT for any
    client role; the owner reads them through `my_private_profile()`. A `select *` on `profiles`
-   from the client fails with 42501. Avatars and course covers live in the private bucket
+   from the client fails with 42501. The locator sweep skips `places` (GeoNames data, public by
+   design; migration `0073`). Avatars and course covers live in the private bucket
    `uploads` (`avatars/<uid>/<uuid>.<ext>`, `covers/<course_id>/<uuid>.<ext>`).
    **No session writes to `uploads`** (D-34, migration 0030): the bucket only checks size and the
    declared MIME, so a client INSERT policy let users bypass the server's byte check. Uploads go
    through the Server Action with `service_role` (`uploadAsServer`) after validating magic bytes
    and ownership; sessions keep only SELECT (owner signs her own) and DELETE.
    `courses.cover_path` is tied to `covers/<id>/` by the CHECK `courses_cover_path_no_locator`.
+   `diario_posts.cover_path` is tied to `diario/<post_id>/` by `diario_posts_cover_path_no_locator`
+   (B3); there is no Storage policy for `diario/`: upload, sign (panel) and delete go through
+   `service_role` after `assertOwnsPost`.
    Every `uploads` URL is signed server-side for 1 h; public pages sign through
    `signPublicUploadUrls`, which calls `connection()`: a page that shows a signed URL must never
    be prerendered.
@@ -250,6 +270,29 @@ covered by mutation tests that fail loudly if you regress them.
     `x-forwarded-for` (a non-Netlify proxy must REPLACE both). If the limiter is down or mute the action
     proceeds and logs `rate_limit_backend_down` (fail-open, on purpose). `sendMail` has its own
     global and per-recipient cap. Auth flows are limited by GoTrue, not here.
+12. **Disciplines and Diario categories are closed lists** (B1/B3, migrations 0074/0076).
+    `courses.discipline` stores a key from `src/lib/taxonomy/disciplines.ts` and
+    `diario_posts.category` one from `src/lib/taxonomy/diario.ts`; each list is mirrored by a CHECK
+    and `src/lib/taxonomy/*.test.ts` reads the migration and fails if they differ. Adding a
+    discipline is a migration plus the list, never one of the two. Server mappers return the
+    label (`disciplineLabel`); only the teacher form, the catalog filter and the brand image
+    (`brandImageForDiscipline`) use the key. An unknown `?disciplina=`/`?categoria=` is ignored.
+13. **The founder is curated, not self-declared** (B4, migration 0077). `profiles.is_founder` has no
+    client UPDATE grant; only `setFounderAction` writes it, through `admin_set_founder`
+    (`service_role` only, one transaction, at most one founder, `role = 'teacher'` by CHECK). A role
+    change away from teacher unmarks her (`profiles_founder_follows_role`).
+14. **Birth data is reinforced personal data** (T-024). `natal_charts` has no grant for `anon`;
+    the owner reads and deletes; no client inserts or updates: writing is `save_natal_chart` /
+    `set_self_natal_chart`, `service_role` only, after `getUser()` and the consent.
+    `profiles.sun_sign/moon_sign/asc_sign` are public and only those functions and the trigger
+    that clears them when the own chart is deleted write them. Birth date, time and place never
+    go in the URL. `src/lib/astro/time.ts` is the only place that converts local time.
+
+**Course modality** (B2, migration 0075): `includes_*`, `access_terms`, `issues_certificate` are
+public course data written by the owner teacher. `includes_live` is informative only (ADR-004
+intact). `guard_certificates_insert` rejects a certificate for a course with
+`issues_certificate = false`, also for `service_role`; switching it off never revokes issued ones.
+`ensureCertificate` returns null before the insert for such a course.
 
 **Review moderation** (T-037, ADR-012): only the course's teacher or an admin can report a review
 (`course_review_reports`, RLS via `can_report_review`, which reads `profiles.role`). Hiding,
@@ -261,14 +304,25 @@ cannot review her own course (D-20, enforced by the `course_reviews` guard with 
 ## Design language (hard constraints)
 **«Brote»** (ADR-015, PO 2026-10-22). Spec: `docs/superpowers/specs/2026-10-22-rediseno-brote-design.md`;
 visual reference: `design_handoff_humano_humano/reference/brote/b4-brote2.html`.
-- **One light theme.** No `data-theme`, no toggle, no dark mode. Cosmos and `pergamino` are gone.
+- **One light theme, with cosmic surfaces** (ADR-015 extended, PO 2026-11-08: «Brote + acentos
+  cósmicos»). No `data-theme`, no toggle, no dark mode. The site stays light; four surfaces carry the
+  class `.cosmico` (`globals.css`): the landing hero, the lunar calendar band, the `/tarot` header and
+  the `/tarot` closing block. Cosmos and `pergamino` are still gone.
+- **Cosmic tokens** (`tokens.css`, `@theme inline`): `noche` `#0E1430` · `indigo` `#2A2F6B` · `oro`
+  `#D9B45A` · `--velo-min` `0.78`. They exist **only inside `.cosmico`**: a file that uses
+  `bg|text|border|fill|stroke-(noche|indigo|oro)` must declare `cosmico` or
+  `src/lib/ui/cosmic-tokens.test.ts` fails. Inside: text `papel` or `oro`, focus `oro`; `oro` as text
+  only on solid `noche`/`indigo`, never on an image. A photo under text takes `.cosmico-velo` (>= 70 %
+  `noche`). Every pair is checked in that test (>= 4.5:1 text, >= 3:1 focus). The `primary` button
+  (`miel` + `bosque` text) does not change. The footer stays `bosque`.
 - **Semantic tokens only**, defined once in `webApp/src/styles/tokens.css` and exposed to Tailwind
   by `@theme inline` in `src/styles/globals.css`: `fondo` `#FCFBF8` · `papel` `#FFFFFF` ·
   `salvia-100` `#EEF3EC` · `salvia` `#CFDCCB` · `linea` `#E3E8E1` · `tinta` `#2C3A31` (body text) ·
   `bosque` `#1F2E24` (headings, secondary button, footer) · `bosque-700` · `suave` `#5F6E65`
   (secondary text) · `miel` `#E6A93A` (primary button, `bosque` text on it: 6.85:1) · `miel-hover` `#F0B955` ·
   `miel-800` `#8A6219` (links, accent text) · `miel-100` (tags) · `musgo` `#5E7A66` (**icons and
-  illustration only, never text**) · `error` `#A8322A` · `exito` `#2F6B45`. No `cosmos`, `lila`,
+  illustration only, never text**) · `error` `#A8322A` · `exito` `#2F6B45` · `noche`/`indigo`/`oro` (cosmic
+  surfaces only, see above). No `cosmos`, `lila`,
   `ink`, `gold` or `hh-` class names in `webApp/src`; the one exception is the mail layout
   (`src/lib/server/mail/layout.ts`, a `COLORS` object with `bg #0a0418`, `lila`, `gold`), which keeps
   the Cosmos palette until D-60. Tailwind's default palette (`red-400`…) is not used for text either:
@@ -291,6 +345,14 @@ visual reference: `design_handoff_humano_humano/reference/brote/b4-brote2.html`.
   A rate-limited action answers in the form state's `error`, so each form shows it with its usual
   error pattern (`FormStatus`, `panel/StatusMessage`, `reviews/ActionFeedback`), never a new banner.
 - **The 78 tarot card scans** (`public/tarot/rws/*.webp`, public domain, see `CREDITS.md`) are the second raster source, also served through `next/image`.
+- **The owner's brand images** (`public/brand/*.webp`, generated by her with AI and ceded to the school,
+  see `CREDITS.md`; `image2` was discarded and `image5` is not shipped) are the third raster source,
+  catalogued with their `alt` in `src/content/brand-images.ts` and served through `next/image` with
+  reserved size. The hero and `/tarot` header use them as decorative backgrounds (`alt=""`); «Nuestra
+  mirada» and the closing tarot block carry content (real `alt`). Courses without their own cover
+  show `brandImageForDiscipline`. `placeholder-photos.ts` keeps only the two Unsplash photos of the
+  auth screens. Line illustration in the landing uses `atoms/SkyIllustration` (moon and stars);
+  `LeafIllustration` stays for the panel, auth and empty states.
 - **Raster is allowed for photography, always through `next/image`**, with reserved size. A photo that
   carries content gets a real `alt`; a decorative one next to text that already names the thing (the
   photo of a course card, whose title is the link) gets `alt=""`. The only remote host in `images.remotePatterns` is `images.unsplash.com`, and only the closed,
@@ -317,6 +379,9 @@ visual reference: `design_handoff_humano_humano/reference/brote/b4-brote2.html`.
 - `cn()` = `clsx` + `tailwind-merge`.
 - Server Components by default; `'use client'` only for interactivity or animation.
 - There are no mocks left (T-053 removed the last one). Do not add mocks.
+- Copy lives in `src/content/` (`landing.ts`, `site-copy.ts`); the owner's texts are literal, and
+  `src/content/forbidden-terms.test.ts` fails if `herbolaria`, `herboristas`, `reiki`, `oficios`,
+  `sin vencimiento` or `acceso ilimitado` come back to `src/`.
 
 ## External dependencies not yet provisioned
 Several things block work and require the repo owner's accounts:
@@ -331,6 +396,11 @@ Several things block work and require the repo owner's accounts:
   `webApp/.env.local`; read by the Supabase CLI on `supabase start`, not by Next). Local
   authorised redirect URI: `http://127.0.0.1:54321/auth/v1/callback`. Without them the Google
   button ends in a Google error page.
+- **`places` load in the cloud** (T-024): run `npm run places:load` (in `webApp/supabase`) with the
+  project's `DATABASE_URL` after applying `0072`; without it the place search returns nothing.
+  Check `select extname, extnamespace::regnamespace from pg_extension` first (`pg_trgm`/`unaccent`).
+- **Legal consultation on birth data** and **the owner's review of the 78 texts**
+  (`templates.json`, `_meta.estado`): they block the T-024 release, not development.
 - **Gmail App Password** (T-090, stopgap until a domain exists): 2-step verification on
   `despiertohumano@gmail.com`, an App Password, then `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`,
   `SMTP_SECURE=true`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM_ADDRESS=despiertohumano@gmail.com`.
@@ -345,6 +415,7 @@ must **never** carry the `NEXT_PUBLIC_` prefix: the first bypasses RLS entirely,
 mail as the school, and the prefix would ship either to the browser.
 
 ## History
+On 2026-11-08 the owner's content document replaced the landing, footer, catalogue, teachers, journal and tarot copy and added the cosmic surfaces (blocks A and C of `docs/superpowers/specs/2026-11-08-contenidos-duena-design.md`).
 On 2026-10-22 T-060 replaced the Cosmos design language (dark theme, Cinzel, no raster, three.js
 login canvas) with «Brote» (ADR-015); the old rules were deleted, not kept as an alternative.
 Until 2026-10-21 this file still described the state of 2026-08-06 (3.6k LOC, 11 routes, "the

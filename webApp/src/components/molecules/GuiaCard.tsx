@@ -2,7 +2,7 @@ import Link from "next/link";
 import TeacherPortrait from "@/components/atoms/TeacherPortrait";
 import type { PublicTeacherCard } from "@/lib/server/guias";
 
-/** Tarjeta de guía (B1): retrato 4:5, nombre, oficio y una línea. Toda la tarjeta es el link. */
+/** Tarjeta de guía (B1): retrato 4:5, nombre, disciplina y una línea. Toda la tarjeta es el link. */
 export default function GuiaCard({
   slug, fullName, headline, location, coursesCount, discipline, avatarUrl,
 }: PublicTeacherCard & { avatarUrl?: string | null }) {

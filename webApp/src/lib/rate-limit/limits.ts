@@ -71,6 +71,9 @@ export const RATE_LIMITS = {
   saveAnnouncementDraft: { max: 30, windowSeconds: 600 },
   publishAnnouncement: MAILS_OTHERS,
   withdrawAnnouncement: { max: 30, windowSeconds: 600 },
+  // Portada del Diario (B3): cada subida escribe en Storage con service_role.
+  uploadPostCoverAction: { max: 10, windowSeconds: 600 },
+  removePostCoverAction: { max: 10, windowSeconds: 600 },
   // Diario (T-022)
   createPostAction: STAFF,
   updatePostAction: STAFF,
@@ -78,6 +81,7 @@ export const RATE_LIMITS = {
   setPostPublishedAction: STAFF,
   // Admin (T-008, T-043, T-037, T-031, T-049)
   updateUserRoleAction: STAFF,
+  setFounderAction: STAFF,
   setEnrollmentAction: STAFF,
   setCourseStatusAction: STAFF,
   approveEnrollmentRequestAction: STAFF,
@@ -94,6 +98,13 @@ export const RATE_LIMITS = {
   // Tarot: guardar tiradas desde la lectura pública.
   saveTarotReadingAction: { max: 10, windowSeconds: 3600 },
   deleteTarotReadingAction: { max: 30, windowSeconds: 600 },
+  // Carta natal (T-024). Calcular es público (cuenta por IP sin sesión); buscar lugar va por tecla
+  // con espera de 300 ms; guardar escribe con service_role.
+  calcularCarta: { max: 30, windowSeconds: 600 },
+  guardarCarta: { max: 10, windowSeconds: 3600 },
+  buscarLugar: { max: 120, windowSeconds: 600 },
+  borrarCarta: { max: 30, windowSeconds: 600 },
+  marcarMiCarta: { max: 10, windowSeconds: 600 },
   // Reporte de errores del navegador (T-051, D-50): 10/min, como pide el spec SP-6.
   reportClientErrorAction: { max: 10, windowSeconds: 60 },
   // Route Handler GET /leccion/[id]/recurso/[resourceId] (T-044)

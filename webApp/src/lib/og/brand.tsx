@@ -59,7 +59,7 @@ export function SiteOgCard() {
         Humano Despierto
       </div>
       <div style={{ display: "flex", marginTop: 24, fontSize: 36, color: OG_COLORS.salvia, maxWidth: 820, lineHeight: 1.3 }}>
-        Escuela online de tarot, astrología, herbolaria, reiki y magia.
+        Astrología, tarot, constelaciones familiares, magia y autoconocimiento.
       </div>
     </div>
   );

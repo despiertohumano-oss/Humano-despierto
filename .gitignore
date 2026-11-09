@@ -3,3 +3,6 @@ node_modules/
 
 # Netlify CLI local
 .netlify
+
+# Textos de dominio público bajados para investigación (35 MB); URLs en cursos-y-bibliografia.md §6
+docs/superpowers/research/astrologia/fuentes/

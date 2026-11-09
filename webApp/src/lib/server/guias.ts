@@ -4,6 +4,8 @@ import { getPublicSupabaseClient } from "@/lib/server/supabase-public";
 import { createServiceRoleClient } from "@/lib/supabase/service";
 import { signAvatarUrl } from "@/lib/server/avatar";
 import { signPublicUploadUrls } from "@/lib/server/uploads";
+import { disciplineLabel } from "@/lib/taxonomy/disciplines";
+import { isSignId, type SignId } from "@/lib/astro/zodiac";
 
 // T-017 · lectura publica de la ficha de docente (`/guias`, `/guias/[slug]`, la seccion
 // "Maestra" de la landing). Reemplaza el mock `guia.ts`.
@@ -29,6 +31,8 @@ export interface PublicTeacherCard {
   yearsPractice: number | null;
   discipline: string | null;
   coursesCount: number;
+  /** B4 · la creadora destacada (curada por la admin, `admin_set_founder`). */
+  isFounder: boolean;
   /** El path, no la URL: `sitemap.ts` lee esta lista y no tiene por qué firmar. Firma `signTeacherAvatars`. */
   avatarPath: string | null;
 }
@@ -48,6 +52,8 @@ export interface PublicTeacherProfile extends PublicTeacherCard {
   testimonials: { quote: string; who: string; course: string }[];
   avatarUrl: string | null;
   courses: PublicTeacherCourse[];
+  /** Solo signos: sin grados, rueda ni lugar (decisión del PO). `asc` es null si la carta no tiene hora. */
+  signs: { sun: SignId | null; moon: SignId | null; asc: SignId | null };
 }
 
 interface TeacherRow {
@@ -63,6 +69,10 @@ interface TeacherRow {
   formations: { year: string; title: string; place: string }[] | null;
   testimonials: { quote: string; who: string; course: string }[] | null;
   avatar_path: string | null;
+  is_founder: boolean;
+  sun_sign: string | null;
+  moon_sign: string | null;
+  asc_sign: string | null;
 }
 
 interface CourseRow {
@@ -90,7 +100,7 @@ async function fetchTeachersAndCourses() {
       supabase
         .from("profiles")
         .select(
-          "id, full_name, slug, glyph, headline, location, quote, years_practice, bio, formations, testimonials, avatar_path"
+          "id, full_name, slug, glyph, headline, location, quote, years_practice, bio, formations, testimonials, avatar_path, is_founder, sun_sign, moon_sign, asc_sign"
         )
         .eq("role", "teacher")
         .not("slug", "is", null),
@@ -115,6 +125,7 @@ async function fetchTeachersAndCourses() {
 
 function toCard(row: TeacherRow, courses: CourseRow[]): PublicTeacherCard {
   const own = courses.filter((c) => c.teacher_id === row.id);
+  const key = mostFrequent(own.map((c) => c.discipline));
   return {
     id: row.id,
     slug: row.slug ?? "",
@@ -124,8 +135,9 @@ function toCard(row: TeacherRow, courses: CourseRow[]): PublicTeacherCard {
     location: row.location,
     quote: row.quote,
     yearsPractice: row.years_practice,
-    discipline: mostFrequent(own.map((c) => c.discipline)),
+    discipline: key ? disciplineLabel(key) : null,
     coursesCount: own.length,
+    isFounder: row.is_founder ?? false,
     avatarPath: row.avatar_path,
   };
 }
@@ -133,13 +145,43 @@ function toCard(row: TeacherRow, courses: CourseRow[]): PublicTeacherCard {
 /**
  * Docentes con al menos un curso publicado: mostrar una ficha vacia ("sin cursos") es peor
  * que no listarla (mismo criterio que T-014/ADR-004 aplican a cualquier promesa sin respaldo).
+ * La creadora aparece aunque todavía no tenga cursos (B4): su presentación es el contenido.
  */
-export async function getPublicTeachers(): Promise<PublicTeacherCard[]> {
-  const { teachers, courses } = await fetchTeachersAndCourses();
+function publicCards(teachers: TeacherRow[], courses: CourseRow[]): PublicTeacherCard[] {
   return teachers
     .map((row) => toCard(row, courses))
-    .filter((t) => t.coursesCount > 0)
+    .filter((t) => t.coursesCount > 0 || t.isFounder)
     .sort((a, b) => a.fullName.localeCompare(b.fullName, "es"));
+}
+
+export async function getPublicTeachers(): Promise<PublicTeacherCard[]> {
+  const { teachers, courses } = await fetchTeachersAndCourses();
+  return publicCards(teachers, courses);
+}
+
+export interface PublicFounderCard extends PublicTeacherCard {
+  bio: string | null;
+  disciplines: string[];
+  courses: { slug: string; title: string; titleEm: string | null }[];
+}
+
+/** B4 · `/guias`: la creadora aparte (tarjeta grande) y el resto en la grilla, sin repetirla. */
+export async function getGuiasDirectory(): Promise<{ founder: PublicFounderCard | null; teachers: PublicTeacherCard[] }> {
+  const { teachers, courses } = await fetchTeachersAndCourses();
+  const cards = publicCards(teachers, courses);
+  const card = cards.find((t) => t.isFounder);
+  const row = card && teachers.find((t) => t.id === card.id);
+  const own = card ? courses.filter((c) => c.teacher_id === card.id) : [];
+  const founder: PublicFounderCard | null =
+    card && row
+      ? {
+          ...card,
+          bio: row.bio,
+          disciplines: [...new Set(own.map((c) => c.discipline))].map(disciplineLabel),
+          courses: own.map((c) => ({ slug: c.slug, title: c.title, titleEm: c.title_em })),
+        }
+      : null;
+  return { founder, teachers: cards.filter((t) => !t.isFounder) };
 }
 
 // `cache`: generateMetadata y la pagina piden la misma ficha; sin esto son dos firmas por request.
@@ -149,13 +191,18 @@ export const getTeacherBySlug = cache(async (slug: string): Promise<PublicTeache
   if (!row) return null;
 
   const card = toCard(row, courses);
-  if (card.coursesCount === 0) return null;
+  if (card.coursesCount === 0 && !card.isFounder) return null;
 
   return {
     ...card,
     bio: row.bio,
     formations: row.formations ?? [],
     testimonials: row.testimonials ?? [],
+    signs: {
+      sun: row.sun_sign && isSignId(row.sun_sign) ? row.sun_sign : null,
+      moon: row.moon_sign && isSignId(row.moon_sign) ? row.moon_sign : null,
+      asc: row.asc_sign && isSignId(row.asc_sign) ? row.asc_sign : null,
+    },
     // service_role solo FIRMA: `anon` no tiene SELECT sobre storage.objects, y el path ya paso por
     // el guard de carpeta de 0028, asi que no puede apuntar al archivo de otra persona.
     avatarUrl: await signAvatarUrl(createServiceRoleClient(), row.avatar_path),
@@ -165,26 +212,12 @@ export const getTeacherBySlug = cache(async (slug: string): Promise<PublicTeache
         slug: c.slug,
         title: c.title,
         titleEm: c.title_em,
-        discipline: c.discipline,
+        discipline: disciplineLabel(c.discipline),
         level: c.level,
         moonGlyph: c.moon_glyph,
       })),
   };
 });
-
-/**
- * "Maestra" de la landing. Sin un flag `featured` en `profiles` (no se justifica una columna
- * nueva para un solo widget) y sin poder contar inscripciones como `anon` (ver cabecera del
- * archivo), se elige a la docente con MAS cursos publicados -- metrica publica, derivada,
- * honesta, no arbitraria. Empate: orden alfabetico de slug (deterministico).
- */
-export async function getFeaturedTeacher(): Promise<PublicTeacherCard | null> {
-  const teachers = await getPublicTeachers();
-  if (teachers.length === 0) return null;
-  return [...teachers].sort(
-    (a, b) => b.coursesCount - a.coursesCount || a.slug.localeCompare(b.slug)
-  )[0];
-}
 
 /** Una firma por página para las tarjetas que se dibujan. Los paths salen de fichas que `anon` ya lee. */
 export async function signTeacherAvatars(teachers: { avatarPath: string | null }[]): Promise<Map<string, string>> {

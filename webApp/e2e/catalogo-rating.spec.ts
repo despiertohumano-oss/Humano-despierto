@@ -1,8 +1,9 @@
 import { psql } from "./db";
 import { expect, test, userIdByEmail, ALUMNA, ADMIN, DELFINA, REVOCADA } from "./fixtures";
 
-// El catálogo pagina: se mira siempre /cursos?disciplina=reiki, donde caben reiki-nivel-3 y el curso propio.
-const REIKI = "/cursos?disciplina=reiki";
+// El catálogo pagina: se mira siempre /cursos?disciplina=magia (Reiki y Herbal del seed son magia
+// desde B1), donde caben reiki-nivel-3 y el curso propio.
+const REIKI = "/cursos?disciplina=magia";
 
 // Las reseñas se siembran con service_role (única vía que no exige UI de alumna) y se limpian al
 // terminar. La base demo ya trae reseñas en casi todos los cursos, así que el spec no depende de
@@ -29,7 +30,7 @@ test.beforeAll(async ({ request }) => {
   test.skip(!SERVICE, "falta SUPABASE_SERVICE_ROLE_KEY (webApp/.env.local)");
   psql(
     `insert into public.courses (slug, title, discipline, level, teacher_id, status, published_at)
-     values ('${SIN}', 'Curso sin reseñas e2e', 'Reiki', 'Inicial', '${SOL_ID}', 'published', '2000-01-01')`,
+     values ('${SIN}', 'Curso sin reseñas e2e', 'magia', 'Inicial', '${SOL_ID}', 'published', '2000-01-01')`,
   );
   const c = await request.get(`${SUPABASE}/rest/v1/courses?select=id&slug=eq.${CON}`, { headers: H });
   courseId = (await c.json())[0].id;

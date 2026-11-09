@@ -1,5 +1,6 @@
 import { z } from "@/lib/validation/zod";
 import { noLocator, slugSchema } from "@/lib/validation/teacher";
+import { DIARIO_CATEGORY_KEYS } from "@/lib/taxonomy/diario";
 
 // Validación de formularios del Diario (T-022). Mismo patrón que `courseFormSchema`
 // (`lib/validation/teacher.ts`): Zod cubre el camino del formulario, la DB (CHECK +
@@ -19,6 +20,9 @@ export const diarioPostFormSchema = z.object({
   title: noLocator(z.string().trim().min(1, "El título es obligatorio.").max(200), "título"),
   excerpt: noLocator(z.string().trim().max(400).optional().or(z.literal("")), "resumen"),
   body: z.string().trim().min(1, "El cuerpo no puede estar vacío.").max(20000, "El cuerpo es demasiado largo."),
+  category: z.enum(DIARIO_CATEGORY_KEYS, { error: "Elegí una categoría de la lista." }),
+  // B3 · solo en la edición: el vínculo necesita el id del post.
+  relatedCourseIds: z.array(z.uuid({ error: "Curso inválido." })).max(6, "Podés vincular hasta 6 cursos.").default([]),
 });
 
 export type DiarioPostFormInput = z.input<typeof diarioPostFormSchema>;

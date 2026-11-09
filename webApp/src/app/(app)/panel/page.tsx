@@ -91,6 +91,9 @@ export default async function DashboardPage({
           <ButtonLink href="/panel/tarot" variant="outline" size="sm">
             Mis tiradas
           </ButtonLink>
+          <ButtonLink href="/panel/carta-natal" variant="outline" size="sm">
+            Mis cartas natales
+          </ButtonLink>
           <ButtonLink href="/cursos" variant="ghost" size="sm" arrow>
             Ver todos los cursos
           </ButtonLink>

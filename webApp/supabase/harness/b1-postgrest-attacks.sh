@@ -389,6 +389,44 @@ if [ "$COD" = "200" ] && [ "$EXISTE" = "0" ]; then printf '  ok    %-52s HTTP %s
 else printf '  FALLA %-52s HTTP %s, quedan %s (esperaba 200 y 0)\n' "(k9+) la duena borra su portada" "$COD" "$EXISTE"; fallos=$((fallos+1)); fi
 
 echo ""
+echo "── B3 · portada del Diario: ninguna sesion lee ni escribe en uploads/diario/"
+# 0075 no crea policy de Storage para `diario/`: sube y borra SOLO la Server Action con service_role
+# (D-34) y la pagina firma con service_role. Ni la autora del post tiene camino por HTTP directo.
+x "insert into public.diario_posts (teacher_id,slug,title,body,status,published_at)
+   values ('$DOCENTE','b1-diario-portada','Post B1','Cuerpo','published',now())
+   on conflict (slug) do update set teacher_id='$DOCENTE', status='published';"
+POST_D=$(q "select id from public.diario_posts where slug='b1-diario-portada';")
+PORTADA_D="diario/$POST_D/$AVATAR_F.png"
+borrar_avatar "$PORTADA_D" "$SRV" >/dev/null   # corrida cortada a la mitad deja el objeto
+subir "(d1) la autora sube a diario/<su post>"     4xx "$PORTADA_D" "$DOCENTE_JWT"
+subir "(d2) otra docente sube a diario/<post>"     4xx "$PORTADA_D" "$DOCENTE2_JWT"
+subir "(d3) anon sube a diario/<post>"             4xx "$PORTADA_D" "$ANON"
+subir "(d+) service_role sube (la action)"         2xx "$PORTADA_D" "$SRV"
+listar_d() {  # $1 rotulo · $2 jwt
+  local out; out=$(curl -s -X POST "$API/storage/v1/object/list/uploads" -H "apikey: $ANON" \
+    -H "Authorization: Bearer $2" -H "Content-Type: application/json" -d "{\"prefix\":\"diario/$POST_D\"}")
+  if grep -q "$AVATAR_F" <<<"$out"; then printf '  FALLA %-52s %s\n' "$1" "$(head -c 120 <<<"$out")"; fallos=$((fallos+1))
+  else printf '  ok    %-52s %s\n' "$1" "sin nombres"; fi
+}
+listar_d "(d4) la autora lista diario/<su post>"   "$DOCENTE_JWT"
+listar_d "(d4b) anon lista diario/<post>"          "$ANON"
+firmar_d() {  # $1 rotulo · $2 clase esperada · $3 jwt
+  local code; code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "$API/storage/v1/object/sign/uploads/$PORTADA_D" \
+    -H "apikey: $ANON" -H "Authorization: Bearer $3" -H "Content-Type: application/json" -d '{"expiresIn":60}')
+  if [ "${code:0:1}xx" = "$2" ]; then printf '  ok    %-52s HTTP %s\n' "$1" "$code"
+  else printf '  FALLA %-52s HTTP %s (esperaba %s)\n' "$1" "$code" "$2"; fallos=$((fallos+1)); fi
+}
+firmar_d "(d5) la autora firma la portada"         4xx "$DOCENTE_JWT"
+firmar_d "(d5b) anon firma la portada"             4xx "$ANON"
+firmar_d "(d5+) service_role firma (la pagina)"    2xx "$SRV"
+COD=$(borrar_avatar "$PORTADA_D" "$DOCENTE_JWT")
+EXISTE=$(q "select count(*) from storage.objects where bucket_id='uploads' and name='$PORTADA_D';")
+if [ "$EXISTE" = "1" ]; then printf '  ok    %-52s HTTP %s, objeto intacto\n' "(d6) la autora borra la portada" "$COD"
+else printf '  FALLA %-52s objeto borrado\n' "(d6) la autora borra la portada"; fallos=$((fallos+1)); fi
+borrar_avatar "$PORTADA_D" "$SRV" >/dev/null
+x "delete from public.diario_posts where slug='b1-diario-portada';"
+
+echo ""
 echo "── el camino legitimo de service_role POR HTTP (punto ciego que tenia esta suite)"
 # Esta seccion existe porque la suite solo afirmaba que los ataques fallan. Un esquema
 # que le niega todo a todos pasa los 13 ataques igual de bien que uno correcto. Y de

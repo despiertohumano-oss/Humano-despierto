@@ -6,7 +6,7 @@ import { z } from "zod";
 import { notifyEnrollmentActivated, notifyEnrollmentRejected } from "@/lib/server/mail/notify";
 import { hasLocator } from "@/lib/validation/locator.mjs";
 import { ENROLLMENT_COPY, NO_ROWS, REASON_MAX, translateEnrollmentError } from "@/lib/enrollment/messages";
-import { requireAdmin } from "@/lib/server/admin";
+import { getFounderId, requireAdmin } from "@/lib/server/admin";
 import { getAdminSupabaseClient } from "@/lib/server/supabase-admin";
 import { resolveGrantTarget } from "@/lib/server/enrollment-grant";
 import { normalizeEmail } from "@/lib/admin/email";
@@ -442,6 +442,41 @@ export const grantEnrollmentByEmailAction = withRateLimit(
     delegated.set("courseId", target.courseId);
     delegated.set("status", "active");
     return setEnrollment(prevState, delegated);
+  },
+  limitedState,
+);
+
+const FOUNDER_ERRORS: Record<string, string> = {
+  "22023": "Solo una docente puede ser la creadora.",
+  // Dos llamadas a la vez: el índice único de 0076 deja pasar solo una; la otra no rompe la página.
+  "23505": "Otra persona cambió la creadora al mismo tiempo. Recargá la página y probá de nuevo.",
+};
+
+// B4 · La creadora destacada. Una sola, docente; lo garantiza `admin_set_founder` (0076) en una
+// transacción, execute solo service_role. El rol del que llama sale de profiles (requireAdmin).
+export const setFounderAction = withRateLimit(
+  "setFounderAction",
+  async function setFounderAction(_prevState: AdminActionState, formData: FormData): Promise<AdminActionState> {
+    await requireAdmin();
+    const clear = formData.get("clear") === "1";
+    // Marcar y quitar llevan el id que la admin ve en pantalla.
+    const userId = String(formData.get("userId") ?? "");
+    if (!z.uuid().safeParse(userId).success) return { error: "Datos inválidos.", success: null };
+
+    // G-4 · quitar solo a la creadora que se mostró: con la página vieja no se desmarca a la que
+    // otra admin acaba de marcar. Lectura y desmarca no son atómicas; la ventana es de milisegundos.
+    if (clear && (await getFounderId()) !== userId) return { error: FOUNDER_ERRORS["23505"], success: null };
+
+    const { error } = await getAdminSupabaseClient().rpc("admin_set_founder", { p_profile_id: clear ? null : userId });
+    if (error) {
+      log.error("founder_set_failed", { pg_code: error.code });
+      return { error: FOUNDER_ERRORS[error.code ?? ""] ?? "No se pudo actualizar la creadora.", success: null };
+    }
+
+    revalidatePath("/guias");
+    revalidatePath("/guias/[slug]", "page");
+    revalidatePath("/panel/admin/usuarios");
+    return { error: null, success: clear ? "Ya no hay creadora destacada." : "Listo: es la creadora destacada." };
   },
   limitedState,
 );

@@ -15,7 +15,8 @@ import WishlistButton from "@/components/course/WishlistButton";
 import FaqList from "@/components/molecules/FaqList";
 import ReviewsSection from "@/components/reviews/ReviewsSection";
 import { COURSE_FAQ } from "@/content/landing";
-import { placeholderForDiscipline, unsplashUrl } from "@/content/placeholder-photos";
+import { brandImageForDiscipline } from "@/content/brand-images";
+import ModalityBlock from "@/components/course/ModalityBlock";
 import { visibleDescription } from "@/lib/catalog/description";
 import { firstPreviewLesson } from "@/lib/catalog/free-class";
 import { enrollmentPanelCopy } from "@/lib/enrollment/panel-copy";
@@ -72,7 +73,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
   const fullTitle = [course.title, course.titleEm].filter(Boolean).join(" ");
   const preview = firstPreviewLesson(course.modules);
   const panel = enrollmentPanelCopy(enrollment);
-  const placeholder = placeholderForDiscipline(course.discipline);
+  const brandCover = brandImageForDiscipline(course.discipline);
   const incluye: { icon: IconName; text: string }[] = [
     ...(course.lessonCount > 0
       ? [{
@@ -83,7 +84,6 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
     ...course.includes.map((text) => ({ icon: "file" as const, text })),
     { icon: "chat", text: "Preguntas a la guía dentro de cada clase" },
     { icon: "notes", text: "Tus notas personales en cada clase" },
-    { icon: "award", text: "Certificado de finalización verificable" },
   ];
 
   return (
@@ -137,8 +137,8 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
               />
             ) : (
               <Image
-                src={unsplashUrl(placeholder.id)}
-                alt={placeholder.alt}
+                src={brandCover.src}
+                alt={brandCover.alt}
                 fill
                 preload
                 sizes="(min-width: 1024px) 460px, 100vw"
@@ -186,6 +186,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                 </li>
               )}
             </ul>
+            <ModalityBlock modality={course.modality} />
           </div>
         </aside>
 

@@ -9,7 +9,7 @@ test("crear un curso con un slug que ya existe marca el campo Slug, no el formul
   await page.goto("/panel/docente/nuevo");
   await page.getByLabel("Slug (URL)").fill("tarot-iniciatico");
   await page.getByLabel("Título", { exact: true }).fill("Curso e2e D-100");
-  await page.getByLabel("Disciplina").fill("Tarot");
+  await page.getByLabel("Disciplina").selectOption("tarot");
   await page.getByLabel("Nivel").fill("Iniciación");
   await page.getByLabel("Precio").fill("240");
   await page.getByRole("button", { name: "Crear curso" }).click();

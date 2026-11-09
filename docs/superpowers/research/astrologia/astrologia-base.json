@@ -1,0 +1,1555 @@
+{
+  "_meta": {
+    "generado": "2026-11-06",
+    "informe": "fundamentos-interpretativos.md",
+    "aviso": "Palabras clave son conceptos contrastados, no texto para copiar. Los textos finales se escriben de cero.",
+    "fuentes": {
+      "UT": "https://www.uraniatrust.org/astrology/chapter-6-zodiac-signs",
+      "AT": "https://www.astrotheme.com/astrology_signs.php",
+      "AS": "https://www.astrostyle.com/astrology/zodiac-signs/",
+      "CA": "https://cafeastrology.com/astrologysymbolsbasics.html",
+      "JM": "https://refinery29.com/en-us/2018/11/216100/astrology-zodiac-keywords-the-stars-within-you",
+      "WP_sign": "https://en.wikipedia.org/wiki/Astrological_sign",
+      "WP_dom": "https://en.wikipedia.org/wiki/Domicile_(astrology)",
+      "WP_exalt": "https://en.wikipedia.org/wiki/Exaltation_(astrology)",
+      "PT": "https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Ptolemy/Tetrabiblos/1B*.html",
+      "UT_pl": "https://www.uraniatrust.org/astrology/chapter-4-planetary-gods",
+      "WP_pl": "https://en.wikipedia.org/wiki/Planets_in_astrology",
+      "WP_house": "https://en.wikipedia.org/wiki/House_(astrology)",
+      "UT_h": "https://www.uraniatrust.org/astrology/chapter-7-houses",
+      "UT_asp": "https://www.uraniatrust.org/astrology/chapter-5-aspects",
+      "WP_asp": "https://en.wikipedia.org/wiki/Astrological_aspect",
+      "SWE": "https://www.astro.com/swisseph/swisseph.htm",
+      "ASTRO_FAQ_EXTRA": "https://www.astro.com/cgi/xa.cgi/faq/fq_fh_extra_e.htm",
+      "ASTRO_FAQ_STYLE": "https://www.astro.com/cgi/xa.cgi/faq/fq_fh_owstyle_e.htm",
+      "CA_REPORT": "https://cafeastrology.com/articles/how-to-read-natal-chart-report.html",
+      "AT_LIL": "https://www.astrotheme.com/black-moon-Lilith-in-astrology.php",
+      "AT_NODE": "https://www.astrotheme.com/lunar-nodes-in-astrology.php",
+      "MR": "https://www.mercurioretrogrado.com/puntos-especiales",
+      "WL": "https://archive.org/details/ca-william-lilly"
+    }
+  },
+  "signos": [
+    {
+      "id": "aries",
+      "nombre": "Aries",
+      "elemento": "fuego",
+      "modalidad": "cardinal",
+      "polaridad": "activo",
+      "regente_tradicional": [
+        "marte"
+      ],
+      "regente_moderno": [
+        "marte"
+      ],
+      "fechas_aprox": {
+        "WP": "21/3-20/4",
+        "AS": "21/3-19/4",
+        "AT": "21/3-20/4"
+      },
+      "frase_clave": {
+        "CA": "I am",
+        "AT": "I am",
+        "JM": "I am"
+      },
+      "lema_UT": "I am",
+      "palabras_clave_consenso": [
+        {
+          "k": "afirmación del yo",
+          "src": [
+            "CA",
+            "AT",
+            "JM",
+            "UT"
+          ]
+        },
+        {
+          "k": "coraje, audacia",
+          "src": [
+            "UT",
+            "AT",
+            "AS"
+          ]
+        }
+      ],
+      "palabras_clave_otras": [
+        {
+          "k": "impulsividad",
+          "src": [
+            "UT",
+            "AT"
+          ]
+        },
+        {
+          "k": "independencia",
+          "src": [
+            "UT"
+          ]
+        }
+      ],
+      "fuentes": [
+        "WP_sign",
+        "UT",
+        "AT",
+        "AS",
+        "CA",
+        "JM"
+      ]
+    },
+    {
+      "id": "tauro",
+      "nombre": "Tauro",
+      "elemento": "tierra",
+      "modalidad": "fijo",
+      "polaridad": "receptivo",
+      "regente_tradicional": [
+        "venus"
+      ],
+      "regente_moderno": [
+        "venus"
+      ],
+      "fechas_aprox": {
+        "WP": "21/4-21/5",
+        "AS": "20/4-20/5",
+        "AT": "21/4-20/5"
+      },
+      "frase_clave": {
+        "CA": "I have",
+        "AT": "I have",
+        "JM": "I have"
+      },
+      "lema_UT": "I possess",
+      "palabras_clave_consenso": [
+        {
+          "k": "posesión, tener",
+          "src": [
+            "CA",
+            "AT",
+            "JM",
+            "UT"
+          ]
+        },
+        {
+          "k": "sensualidad, placer",
+          "src": [
+            "UT",
+            "AT",
+            "AS"
+          ]
+        }
+      ],
+      "palabras_clave_otras": [
+        {
+          "k": "estabilidad, seguridad",
+          "src": [
+            "AT",
+            "AS"
+          ]
+        },
+        {
+          "k": "obstinación",
+          "src": [
+            "UT"
+          ]
+        }
+      ],
+      "fuentes": [
+        "WP_sign",
+        "UT",
+        "AT",
+        "AS",
+        "CA",
+        "JM"
+      ]
+    },
+    {
+      "id": "geminis",
+      "nombre": "Géminis",
+      "elemento": "aire",
+      "modalidad": "mutable",
+      "polaridad": "activo",
+      "regente_tradicional": [
+        "mercurio"
+      ],
+      "regente_moderno": [
+        "mercurio"
+      ],
+      "fechas_aprox": {
+        "WP": "22/5-21/6",
+        "AS": "21/5-20/6",
+        "AT": "21/5-21/6"
+      },
+      "frase_clave": {
+        "CA": "I think",
+        "AT": "I think",
+        "JM": "I think"
+      },
+      "lema_UT": "I communicate",
+      "palabras_clave_consenso": [
+        {
+          "k": "pensamiento",
+          "src": [
+            "CA",
+            "AT",
+            "JM"
+          ]
+        },
+        {
+          "k": "comunicación, expresión",
+          "src": [
+            "UT",
+            "AS",
+            "AT"
+          ]
+        }
+      ],
+      "palabras_clave_otras": [
+        {
+          "k": "curiosidad",
+          "src": [
+            "AT",
+            "UT"
+          ]
+        },
+        {
+          "k": "adaptabilidad",
+          "src": [
+            "AT"
+          ]
+        }
+      ],
+      "fuentes": [
+        "WP_sign",
+        "UT",
+        "AT",
+        "AS",
+        "CA",
+        "JM"
+      ]
+    },
+    {
+      "id": "cancer",
+      "nombre": "Cáncer",
+      "elemento": "agua",
+      "modalidad": "cardinal",
+      "polaridad": "receptivo",
+      "regente_tradicional": [
+        "luna"
+      ],
+      "regente_moderno": [
+        "luna"
+      ],
+      "fechas_aprox": {
+        "WP": "22/6-23/7",
+        "AS": "21/6-22/7",
+        "AT": "22/6-22/7"
+      },
+      "frase_clave": {
+        "CA": "I feel",
+        "AT": "I feel",
+        "JM": "I feel"
+      },
+      "lema_UT": "I belong",
+      "palabras_clave_consenso": [
+        {
+          "k": "sentir, emoción",
+          "src": [
+            "CA",
+            "AT",
+            "JM",
+            "AS"
+          ]
+        },
+        {
+          "k": "hogar, raíces, protección",
+          "src": [
+            "CA",
+            "AS",
+            "AT"
+          ]
+        }
+      ],
+      "palabras_clave_otras": [
+        {
+          "k": "sensibilidad, intuición, compasión",
+          "src": [
+            "UT"
+          ]
+        },
+        {
+          "k": "nostalgia",
+          "src": [
+            "AT"
+          ]
+        }
+      ],
+      "fuentes": [
+        "WP_sign",
+        "UT",
+        "AT",
+        "AS",
+        "CA",
+        "JM"
+      ]
+    },
+    {
+      "id": "leo",
+      "nombre": "Leo",
+      "elemento": "fuego",
+      "modalidad": "fijo",
+      "polaridad": "activo",
+      "regente_tradicional": [
+        "sol"
+      ],
+      "regente_moderno": [
+        "sol"
+      ],
+      "fechas_aprox": {
+        "WP": "24/7-23/8",
+        "AS": "23/7-22/8",
+        "AT": "23/7-22/8"
+      },
+      "frase_clave": {
+        "CA": "I will",
+        "AT": "I love",
+        "JM": "I will"
+      },
+      "lema_UT": "I create",
+      "palabras_clave_consenso": [
+        {
+          "k": "autoexpresión, confianza, brillo",
+          "src": [
+            "UT",
+            "AT",
+            "AS"
+          ]
+        }
+      ],
+      "palabras_clave_otras": [
+        {
+          "k": "lealtad",
+          "src": [
+            "UT",
+            "AT"
+          ]
+        },
+        {
+          "k": "generosidad",
+          "src": [
+            "UT",
+            "AT"
+          ]
+        },
+        {
+          "k": "voluntad",
+          "src": [
+            "CA",
+            "JM"
+          ]
+        }
+      ],
+      "fuentes": [
+        "WP_sign",
+        "UT",
+        "AT",
+        "AS",
+        "CA",
+        "JM"
+      ]
+    },
+    {
+      "id": "virgo",
+      "nombre": "Virgo",
+      "elemento": "tierra",
+      "modalidad": "mutable",
+      "polaridad": "receptivo",
+      "regente_tradicional": [
+        "mercurio"
+      ],
+      "regente_moderno": [
+        "mercurio"
+      ],
+      "fechas_aprox": {
+        "WP": "24/8-23/9",
+        "AS": "23/8-22/9",
+        "AT": "23/8-22/9"
+      },
+      "frase_clave": {
+        "CA": "I serve",
+        "AT": "I serve",
+        "JM": "I analyze"
+      },
+      "lema_UT": "I perfect and serve",
+      "palabras_clave_consenso": [
+        {
+          "k": "servicio",
+          "src": [
+            "CA",
+            "AT",
+            "UT",
+            "AS"
+          ]
+        },
+        {
+          "k": "análisis",
+          "src": [
+            "UT",
+            "AT",
+            "JM"
+          ]
+        },
+        {
+          "k": "perfeccionismo, trabajo minucioso",
+          "src": [
+            "AT",
+            "UT",
+            "AS"
+          ]
+        }
+      ],
+      "palabras_clave_otras": [
+        {
+          "k": "modestia",
+          "src": [
+            "UT",
+            "AT"
+          ]
+        },
+        {
+          "k": "bienestar",
+          "src": [
+            "AS"
+          ]
+        }
+      ],
+      "fuentes": [
+        "WP_sign",
+        "UT",
+        "AT",
+        "AS",
+        "CA",
+        "JM"
+      ]
+    },
+    {
+      "id": "libra",
+      "nombre": "Libra",
+      "elemento": "aire",
+      "modalidad": "cardinal",
+      "polaridad": "activo",
+      "regente_tradicional": [
+        "venus"
+      ],
+      "regente_moderno": [
+        "venus"
+      ],
+      "fechas_aprox": {
+        "WP": "24/9-23/10",
+        "AS": "23/9-22/10",
+        "AT": "23/9-22/10"
+      },
+      "frase_clave": {
+        "CA": "I balance",
+        "AT": "We are",
+        "JM": "I balance"
+      },
+      "lema_UT": "I balance",
+      "palabras_clave_consenso": [
+        {
+          "k": "equilibrio",
+          "src": [
+            "CA",
+            "JM",
+            "UT"
+          ]
+        }
+      ],
+      "palabras_clave_otras": [
+        {
+          "k": "armonía, paz",
+          "src": [
+            "AS",
+            "AT"
+          ]
+        },
+        {
+          "k": "vínculo, pareja, cooperación",
+          "src": [
+            "CA",
+            "AS"
+          ]
+        },
+        {
+          "k": "indecisión",
+          "src": [
+            "UT"
+          ]
+        }
+      ],
+      "fuentes": [
+        "WP_sign",
+        "UT",
+        "AT",
+        "AS",
+        "CA",
+        "JM"
+      ]
+    },
+    {
+      "id": "escorpio",
+      "nombre": "Escorpio",
+      "elemento": "agua",
+      "modalidad": "fijo",
+      "polaridad": "receptivo",
+      "regente_tradicional": [
+        "marte"
+      ],
+      "regente_moderno": [
+        "pluton"
+      ],
+      "fechas_aprox": {
+        "WP": "24/10-22/11",
+        "AS": "23/10-21/11",
+        "AT": "23/10-21/11"
+      },
+      "frase_clave": {
+        "CA": "I desire",
+        "AT": "We have",
+        "JM": "I create"
+      },
+      "lema_UT": "I regenerate",
+      "palabras_clave_consenso": [
+        {
+          "k": "intensidad, pasión, profundidad",
+          "src": [
+            "UT",
+            "AT",
+            "AS"
+          ]
+        }
+      ],
+      "palabras_clave_otras": [
+        {
+          "k": "secreto, reserva",
+          "src": [
+            "UT",
+            "AT"
+          ]
+        },
+        {
+          "k": "regeneración",
+          "src": [
+            "CA",
+            "UT"
+          ]
+        }
+      ],
+      "fuentes": [
+        "WP_sign",
+        "UT",
+        "AT",
+        "AS",
+        "CA",
+        "JM"
+      ]
+    },
+    {
+      "id": "sagitario",
+      "nombre": "Sagitario",
+      "elemento": "fuego",
+      "modalidad": "mutable",
+      "polaridad": "activo",
+      "regente_tradicional": [
+        "jupiter"
+      ],
+      "regente_moderno": [
+        "jupiter"
+      ],
+      "fechas_aprox": {
+        "WP": "23/11-21/12",
+        "AS": "22/11-21/12",
+        "AT": "22/11-20/12"
+      },
+      "frase_clave": {
+        "CA": "I see",
+        "AT": "We think",
+        "JM": "I perceive"
+      },
+      "lema_UT": "I aspire",
+      "palabras_clave_consenso": [
+        {
+          "k": "exploración, aventura",
+          "src": [
+            "UT",
+            "AT",
+            "AS"
+          ]
+        }
+      ],
+      "palabras_clave_otras": [
+        {
+          "k": "optimismo",
+          "src": [
+            "UT",
+            "AT"
+          ]
+        },
+        {
+          "k": "educación, sentido",
+          "src": [
+            "CA"
+          ]
+        }
+      ],
+      "fuentes": [
+        "WP_sign",
+        "UT",
+        "AT",
+        "AS",
+        "CA",
+        "JM"
+      ]
+    },
+    {
+      "id": "capricornio",
+      "nombre": "Capricornio",
+      "elemento": "tierra",
+      "modalidad": "cardinal",
+      "polaridad": "receptivo",
+      "regente_tradicional": [
+        "saturno"
+      ],
+      "regente_moderno": [
+        "saturno"
+      ],
+      "fechas_aprox": {
+        "WP": "22/12-20/1",
+        "AS": "22/12-19/1",
+        "AT": "21/12-19/1"
+      },
+      "frase_clave": {
+        "CA": "I use",
+        "AT": "We achieve",
+        "JM": "I use"
+      },
+      "lema_UT": "I order",
+      "palabras_clave_consenso": [
+        {
+          "k": "ambición, metas",
+          "src": [
+            "UT",
+            "AT",
+            "AS"
+          ]
+        },
+        {
+          "k": "seriedad, responsabilidad, estructura",
+          "src": [
+            "UT",
+            "AT",
+            "AS"
+          ]
+        }
+      ],
+      "palabras_clave_otras": [
+        {
+          "k": "disciplina, paciencia",
+          "src": [
+            "AT"
+          ]
+        }
+      ],
+      "fuentes": [
+        "WP_sign",
+        "UT",
+        "AT",
+        "AS",
+        "CA",
+        "JM"
+      ]
+    },
+    {
+      "id": "acuario",
+      "nombre": "Acuario",
+      "elemento": "aire",
+      "modalidad": "fijo",
+      "polaridad": "activo",
+      "regente_tradicional": [
+        "saturno"
+      ],
+      "regente_moderno": [
+        "urano"
+      ],
+      "fechas_aprox": {
+        "WP": "21/1-19/2",
+        "AS": "20/1-18/2",
+        "AT": "20/1-18/2"
+      },
+      "frase_clave": {
+        "CA": "I know",
+        "AT": "We love",
+        "JM": "I know"
+      },
+      "lema_UT": "I reform",
+      "palabras_clave_consenso": [
+        {
+          "k": "originalidad, innovación",
+          "src": [
+            "UT",
+            "AT",
+            "AS"
+          ]
+        },
+        {
+          "k": "altruismo, lo colectivo",
+          "src": [
+            "UT",
+            "AT",
+            "AS"
+          ]
+        }
+      ],
+      "palabras_clave_otras": [
+        {
+          "k": "independencia",
+          "src": [
+            "UT",
+            "AT"
+          ]
+        },
+        {
+          "k": "amistad",
+          "src": [
+            "CA"
+          ]
+        }
+      ],
+      "fuentes": [
+        "WP_sign",
+        "UT",
+        "AT",
+        "AS",
+        "CA",
+        "JM"
+      ]
+    },
+    {
+      "id": "piscis",
+      "nombre": "Piscis",
+      "elemento": "agua",
+      "modalidad": "mutable",
+      "polaridad": "receptivo",
+      "regente_tradicional": [
+        "jupiter"
+      ],
+      "regente_moderno": [
+        "neptuno"
+      ],
+      "fechas_aprox": {
+        "WP": "20/2-20/3",
+        "AS": "19/2-20/3",
+        "AT": "19/2-20/3"
+      },
+      "frase_clave": {
+        "CA": "I believe",
+        "AT": "We serve",
+        "JM": "I believe"
+      },
+      "lema_UT": "I redeem",
+      "palabras_clave_consenso": [
+        {
+          "k": "compasión",
+          "src": [
+            "UT",
+            "AT",
+            "AS"
+          ]
+        },
+        {
+          "k": "imaginación, arte",
+          "src": [
+            "UT",
+            "AT",
+            "AS"
+          ]
+        }
+      ],
+      "palabras_clave_otras": [
+        {
+          "k": "sensibilidad, romanticismo",
+          "src": [
+            "AT"
+          ]
+        },
+        {
+          "k": "plasticidad",
+          "src": [
+            "UT"
+          ]
+        }
+      ],
+      "fuentes": [
+        "WP_sign",
+        "UT",
+        "AT",
+        "AS",
+        "CA",
+        "JM"
+      ]
+    }
+  ],
+  "planetas": [
+    {
+      "id": "sol",
+      "nombre": "Sol",
+      "palabras_clave": [
+        "identidad",
+        "vitalidad",
+        "propósito consciente"
+      ],
+      "domicilio": [
+        "leo"
+      ],
+      "exilio": [
+        "acuario"
+      ],
+      "exaltacion": "aries",
+      "exaltacion_grado": 19,
+      "caida": "libra",
+      "clase": "luminar",
+      "fuentes": [
+        "UT_pl",
+        "WP_pl",
+        "CA",
+        "PT",
+        "WP_dom",
+        "WP_exalt"
+      ]
+    },
+    {
+      "id": "luna",
+      "nombre": "Luna",
+      "palabras_clave": [
+        "emoción",
+        "necesidades",
+        "hábitos",
+        "receptividad"
+      ],
+      "domicilio": [
+        "cancer"
+      ],
+      "exilio": [
+        "capricornio"
+      ],
+      "exaltacion": "tauro",
+      "exaltacion_grado": 3,
+      "caida": "escorpio",
+      "clase": "luminar",
+      "fuentes": [
+        "UT_pl",
+        "WP_pl",
+        "CA",
+        "PT",
+        "WP_dom",
+        "WP_exalt"
+      ]
+    },
+    {
+      "id": "mercurio",
+      "nombre": "Mercurio",
+      "palabras_clave": [
+        "mente",
+        "comunicación",
+        "aprendizaje"
+      ],
+      "domicilio": [
+        "geminis",
+        "virgo"
+      ],
+      "exilio": [
+        "sagitario",
+        "piscis"
+      ],
+      "exaltacion": "virgo",
+      "exaltacion_grado": 15,
+      "caida": "piscis",
+      "clase": "personal",
+      "fuentes": [
+        "UT_pl",
+        "WP_pl",
+        "CA",
+        "PT",
+        "WP_dom",
+        "WP_exalt"
+      ]
+    },
+    {
+      "id": "venus",
+      "nombre": "Venus",
+      "palabras_clave": [
+        "amor",
+        "vínculo",
+        "belleza",
+        "placer",
+        "valores"
+      ],
+      "domicilio": [
+        "tauro",
+        "libra"
+      ],
+      "exilio": [
+        "escorpio",
+        "aries"
+      ],
+      "exaltacion": "piscis",
+      "exaltacion_grado": 27,
+      "caida": "virgo",
+      "clase": "personal; benéfico menor",
+      "fuentes": [
+        "UT_pl",
+        "WP_pl",
+        "CA",
+        "PT",
+        "WP_dom",
+        "WP_exalt"
+      ]
+    },
+    {
+      "id": "marte",
+      "nombre": "Marte",
+      "palabras_clave": [
+        "acción",
+        "deseo",
+        "coraje",
+        "afirmación"
+      ],
+      "domicilio": [
+        "aries",
+        "escorpio"
+      ],
+      "exilio": [
+        "libra",
+        "tauro"
+      ],
+      "exaltacion": "capricornio",
+      "exaltacion_grado": 28,
+      "caida": "cancer",
+      "clase": "personal; maléfico menor",
+      "fuentes": [
+        "UT_pl",
+        "WP_pl",
+        "CA",
+        "PT",
+        "WP_dom",
+        "WP_exalt"
+      ]
+    },
+    {
+      "id": "jupiter",
+      "nombre": "Júpiter",
+      "palabras_clave": [
+        "expansión",
+        "crecimiento",
+        "sentido",
+        "oportunidad"
+      ],
+      "domicilio": [
+        "sagitario",
+        "piscis"
+      ],
+      "exilio": [
+        "geminis",
+        "virgo"
+      ],
+      "exaltacion": "cancer",
+      "exaltacion_grado": 15,
+      "caida": "capricornio",
+      "clase": "social; benéfico mayor",
+      "fuentes": [
+        "UT_pl",
+        "WP_pl",
+        "CA",
+        "PT",
+        "WP_dom",
+        "WP_exalt"
+      ],
+      "nota": "WP da 15° y 5° de Cáncer en pasajes distintos"
+    },
+    {
+      "id": "saturno",
+      "nombre": "Saturno",
+      "palabras_clave": [
+        "estructura",
+        "límite",
+        "responsabilidad",
+        "tiempo"
+      ],
+      "domicilio": [
+        "capricornio",
+        "acuario"
+      ],
+      "exilio": [
+        "cancer",
+        "leo"
+      ],
+      "exaltacion": "libra",
+      "exaltacion_grado": 21,
+      "caida": "aries",
+      "clase": "social; maléfico mayor",
+      "fuentes": [
+        "UT_pl",
+        "WP_pl",
+        "CA",
+        "PT",
+        "WP_dom",
+        "WP_exalt"
+      ]
+    },
+    {
+      "id": "urano",
+      "nombre": "Urano",
+      "palabras_clave": [
+        "originalidad",
+        "cambio súbito",
+        "reforma",
+        "independencia"
+      ],
+      "domicilio": [
+        "acuario"
+      ],
+      "exilio": [
+        "leo"
+      ],
+      "exaltacion": null,
+      "exaltacion_grado": null,
+      "caida": null,
+      "clase": "transpersonal",
+      "fuentes": [
+        "UT_pl",
+        "WP_pl",
+        "CA",
+        "PT",
+        "WP_dom",
+        "WP_exalt"
+      ],
+      "nota": "exaltación sin consenso (WP_exalt)"
+    },
+    {
+      "id": "neptuno",
+      "nombre": "Neptuno",
+      "palabras_clave": [
+        "ideal",
+        "inspiración",
+        "disolución",
+        "empatía",
+        "ilusión"
+      ],
+      "domicilio": [
+        "piscis"
+      ],
+      "exilio": [
+        "virgo"
+      ],
+      "exaltacion": null,
+      "exaltacion_grado": null,
+      "caida": null,
+      "clase": "transpersonal",
+      "fuentes": [
+        "UT_pl",
+        "WP_pl",
+        "CA",
+        "PT",
+        "WP_dom",
+        "WP_exalt"
+      ],
+      "nota": "exaltación sin consenso"
+    },
+    {
+      "id": "pluton",
+      "nombre": "Plutón",
+      "palabras_clave": [
+        "transformación",
+        "poder",
+        "regeneración",
+        "muerte y renacimiento"
+      ],
+      "domicilio": [
+        "escorpio"
+      ],
+      "exilio": [
+        "tauro"
+      ],
+      "exaltacion": null,
+      "exaltacion_grado": null,
+      "caida": null,
+      "clase": "transpersonal",
+      "fuentes": [
+        "UT_pl",
+        "WP_pl",
+        "CA",
+        "PT",
+        "WP_dom",
+        "WP_exalt"
+      ],
+      "nota": "exaltación sin consenso"
+    }
+  ],
+  "puntos": [
+    {
+      "id": "nodo_norte",
+      "nombre": "Nodo Norte",
+      "calculo_recomendado": "verdadero",
+      "palabras_clave": [
+        "dirección de crecimiento",
+        "lo que cuesta desarrollar"
+      ],
+      "defaults": {
+        "astro.com": "verdadero (Web default style)",
+        "astrotheme": "verdadero",
+        "cafeastrology": "NO VERIFICADO",
+        "astro-seek": "NO VERIFICADO"
+      },
+      "diferencia_medio_verdadero": "~1-1.5° (Kerykeion)",
+      "fuentes": [
+        "ASTRO_FAQ_STYLE",
+        "AT_NODE",
+        "CA",
+        "UT_pl",
+        "MR"
+      ]
+    },
+    {
+      "id": "nodo_sur",
+      "nombre": "Nodo Sur",
+      "calculo": "opuesto exacto al Nodo Norte",
+      "palabras_clave": [
+        "lo conocido",
+        "talentos disponibles",
+        "zona de confort"
+      ],
+      "fuentes": [
+        "CA",
+        "UT_pl",
+        "MR"
+      ]
+    },
+    {
+      "id": "lilith_media",
+      "nombre": "Lilith (Luna Negra media)",
+      "calculo_recomendado": "apogeo lunar medio",
+      "palabras_clave": [
+        "lo reprimido",
+        "sombra",
+        "rebeldía",
+        "deseo no domesticado",
+        "integración"
+      ],
+      "defaults": {
+        "astro.com": "media (salvo indicación; no se muestra en Web default style)",
+        "cafeastrology": "media",
+        "astrotheme": "verdadera",
+        "mercurioretrogrado.com": "media",
+        "astro-seek": "NO VERIFICADO (fragmento de buscador sugiere media)"
+      },
+      "variantes": {
+        "verdadera_osculante": "oscila ±30° alrededor de la media (SWE)",
+        "interpolada": "±5° (SWE, Koch)",
+        "asteroide_1181": "cuerpo físico, nombrado por Lili Boulanger",
+        "waltemath": "hipotético, nunca confirmado (SWE)"
+      },
+      "nota": "Significado interpretativo es del siglo XX; no figura en Ptolomeo ni Lilly",
+      "fuentes": [
+        "ASTRO_FAQ_EXTRA",
+        "CA_REPORT",
+        "AT_LIL",
+        "MR",
+        "SWE"
+      ]
+    },
+    {
+      "id": "quiron",
+      "nombre": "Quirón",
+      "palabras_clave": [
+        "sanador herido",
+        "herida que no cierra",
+        "acompañar a otros"
+      ],
+      "descubrimiento": "1977-11-01, C. Kowal",
+      "fuentes": [
+        "UT_pl",
+        "MR",
+        "https://www.almanac.com/meet-chiron-astrologys-wounded-healer"
+      ]
+    },
+    {
+      "id": "ascendente",
+      "nombre": "Ascendente",
+      "nota": "requiere hora de nacimiento; sin orbe propio en astro.com",
+      "fuentes": [
+        "UT_h",
+        "ASTRO_FAQ_STYLE"
+      ]
+    },
+    {
+      "id": "medio_cielo",
+      "nombre": "Medio Cielo",
+      "nota": "requiere hora de nacimiento",
+      "fuentes": [
+        "UT_h"
+      ]
+    }
+  ],
+  "casas": [
+    {
+      "numero": 1,
+      "latin": "Vita",
+      "palabras_clave": [
+        "identidad",
+        "cuerpo",
+        "imagen de sí",
+        "comienzos"
+      ],
+      "tipo": "angular",
+      "fuentes": [
+        "WP_house",
+        "UT_h"
+      ]
+    },
+    {
+      "numero": 2,
+      "latin": "Lucrum",
+      "palabras_clave": [
+        "recursos propios",
+        "dinero",
+        "posesiones",
+        "autoestima"
+      ],
+      "tipo": "sucedente",
+      "fuentes": [
+        "WP_house",
+        "UT_h"
+      ]
+    },
+    {
+      "numero": 3,
+      "latin": "Fratres",
+      "palabras_clave": [
+        "pensamiento",
+        "aprendizaje",
+        "comunicación",
+        "hermanos",
+        "entorno cercano"
+      ],
+      "tipo": "cadente",
+      "fuentes": [
+        "WP_house",
+        "UT_h"
+      ]
+    },
+    {
+      "numero": 4,
+      "latin": "Genitor",
+      "palabras_clave": [
+        "hogar",
+        "familia",
+        "raíces",
+        "vida privada"
+      ],
+      "tipo": "angular",
+      "fuentes": [
+        "WP_house",
+        "UT_h"
+      ]
+    },
+    {
+      "numero": 5,
+      "latin": "Nati",
+      "palabras_clave": [
+        "placer",
+        "juego",
+        "creatividad",
+        "romance",
+        "hijos"
+      ],
+      "tipo": "sucedente",
+      "fuentes": [
+        "WP_house",
+        "UT_h"
+      ]
+    },
+    {
+      "numero": 6,
+      "latin": "Valetudo",
+      "palabras_clave": [
+        "rutinas",
+        "trabajo cotidiano",
+        "servicio",
+        "salud (redactar con cuidado)"
+      ],
+      "tipo": "cadente",
+      "fuentes": [
+        "WP_house",
+        "UT_h"
+      ]
+    },
+    {
+      "numero": 7,
+      "latin": "Uxor",
+      "palabras_clave": [
+        "pareja",
+        "vínculos de igual a igual",
+        "contratos"
+      ],
+      "tipo": "angular",
+      "fuentes": [
+        "WP_house",
+        "UT_h"
+      ]
+    },
+    {
+      "numero": 8,
+      "latin": "Mors",
+      "palabras_clave": [
+        "recursos compartidos",
+        "sexualidad",
+        "crisis y transformación"
+      ],
+      "tipo": "sucedente",
+      "fuentes": [
+        "WP_house",
+        "UT_h"
+      ]
+    },
+    {
+      "numero": 9,
+      "latin": "Iter",
+      "palabras_clave": [
+        "estudios superiores",
+        "filosofía",
+        "creencias",
+        "viajes largos"
+      ],
+      "tipo": "cadente",
+      "fuentes": [
+        "WP_house",
+        "UT_h"
+      ]
+    },
+    {
+      "numero": 10,
+      "latin": "Regnum",
+      "palabras_clave": [
+        "vocación",
+        "carrera",
+        "imagen pública"
+      ],
+      "tipo": "angular",
+      "fuentes": [
+        "WP_house",
+        "UT_h"
+      ]
+    },
+    {
+      "numero": 11,
+      "latin": "Benefacta",
+      "palabras_clave": [
+        "amistades",
+        "grupos",
+        "ideales",
+        "proyectos"
+      ],
+      "tipo": "sucedente",
+      "fuentes": [
+        "WP_house",
+        "UT_h"
+      ]
+    },
+    {
+      "numero": 12,
+      "latin": "Carcer",
+      "palabras_clave": [
+        "vida interior",
+        "retiro",
+        "finales",
+        "lo oculto"
+      ],
+      "tipo": "cadente",
+      "fuentes": [
+        "WP_house",
+        "UT_h"
+      ]
+    }
+  ],
+  "aspectos": [
+    {
+      "id": "conjuncion",
+      "nombre": "conjunción",
+      "angulo": 0,
+      "clase": "mayor",
+      "naturaleza": "según planetas"
+    },
+    {
+      "id": "sextil",
+      "nombre": "sextil",
+      "angulo": 60,
+      "clase": "mayor",
+      "naturaleza": "armónico (PT I.13)"
+    },
+    {
+      "id": "cuadratura",
+      "nombre": "cuadratura",
+      "angulo": 90,
+      "clase": "mayor",
+      "naturaleza": "inarmónico (PT I.13)"
+    },
+    {
+      "id": "trigono",
+      "nombre": "trígono",
+      "angulo": 120,
+      "clase": "mayor",
+      "naturaleza": "armónico (PT I.13)"
+    },
+    {
+      "id": "oposicion",
+      "nombre": "oposición",
+      "angulo": 180,
+      "clase": "mayor",
+      "naturaleza": "inarmónico (PT I.13)"
+    },
+    {
+      "id": "quincuncio",
+      "nombre": "quincuncio",
+      "angulo": 150,
+      "clase": "menor (o mayor según autor)"
+    },
+    {
+      "id": "semisextil",
+      "nombre": "semisextil",
+      "angulo": 30,
+      "clase": "menor"
+    },
+    {
+      "id": "semicuadratura",
+      "nombre": "semicuadratura",
+      "angulo": 45,
+      "clase": "menor"
+    },
+    {
+      "id": "sesquicuadratura",
+      "nombre": "sesquicuadratura",
+      "angulo": 135,
+      "clase": "menor"
+    },
+    {
+      "id": "quintil",
+      "nombre": "quintil",
+      "angulo": 72,
+      "clase": "menor (Kepler)"
+    },
+    {
+      "id": "biquintil",
+      "nombre": "biquintil",
+      "angulo": 144,
+      "clase": "menor (Kepler)"
+    }
+  ],
+  "orbes": {
+    "urania_trust": {
+      "conjuncion": 8,
+      "oposicion": 8,
+      "trigono": 5,
+      "cuadratura": 5,
+      "sextil": 4,
+      "quincuncio": 2,
+      "semicuadratura": 2,
+      "sesquicuadratura": 2,
+      "quintil": 4,
+      "biquintil": 4,
+      "semisextil": 1,
+      "fuente": "UT_asp"
+    },
+    "astrotheme": {
+      "conjuncion": 10.5,
+      "oposicion": 10,
+      "trigono": 8.3,
+      "cuadratura": 6,
+      "sextil": 4.5,
+      "nota": "+0.3° con luminar, +0.6° Sol-Luna",
+      "fuente": "https://www.astrotheme.com/astrology_aspects.php"
+    },
+    "mercurioretrogrado": {
+      "conjuncion": "8-10",
+      "oposicion": 8,
+      "trigono": 6,
+      "cuadratura": 8,
+      "sextil": 6,
+      "quincuncio": 3,
+      "menores": "1-2",
+      "fuente": "https://www.mercurioretrogrado.com/glosario/aspectos-planetarios"
+    },
+    "bindi": {
+      "conjuncion": 8,
+      "oposicion": 8,
+      "trigono": 8,
+      "cuadratura": 8,
+      "sextil": 6,
+      "quincuncio": 2,
+      "fuente": "https://bindi-online.com/astrobindi/carta-astral/aspectos-astrologia/"
+    },
+    "astro.com_hellenistic": {
+      "luna": 13,
+      "sol_y_planetas": 3,
+      "fuente": "ASTRO_FAQ_STYLE"
+    },
+    "astro.com_web_default": {
+      "nota": "grilla 10/6/3/3/2 por columnas de letras no explicadas; mapeo NO VERIFICADO",
+      "fuente": "ASTRO_FAQ_STYLE"
+    },
+    "astro-seek": "NO VERIFICADO",
+    "cafeastrology": "NO VERIFICADO",
+    "lilly_1647_por_planeta": {
+      "metodo": "suma de mitades (moieties) de los orbes de ambos planetas",
+      "saturno": [
+        10,
+        9
+      ],
+      "jupiter": [
+        12,
+        9
+      ],
+      "marte": [
+        7.5,
+        7
+      ],
+      "sol": [
+        17,
+        15
+      ],
+      "venus": [
+        8,
+        7
+      ],
+      "mercurio": [
+        7,
+        7
+      ],
+      "luna": [
+        12.5,
+        12
+      ],
+      "nota": "[Lilly, según otros autores]",
+      "fuente": "WL"
+    },
+    "propuesta_motor": {
+      "conjuncion": 8,
+      "oposicion": 8,
+      "cuadratura": 7,
+      "trigono": 7,
+      "sextil": 5,
+      "quincuncio": 3,
+      "bonus_luminar": 2,
+      "puntos_sin_orbe_salvo_conjuncion": 3,
+      "nota": "propuesta propia, no estándar"
+    }
+  }
+}

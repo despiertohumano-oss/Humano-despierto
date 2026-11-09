@@ -3,16 +3,19 @@
 import { useActionState } from "react";
 import { createPostAction, updatePostAction } from "@/app/(app)/panel/docente/diario/actions";
 import Button from "@/components/atoms/Button";
-import { PanelInput, PanelTextarea } from "@/components/panel/PanelField";
+import { PanelCheckbox, PanelInput, PanelSelect, PanelTextarea } from "@/components/panel/PanelField";
+import { DIARIO_CATEGORIES } from "@/lib/taxonomy/diario";
 import StatusMessage from "@/components/panel/StatusMessage";
 import { TEACHER_ACTION_INITIAL_STATE, fieldError, formError } from "@/lib/teacher/action-state";
 import type { TeacherDiarioPostFields } from "@/lib/server/diario";
 
 interface Props {
   post?: TeacherDiarioPostFields;
+  /** Cursos publicados propios que se pueden vincular (B3, solo en edición). */
+  courses?: { id: string; title: string }[];
 }
 
-export default function PostForm({ post }: Props) {
+export default function PostForm({ post, courses = [] }: Props) {
   const action = post ? updatePostAction : createPostAction;
   const [state, formAction, isPending] = useActionState(action, TEACHER_ACTION_INITIAL_STATE);
 
@@ -24,6 +27,14 @@ export default function PostForm({ post }: Props) {
         <PanelInput label="Slug (URL)" name="slug" error={fieldError(state, "slug")} defaultValue={post?.slug} placeholder="sobre-los-eclipses" required />
         <PanelInput label="Título" name="title" error={fieldError(state, "title")} defaultValue={post?.title} required />
       </div>
+
+      <PanelSelect label="Categoría" name="category" error={fieldError(state, "category")} defaultValue={post?.category ?? "conciencia"} required>
+        {DIARIO_CATEGORIES.map((c) => (
+          <option key={c.key} value={c.key}>
+            {c.label}
+          </option>
+        ))}
+      </PanelSelect>
 
       <PanelTextarea label="Resumen (opcional)" hint="Se ve en el listado del diario." name="excerpt" error={fieldError(state, "excerpt")} defaultValue={post?.excerpt ?? ""} rows={2} />
 
@@ -38,6 +49,34 @@ export default function PostForm({ post }: Props) {
         rows={16}
         required
       />
+
+      {/* El vínculo necesita el id del post: solo en la edición. */}
+      {post && (
+        <fieldset
+          className="grid gap-2 rounded-md border border-linea p-4"
+          aria-describedby={fieldError(state, "relatedCourseIds") ? "related-error" : undefined}
+        >
+          <legend className="px-1 text-sm font-semibold text-tinta">Cursos relacionados</legend>
+          {courses.length === 0 ? (
+            <p className="text-sm text-suave">Cuando publiques un curso vas a poder vincularlo acá.</p>
+          ) : (
+            courses.map((c) => (
+              <PanelCheckbox
+                key={c.id}
+                name="relatedCourseIds"
+                value={c.id}
+                label={c.title}
+                defaultChecked={post.relatedCourseIds.includes(c.id)}
+              />
+            ))
+          )}
+          {fieldError(state, "relatedCourseIds") && (
+            <p id="related-error" role="alert" className="text-sm font-medium text-error">
+              {fieldError(state, "relatedCourseIds")}
+            </p>
+          )}
+        </fieldset>
+      )}
 
       <StatusMessage error={formError(state)} success={state.success} />
       <div>

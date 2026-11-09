@@ -111,6 +111,8 @@ const COLUMNAS = [
   // ataque conserva el prefijo `covers/<id propio>/` para que lo que se pruebe sea el regex de
   // dominio cerrado del CHECK `_no_locator` y no la pertenencia (que tambien da 23514).
   ['courses.cover_path',           (v) => [`update public.courses set cover_path = 'covers/' || id::text || '/' || $1 where id = $2`, [v, ID.courseA]]],
+  // B2 · condiciones de acceso: texto libre de la ficha, lo lee `anon` y lo escribe la duena.
+  ['courses.access_terms',         (v) => [`update public.courses set access_terms = $1 where id = $2`, [v, ID.courseA]]],
   ['profiles.full_name',           (v) => [`update public.profiles set full_name = $1 where id = $2`, [v, ID.teacherA]]],
   ['profiles.slug',                (v) => [`update public.profiles set slug = $1 where id = $2`, [v, ID.teacherA]]],
   ['profiles.glyph',               (v) => [`update public.profiles set glyph = $1 where id = $2`, [v, ID.teacherA]]],
@@ -132,6 +134,10 @@ const COLUMNAS = [
   ['diario_posts.slug',            (v) => [`update public.diario_posts set slug = $1 where id = $2`, [v, ID.postA]]],
   ['diario_posts.title',           (v) => [`update public.diario_posts set title = $1 where id = $2`, [v, ID.postA]]],
   ['diario_posts.excerpt',         (v) => [`update public.diario_posts set excerpt = $1 where id = $2`, [v, ID.postA]]],
+  // B3 · dominio cerrado por CHECK `_no_locator` (0075). La portada conserva el prefijo propio para
+  // que lo probado sea el regex y no la pertenencia.
+  ['diario_posts.category',        (v) => [`update public.diario_posts set category = $1 where id = $2`, [v, ID.postA]]],
+  ['diario_posts.cover_path',      (v) => [`update public.diario_posts set cover_path = 'diario/' || id::text || '/' || $1 where id = $2`, [v, ID.postA]]],
 ];
 
 /**

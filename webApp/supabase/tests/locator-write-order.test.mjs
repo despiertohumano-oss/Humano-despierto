@@ -120,6 +120,47 @@ describe('D-12 · el localizador nuevo no puede estar ya en texto publico', () =
     assert.equal(r.rows.length, 1);
   });
 
+  // 0073: `places` (GeoNames, 86k filas) hacia el barrido de 5 s y un recurso nuevo pasaba el
+  // statement_timeout. Sale porque ningun cliente la escribe: no puede tener texto plantado.
+  test('exencion: places no se barre, y es porque ningun cliente la escribe', async () => {
+    await db.query(
+      `insert into public.places (id, name, ascii_name, admin1, country_code, lat, lon, timezone)
+       values (990001, 'Villa PLACESLOC77', 'Villa PLACESLOC88', 'PLACESLOC99', 'AR', 0, 0, 'UTC')`,
+    );
+    const v = await asUser(db, SERVIDOR, () =>
+      attempt(db, `update public.lessons set video_id = 'PLACESLOC77' where id = $1`, [ID.lessonA]),
+    );
+    assert.equal(v.ok, true, `places.name bloqueo un video_id: ${v.message}`);
+    const d = await asUser(db, SERVIDOR, () =>
+      attempt(db, `update public.lesson_resources set drive_file_id = 'PLACESLOC88', url = 'https://x.example.com/PLACESLOC99' where id = $1`, [ID.resourceA]),
+    );
+    assert.equal(d.ok, true, `places bloqueo un recurso: ${d.message}`);
+
+    const escritura = await db.query(
+      `select r.rol, p.priv
+         from unnest(array['anon', 'authenticated']) r(rol),
+              unnest(array['INSERT', 'UPDATE', 'DELETE', 'TRUNCATE']) p(priv)
+        where has_table_privilege(r.rol, 'public.places', p.priv)
+           or (p.priv in ('INSERT', 'UPDATE') and has_any_column_privilege(r.rol, 'public.places', p.priv))`,
+    );
+    assert.deepEqual(escritura.rows, [], 'un cliente puede escribir places: la exencion del barrido ya no vale');
+  });
+
+  test('control de la exencion: el mismo localizador en texto publico de otra tabla sigue bloqueado', async () => {
+    await asUser(db, DOCENTE, () =>
+      attempt(db, `update public.courses set intro = $1 where id = $2`, ['Ver PLACESCTRL1', ID.courseA]),
+    );
+    await db.query(
+      `insert into public.places (id, name, ascii_name, country_code, lat, lon, timezone)
+       values (990002, 'PLACESCTRL1', 'PLACESCTRL1', 'AR', 0, 0, 'UTC')`,
+    );
+    const r = await asUser(db, SERVIDOR, () =>
+      attempt(db, `update public.lesson_resources set drive_file_id = 'PLACESCTRL1' where id = $1`, [ID.resourceA]),
+    );
+    rechazoDelBarrido(r, 'sacar places apago el barrido entero');
+    assert.match(r.message, /texto publico de courses/);
+  });
+
   test('exencion: courses.promo_video_id igual a un video_id no bloquea', async () => {
     await db.query(`update public.courses set promo_video_id = 'promo123456' where id = $1`, [ID.courseA]);
     const r = await asUser(db, SERVIDOR, () =>

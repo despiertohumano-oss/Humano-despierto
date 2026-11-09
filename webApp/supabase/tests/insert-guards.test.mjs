@@ -183,7 +183,11 @@ const INSERT_ESPERADO = {
 
   courses: ['slug', 'title', 'title_em', 'subtitle', 'intro', 'discipline', 'level', 'price_cents',
             'currency', 'moon_glyph', 'includes', 'teacher_id',
-            'learning_objectives', 'prerequisites', 'description', 'language', 'promo_video_id'],
+            'learning_objectives', 'prerequisites', 'description', 'language', 'promo_video_id',
+            // B2 · modalidad informativa: la docente la declara en el alta. `access_terms` lleva las
+            // dos mitades de ADR-009 (0074); el resto son booleanos.
+            'includes_recorded', 'includes_pdf', 'includes_downloads', 'includes_live',
+            'access_terms', 'issues_certificate'],
 
   // Guard nuevo (c.3): is_published, video_id y —desde T-012— duration_seconds fuera del grant
   // Y bloqueadas por trigger. La duracion la trae YouTube, no el docente (decision del PO).
@@ -226,7 +230,13 @@ const INSERT_ESPERADO = {
   // publicar es privilegio de service_role, mismo patron que `courses`. `body` SI viaja en el
   // INSERT — es contenido, no metadata de servidor — y lo protege `guard_diario_posts`
   // (`body_has_known_locator`), no el grant.
-  diario_posts: ['teacher_id', 'slug', 'title', 'excerpt', 'body'],
+  diario_posts: ['teacher_id', 'slug', 'title', 'excerpt', 'body',
+                 // B3 · la categoria es dominio cerrado (0075). `cover_path` fuera: necesita el id.
+                 'category'],
+
+  // B3 · vinculo post↔curso. Lo compuertan la policy (post propio) y `diario_post_courses_guard`
+  // (curso propio y publicado, sin bypass).
+  diario_post_courses: ['post_id', 'course_id'],
 };
 
 const listaEsperada = Object.entries(INSERT_ESPERADO)

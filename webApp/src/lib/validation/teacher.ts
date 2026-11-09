@@ -2,6 +2,7 @@ import { z } from "@/lib/validation/zod";
 // El predicado vive en un modulo plano para que el test de paridad ejecute ESTA
 // misma funcion en vez de reconstruirla parseando el fuente (ver locator.mjs).
 import { hasLocator } from "@/lib/validation/locator.mjs";
+import { DISCIPLINE_KEYS } from "@/lib/taxonomy/disciplines";
 
 // Validación de formularios del panel docente (T-005 c.8). Sin `server-only`
 // a propósito: son schemas puros, sin secreto ni cliente de datos — los
@@ -46,7 +47,7 @@ export const courseFormSchema = z.object({
   titleEm: noLocator(z.string().trim().max(200).optional().or(z.literal("")), "título destacado"),
   subtitle: noLocator(z.string().trim().max(300).optional().or(z.literal("")), "subtítulo"),
   intro: noLocator(z.string().trim().max(4000).optional().or(z.literal("")), "introducción"),
-  discipline: noLocator(z.string().trim().min(1, "La disciplina es obligatoria.").max(80), "disciplina"),
+  discipline: z.enum(DISCIPLINE_KEYS, { error: "Elegí una disciplina de la lista." }),
   level: noLocator(z.string().trim().min(1, "El nivel es obligatorio.").max(80), "nivel"),
   price: z
     .string()
@@ -82,6 +83,16 @@ export const courseFormSchema = z.object({
     .string().trim()
     .regex(/^[A-Za-z0-9_-]{11}$/, "Es el id del video (11 caracteres), no la URL entera.")
     .optional().or(z.literal("")),
+  // B2 · modalidad informativa (0074). Los booleanos llegan de checkboxes: ausente = false.
+  includesRecorded: z.boolean().default(false),
+  includesPdf: z.boolean().default(false),
+  includesDownloads: z.boolean().default(false),
+  includesLive: z.boolean().default(false),
+  accessTerms: noLocator(
+    z.string().trim().max(500, "Las condiciones de acceso tienen hasta 500 caracteres.").optional().or(z.literal("")),
+    "condiciones de acceso",
+  ),
+  issuesCertificate: z.boolean().default(false),
 });
 
 export type CourseFormInput = z.input<typeof courseFormSchema>;

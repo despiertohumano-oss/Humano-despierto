@@ -1,6 +1,7 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceRoleClient } from "@/lib/supabase/service";
+import { disciplineLabel } from "@/lib/taxonomy/disciplines";
 import { signUploadUrls } from "@/lib/server/uploads";
 import { progressPercent as progressPercentOf } from "@/lib/utils/progress";
 
@@ -326,7 +327,7 @@ export async function getStudentDashboard(): Promise<StudentDashboard> {
         slug: course.slug,
         title: course.title,
         titleEm: course.title_em,
-        discipline: course.discipline,
+        discipline: disciplineLabel(course.discipline),
         level: course.level,
         moonGlyph: course.moon_glyph,
         teacherName: teacher?.full_name ?? "—",

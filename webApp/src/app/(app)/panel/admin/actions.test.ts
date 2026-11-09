@@ -29,6 +29,7 @@ import {
   rejectEnrollmentRequestAction,
   setCourseStatusAction,
   setEnrollmentAction,
+  setFounderAction,
   unhideReviewAction,
 } from "./actions";
 import { __resetRateLimiterForTests } from "@/lib/server/rate-limit";
@@ -289,5 +290,67 @@ describe("setCourseStatusAction · portada (DT2)", () => {
     dbReturning({ error: { message: "boom" } });
     await setCourseStatusAction(INICIAL, form({ courseId: COURSE, status: "archived" }));
     expect(revalidateTag).not.toHaveBeenCalled();
+  });
+});
+
+describe("setFounderAction (B4)", () => {
+  const TEACHER = "d0000000-0000-4000-8000-000000000002";
+
+  it("sin admin lanza y no toca la base", async () => {
+    getCurrentUser.mockResolvedValue({ ...ADMIN, role: "teacher" });
+    await expect(setFounderAction(INICIAL, form({ userId: TEACHER }))).rejects.toThrow(/No autorizado/);
+    expect(getAdminSupabaseClient).not.toHaveBeenCalled();
+  });
+
+  it("un id que no es uuid no llega a la base", async () => {
+    expect((await setFounderAction(INICIAL, form({ userId: "x" }))).error).toBe("Datos inválidos.");
+    expect(getAdminSupabaseClient).not.toHaveBeenCalled();
+  });
+
+  it("marca con admin_set_founder y revalida /guias", async () => {
+    const rpc = rpcReturning({ data: null, error: null });
+    const out = await setFounderAction(INICIAL, form({ userId: TEACHER }));
+    expect(rpc).toHaveBeenCalledWith("admin_set_founder", { p_profile_id: TEACHER });
+    expect(out).toEqual({ error: null, success: "Listo: es la creadora destacada." });
+    expect(revalidatePath).toHaveBeenCalledWith("/guias");
+  });
+
+  // G-4 · «Quitar» lleva el id de la creadora que la admin ve; solo desmarca si sigue siendo ella.
+  function founderIs(currentId: string | null) {
+    const rpc = vi.fn().mockResolvedValue({ data: null, error: null });
+    const { chain } = queryChain(() => ({ data: currentId ? { id: currentId } : null, error: null }));
+    getAdminSupabaseClient.mockReturnValue({ rpc, from: () => chain });
+    return rpc;
+  }
+
+  it("clear=1 con el id de la creadora vigente desmarca con null", async () => {
+    const rpc = founderIs(TEACHER);
+    const out = await setFounderAction(INICIAL, form({ clear: "1", userId: TEACHER }));
+    expect(rpc).toHaveBeenCalledWith("admin_set_founder", { p_profile_id: null });
+    expect(out.success).toBe("Ya no hay creadora destacada.");
+  });
+
+  it("clear=1 si la creadora cambió entretanto: no desmarca a la nueva", async () => {
+    const rpc = founderIs("d0000000-0000-4000-8000-000000000009");
+    const out = await setFounderAction(INICIAL, form({ clear: "1", userId: TEACHER }));
+    expect(rpc).not.toHaveBeenCalled();
+    expect(out).toEqual({ error: "Otra persona cambió la creadora al mismo tiempo. Recargá la página y probá de nuevo.", success: null });
+  });
+
+  it("clear=1 sin id no llega a la base", async () => {
+    expect((await setFounderAction(INICIAL, form({ clear: "1" }))).error).toBe("Datos inválidos.");
+    expect(getAdminSupabaseClient).not.toHaveBeenCalled();
+  });
+
+  it("22023 (no es docente) da un mensaje legible", async () => {
+    rpcReturning({ data: null, error: { code: "22023", message: "x" } });
+    expect((await setFounderAction(INICIAL, form({ userId: TEACHER }))).error).toBe("Solo una docente puede ser la creadora.");
+  });
+
+  it("23505 (dos marcas a la vez) vuelve como error del form, sin lanzar", async () => {
+    rpcReturning({ data: null, error: { code: "23505", message: "profiles_single_founder" } });
+    const out = await setFounderAction(INICIAL, form({ userId: TEACHER }));
+    expect(out).toEqual({ error: "Otra persona cambió la creadora al mismo tiempo. Recargá la página y probá de nuevo.", success: null });
+    expect(revalidatePath).not.toHaveBeenCalled();
   });
 });

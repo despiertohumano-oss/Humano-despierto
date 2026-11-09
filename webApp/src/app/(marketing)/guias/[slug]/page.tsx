@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ButtonLink } from "@/components/atoms/Button";
-import Icon from "@/components/atoms/Icon";
+import Icon, { astroIcon } from "@/components/atoms/Icon";
 import TeacherPortrait from "@/components/atoms/TeacherPortrait";
 import { formationYear } from "@/lib/ui/formation-year";
 import SectionHeading from "@/components/atoms/SectionHeading";
 import { SITE_OG_IMAGE } from "@/lib/og/site";
+import { DOCENTES } from "@/content/site-copy";
 import { getTeacherBySlug } from "@/lib/server/guias";
+import { SIGNS } from "@/lib/astro/zodiac";
 
 
 export async function generateMetadata(
@@ -15,7 +17,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await params;
   const teacher = await getTeacherBySlug(slug);
-  if (!teacher) return { title: "Guía no encontrada" };
+  if (!teacher) return { title: "Docente no encontrado" };
   const description = teacher.headline ?? teacher.bio ?? undefined;
   return {
     title: teacher.fullName,
@@ -37,13 +39,18 @@ export default async function GuiaPage({ params }: { params: Promise<{ slug: str
     `${M.coursesCount} ${M.coursesCount === 1 ? "curso publicado" : "cursos publicados"}`,
     M.location,
   ].filter((d): d is string => !!d);
+  const signos = [
+    { etiqueta: "Sol", id: M.signs.sun },
+    { etiqueta: "Luna", id: M.signs.moon },
+    { etiqueta: "Ascendente", id: M.signs.asc },
+  ].flatMap((s) => (s.id ? [{ etiqueta: s.etiqueta, id: s.id }] : []));
 
   return (
     <div className="min-h-screen bg-fondo">
       <div className="mx-auto max-w-[1200px] px-6 pt-8">
         <Link href="/guias" className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-miel-800 hover:underline">
           <Icon name="arrow-left" />
-          Todas las guías
+          {DOCENTES.volver}
         </Link>
       </div>
 
@@ -57,6 +64,18 @@ export default async function GuiaPage({ params }: { params: Promise<{ slug: str
               <span key={d}>{d}</span>
             ))}
           </p>
+          {signos.length > 0 && (
+            <ul aria-label="Signos de su carta natal" className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[15px] text-tinta">
+              {signos.map((s) => (
+                <li key={s.etiqueta}>
+                  <Link href={`/carta-natal/signos/${s.id}`} className="inline-flex min-h-8 items-center gap-1.5 hover:underline">
+                    <Icon name={astroIcon(s.id)} className="text-musgo" />
+                    {s.etiqueta} en {SIGNS[s.id].nombre}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
           {M.courses.length > 0 && (
             <div className="mt-8">
               <ButtonLink href="#cursos" arrow>

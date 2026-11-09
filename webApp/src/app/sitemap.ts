@@ -6,6 +6,8 @@ import { getPublishedPosts } from "@/lib/server/diario";
 import { getPublicTeachers } from "@/lib/server/guias";
 import { CARDS } from "@/lib/tarot/cards";
 import { SPREADS } from "@/lib/tarot/spreads";
+import { HOUSE_KEYS } from "@/lib/astro/prose";
+import { BODY_IDS, SIGN_IDS, bodySlug } from "@/lib/astro/zodiac";
 
 /** Solo contenido publicado, y sale de la base — no de una lista escrita a mano que se
  * desactualiza el día que alguien despublica un curso. Misma doctrina que los conteos de T-019:
@@ -30,6 +32,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...CARDS.map((c) => ({ url: `${site}/tarot/cartas/${c.id}`, priority: 0.5 })),
   ];
 
+  // Solo la portada y las fichas: las cartas personales (/carta-natal/[id]) nunca se indexan.
+  const cartaNatal: MetadataRoute.Sitemap = [
+    { url: `${site}/carta-natal`, priority: 0.9 },
+    ...SIGN_IDS.map((s) => ({ url: `${site}/carta-natal/signos/${s}`, priority: 0.5 })),
+    ...BODY_IDS.map((b) => ({ url: `${site}/carta-natal/planetas/${bodySlug(b)}`, priority: 0.5 })),
+    ...HOUSE_KEYS.map((n) => ({ url: `${site}/carta-natal/casas/${n}`, priority: 0.5 })),
+  ];
+
   const [cursos, posts, guias] = await Promise.all([
     getPublishedCourses(),
     getPublishedPosts(),
@@ -39,6 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...estaticas,
     ...tarot,
+    ...cartaNatal,
     ...cursos.map((c) => ({ url: `${site}/cursos/${c.slug}`, priority: 0.8 })),
     ...guias.map((g) => ({ url: `${site}/guias/${g.slug}`, priority: 0.6 })),
     ...posts.map((p) => ({
