@@ -127,7 +127,6 @@ describe("getGuiasDirectory · creadora (B4)", () => {
     );
     expect((await getPublicTeachers()).map((t) => t.slug)).toEqual(["ana"]);
     expect(await getTeacherBySlug("sin")).toBeNull();
-    });
   });
 });
 
