@@ -5,13 +5,13 @@ import { ogCourseTitle, ogSafeText } from "./text";
 
 export const OG_SIZE = { width: 1200, height: 630 };
 
-// Mismos valores que tokens.css (Brote, ADR-015). Blanco sobre bosque 13.8:1, salvia 10.9:1,
-// miel 5.1:1: todo legible achicado en una vista previa de WhatsApp.
+// Mismos valores que tokens.css (Noche y oro, 2026-11-09). Blanco sobre bosque 17.0:1, salvia 12.0:1,
+// miel 8.6:1: todo legible achicado en una vista previa de WhatsApp.
 export const OG_COLORS = {
-  bg: "#1f2e24",
+  bg: "#141a38",
   texto: "#ffffff",
-  salvia: "#cfdccb",
-  miel: "#e6a93a",
+  salvia: "#d9d7e6",
+  miel: "#d9b45a",
 } as const;
 
 /** El brote de la marca (mismo trazo que BrandMark), como SVG: satori no dibuja glifos sin fetch. */

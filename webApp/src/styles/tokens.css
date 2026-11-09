@@ -1,21 +1,23 @@
-/* Tokens «Brote» (ADR-015). Fuente única: un color se cambia acá y nada más.
+/* Tokens «Brote» (ADR-015) con la paleta «Noche y oro» (PO/dueña, 2026-11-09). Fuente única: un
+   color se cambia acá y nada más. Los nombres (`bosque`, `salvia`, `miel`, `musgo`) son históricos:
+   hoy `bosque` es azul noche, `salvia` lavanda grisácea, `miel` oro y `musgo` índigo apagado.
    Nombres semánticos; los contrastes medidos están en el spec del rediseño. Un solo tema: no hay
-   [data-theme]. `musgo` es sólo para íconos e ilustración (4.56 sobre fondo, al límite para texto). */
+   [data-theme]. `musgo` es sólo para íconos e ilustración (5.3 sobre fondo). */
 :root {
-  --fondo: #fcfbf8;
+  --fondo: #f7f5f0;
   --papel: #ffffff;
-  --salvia-100: #eef3ec;
-  --salvia: #cfdccb;
-  --linea: #e3e8e1;
-  --tinta: #2c3a31;
-  --bosque: #1f2e24;
-  --bosque-700: #33473a;
-  --suave: #5f6e65;
-  --miel: #e6a93a;
-  --miel-hover: #f0b955;
-  --miel-800: #8a6219;
-  --miel-100: #f7ebd0;
-  --musgo: #5e7a66;
+  --salvia-100: #ecebf3;
+  --salvia: #d9d7e6;
+  --linea: #e2e0ea;
+  --tinta: #262b45;
+  --bosque: #141a38;
+  --bosque-700: #232a52;
+  --suave: #555b78;
+  --miel: #d9b45a;
+  --miel-hover: #e4c373;
+  --miel-800: #7a5a12;
+  --miel-100: #f4ead0;
+  --musgo: #5a6390;
   --error: #a8322a;
   --exito: #2f6b45;
 
@@ -33,8 +35,8 @@
   --radio-lg: 18px;
   --radio-pill: 9999px;
 
-  --sombra-card: 0 13px 50px rgb(31 46 36 / 0.1);
-  --sombra-lift: 0 30px 50px rgb(31 46 36 / 0.2);
+  --sombra-card: 0 13px 50px rgb(20 26 56 / 0.1);
+  --sombra-lift: 0 30px 50px rgb(20 26 56 / 0.2);
   --sombra-float: 0 0 30px -2px rgb(0 0 0 / 0.18);
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);

@@ -20,13 +20,13 @@ export function renderCourseCompletedMail(props: CourseCompletedProps) {
     <p style="margin:0 0 14px;">Hola ${escapeHtml(props.studentName)},</p>
     <p style="margin:0 0 14px;">
       Terminaste el recorrido completo de
-      <strong style="color:#1F2E24;">${escapeHtml(props.courseTitle)}</strong>. Tu certificado
+      <strong style="color:#141A38;">${escapeHtml(props.courseTitle)}</strong>. Tu certificado
       ya está emitido y es verificable con solo abrir el link — nadie más lo puede editar.
     </p>
     <p style="margin:0 0 14px;">Gracias por sostener el camino hasta acá.</p>
     <p style="margin:0;">
       Si querés contarle a quien viene detrás cómo fue el recorrido,
-      <a href="${escapeHtml(props.reviewUrl)}" style="color:#8A6219;text-decoration:underline;">dejá tu reseña del curso</a>.
+      <a href="${escapeHtml(props.reviewUrl)}" style="color:#7A5A12;text-decoration:underline;">dejá tu reseña del curso</a>.
     </p>`;
 
   const html = renderEmailHtml({

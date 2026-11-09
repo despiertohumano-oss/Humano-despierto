@@ -174,7 +174,7 @@
   .btn-secondary:hover:not(:disabled) {
     background: var(--bosque-700);
     transform: translateY(-2px);
-    box-shadow: 0 16px 30px -12px rgb(31 46 36 / 0.5);
+    box-shadow: 0 16px 30px -12px rgb(20 26 56 / 0.5);
   }
   .btn-outline {
     background: transparent;
@@ -243,7 +243,7 @@
     background: var(--papel);
     border: 1px solid var(--linea);
     border-radius: var(--radio-lg);
-    box-shadow: 0 1px 2px rgb(31 46 36 / 0.04);
+    box-shadow: 0 1px 2px rgb(20 26 56 / 0.04);
   }
 
   /* Reveal: visible en reposo. Sólo lo que arranca fuera de pantalla recibe `reveal-pre` (lo pone
