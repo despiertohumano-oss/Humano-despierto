@@ -42,7 +42,6 @@ export const slugSchema = z
 // Los campos con `noLocator` son exactamente los que la migración 0008 cierra con un CHECK.
 // `price`/`currency` no lo llevan: su dominio ya está cerrado por su propio regex.
 export const courseFormSchema = z.object({
-  slug: slugSchema,
   title: noLocator(z.string().trim().min(1, "El título es obligatorio.").max(200), "título"),
   titleEm: noLocator(z.string().trim().max(200).optional().or(z.literal("")), "título destacado"),
   subtitle: noLocator(z.string().trim().max(300).optional().or(z.literal("")), "subtítulo"),

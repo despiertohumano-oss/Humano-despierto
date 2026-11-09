@@ -104,16 +104,31 @@ describe("course actions · error por campo (D-100)", () => {
     expect(createClient).not.toHaveBeenCalled();
   });
 
-  it("un slug repetido (23505) marca el slug", async () => {
-    const dup = { error: { code: "23505", message: "duplicate key" } };
+  it("el slug sale del título; si existe, el curso nace con el siguiente número", async () => {
+    const slugs: string[] = [];
+    let n = 0;
     createClient.mockResolvedValue({
       from: () => ({
-        insert: () => ({ select: () => ({ single: async () => ({ data: null, ...dup }) }) }),
-        update: () => ({ eq: async () => dup }),
+        insert: (row: { slug: string }) => {
+          slugs.push(row.slug);
+          const res = n++ === 0
+            ? { data: null, error: { code: "23505", message: 'unique constraint "courses_slug_key"' } }
+            : { data: { id: "c-nuevo" }, error: null };
+          return { select: () => ({ single: async () => res }) };
+        },
       }),
     });
-    expect((await createCourseAction(INITIAL, courseForm())).field).toBe("slug");
-    expect((await updateCourseAction(INITIAL, courseForm())).field).toBe("slug");
+    await createCourseAction(INITIAL, courseForm({ title: "Tarot", titleEm: "Iniciático" }));
+    expect(slugs).toEqual(["tarot-iniciatico", "tarot-iniciatico-2"]);
+  });
+
+  it("editar no toca el slug aunque el form lo traiga", async () => {
+    let patch: Record<string, unknown> = {};
+    createClient.mockResolvedValue({
+      from: () => ({ update: (p: Record<string, unknown>) => ((patch = p), { eq: async () => ({ error: null }) }) }),
+    });
+    await updateCourseAction(INITIAL, courseForm({ slug: "otro" }));
+    expect(patch).not.toHaveProperty("slug");
   });
 
   it("un error que no es de un campo no inventa uno", async () => {
