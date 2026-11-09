@@ -4,7 +4,7 @@ import { DISCIPLINES, DISCIPLINE_KEYS, disciplineLabel, isDisciplineKey } from "
 
 describe("disciplinas · paridad con la migración 0073", () => {
   it("la lista del código y la del CHECK son la misma, en el mismo orden", () => {
-    expect(checkListFrom("_0073_disciplinas_cerradas.sql", "courses_discipline_closed")).toEqual([...DISCIPLINE_KEYS]);
+    expect(checkListFrom("_0074_disciplinas_cerradas.sql", "courses_discipline_closed")).toEqual([...DISCIPLINE_KEYS]);
   });
 
   it("siete disciplinas con su etiqueta", () => {
