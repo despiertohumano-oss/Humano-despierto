@@ -8,6 +8,8 @@ vi.mock("@/lib/supabase/server", () => ({ createClient }));
 vi.mock("@/lib/supabase/service", () => ({ createServiceRoleClient }));
 const { revalidatePath } = vi.hoisted(() => ({ revalidatePath: vi.fn() }));
 vi.mock("next/cache", () => ({ revalidatePath }));
+const { redirect } = vi.hoisted(() => ({ redirect: vi.fn() }));
+vi.mock("next/navigation", () => ({ redirect }));
 vi.mock("@/lib/server/log", () => ({ log: { error: vi.fn(), warn: vi.fn(), info: vi.fn() } }));
 
 import { borrarCarta, buscarLugar, calcularCarta, guardarCarta, marcarMiCarta } from "./actions";
@@ -34,6 +36,7 @@ beforeEach(() => {
   createClient.mockReset();
   createServiceRoleClient.mockReset();
   revalidatePath.mockReset();
+  redirect.mockReset();
 });
 
 describe("calcularCarta", () => {
@@ -59,6 +62,58 @@ describe("calcularCarta", () => {
     for (let i = 0; i < 30; i++) await calcularCarta(INITIAL, form(BASE));
     const r = await calcularCarta(INITIAL, form(BASE));
     expect(r.error).toMatch(/Demasiados intentos/);
+  });
+});
+
+describe("guardarCarta · editar (reemplaza la carta anterior)", () => {
+  const ROW = {
+    id: CHART, label: "Mi carta", birth_date: "1990-06-15", birth_time: "09:00:00", place_id: null, lat: -34.60372, lon: -58.38159,
+    timezone: "America/Argentina/Buenos_Aires", utc_offset_seconds: -10800, ambiguity_choice: null, house_system: "placidus",
+    is_self: true, created_at: "2026-11-01T00:00:00Z",
+  };
+  // Sesión con lo justo: leer la carta propia (RLS) y borrarla.
+  function sessionWithChart(row: typeof ROW | null, delError: { code: string } | null = null) {
+    const del = vi.fn(() => ({ eq: vi.fn(async () => ({ error: delError })) }));
+    const maybeSingle = vi.fn(async () => ({ data: row }));
+    const from = vi.fn(() => ({ select: () => ({ eq: () => ({ maybeSingle }) }), delete: del }));
+    createClient.mockResolvedValue({ auth: { getUser: async () => ({ data: { user: { id: UID } } }) }, from });
+    return { del, from };
+  }
+
+  it("guarda la carta corregida y borra la anterior", async () => {
+    const { del } = sessionWithChart(ROW);
+    const rpc = vi.fn().mockResolvedValue({ data: "c-nueva", error: null });
+    createServiceRoleClient.mockReturnValue({ rpc });
+    const r = await guardarCarta(INITIAL, form({ ...BASE, hora: "10:30", consiento: "on", propia: "1", reemplaza: CHART }));
+    expect(r.error).toBeNull();
+    expect(redirect).toHaveBeenCalledWith("/carta-natal/c-nueva");
+    expect(rpc).toHaveBeenCalledWith("save_natal_chart", expect.objectContaining({ p_user_id: UID, p_is_self: true, p_birth_time: "10:30" }));
+    expect(del).toHaveBeenCalledTimes(1);
+    expect(rpc.mock.invocationCallOrder[0]).toBeLessThan(del.mock.invocationCallOrder[0]!);
+  });
+
+  it("una carta ajena o inexistente no se reemplaza y no se guarda nada", async () => {
+    const { del } = sessionWithChart(null);
+    const rpc = vi.fn();
+    createServiceRoleClient.mockReturnValue({ rpc });
+    const r = await guardarCarta(INITIAL, form({ ...BASE, consiento: "on", reemplaza: CHART }));
+    expect(r.error).toMatch(/No encontramos/);
+    expect(rpc).not.toHaveBeenCalled();
+    expect(del).not.toHaveBeenCalled();
+  });
+
+  it("un id malformado es carta inválida", async () => {
+    sessionWithChart(ROW);
+    const r = await guardarCarta(INITIAL, form({ ...BASE, consiento: "on", reemplaza: "no-es-uuid" }));
+    expect(r.error).toBe("Carta inválida.");
+  });
+
+  it("si borrar la anterior falla, la nueva igual queda guardada", async () => {
+    sessionWithChart(ROW, { code: "42501" });
+    createServiceRoleClient.mockReturnValue({ rpc: vi.fn().mockResolvedValue({ data: "c-nueva", error: null }) });
+    const r = await guardarCarta(INITIAL, form({ ...BASE, consiento: "on", reemplaza: CHART }));
+    expect(r.error).toBeNull();
+    expect(redirect).toHaveBeenCalledWith("/carta-natal/c-nueva");
   });
 });
 

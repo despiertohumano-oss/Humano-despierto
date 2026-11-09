@@ -19,7 +19,7 @@ describe("T-091 · la portada no consulta la base en el build", () => {
   it("espera un request antes de lanzar las consultas", async () => {
     // El layout ya llama a connection(), pero la página se renderiza en paralelo y sus
     // consultas salían igual durante el prerender.
-    await expect(LandingPage()).rejects.toThrow("PRERENDER_BAIL");
+    await expect(LandingPage({ searchParams: Promise.resolve({}) })).rejects.toThrow("PRERENDER_BAIL");
     for (const fn of [getLandingData, getPublishedCourses, getPublicTeachers]) {
       expect(fn).not.toHaveBeenCalled();
     }

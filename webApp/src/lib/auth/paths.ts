@@ -6,6 +6,21 @@ export const LINK_ERROR_PATH = "/entrar?error=link";
 export const SIGNUP_ERROR_PATH = "/entrar?error=signup";
 export const OAUTH_ERROR_PATH = "/entrar?error=oauth";
 
+// Si GoTrue no acepta el redirect_to pedido, vuelve a la Site URL (la portada) con `code` o
+// `error` en la query. La portada lo reenvía al callback, que hace el canje o muestra el error.
+const AUTH_RETURN_KEYS = ["code", "error", "error_code", "error_description", "sb_flow_id"] as const;
+export function authReturnRedirect(params: { [key: string]: string | string[] | undefined }): string | null {
+  const code = params.code;
+  const error = params.error;
+  if (typeof code !== "string" && typeof error !== "string") return null;
+  const qs = new URLSearchParams();
+  for (const key of AUTH_RETURN_KEYS) {
+    const v = params[key];
+    if (typeof v === "string") qs.set(key, v);
+  }
+  return `/auth/callback?${qs.toString()}`;
+}
+
 export type EntrarError = "link" | "signup" | "oauth";
 export function entrarError(value: unknown): EntrarError | null {
   return value === "link" || value === "signup" || value === "oauth" ? value : null;

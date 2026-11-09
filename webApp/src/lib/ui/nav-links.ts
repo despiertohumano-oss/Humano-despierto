@@ -11,6 +11,7 @@ const PUBLIC: NavLink[] = [
   { label: DOCENTES.navLabel, href: "/guias" },
   { label: "Diario", href: "/diario" },
   { label: "Tarot", href: "/tarot" },
+  { label: "Carta natal", href: "/carta-natal" },
 ];
 
 /** Una sola lista para el header de escritorio y el menú móvil: lo que se ve en uno existe en el

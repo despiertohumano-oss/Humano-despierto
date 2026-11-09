@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Button from "@/components/atoms/Button";
 import { ACTION_INITIAL_STATE } from "@/lib/action-state";
 import { calcularCarta, guardarCarta, type CalcState, type SaveState } from "@/app/(marketing)/carta-natal/actions";
-import type { PlaceOption } from "@/lib/server/natal-chart";
+import type { ChartEditInitial, PlaceOption } from "@/lib/server/natal-chart";
 import ChartResult from "./ChartResult";
 import PlaceSearch from "./PlaceSearch";
 
@@ -16,7 +16,8 @@ const CONSENTIMIENTO = "Acepto que guarden mis datos de nacimiento para mostrarm
 const CONSENTIMIENTO_GUIA = "Al marcarla como mi carta, el signo de mi Sol, el de mi Luna y mi Ascendente se muestran en mi perfil público de docente.";
 
 // perfilPublico: docente o admin, cuyos signos de la carta propia se ven en su perfil público.
-type Props = { mode: "libre" | "propia"; signedIn: boolean; perfilPublico: boolean };
+// editing: la carta guardada que se corrige; al guardar se reemplaza (y se va a verla).
+type Props = { mode: "libre" | "propia"; signedIn: boolean; perfilPublico: boolean; editing?: ChartEditInitial };
 
 // Desfase orientativo para mostrar antes de calcular; el definitivo lo resuelve el servidor.
 function offsetLabel(zone: string, date: string, time: string): string | null {
@@ -38,18 +39,25 @@ function offsetLabel(zone: string, date: string, time: string): string | null {
   }
 }
 
+// Lo que define el instante y el lugar: la elección del atraso vale solo para estos datos.
+function datosDe(fecha: string, hora: string | null, manual: { lat: string; lon: string; huso: string } | null, placeId: number | null, husoCorregido: string | null): string {
+  return JSON.stringify([fecha, hora, manual ? [manual.lat, manual.lon, manual.huso] : [placeId, husoCorregido]]);
+}
+
 // Un guardado por cálculo: el padre lo monta con key={firma}, así un guardado anterior (su id, su
 // error, el consentimiento tildado) no sobrevive a un cambio de datos.
-function GuardarCarta({ perfilPublico }: { perfilPublico: boolean }) {
+function GuardarCarta({ perfilPublico, editing }: { perfilPublico: boolean; editing?: ChartEditInitial }) {
   const [save, saveAction, guardando] = useActionState(guardarCarta, ACTION_INITIAL_STATE as SaveState);
-  const [etiqueta, setEtiqueta] = useState("");
-  const [propia, setPropia] = useState(false);
+  const [etiqueta, setEtiqueta] = useState(editing?.label ?? "");
+  const [propia, setPropia] = useState(editing?.isSelf ?? false);
   const [consiento, setConsiento] = useState(false);
+  // Editando, la action redirige a la carta nueva; esto queda para el guardado común.
   if (save.id) return <Link href={`/carta-natal/${save.id}`} className="font-semibold text-exito underline">Guardada. Verla</Link>;
   const error = save.error ?? (save.ambigua ? "Elegí si naciste antes o después del atraso y volvé a calcular." : null);
   return (
     <div className="tarjeta space-y-4 p-6">
-      <h2 className="text-xl font-bold text-bosque">Guardar esta carta</h2>
+      <h2 className="text-xl font-bold text-bosque">{editing ? "Guardar los cambios" : "Guardar esta carta"}</h2>
+      {editing && <input type="hidden" name="reemplaza" value={editing.id} />}
       <label className={ETIQUETA}>
         Nombre para esta carta (opcional)
         <input name="etiqueta" maxLength={60} value={etiqueta} onChange={(e) => setEtiqueta(e.target.value)} className={CAMPO} />
@@ -62,29 +70,34 @@ function GuardarCarta({ perfilPublico }: { perfilPublico: boolean }) {
         <span>{perfilPublico && propia ? `${CONSENTIMIENTO} ${CONSENTIMIENTO_GUIA}` : CONSENTIMIENTO}</span>
       </label>
       <Button type="submit" variant="outline" formAction={saveAction} disabled={guardando}>
-        {guardando ? "Guardando…" : "Guardar en mi panel"}
+        {guardando ? "Guardando…" : editing ? "Guardar cambios" : "Guardar en mi panel"}
       </Button>
       {error && <p role="alert" className="text-sm text-error">{error}</p>}
     </div>
   );
 }
 
-export default function ChartForm({ mode, signedIn, perfilPublico }: Props) {
+export default function ChartForm({ mode, signedIn, perfilPublico, editing }: Props) {
   const router = useRouter();
   const form = useRef<HTMLFormElement>(null);
   const [calc, calcAction, calculando] = useActionState(calcularCarta, ACTION_INITIAL_STATE as CalcState);
   const [save, saveAction, guardando] = useActionState(guardarCarta, ACTION_INITIAL_STATE as SaveState);
-  const [fecha, setFecha] = useState("");
-  const [hora, setHora] = useState("");
-  const [sinHora, setSinHora] = useState(false);
-  const [place, setPlace] = useState<PlaceOption | null>(null);
-  const [manual, setManual] = useState(false);
-  const [lat, setLat] = useState("");
-  const [lon, setLon] = useState("");
-  const [huso, setHuso] = useState("");
-  const [corregir, setCorregir] = useState(false);
-  const [casas, setCasas] = useState("placidus");
-  const [elegido, setElegido] = useState<{ valor: "earlier" | "later"; datos: string } | null>(null);
+  const [fecha, setFecha] = useState(editing?.fecha ?? "");
+  const [hora, setHora] = useState(editing?.hora ?? "");
+  const [sinHora, setSinHora] = useState(editing ? editing.hora === null : false);
+  const [place, setPlace] = useState<PlaceOption | null>(editing?.place ?? null);
+  const [manual, setManual] = useState(editing?.manual != null);
+  const [lat, setLat] = useState(editing?.manual?.lat ?? "");
+  const [lon, setLon] = useState(editing?.manual?.lon ?? "");
+  const [huso, setHuso] = useState(editing?.manual?.huso ?? editing?.husoCorregido ?? "");
+  const [corregir, setCorregir] = useState(editing?.husoCorregido != null);
+  const [casas, setCasas] = useState<string>(editing?.casas ?? "placidus");
+  // Al editar, la elección del atraso guardada vale para los datos con los que se abrió el form.
+  const [elegido, setElegido] = useState<{ valor: "earlier" | "later"; datos: string } | null>(() =>
+    editing?.reloj
+      ? { valor: editing.reloj, datos: datosDe(editing.fecha, editing.hora, editing.manual, editing.place?.id ?? null, editing.husoCorregido) }
+      : null,
+  );
   const [consiento, setConsiento] = useState(false);
   const [calculada, setCalculada] = useState<string | null>(null);
   const zonas = useMemo(() => (manual || corregir ? Intl.supportedValuesOf("timeZone") : []), [manual, corregir]);
@@ -107,7 +120,7 @@ export default function ChartForm({ mode, signedIn, perfilPublico }: Props) {
   }, []);
 
   // La elección de «antes/después del atraso» vale solo para estos datos: si cambian, se vuelve a preguntar.
-  const datos = JSON.stringify([fecha, sinHora ? null : hora, manual ? [lat, lon, huso] : [place?.id ?? null, corregir ? huso : null]]);
+  const datos = datosDe(fecha, sinHora ? null : hora, manual ? { lat, lon, huso } : null, place?.id ?? null, corregir ? huso : null);
   const firma = JSON.stringify([datos, casas]);
   const reloj = elegido && elegido.datos === datos ? elegido.valor : "";
   const vigente = calculada === firma;
@@ -123,6 +136,11 @@ export default function ChartForm({ mode, signedIn, perfilPublico }: Props) {
 
   return (
     <form ref={form} action={mode === "propia" ? saveAction : calcAction} onSubmit={() => setCalculada(firma)} className="space-y-6">
+      {editing && (
+        <p className="tarjeta p-4 text-sm text-tinta">
+          Estás editando <strong className="text-bosque">{editing.label}</strong>. Corregí lo que haga falta, calculá de nuevo y guardá los cambios: la carta anterior se reemplaza.
+        </p>
+      )}
       <div className="grid gap-5 sm:grid-cols-2">
         <label className={ETIQUETA}>
           Fecha de nacimiento
@@ -228,7 +246,7 @@ export default function ChartForm({ mode, signedIn, perfilPublico }: Props) {
               Para guardarla, <Link href="/entrar?next=/carta-natal" className="font-semibold text-miel-800 underline">entrá a tu cuenta</Link>. Si no la guardás, tus datos no quedan en ningún lado.
             </p>
           ) : (
-            <GuardarCarta key={firma} perfilPublico={perfilPublico} />
+            <GuardarCarta key={firma} perfilPublico={perfilPublico} editing={editing} />
           )}
         </div>
       )}

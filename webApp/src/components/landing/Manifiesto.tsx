@@ -37,7 +37,8 @@ export default function Manifiesto() {
               className="object-cover"
             />
           </div>
-          <SkyIllustration className="absolute -bottom-8 right-2 md:-left-[54px] md:right-auto" />
+          {/* Blanco suave sobre la carta astral; la sombra noche lo sostiene donde cae sobre el fondo claro. */}
+          <SkyIllustration className="absolute -bottom-8 right-2 text-papel/90 [filter:drop-shadow(0_0_1.5px_rgb(20_26_56/0.55))] md:-left-[54px] md:right-auto" />
         </Reveal>
       </div>
     </section>

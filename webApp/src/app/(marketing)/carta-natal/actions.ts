@@ -1,10 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "@/lib/validation/zod";
 import { createClient } from "@/lib/supabase/server";
 import type { ActionState } from "@/lib/action-state";
 import { withRateLimit } from "@/lib/server/rate-limit";
+import { log } from "@/lib/server/log";
 import { limitedState, rateLimitMessage } from "@/lib/rate-limit/core";
 import {
   type ChartView, type PlaceOption, getNatalChart, insertNatalChart, markSelfChart, parseChartForm, prepareChart, searchPlaces,
@@ -55,6 +57,13 @@ export const guardarCarta = withRateLimit(
     if (r.kind === "error") return { error: r.error, success: null };
     if (r.kind === "ambigua") return { error: null, success: null, ambigua: { earlier: r.earlier, later: r.later } };
 
+    // Editar = guardar la carta corregida y borrar la anterior (natal_charts no tiene UPDATE para
+    // el cliente). La anterior tiene que ser de la usuaria: getNatalChart lee con su sesión (RLS).
+    const reemplaza = fd.get("reemplaza") === null ? null : z.string().uuid().safeParse(fd.get("reemplaza"));
+    if (reemplaza && !reemplaza.success) return { error: "Carta inválida.", success: null };
+    const anterior = reemplaza?.success ? await getNatalChart(reemplaza.data) : null;
+    if (reemplaza && !anterior) return { error: "No encontramos la carta que estabas editando.", success: null };
+
     const isSelf = fd.get("propia") === "1";
     const [y, m, d] = parsed.input.date.split("-");
     const label = cleanLabel(fd.get("etiqueta"), isSelf ? "Mi carta" : `Carta del ${d}/${m}/${y}`);
@@ -65,8 +74,17 @@ export const guardarCarta = withRateLimit(
         : { error: "No se pudo guardar la carta. Probá de nuevo en un rato.", success: null };
     }
 
+    if (anterior) {
+      // save_natal_chart ya le sacó is_self a la anterior si la nueva es propia: borrarla no limpia
+      // los signos del perfil. Si falla, quedan las dos y la usuaria puede borrar la vieja.
+      const { error: delError } = await supabase.from("natal_charts").delete().eq("id", anterior.id);
+      if (delError) log.error("natal_chart_replace_delete_failed", { pg_code: delError.code ?? "desconocido" });
+    }
+
     revalidatePath("/panel/carta-natal");
-    if (isSelf) revalidatePath("/panel/docente", "layout");
+    if (isSelf || anterior?.isSelf) revalidatePath("/panel/docente", "layout");
+    // Editando, la página de origen (?editar=<vieja>) ya no tiene carta: se va a ver la nueva.
+    if (anterior) redirect(`/carta-natal/${saved.id}`);
     return { error: null, success: "Carta guardada.", id: saved.id };
   },
   limitedState,
