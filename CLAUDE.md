@@ -122,7 +122,8 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 /tarot/lectura/[id]                 Tirada guardada                           [auth]
 /tarot/cartas  ·  /tarot/cartas/[slug]   Las 78 fichas
 /panel/tarot                        Mis tiradas                               [auth]
-/carta-natal                        Carta natal: form + result (POST, nothing in the URL)
+/carta-natal                        Carta natal: with a saved chart it shows that one («mi carta», else the
+                                    latest); form only with none, ?editar=<id> or ?nueva=1 (POST, nothing in the URL)
 /carta-natal/[id]                   Saved chart, recomputed on open           [auth, owner; noindex]
 /carta-natal/signos/[slug] · /planetas/[slug] · /casas/[n]   Indexable fact sheets (37)
 /panel/carta-natal                  Mis cartas natales: delete, mark «mi carta»  [auth]
