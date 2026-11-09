@@ -24,7 +24,10 @@ async function guardarPerfil(page: Page, campos: { nombre?: string; telefono?: s
   if (campos.nombre !== undefined) await page.getByLabel("Nombre", { exact: true }).fill(campos.nombre);
   if (campos.telefono !== undefined) await page.getByLabel("Teléfono").fill(campos.telefono);
   if (campos.fecha !== undefined) await page.getByLabel("Fecha de nacimiento").fill(campos.fecha);
-  await page.getByRole("button", { name: "Guardar perfil" }).click();
+  const guardar = page.getByRole("button", { name: "Guardar perfil" });
+  // Sin cambios el botón está deshabilitado: el valor ya estaba guardado de una corrida anterior.
+  if (await guardar.isDisabled()) return;
+  await guardar.click();
   await expect(page.getByText("Perfil guardado.")).toBeVisible();
 }
 
@@ -57,8 +60,7 @@ test("c.8 · la alumna carga y borra su fecha de nacimiento", async ({ page, req
   await guardarPerfil(page, { fecha: "1990-05-04" });
   await page.reload();
   await expect(page.getByLabel("Fecha de nacimiento")).toHaveValue("1990-05-04");
-  await page.getByRole("button", { name: "Borrar fecha" }).click();
-  await expect(page.getByText("Fecha de nacimiento borrada.")).toBeVisible();
+  await guardarPerfil(page, { fecha: "" });
   await page.reload();
   await expect(page.getByLabel("Fecha de nacimiento")).toHaveValue("");
 });
@@ -77,7 +79,6 @@ test("c.7 · avatar firmado en la ficha publica, sin datos privados, y al quitar
   try {
     await guardarPerfil(page, { telefono: "+54 11 4321-9876", fecha: "1981-07-19" });
     await page.getByLabel(/Elegir imagen/).setInputFiles({ name: "retrato.png", mimeType: "image/png", buffer: PNG_1X1 });
-    await page.getByRole("button", { name: "Subir imagen" }).click();
     await expect(page.getByText("Imagen actualizada.")).toBeVisible();
 
     const res = await pub.goto(`/guias/${SOL.slug}`);
@@ -113,4 +114,18 @@ test("D-83 · un teléfono inválido se marca junto al campo y no se guarda", as
   await expect(telefono).toBeFocused();
   await expect(page.getByText("Perfil guardado.")).toHaveCount(0);
   await expect(page.getByLabel("Nombre", { exact: true })).not.toHaveAttribute("aria-invalid", "true");
+});
+
+test('sin cambios "Guardar perfil" está deshabilitado y se habilita al editar', async ({ page, request }) => {
+  await assertStackUp(request);
+  await login(page, ALUMNA);
+  await page.goto("/panel/perfil", { waitUntil: "networkidle" });
+  const guardar = page.getByRole("button", { name: "Guardar perfil" });
+  await expect(guardar).toBeDisabled();
+  const tel = page.getByLabel("Teléfono");
+  const antes = await tel.inputValue();
+  await tel.fill(antes + "1");
+  await expect(guardar).toBeEnabled();
+  await tel.fill(antes);
+  await expect(guardar).toBeDisabled();
 });

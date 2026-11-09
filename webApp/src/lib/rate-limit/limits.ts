@@ -38,7 +38,6 @@ export const RATE_LIMITS = {
   moderateAnswer: STAFF,
   // Perfil (T-042)
   updateProfileAction: { max: 10, windowSeconds: 600 },
-  clearBirthDateAction: { max: 10, windowSeconds: 600 },
   uploadAvatarAction: { max: 10, windowSeconds: 600 },
   removeAvatarAction: { max: 10, windowSeconds: 600 },
   // Panel docente: cursos (T-005)
