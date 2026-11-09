@@ -35,6 +35,12 @@ test("curso ajeno da 404 para la docente", async ({ page, request }) => {
 
 test("alumna con el curso completo: 100 % y link al certificado", async ({ page, request }) => {
   await assertStackUp(request);
+  // El certificado lo emite ensureCertificate cuando Delfina abre su panel; con la base recién
+  // reseteada eso todavía no pasó. Se emite acá (el trigger deriva todo) para no depender del orden.
+  psql(`insert into public.certificates (user_id, course_id, student_name, course_title, teacher_name, completed_at)
+        select u.id, c.id, '-', '-', '-', now() from auth.users u, public.courses c
+        where u.email = 'delfina.curso-completo@seed.humano.local' and c.slug = 'reiki-nivel-1'
+        on conflict (user_id, course_id) do nothing`);
   await loginAs(page, AURORA, "/panel/docente");
   await page.goto(`/panel/docente/cursos/${courseId("reiki-nivel-1")}/alumnas`);
   const delfina = page.getByRole("listitem").filter({ hasText: "Delfina" });
