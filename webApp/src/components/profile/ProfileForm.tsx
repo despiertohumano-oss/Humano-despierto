@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState, type FormEvent } from "react";
 import Button from "@/components/atoms/Button";
+import DateField from "@/components/molecules/DateField";
 import FormField from "@/components/molecules/FormField";
 import FormStatus from "@/components/molecules/FormStatus";
 import { updateProfileAction } from "@/app/(app)/panel/perfil/actions";
@@ -77,11 +78,12 @@ export default function ProfileForm({ profile, today }: { profile: ProfileFormFi
             <input {...c} name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="+54 11 4000-0000" defaultValue={profile.phone ?? ""} />
           )}
         </FormField>
-        <FormField id="birthDate" label="Fecha de nacimiento" error={errors.birthDate}>
-          {(c) => (
-            <input {...c} name="birthDate" type="date" min="1900-01-02" max={today} autoComplete="bday" defaultValue={profile.birthDate ?? ""} />
-          )}
-        </FormField>
+        <DateField
+          key={profile.birthDate ?? ""}
+          id="birthDate" name="birthDate" label="Fecha de nacimiento" error={errors.birthDate}
+          defaultValue={profile.birthDate} min="1900-01-02" max={today} openAt="1990-01-01"
+          onChange={() => setTimeout(() => formRef.current && setValues(readValues(formRef.current)), 0)}
+        />
       </fieldset>
 
       <div className="flex flex-wrap items-center gap-3">

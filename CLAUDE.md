@@ -339,6 +339,12 @@ visual reference: `design_handoff_humano_humano/reference/brote/b4-brote2.html`.
 - **Buttons:** `Button` / `ButtonLink` (`src/components/atoms/Button.tsx`), variants `primary` ·
   `secondary` · `outline` · `ghost`, sizes `md` (48px) · `sm` (40px), optional `arrow`. The variant
   CSS lives only in `globals.css` (`.btn-*`); a screen picks a variant, it never styles a button.
+- **Dates and times:** `molecules/DateField` (segments DD/MM/AAAA plus a calendar popover with month
+  and year selectors) and `molecules/TimeField` (HH:MM, 24 h), on `react-aria-components` with
+  locale `es-AR` whatever the OS language. Never `<input type="date|time">`: native pickers showed
+  mm/dd/yyyy and AM/PM. Values are ISO strings (`AAAA-MM-DD`, `HH:MM`, `src/lib/ui/date-value.ts`).
+  A controlled field ignores the reset React does after a form action (`use-ignore-form-reset`).
+  e2e types them with `e2e/campos.ts`.
 - **Errors and limits keep their T-050/T-051 wiring in Brote.** Every `error.tsx` and
   `global-error.tsx` calls `useReportError(error)` and shows `ErrorReference` (the digest support
   looks up in the log); student routes use `layout/ErrorScreen`, the Campus `campus/CampusError`.
