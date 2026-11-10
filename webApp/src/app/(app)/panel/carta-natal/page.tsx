@@ -14,13 +14,13 @@ export default async function PanelCartaNatalPage() {
     <div className="min-h-screen bg-fondo text-tinta">
       <SiteHeader />
       <AppPageHeader eyebrow="Carta natal" title="Mis cartas natales" subtitle="Tus datos de nacimiento son privados. Borrar una carta la elimina en el acto.">
-        {charts.length > 0 && <ButtonLink href="/carta-natal" size="sm" arrow>Calcular una carta nueva</ButtonLink>}
+        {charts.length > 0 && <ButtonLink href="/carta-natal?nueva=1" size="sm" arrow>Calcular una carta nueva</ButtonLink>}
       </AppPageHeader>
       <main className="mx-auto max-w-[1200px] px-6 py-12">
         {charts.length === 0 ? (
           <div className="tarjeta flex flex-col items-start gap-4 p-8">
             <p className="max-w-[46ch]">Todavía no guardaste ninguna carta. Calculala y, al final, tocá &quot;Guardar en mi panel&quot;.</p>
-            <ButtonLink href="/carta-natal" arrow>Calcular una carta</ButtonLink>
+            <ButtonLink href="/carta-natal?nueva=1" arrow>Calcular una carta</ButtonLink>
           </div>
         ) : (
           <ul className="space-y-4">

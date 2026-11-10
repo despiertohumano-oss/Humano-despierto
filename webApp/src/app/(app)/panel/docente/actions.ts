@@ -14,6 +14,7 @@ import {
   firstIssue,
 } from "@/lib/validation/teacher";
 import type { TeacherActionState } from "@/lib/teacher/action-state";
+import { insertWithUniqueSlug, slugFromTitle } from "@/lib/teacher/slug";
 import { log } from "@/lib/server/log";
 import { withRateLimit } from "@/lib/server/rate-limit";
 import { limitedState } from "@/lib/rate-limit/core";
@@ -25,7 +26,6 @@ function invalid(error: Parameters<typeof firstIssue>[0]): TeacherActionState {
 
 function readCourseForm(formData: FormData) {
   return courseFormSchema.safeParse({
-    slug: String(formData.get("slug") ?? ""),
     title: String(formData.get("title") ?? ""),
     titleEm: String(formData.get("titleEm") ?? ""),
     subtitle: String(formData.get("subtitle") ?? ""),
@@ -81,35 +81,34 @@ export const createCourseAction = withRateLimit(
     let newCourseId: string | null = null;
     try {
       const supabase = await createClient();
-      const { data, error } = await supabase
-        .from("courses")
-        .insert({
-          slug: v.slug,
-          title: v.title,
-          title_em: v.titleEm || null,
-          subtitle: v.subtitle || null,
-          intro: v.intro || null,
-          discipline: v.discipline,
-          level: v.level,
-          price_cents: priceToCents(v.price),
-          currency: v.currency,
-          moon_glyph: v.moonGlyph || null,
-          includes: includesToArray(v.includes),
-          description: v.description || null,
-          learning_objectives: includesToArray(v.learningObjectives),
-          prerequisites: includesToArray(v.prerequisites),
-          language: v.language,
-          promo_video_id: v.promoVideoId || null,
-          teacher_id: teacher.id,
-          ...modalityColumns(v),
-        })
-        .select("id")
-        .single();
+      const { data, error } = await insertWithUniqueSlug(slugFromTitle(`${v.title} ${v.titleEm ?? ""}`, "curso"), (slug) =>
+        supabase
+          .from("courses")
+          .insert({
+            slug,
+            title: v.title,
+            title_em: v.titleEm || null,
+            subtitle: v.subtitle || null,
+            intro: v.intro || null,
+            discipline: v.discipline,
+            level: v.level,
+            price_cents: priceToCents(v.price),
+            currency: v.currency,
+            moon_glyph: v.moonGlyph || null,
+            includes: includesToArray(v.includes),
+            description: v.description || null,
+            learning_objectives: includesToArray(v.learningObjectives),
+            prerequisites: includesToArray(v.prerequisites),
+            language: v.language,
+            promo_video_id: v.promoVideoId || null,
+            teacher_id: teacher.id,
+            ...modalityColumns(v),
+          })
+          .select("id")
+          .single(),
+      );
 
       if (error) {
-        if (error.code === "23505") {
-          return { error: "Ya existe un curso con ese slug. Elegí otro.", success: null, field: "slug" };
-        }
         // El 42501 lo levanta `guard_locator_exacto` (0025), no Zod: la coincidencia EXACTA de
         // ADR-009 necesita CONSULTAR `lessons`, asi que ningun schema del cliente puede replicarla.
         // Sin esta traduccion la docente ve un error crudo del motor.
@@ -150,7 +149,6 @@ export const updateCourseAction = withRateLimit(
       const { error } = await supabase
         .from("courses")
         .update({
-          slug: v.slug,
           title: v.title,
           title_em: v.titleEm || null,
           subtitle: v.subtitle || null,
@@ -171,7 +169,6 @@ export const updateCourseAction = withRateLimit(
         .eq("id", courseId);
 
       if (error) {
-        if (error.code === "23505") return { error: "Ya existe un curso con ese slug.", success: null, field: "slug" };
         // El 42501 lo levanta `guard_locator_exacto` (0025), no Zod: la coincidencia EXACTA de
         // ADR-009 necesita CONSULTAR `lessons`, asi que ningun schema del cliente puede replicarla.
         // Sin esta traduccion la docente ve un error crudo del motor.

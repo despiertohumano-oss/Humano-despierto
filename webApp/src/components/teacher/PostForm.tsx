@@ -6,6 +6,7 @@ import Button from "@/components/atoms/Button";
 import { PanelCheckbox, PanelInput, PanelSelect, PanelTextarea } from "@/components/panel/PanelField";
 import { DIARIO_CATEGORIES } from "@/lib/taxonomy/diario";
 import StatusMessage from "@/components/panel/StatusMessage";
+import PublicAddress from "@/components/teacher/PublicAddress";
 import { TEACHER_ACTION_INITIAL_STATE, fieldError, formError } from "@/lib/teacher/action-state";
 import type { TeacherDiarioPostFields } from "@/lib/server/diario";
 
@@ -23,9 +24,16 @@ export default function PostForm({ post, courses = [] }: Props) {
     <form action={formAction} className="tarjeta grid gap-5 p-6">
       {post && <input type="hidden" name="postId" value={post.id} />}
 
-      <div className="grid gap-5 md:grid-cols-2">
-        <PanelInput label="Slug (URL)" name="slug" error={fieldError(state, "slug")} defaultValue={post?.slug} placeholder="sobre-los-eclipses" required />
-        <PanelInput label="Título" name="title" error={fieldError(state, "title")} defaultValue={post?.title} required />
+      <div>
+        <PanelInput
+          label="Título"
+          name="title"
+          hint={post ? undefined : "La dirección del post se arma con el título y no cambia después."}
+          error={fieldError(state, "title")}
+          defaultValue={post?.title}
+          required
+        />
+        {post && <PublicAddress path={`/diario/${post.slug}`} />}
       </div>
 
       <PanelSelect label="Categoría" name="category" error={fieldError(state, "category")} defaultValue={post?.category ?? "conciencia"} required>

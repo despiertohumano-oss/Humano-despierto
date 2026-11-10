@@ -45,14 +45,18 @@ describe("post actions · error por campo (D-100)", () => {
   });
 
   it("un campo inválido vuelve con su nombre", async () => {
-    expect(await createPostAction(INITIAL, postForm({ slug: "Con Espacios" }))).toMatchObject({ field: "slug" });
+    expect(await createPostAction(INITIAL, postForm({ title: "" }))).toMatchObject({ field: "title" });
     expect(await updatePostAction(INITIAL, postForm({ body: "   " }))).toMatchObject({ field: "body" });
     expect(createClient).not.toHaveBeenCalled();
   });
 
-  it("slug repetido marca el slug; un localizador en el cuerpo marca el cuerpo", async () => {
-    updateFailingWith("23505");
-    expect((await updatePostAction(INITIAL, postForm())).field).toBe("slug");
+  it("un localizador en el cuerpo marca el cuerpo; editar no toca el slug", async () => {
+    let patch: Record<string, unknown> = {};
+    createClient.mockResolvedValue({
+      from: () => ({ update: (p: Record<string, unknown>) => ((patch = p), { eq: async () => ({ error: null }) }) }),
+    });
+    await updatePostAction(INITIAL, postForm());
+    expect(patch).not.toHaveProperty("slug");
     updateFailingWith("42501");
     expect((await updatePostAction(INITIAL, postForm())).field).toBe("body");
   });
@@ -71,8 +75,25 @@ describe("createPostAction · error por campo desde la base (DT1)", () => {
     });
   }
 
+  it("el slug sale del título; si existe, prueba el siguiente número", async () => {
+    const slugs: string[] = [];
+    let n = 0;
+    createClient.mockResolvedValue({
+      from: () => ({
+        insert: (row: { slug: string }) => {
+          slugs.push(row.slug);
+          const res = n++ === 0
+            ? { data: null, error: { code: "23505", message: 'unique constraint "diario_posts_slug_key"' } }
+            : { data: { id: "p-nuevo" }, error: null };
+          return { select: () => ({ single: async () => res }) };
+        },
+      }),
+    });
+    await createPostAction(INITIAL, postForm({ title: "Sobre los Eclipses" }));
+    expect(slugs).toEqual(["sobre-los-eclipses", "sobre-los-eclipses-2"]);
+  });
+
   it.each([
-    ["23505", "slug"],
     ["42501", "body"],
     ["23514", "body"],
   ])("%s marca %s", async (code, field) => {

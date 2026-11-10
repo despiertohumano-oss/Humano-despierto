@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { createCourseAction, updateCourseAction } from "@/app/(app)/panel/docente/actions";
 import Button from "@/components/atoms/Button";
 import { PanelCheckbox, PanelInput, PanelSelect, PanelTextarea } from "@/components/panel/PanelField";
+import PublicAddress from "@/components/teacher/PublicAddress";
 import { MODALITY_FIELDS } from "@/lib/catalog/modality";
 import { DISCIPLINES } from "@/lib/taxonomy/disciplines";
 import StatusMessage from "@/components/panel/StatusMessage";
@@ -22,8 +23,17 @@ export default function CourseForm({ course }: Props) {
     <form action={formAction} className="tarjeta grid gap-5 p-6 md:grid-cols-2">
       {course && <input type="hidden" name="courseId" value={course.id} />}
 
-      <PanelInput label="Slug (URL)" name="slug" error={fieldError(state, "slug")} defaultValue={course?.slug} placeholder="tarot-iniciatico" required />
-      <PanelInput label="Título" name="title" error={fieldError(state, "title")} defaultValue={course?.title} required />
+      <div>
+        <PanelInput
+          label="Título"
+          name="title"
+          hint={course ? undefined : "La dirección del curso se arma con el título y no cambia después."}
+          error={fieldError(state, "title")}
+          defaultValue={course?.title}
+          required
+        />
+        {course && <PublicAddress path={`/cursos/${course.slug}`} />}
+      </div>
       <PanelInput label="Título en énfasis (opcional)" name="titleEm" error={fieldError(state, "titleEm")} defaultValue={course?.titleEm ?? ""} />
       <PanelInput label="Subtítulo" name="subtitle" error={fieldError(state, "subtitle")} defaultValue={course?.subtitle ?? ""} />
       <PanelTextarea label="Introducción" name="intro" error={fieldError(state, "intro")} defaultValue={course?.intro ?? ""} rows={3} className="md:col-span-2" />

@@ -11,13 +11,13 @@ import { UPLOADS_BUCKET, uploadAsServer } from "@/lib/server/uploads";
 import { buildDiarioCoverPath, checkCoverBytes, IMAGE_MIME, isUuid } from "@/lib/validation/image";
 import { diarioPostFormSchema } from "@/lib/validation/diario";
 import { firstIssue } from "@/lib/validation/teacher";
+import { insertWithUniqueSlug, slugFromTitle } from "@/lib/teacher/slug";
 import type { TeacherActionState } from "@/lib/teacher/action-state";
 import { withRateLimit } from "@/lib/server/rate-limit";
 import { limitedState } from "@/lib/rate-limit/core";
 
 function readPostForm(formData: FormData) {
   return diarioPostFormSchema.safeParse({
-    slug: String(formData.get("slug") ?? ""),
     title: String(formData.get("title") ?? ""),
     excerpt: String(formData.get("excerpt") ?? ""),
     body: String(formData.get("body") ?? ""),
@@ -62,21 +62,22 @@ export const createPostAction = withRateLimit(
     let newPostId: string | null = null;
     try {
       const supabase = await createClient();
-      const { data, error } = await supabase
-        .from("diario_posts")
-        .insert({
-          teacher_id: teacher.id,
-          slug: v.slug,
-          title: v.title,
-          excerpt: v.excerpt || null,
-          body: v.body,
-          category: v.category,
-        })
-        .select("id")
-        .single();
+      const { data, error } = await insertWithUniqueSlug(slugFromTitle(v.title, "post"), (slug) =>
+        supabase
+          .from("diario_posts")
+          .insert({
+            teacher_id: teacher.id,
+            slug,
+            title: v.title,
+            excerpt: v.excerpt || null,
+            body: v.body,
+            category: v.category,
+          })
+          .select("id")
+          .single(),
+      );
 
       if (error) {
-        if (error.code === "23505") return { error: "Ya existe un post con ese slug. Elegí otro.", success: null, field: "slug" };
         if (error.code === "23514" || error.code === "42501") return BODY_LOCATOR;
         return { error: `No se pudo crear el post: ${error.message}`, success: null };
       }
@@ -110,11 +111,10 @@ export const updatePostAction = withRateLimit(
       const supabase = await createClient();
       const { error } = await supabase
         .from("diario_posts")
-        .update({ slug: v.slug, title: v.title, excerpt: v.excerpt || null, body: v.body, category: v.category })
+        .update({ title: v.title, excerpt: v.excerpt || null, body: v.body, category: v.category })
         .eq("id", postId);
 
       if (error) {
-        if (error.code === "23505") return { error: "Ya existe un post con ese slug.", success: null, field: "slug" };
         if (error.code === "23514" || error.code === "42501") return BODY_LOCATOR;
         return { error: `No se pudo guardar: ${error.message}`, success: null };
       }

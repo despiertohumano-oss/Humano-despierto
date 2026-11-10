@@ -2,22 +2,26 @@ import { expect, test, loginAs } from "./fixtures";
 import { DOCENTE } from "./account";
 import { psql } from "./db";
 
-// D-100 · el error de una action va al campo culpable. Un slug repetido no crea nada en la base.
-test("crear un curso con un slug que ya existe marca el campo Slug, no el formulario", async ({ page }) => {
-  const antes = psql("select count(*) from public.courses;");
+// La dirección sale del título. Un título que ya usa otro curso no da error: nace con -2, -3…
+const REPETIDOS = "slug ~ '^tarot-iniciatico-[0-9]+$'";
+
+test.afterEach(() => {
+  psql(`delete from public.courses where ${REPETIDOS}`);
+});
+
+test("un curso con el título de otro nace con la dirección numerada, sin error", async ({ page }) => {
+  psql(`delete from public.courses where ${REPETIDOS}`);
   await loginAs(page, DOCENTE, /\/panel/);
   await page.goto("/panel/docente/nuevo");
-  await page.getByLabel("Slug (URL)").fill("tarot-iniciatico");
-  await page.getByLabel("Título", { exact: true }).fill("Curso e2e D-100");
+  await expect(page.getByLabel("Slug (URL)")).toHaveCount(0);
+  await page.getByLabel("Título", { exact: true }).fill("Tarot");
+  await page.getByLabel("Título en énfasis (opcional)").fill("Iniciático");
   await page.getByLabel("Disciplina").selectOption("tarot");
   await page.getByLabel("Nivel").fill("Iniciación");
   await page.getByLabel("Precio").fill("240");
   await page.getByRole("button", { name: "Crear curso" }).click();
 
-  const slug = page.getByLabel("Slug (URL)");
-  await expect(slug).toHaveAttribute("aria-invalid", "true");
-  const errorId = await slug.getAttribute("aria-describedby");
-  await expect(page.locator(`[id="${errorId}"]`)).toHaveText(/Ya existe un curso con ese slug/);
-  await expect(page.getByLabel("Título", { exact: true })).not.toHaveAttribute("aria-invalid", "true");
-  expect(psql("select count(*) from public.courses;")).toBe(antes);
+  await expect(page).toHaveURL(/\/panel\/docente\/cursos\/[0-9a-f-]{36}$/);
+  await expect(page.locator("p", { hasText: "Dirección:" })).toContainText("/cursos/tarot-iniciatico-2");
+  expect(psql(`select count(*) from public.courses where slug = 'tarot-iniciatico-2'`)).toBe("1");
 });

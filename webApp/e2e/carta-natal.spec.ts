@@ -163,12 +163,11 @@ test("alumna: sin consentimiento no guarda; con consentimiento guarda, reabre re
   await page.getByLabel("Nombre para esta carta (opcional)").fill("Prueba e2e");
   await page.getByLabel(/Acepto que guarden mis datos de nacimiento/).check();
   await page.getByRole("button", { name: "Guardar en mi panel" }).click();
-  await expect(page.getByRole("link", { name: "Guardada. Verla" })).toBeVisible();
+  // Era su primera carta: /carta-natal pasa a mostrarla, recalculada desde lo guardado.
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Prueba e2e");
+  await expect(page.getByRole("link", { name: "Editar datos" })).toBeVisible();
   await expect.poll(() => contarCartas(ALUMNA_ID)).toBe("1");
   expect(new URL(page.url()).pathname).toBe("/carta-natal");
-
-  await page.getByRole("link", { name: "Guardada. Verla" }).click();
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Prueba e2e");
   await expect(posiciones(page)).toBeVisible();
   await expect(page.getByRole("rowheader", { name: "Ascendente" })).toBeVisible();
 
@@ -186,7 +185,8 @@ test("alumna: sin consentimiento no guarda; con consentimiento guarda, reabre re
 
 test("guardar, cambiar la hora y recalcular vuelve a ofrecer guardar, sin el consentimiento anterior", async ({ page }) => {
   await login(page, ALUMNA);
-  await abrir(page, "/carta-natal");
+  // Desde «Calcular otra carta»: el formulario sigue en pantalla después de guardar.
+  await abrir(page, "/carta-natal?nueva=1");
   await datosConLugar(page);
   await calcular(page);
   await page.getByLabel("Nombre para esta carta (opcional)").fill("Primera");
@@ -235,12 +235,12 @@ test("hora ambigua elegida: al guardar se conserva la elección", async ({ page 
 
   await page.getByLabel(/Acepto que guarden mis datos de nacimiento/).check();
   await page.getByRole("button", { name: "Guardar en mi panel" }).click();
-  await expect(page.getByRole("link", { name: "Guardada. Verla" })).toBeVisible();
   await expect
     .poll(() => psql(`select ambiguity_choice || '|' || utc_offset_seconds || '|' || birth_time from public.natal_charts where user_id = '${ALUMNA_ID}';`))
     .toBe("later|-10800|23:30:00");
 
-  await page.getByRole("link", { name: "Guardada. Verla" }).click();
+  // Primera carta guardada: /carta-natal la muestra, recalculada con la elección guardada.
+  await expect(page.getByRole("link", { name: "Editar datos" })).toBeVisible();
   await expect(page.getByText("Huso usado: UTC−3")).toBeVisible();
   psql(`delete from public.natal_charts where user_id = '${ALUMNA_ID}';`);
 });
@@ -337,4 +337,22 @@ test("el menú de arriba lleva a la carta natal", async ({ page }) => {
   await abrir(page, "/cursos");
   await page.getByRole("navigation").getByRole("link", { name: "Carta natal" }).first().click();
   await expect(page).toHaveURL(/\/carta-natal$/);
+});
+
+test("con una carta guardada, /carta-natal muestra esa carta; el formulario es para editarla u otra", async ({ page }) => {
+  restaurarDocente();
+  await loginAs(page, DOCENTE, "/panel/docente");
+  await page.goto("/carta-natal", { waitUntil: "networkidle" });
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Mi carta");
+  await expect(page.getByText(/Tu carta natal · 01\/07\/1990 · sin hora/)).toBeVisible();
+  await expect(page.getByLabel("Fecha de nacimiento")).toHaveCount(0);
+
+  await page.getByRole("link", { name: "Editar datos" }).click();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Editar carta natal");
+  await esperarValor(page, "fecha", "1990-07-01");
+
+  await page.goto("/carta-natal", { waitUntil: "networkidle" });
+  await page.getByRole("link", { name: "Calcular otra carta" }).click();
+  await expect(page).toHaveURL(/\/carta-natal\?nueva=1$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Calculá tu carta natal");
 });

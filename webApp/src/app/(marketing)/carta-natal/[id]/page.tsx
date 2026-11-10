@@ -23,7 +23,7 @@ export default async function CartaGuardadaPage({ params }: { params: Promise<{ 
         <h1 className="mt-2 text-display-lg leading-[1.08] tracking-[-0.025em]">{saved.label}</h1>
         <div className="mt-6 flex flex-wrap gap-3">
           <ButtonLink href={`/carta-natal?editar=${saved.id}`} variant="outline" size="sm">Editar datos</ButtonLink>
-          <ButtonLink href="/carta-natal" variant="ghost" size="sm" arrow>Calcular otra carta</ButtonLink>
+          <ButtonLink href="/carta-natal?nueva=1" variant="ghost" size="sm" arrow>Calcular otra carta</ButtonLink>
         </div>
         <div className="mt-10"><ChartResult view={view} /></div>
       </main>

@@ -2,7 +2,8 @@ import { psql } from "./db";
 import { expect, test, assertStackUp, loginAs, SOL } from "./fixtures";
 
 const STAMP = Date.now();
-const SLUG = `e2e-revista-${STAMP}`;
+// La dirección la arma el servidor con el título.
+const SLUG = `revista-e2e-${STAMP}`;
 const TITULO = `Revista e2e ${STAMP}`;
 const PNG_1X1 = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
@@ -32,12 +33,12 @@ test("B3 · post con categoría, portada y curso relacionado; /diario filtra por
   await loginAs(page, SOL, "/panel/docente");
 
   await page.goto("/panel/docente/diario/nuevo");
-  await page.getByLabel("Slug (URL)").fill(SLUG);
   await page.getByLabel("Título", { exact: true }).fill(TITULO);
   await page.getByLabel("Categoría").selectOption("tarot-arquetipos");
   await page.getByLabel("Cuerpo").fill("Un texto sobre los arcanos menores.");
   await page.getByRole("button", { name: "Crear post" }).click();
   await expect(page).toHaveURL(/\/panel\/docente\/diario\/[0-9a-f-]{36}$/);
+  await expect(page.locator("p", { hasText: "Dirección:" })).toContainText(`/diario/${SLUG}`);
 
   await page.getByLabel("Arcanos", { exact: true }).check();
   await page.getByRole("button", { name: "Guardar cambios" }).click();

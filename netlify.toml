@@ -18,3 +18,17 @@
 # corrió en el primer build desde Git (deploy sin funciones, todo 404).
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# Imágenes propias: sin esto Netlify las sirve con max-age=0 y el navegador vuelve a pedirlas en
+# cada visita (~0,6 s el hero de la portada). Vale también para las versiones que arma el Image CDN
+# desde /_next/image. Una semana: si la dueña reemplaza una imagen con el mismo nombre, tarda
+# hasta eso en verse; mejor darle un nombre nuevo.
+[[headers]]
+  for = "/brand/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/tarot/rws/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"

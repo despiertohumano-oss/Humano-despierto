@@ -1,5 +1,5 @@
 import { z } from "@/lib/validation/zod";
-import { noLocator, slugSchema } from "@/lib/validation/teacher";
+import { noLocator } from "@/lib/validation/teacher";
 import { DIARIO_CATEGORY_KEYS } from "@/lib/taxonomy/diario";
 
 // Validación de formularios del Diario (T-022). Mismo patrón que `courseFormSchema`
@@ -16,7 +16,6 @@ import { DIARIO_CATEGORY_KEYS } from "@/lib/taxonomy/diario";
 // esa función en el cliente: depende de leer `lessons`/`lesson_resources` con `service_role`,
 // así que no hay "espejo" de formulario posible para esta regla — es DB-only por diseño.
 export const diarioPostFormSchema = z.object({
-  slug: slugSchema,
   title: noLocator(z.string().trim().min(1, "El título es obligatorio.").max(200), "título"),
   excerpt: noLocator(z.string().trim().max(400).optional().or(z.literal("")), "resumen"),
   body: z.string().trim().min(1, "El cuerpo no puede estar vacío.").max(20000, "El cuerpo es demasiado largo."),

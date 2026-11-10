@@ -15,7 +15,8 @@ const SERVICE = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
 const H = { apikey: SERVICE, Authorization: `Bearer ${SERVICE}`, "Content-Type": "application/json" };
 
 const STAMP = Date.now();
-const SLUG = `e2e-d105-${STAMP}`;
+// La dirección la arma el servidor con el título y no cambia al editarlo.
+const SLUG = `curso-e2e-${STAMP}`;
 const TITULO = `Curso e2e ${STAMP}`;
 const TITULO_EDITADO = `Curso e2e editado ${STAMP}`;
 const SLUG_ANUNCIO = `e2e-d105-anuncio-${STAMP}`;
@@ -47,7 +48,6 @@ test("crear curso, editarlo, armar módulo y lección, editar recursos y capítu
 
   // Crear: nace en borrador y redirige al editor. No manda numeral romano (D-65 / T-080).
   await page.goto("/panel/docente/nuevo", { waitUntil: "networkidle" });
-  await page.getByLabel("Slug (URL)").fill(SLUG);
   await page.getByLabel("Título", { exact: true }).fill(TITULO);
   await page.getByLabel("Disciplina").selectOption("tarot");
   await page.getByLabel("Nivel").fill("Iniciación");
