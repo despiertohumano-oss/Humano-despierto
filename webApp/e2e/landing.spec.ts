@@ -1,4 +1,4 @@
-import { expect, test, assertStackUp } from "./fixtures";
+import { expect, test, assertStackUp, gotoHome } from "./fixtures";
 
 try {
   process.loadEnvFile(".env.local");
@@ -54,7 +54,7 @@ test.afterAll(async ({ request }) => {
 });
 
 test("la portada no trae cifras inventadas y los testimonios son reseñas reales", async ({ page, request }) => {
-  await page.goto("/");
+  await gotoHome(page);
   // T-061 · las cifras dejaron el hero (B4): viven en su propia sección, con las mismas aserciones.
   const hero = page.locator('section[aria-labelledby="cifras-titulo"]');
   for (const falso of ["2k", "Cursos vivos", "Iniciadas"]) await expect(hero).not.toContainText(falso);
