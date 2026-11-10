@@ -7,6 +7,7 @@ const TABS = [
   { key: "resenas", href: "/panel/admin/resenas", label: "Reseñas" },
   { key: "invitaciones", href: "/panel/admin/invitaciones", label: "Invitaciones" },
   { key: "anuncios", href: "/panel/admin/anuncios", label: "Anuncios" },
+  { key: "errores", href: "/panel/admin/errores", label: "Errores" },
 ] as const;
 
 export type AdminTab = (typeof TABS)[number]["key"];

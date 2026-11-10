@@ -90,6 +90,7 @@ export const RATE_LIMITS = {
   dismissReportAction: STAFF,
   moderateAnnouncement: STAFF,
   grantEnrollmentByEmailAction: STAFF,
+  resolveErrorEventAction: STAFF,
   // Invitaciones de docentes (T-049): invitar y reenviar mandan mail.
   inviteTeacherAction: MAILS_OTHERS,
   resendInvitationAction: MAILS_OTHERS,

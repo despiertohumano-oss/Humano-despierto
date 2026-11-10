@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const headersMock = vi.fn();
+const recordErrorEvent = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/server/error-events", () => ({ recordErrorEvent }));
 vi.mock("next/headers", () => ({ headers: () => headersMock() }));
 
 import { reportClientError } from "./client-error";
@@ -32,5 +34,16 @@ describe("reportClientError", () => {
     await expect(reportClientError({ digest: 5, message: {}, path: null } as never)).resolves.toBeUndefined();
     await expect(reportClientError(undefined as never)).resolves.toBeUndefined();
     expect(lines().length).toBeLessThanOrEqual(1);
+  });
+});
+
+describe("reportClientError · error_events", () => {
+  it("guarda solo los errores nacidos en el navegador (sin digest)", async () => {
+    recordErrorEvent.mockClear();
+    await reportClientError({ message: "Cannot read properties of null", path: "/tarot?x=1" });
+    expect(recordErrorEvent).toHaveBeenCalledWith({ source: "client", path: "/tarot", message: "Cannot read properties of null" });
+    recordErrorEvent.mockClear();
+    await reportClientError({ digest: "abc", message: "An error occurred in the Server Components render", path: "/" });
+    expect(recordErrorEvent).not.toHaveBeenCalled();
   });
 });

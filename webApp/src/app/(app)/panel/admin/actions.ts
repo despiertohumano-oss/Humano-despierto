@@ -8,6 +8,7 @@ import { hasLocator } from "@/lib/validation/locator.mjs";
 import { ENROLLMENT_COPY, NO_ROWS, REASON_MAX, translateEnrollmentError } from "@/lib/enrollment/messages";
 import { getFounderId, requireAdmin } from "@/lib/server/admin";
 import { getAdminSupabaseClient } from "@/lib/server/supabase-admin";
+import { deleteErrorEvent } from "@/lib/server/error-events";
 import { resolveGrantTarget } from "@/lib/server/enrollment-grant";
 import { normalizeEmail } from "@/lib/admin/email";
 import type { AdminActionState } from "@/lib/admin/action-state";
@@ -477,6 +478,27 @@ export const setFounderAction = withRateLimit(
     revalidatePath("/guias/[slug]", "page");
     revalidatePath("/panel/admin/usuarios");
     return { error: null, success: clear ? "Ya no hay creadora destacada." : "Listo: es la creadora destacada." };
+  },
+  limitedState,
+);
+
+/** 0078 · «Ya está resuelto»: borra la huella; si el error vuelve, avisa de nuevo. */
+export const resolveErrorEventAction = withRateLimit(
+  "resolveErrorEventAction",
+  async function resolveErrorEventAction(
+    _prevState: AdminActionState,
+    formData: FormData
+  ): Promise<AdminActionState> {
+    await requireAdmin();
+    const fingerprint = String(formData.get("fingerprint") ?? "");
+    if (!/^[0-9a-f]{32}$/.test(fingerprint)) return { error: "Datos inválidos.", success: null };
+    const { error } = await deleteErrorEvent(fingerprint);
+    if (error) {
+      log.warn("error_event_resolve_failed", { message: error });
+      return { error: "No se pudo marcar como resuelto.", success: null };
+    }
+    revalidatePath("/panel/admin/errores");
+    return { error: null, success: "Marcado como resuelto." };
   },
   limitedState,
 );
