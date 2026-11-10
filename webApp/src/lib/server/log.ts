@@ -11,7 +11,7 @@ const SENSITIVE = /(api_?key|token|secret|password|passwd|^pass$|smtp_pass|autho
 const JWT = /\beyJ[A-Za-z0-9_-]{5,}(?:\.[A-Za-z0-9_-]*){0,2}/g;
 const EMAIL = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}/g;
 
-function redactValue(s: string): string {
+export function redactValue(s: string): string {
   return s.replace(JWT, "[redacted-jwt]").replace(EMAIL, "[redacted-email]");
 }
 

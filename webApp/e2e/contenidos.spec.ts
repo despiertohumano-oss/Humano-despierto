@@ -1,6 +1,6 @@
 import axe from "axe-core";
 import type { Page } from "@playwright/test";
-import { expect, test, assertStackUp } from "./fixtures";
+import { expect, test, assertStackUp, gotoHome } from "./fixtures";
 
 type AxeResult = { violations: { id: string; nodes: { target: unknown }[] }[] };
 type AxeWindow = { axe: { run: (ctx: unknown, opts: unknown) => Promise<AxeResult> } };
@@ -9,6 +9,13 @@ type AxeWindow = { axe: { run: (ctx: unknown, opts: unknown) => Promise<AxeResul
 // `reduce` deja visible todo lo que `Reveal` esconde antes de entrar en pantalla.
 // Sobre una imagen axe no puede calcular el contraste (lo marca «incomplete»): eso lo cubre la
 // aritmética del velo en src/lib/ui/cosmic-tokens.test.ts; acá se vigilan las superficies sólidas.
+// Movimiento reducido ANTES de abrir la página: con él, Reveal no esconde nada debajo del pliegue
+// (`reveal-pre` deja el texto en opacidad 0 y axe lo mide como contraste roto).
+async function gotoHomeStill(page: Page) {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await gotoHome(page);
+}
+
 async function axeViolations(page: Page, include?: string) {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.evaluate(axe.source);
@@ -29,7 +36,7 @@ test.beforeEach(async ({ request }) => {
 });
 
 test("portada: textos de la dueña, ancla del hero y sin términos viejos en el chrome", async ({ page }) => {
-  await page.goto("/");
+  await gotoHome(page);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
     "\"Solo hay una pequeña parte del universo que sabrás con certeza que puede ser mejorada, y esa parte eres tú\".",
   );
@@ -54,12 +61,12 @@ test("portada: textos de la dueña, ancla del hero y sin términos viejos en el 
 });
 
 test("portada: axe sin violaciones de contraste, alt ni nombres", async ({ page }) => {
-  await page.goto("/");
+  await gotoHomeStill(page);
   expect(await axeViolations(page)).toEqual([]);
 });
 
 test("calendario lunar: banda cósmica, \"Hoy\" en oro y axe limpio", async ({ page }) => {
-  await page.goto("/");
+  await gotoHomeStill(page);
   const luna = page.locator('section[aria-labelledby="luna-titulo"]');
   await expect(luna.getByRole("heading", { name: "Calendario lunar" })).toBeVisible();
   await expect(luna).toHaveCSS("background-color", "rgb(14, 20, 48)");

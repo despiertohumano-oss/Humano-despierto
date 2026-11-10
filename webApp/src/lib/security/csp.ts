@@ -31,6 +31,12 @@ function httpOrigin(raw: string | undefined): string | null {
   }
 }
 
+/** Enforce por defecto (criterio de T-052 cumplido el 2026-11-09). `CSP_ENFORCE=false` vuelve a
+ *  Report-Only sin tocar código: el interruptor de emergencia si una página nueva rompe en prod. */
+export function cspEnforced(value: string | undefined): boolean {
+  return value?.trim().toLowerCase() !== "false";
+}
+
 export function generateNonce(): string {
   return btoa(crypto.randomUUID());
 }

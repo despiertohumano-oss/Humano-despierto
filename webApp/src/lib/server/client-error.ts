@@ -1,5 +1,6 @@
 import "server-only";
 import { log } from "@/lib/server/log";
+import { recordErrorEvent } from "@/lib/server/error-events";
 
 const MAX_MESSAGE = 500;
 const MAX_PATH = 200;
@@ -11,9 +12,14 @@ export async function reportClientError(input: { digest?: string; message?: stri
   if (typeof input !== "object" || input === null) return;
   const { digest, message, path } = input;
   if (typeof message !== "string" && typeof digest !== "string") return;
+  const cleanPath = typeof path === "string" ? path.split("?")[0].slice(0, MAX_PATH) : null;
   await log.error("client_error", {
     digest: typeof digest === "string" ? digest.slice(0, 100) : null,
     message: typeof message === "string" ? message.slice(0, MAX_MESSAGE) : null,
-    path: typeof path === "string" ? path.split("?")[0].slice(0, MAX_PATH) : null,
+    path: cleanPath,
   });
+  // Con digest el error nació en el servidor y `onRequestError` ya lo guardó con su mensaje real;
+  // acá solo llegaría el texto genérico que Next le muestra al navegador.
+  if (typeof digest === "string" || typeof message !== "string") return;
+  await recordErrorEvent({ source: "client", path: cleanPath ?? "/", message: message.slice(0, MAX_MESSAGE) });
 }

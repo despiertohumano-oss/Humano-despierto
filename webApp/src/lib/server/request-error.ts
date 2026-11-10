@@ -1,11 +1,11 @@
 import "server-only";
 import { log } from "@/lib/server/log";
+import { recordErrorEvent } from "@/lib/server/error-events";
 
 type RequestInfo = { path: string; method: string; headers: unknown };
 type ErrorContext = { routerKind: string; routePath: string; routeType: string };
 
-// Punto de enganche para un tracker externo (Sentry u otro): hoy solo el log propio.
-// El dia que haya DSN, el cambio es llamar al SDK aca y en global-error.tsx.
+// Sin tracker externo: el log propio y `error_events` (0078), que agrupa y avisa por mail al admin.
 export async function reportRequestError(err: unknown, request: RequestInfo, context: ErrorContext): Promise<void> {
   const digest =
     typeof err === "object" && err !== null && "digest" in err ? String((err as { digest: unknown }).digest) : null;
@@ -18,5 +18,14 @@ export async function reportRequestError(err: unknown, request: RequestInfo, con
     routerKind: context.routerKind,
     routeType: context.routeType,
     err,
+  });
+  // notFound() y redirect() viajan como errores con este prefijo; no son fallas.
+  if (digest?.startsWith("NEXT_")) return;
+  await recordErrorEvent({
+    source: "server",
+    path,
+    message: err instanceof Error ? `${err.name}: ${err.message}` : String(err),
+    routeType: context.routeType,
+    digest,
   });
 }

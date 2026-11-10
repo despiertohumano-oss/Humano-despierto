@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { buildCsp, generateNonce } from "@/lib/security/csp";
+import { buildCsp, cspEnforced, generateNonce } from "@/lib/security/csp";
 import { updateSession } from "@/lib/supabase/proxy";
 
 // T-006 (rechazo 1): `/leccion` sale de acá. El proxy no puede saber sin ir a la base si una
@@ -29,7 +29,7 @@ export async function proxy(request: NextRequest) {
     supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
     siteUrl: process.env.SITE_URL,
     isDev: process.env.NODE_ENV === "development",
-    enforce: process.env.CSP_ENFORCE === "true",
+    enforce: cspEnforced(process.env.CSP_ENFORCE),
   });
   // Next toma el nonce de la cabecera CSP del REQUEST (CSP o CSP-Report-Only) y lo pone en sus
   // <script>. Se escribe sobre request.headers para que tambien lo vea el NextResponse.next({ request })

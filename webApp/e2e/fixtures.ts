@@ -227,3 +227,12 @@ export async function nonPreviewLessonHref(browser: Browser): Promise<string> {
   }
   return href;
 }
+
+// La portada tiene loading.tsx: el hero sale al instante y el resto llega por streaming. En el build
+// React 19 junta las revelaciones de Suspense (~300 ms), así que en el evento `load` todavía conviven
+// el esqueleto y el contenido real en un <div hidden>. Quien mira la portada espera a que termine.
+export async function gotoHome(page: Page): Promise<void> {
+  await page.goto("/");
+  await expect(page.locator('div[hidden][id^="S:"]')).toHaveCount(0);
+  await expect(page.locator('[aria-busy="true"]')).toHaveCount(0);
+}

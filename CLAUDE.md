@@ -66,7 +66,7 @@ npm run test:e2e # Playwright; needs `npx supabase start`; starts its own `next 
 cd webApp/supabase
 npm install
 npm run places:load  # loads `places` from GeoNames (CC BY): local via `docker exec`, cloud via DATABASE_URL (needs psql)
-npm test         # 958 tests, ~1-4 min, no Docker and no credentials needed
+npm test         # 966 tests, ~1-4 min, no Docker and no credentials needed
 ```
 Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply in filename order.
 
@@ -74,8 +74,8 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 
 | Area | State |
 |------|-------|
-| `webApp/src` | **~27.1k LOC** (non-test). 46 routes (`page.tsx`), 156 non-test files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`; 78 card scans in `public/tarot/rws/`; the owner's 9 brand images in `public/brand/` (WebP, `CREDITS.md`). Natal-chart engine (pure, no DB) in `src/lib/astro/` on `astronomy-engine` (MIT, ADR-017; credits in `src/lib/astro/CREDITS.md`). Tests: Vitest (1210 unit tests in 163 files, next to the file) + Playwright (`e2e/`), T-039. |
-| `webApp/supabase` | **Schema live.** 49 migrations (last `0077`; `0032` applies before `0031` by timestamp, independent), 26 tables (`tarot_readings`, ADR-016; `places`, `natal_charts`, T-024; `diario_post_courses`, B3), RLS + per-column grants + guard triggers, 958 mutation tests (PGlite). Private Storage bucket `uploads`: `avatars/` (T-042), `covers/` (T-047) and `diario/` (B3), uploads only via service_role; its policies are only tested over HTTP by b1. Fixtures `@test.local` (admin, docente, alumna) in `seed.fixtures.sql`, content seed in `seed.sql`, demo data in `demo.sql`: all **local only**, never run in the cloud (see `webApp/supabase/README.md`). |
+| `webApp/src` | **~27.1k LOC** (non-test). 47 routes (`page.tsx`), 157 non-test files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`; 78 card scans in `public/tarot/rws/`; the owner's 9 brand images in `public/brand/` (WebP, `CREDITS.md`). Natal-chart engine (pure, no DB) in `src/lib/astro/` on `astronomy-engine` (MIT, ADR-017; credits in `src/lib/astro/CREDITS.md`). Tests: Vitest (1283 unit tests in 167 files, next to the file) + Playwright (`e2e/`), T-039. |
+| `webApp/supabase` | **Schema live.** 50 migrations (last `0078`; `0032` applies before `0031` by timestamp, independent), 27 tables (`tarot_readings`, ADR-016; `places`, `natal_charts`, T-024; `diario_post_courses`, B3; `error_events`, 0078), RLS + per-column grants + guard triggers, 966 mutation tests (PGlite). Private Storage bucket `uploads`: `avatars/` (T-042), `covers/` (T-047) and `diario/` (B3), uploads only via service_role; its policies are only tested over HTTP by b1. Fixtures `@test.local` (admin, docente, alumna) in `seed.fixtures.sql`, content seed in `seed.sql`, demo data in `demo.sql`: all **local only**, never run in the cloud (see `webApp/supabase/README.md`). |
 | `mobileApp/` | **Empty directory.** No Expo scaffold. **Out of scope for Phase 2.** |
 | `packages/tokens` | 763 LOC of the old Cosmos palette (marked historical in its README, D-66) — **consumed by nobody**: `webApp` does not import it (it uses its own `src/styles/tokens.css`) and `mobileApp` does not exist. Kept for when mobile returns. |
 | `Gentleman-Skills/` | **Empty directory.** Referenced by the old CLAUDE.md; there is nothing in it. |
@@ -116,6 +116,7 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
                                     25 per page by keyset cursor (T-049)
 /panel/admin/resenas                Review moderation: report queue, hide     [admin]
 /panel/admin/anuncios               Withdraw published announcements (T-031)   [admin]
+/panel/admin/errores                Site errors grouped by fingerprint, resolve (0078) [admin]
 /tarot                              Tarot online (portada, 4 tiradas)
 /tarot/[tirada]                     Tirada interactiva
 /tarot/lectura                      Lectura por query string (noindex)
@@ -161,7 +162,15 @@ under `(app)/`, which re-read `profiles.role`.
   (`permanent:<status>/<name>`, migration 0036). After fixing a bad key or domain, recover with
   `delete from mail_log where sent_at is null and last_error ~ '^permanent:(401|403|535)/'` —
   never delete the `409` rows: that mail may already have gone out.
-- **No error capture** (SP-6). The CSP ships Report-Only (T-052) until its enforce criterion is met.
+- **Error capture is our own, not Sentry** (migration 0078, 2026-11-09). `onRequestError`
+  (`src/instrumentation.ts` -> `request-error.ts`) and the error.tsx reports (`client-error.ts`, only
+  errors born in the browser: with a digest the server already recorded it) go to
+  `recordErrorEvent` (`src/lib/server/error-events.ts`): grouped by fingerprint (source + path with
+  ids as `:id` + redacted message) in `error_events` (service_role only, via `record_error_event`).
+  The first time, a mail to `ERROR_ALERT_EMAIL` (else `MAIL_FROM_ADDRESS`); then at most once per
+  fingerprint per 24 h, 3/h and 10/day overall, max 2000 fingerprints, swept after 30 days idle.
+  The admin reads and resolves them in `/panel/admin/errores`. It never throws: its own failures
+  go to `log.warn`. `notFound()`/`redirect()` (digest `NEXT_*`) are not errors.
 - **Founder content is on HOLD** (B4): the flag and the card exist, but no founder profile is
   seeded; the owner loads her own photo and bio. `/guias` shows only the grid until the admin
   marks her.
@@ -262,11 +271,13 @@ covered by mutation tests that fail loudly if you regress them.
     nonce per request** (T-052). That is why the root layout calls `await connection()`: a
     prerendered page has no nonce and its scripts die under enforce. Do not make a page static.
     `style-src 'unsafe-inline'` is deliberate (inline `style={{}}` everywhere) until the reskin.
-    It ships as **Report-Only**; `CSP_ENFORCE=true` only renames the header. Every Playwright test
-    imports `test` from `e2e/fixtures.ts`, whose `cspGuard` fails the test on any violation: that
-    suite green in dev and with `E2E_PROD=1`, `check-seo.sh` green against `next start`, and a
-    manual player session are the criterion to enforce. A new third-party origin goes into
-    `buildCsp` with its test, never into a page.
+    It is **enforced by default** since 2026-11-09 (`cspEnforced`); `CSP_ENFORCE=false` turns it
+    back to Report-Only, only renaming the header: the emergency switch, no code deploy needed.
+    Playwright runs with `CSP_ENFORCE=false` on purpose: every test imports `test` from
+    `e2e/fixtures.ts`, whose `cspGuard` fails the test on any violation (the same policy, so zero
+    violations means nothing is blocked), and the csp.spec tests need an injected script to run.
+    A new third-party origin goes into `buildCsp` with its test, never into a page. Netlify's own
+    `/.netlify/scripts/hud` has no nonce and is blocked: that is intended.
 11. **Every write a client can trigger is rate-limited** (T-050). Each export of a `"use server"`
     file and each `route.ts` method goes through `withRateLimit("<its own name>", fn, onLimited)`
     with a limit in `src/lib/rate-limit/limits.ts`, or sits in `RATE_LIMIT_EXEMPT` with a written
@@ -397,11 +408,16 @@ visual reference: `design_handoff_humano_humano/reference/brote/b4-brote2.html`.
 
 ## External dependencies not yet provisioned
 Several things block work and require the repo owner's accounts:
-- **Supabase cloud project** does not exist. The schema has only run on PGlite (`npm test`,
-  no PostgREST) and on the local Supabase stack (`supabase start`, where
-  `harness/b1-postgrest-attacks.sh` exercises the HTTP surface). Re-run b1 against the cloud
-  instance before any release (locale-dependent CHECKs, see migration 0012). The Storage
-  policies (`uploads_avatars_*`, `uploads_covers_*`) are verified only by b1.
+- **Supabase cloud project** exists (ref `ovjxgggytdajadlxqety`, production since 2026-11-01).
+  Locally the schema runs on PGlite (`npm test`, no PostgREST) and on the Supabase stack
+  (`supabase start`, where
+  `harness/b1-postgrest-attacks.sh` exercises the HTTP surface). **Never run b1 against the
+  cloud**: it creates users, publishes an attack course and weakens a CHECK for a while. Instead,
+  with b1 green locally, `bash supabase/harness/cloud-parity.sh` compares, in a READ ONLY
+  transaction, the cloud's security surface (`security-surface.sql`: grants, RLS, policies,
+  function execute + body hash, triggers, constraints, migrations, POSIX classes of 0012) with
+  the local stack. Same surface, same b1 result. Run it before any release; a `<` line is a
+  migration not applied in the cloud yet.
 - **YouTube Data API v3 key** (`YOUTUBE_API_KEY`, server-side, no `NEXT_PUBLIC_` prefix) —
   lesson duration is resolved by the server from the video, not typed by the teacher.
 - **Google OAuth client** (`SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` / `_SECRET`, in

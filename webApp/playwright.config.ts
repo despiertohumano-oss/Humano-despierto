@@ -25,7 +25,10 @@ export default defineConfig({
     url: baseURL,
     // Un server ajeno en el puerto podría tener otro SITE_URL; mejor fallar que probar con él.
     reuseExistingServer: false,
-    env: { SITE_URL: baseURL },
+    // Report-Only a propósito: el guard de e2e/fixtures.ts falla el test ante cualquier violación,
+    // y los tests de csp.spec.ts que inyectan un script necesitan que corra para ver que muerde.
+    // La política es la misma que en enforce (csp.test.ts); solo cambia el nombre de la cabecera.
+    env: { SITE_URL: baseURL, CSP_ENFORCE: "false" },
     // El build entero entra en este plazo cuando PROD.
     timeout: PROD ? 600_000 : 120_000,
   },

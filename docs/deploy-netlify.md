@@ -33,7 +33,8 @@ como Edge Function y lee `SITE_URL`, `CSP_ENFORCE` y las de Supabase en cada req
 | `MAIL_FROM_NAME` | no secreta | `Humano Despierto` |
 | `YOUTUBE_API_KEY` | **secreta** | Google Cloud, YouTube Data API v3. Sin ella no se publica una lección |
 | `CRON_SECRET` | **secreta** | ≥16 caracteres al azar. Protege `GET /api/mail/retry` |
-| `CSP_ENFORCE` | no secreta | Vacía (Report-Only) hasta cumplir el criterio de T-052 |
+| `CSP_ENFORCE` | no secreta | Vacía (= enforce desde 2026-11-09). `false` vuelve a Report-Only sin redeploy de código: interruptor de emergencia |
+| `ERROR_ALERT_EMAIL` | no secreta, opcional | Adónde llegan los avisos de error (0078). Vacía = `MAIL_FROM_ADDRESS` |
 | `RATE_LIMIT_BACKEND` | no secreta | Vacía (= `postgres`). Nunca `memory` en producción |
 | `NEXT_PUBLIC_WHATSAPP_URL` | pública, opcional | `https://wa.me/...`; vacía oculta el botón |
 

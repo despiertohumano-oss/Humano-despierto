@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CSP_REPORT_PATH, buildCsp, generateNonce } from "./csp";
+import { CSP_REPORT_PATH, buildCsp, cspEnforced, generateNonce } from "./csp";
 
 const BASE = {
   nonce: "YWJjZGVmZ2gtaWprbC0xMjM0",
@@ -17,6 +17,16 @@ function directives(value: string): Map<string, string[]> {
     }),
   );
 }
+
+describe("cspEnforced", () => {
+  it("enforce salvo CSP_ENFORCE=false explícito", () => {
+    expect(cspEnforced(undefined)).toBe(true);
+    expect(cspEnforced("")).toBe(true);
+    expect(cspEnforced("true")).toBe(true);
+    expect(cspEnforced("false")).toBe(false);
+    expect(cspEnforced(" FALSE ")).toBe(false);
+  });
+});
 
 describe("buildCsp", () => {
   it("sin CSP_ENFORCE la cabecera es Report-Only; con enforce cambia SOLO el nombre (c.3)", () => {
