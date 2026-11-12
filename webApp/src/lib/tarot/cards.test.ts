@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { CARDS, baseElement, cardByIndex, cardBySlug } from "./cards";
+import { suitInfo } from "./suits";
 
 describe("dataset de cartas", () => {
   it("tiene 78 cartas con índices 0..77 e ids únicos", () => {
@@ -37,5 +38,20 @@ describe("dataset de cartas", () => {
       expect(c.palabras_clave_invertida.length, c.id).toBeGreaterThanOrEqual(5);
       expect(["sí", "no", "depende"]).toContain(c.si_no);
     }
+  });
+
+  it("toda carta trae los campos de la fuente", () => {
+    for (const c of CARDS) {
+      expect(c.en_equilibrio.length, c.id).toBeGreaterThanOrEqual(80);
+      expect(c.en_desequilibrio.length, c.id).toBeGreaterThanOrEqual(80);
+      expect(c.reflexion.length, c.id).toBeGreaterThanOrEqual(2);
+      expect(c.fuente, c.id).toMatch(/^(mayores|bastos|copas|espadas|oros)#/);
+    }
+  });
+
+  it("suitInfo da el palo de la carta o mayores", () => {
+    expect(suitInfo(cardBySlug("el-loco")!).palo).toBe("mayores");
+    expect(suitInfo(cardBySlug("as-de-copas")!).cuerpo).toBe("emocional");
+    expect(suitInfo(cardBySlug("as-de-copas")!).solido).toBe("icosaedro");
   });
 });

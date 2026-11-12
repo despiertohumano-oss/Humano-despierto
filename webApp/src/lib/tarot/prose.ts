@@ -7,9 +7,12 @@ export type ReadingText = {
   apertura: string;
   panorama: string | null;
   posiciones: { titulo: string; texto: string }[];
+  grupos: { titulo: string; texto: string }[];
+  contraste: string | null;
   hilo: string | null;
   sintesis: string;
   consejo: string;
+  reflexion: string;
 };
 
 // mulberry32: chico, determinista, suficiente para elegir variantes.
@@ -83,7 +86,9 @@ function posicion(p: PlacedCard, facts: ReadingFacts, rng: () => number): { titu
     significado: p.meaning,
   });
   const dominio = facts.domain && p.domainText ? " " + fill(pick(rng, templates.posicion_dominio[facts.domain]), { texto: p.domainText }) : "";
-  return { titulo: `${p.position.n}. ${p.position.nombre}`, texto: base + dominio };
+  const estadoTexto = p.mode === "equilibrio" ? p.card.en_equilibrio : p.card.en_desequilibrio;
+  const estado = " " + fill(pick(rng, templates.estado[p.mode]), { nombre: nombre(p), texto: estadoTexto });
+  return { titulo: `${p.position.n}. ${p.position.nombre}`, texto: base + estado + dominio };
 }
 
 function hilo(links: Link[], rng: () => number): string | null {
@@ -121,18 +126,30 @@ function sintesis(facts: ReadingFacts, rng: () => number): string {
   return parts.join(" ");
 }
 
+function grupos(facts: ReadingFacts, rng: () => number): { titulo: string; texto: string }[] {
+  return facts.groups.map((g) => ({
+    titulo: g.nombre,
+    texto: fill(pick(rng, templates.grupo), { grupo: g.nombre, claves: g.placed.map((p) => p.keywords[0]!).join(", ") }),
+  }));
+}
+
+function contraste(facts: ReadingFacts, rng: () => number): string | null {
+  const c = facts.contrast;
+  if (!c) return null;
+  return c.kind === "relaciones" ? pick(rng, templates.contraste_relaciones[c.winner]) : pick(rng, templates.contraste_camino[c.winner]);
+}
+
 export function renderReading(facts: ReadingFacts, seed: number): ReadingText {
   const rng = rngFrom(seed);
   const apertura = facts.question
     ? fill(pick(rng, templates.apertura_pregunta), { pregunta: facts.question })
     : pick(rng, templates.apertura);
   const ultima = facts.placed[facts.placed.length - 1]!;
+  const text = { apertura, panorama: panorama(facts, rng), posiciones: facts.placed.map((p) => posicion(p, facts, rng)), hilo: hilo(facts.links, rng), sintesis: sintesis(facts, rng), consejo: fill(pick(rng, templates.consejo), { consejo: ultima.card.consejo }) };
   return {
-    apertura,
-    panorama: panorama(facts, rng),
-    posiciones: facts.placed.map((p) => posicion(p, facts, rng)),
-    hilo: hilo(facts.links, rng),
-    sintesis: sintesis(facts, rng),
-    consejo: fill(pick(rng, templates.consejo), { consejo: ultima.card.consejo }),
+    ...text,
+    grupos: grupos(facts, rng),
+    contraste: contraste(facts, rng),
+    reflexion: fill(pick(rng, templates.reflexion), { pregunta: pick(rng, ultima.card.reflexion) }),
   };
 }

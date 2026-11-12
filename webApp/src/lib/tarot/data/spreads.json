@@ -3,53 +3,842 @@
     "slug": "carta-del-dia",
     "nombre": "Carta del día",
     "descripcion": "Una sola carta como mensaje para hoy. Sin invertidas: es una invitación, no un pronóstico.",
-    "cartas": [1],
+    "cartas": [
+      1
+    ],
     "allowReversed": false,
     "posiciones": [
-      { "n": 1, "nombre": "Mensaje del día", "significado": "La energía que conviene tener presente hoy.", "x": 0, "y": 0, "rotada": false }
-    ]
+      {
+        "n": 1,
+        "nombre": "Mensaje del día",
+        "significado": "La energía que conviene tener presente hoy.",
+        "x": 0,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      }
+    ],
+    "forma": "grilla",
+    "retirada": false,
+    "fuente": null,
+    "grupos": []
   },
   {
     "slug": "si-o-no",
     "nombre": "Sí o no",
     "descripcion": "Una pregunta cerrada. Con una carta o con tres; la del centro desempata.",
-    "cartas": [1, 3],
+    "cartas": [
+      1,
+      3
+    ],
     "allowReversed": true,
     "posiciones": [
-      { "n": 1, "nombre": "Primer voto", "significado": "Lo que empuja a favor o en contra.", "x": 0, "y": 0, "rotada": false },
-      { "n": 2, "nombre": "Respuesta", "significado": "El peso central de la respuesta.", "x": 1, "y": 0, "rotada": false },
-      { "n": 3, "nombre": "Tercer voto", "significado": "Lo que termina de inclinar la balanza.", "x": 2, "y": 0, "rotada": false }
+      {
+        "n": 1,
+        "nombre": "Primer voto",
+        "significado": "Lo que empuja a favor o en contra.",
+        "x": 0,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 2,
+        "nombre": "Respuesta",
+        "significado": "El peso central de la respuesta.",
+        "x": 1,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 3,
+        "nombre": "Tercer voto",
+        "significado": "Lo que termina de inclinar la balanza.",
+        "x": 2,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      }
+    ],
+    "forma": "grilla",
+    "retirada": false,
+    "fuente": null,
+    "grupos": []
+  },
+  {
+    "slug": "cruz-simple",
+    "nombre": "Cruz simple",
+    "descripcion": "Cinco cartas en cruz para mirar de dónde venís, hacia dónde vas y qué hay en el presente.",
+    "cartas": [
+      5
+    ],
+    "allowReversed": true,
+    "forma": "grilla",
+    "retirada": false,
+    "fuente": "cruz-simple",
+    "grupos": [],
+    "posiciones": [
+      {
+        "n": 1,
+        "nombre": "Pasado",
+        "significado": "Lo que dejaste atrás y todavía te marca.",
+        "x": 0,
+        "y": 1,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 2,
+        "nombre": "Futuro",
+        "significado": "Lo que se asoma si seguís este camino.",
+        "x": 2,
+        "y": 1,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 3,
+        "nombre": "Información del pasado",
+        "significado": "Lo que el pasado te informa.",
+        "x": 1,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 4,
+        "nombre": "Información del futuro",
+        "significado": "Lo que el futuro te informa.",
+        "x": 1,
+        "y": 2,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 5,
+        "nombre": "Presente",
+        "significado": "Dónde estás hoy.",
+        "x": 1,
+        "y": 1,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      }
+    ]
+  },
+  {
+    "slug": "consulta-situacion",
+    "nombre": "Consulta de una situación",
+    "descripcion": "Cinco cartas para ver una situación puntual: qué la favorece, qué se opone y cómo se resume.",
+    "cartas": [
+      5
+    ],
+    "allowReversed": true,
+    "forma": "grilla",
+    "retirada": false,
+    "fuente": "consulta-situacion",
+    "grupos": [],
+    "posiciones": [
+      {
+        "n": 1,
+        "nombre": "A favor",
+        "significado": "Lo que juega a tu favor en esta situación.",
+        "x": 0,
+        "y": 1,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 2,
+        "nombre": "Oposiciones",
+        "significado": "Lo que se interpone o hace fuerza en contra.",
+        "x": 2,
+        "y": 1,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 3,
+        "nombre": "Pregunta",
+        "significado": "Lo que querés preguntar.",
+        "x": 1,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 4,
+        "nombre": "Síntesis",
+        "significado": "Cómo se juntan las fuerzas a favor y en contra.",
+        "x": 1,
+        "y": 1,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 5,
+        "nombre": "Primera pregunta",
+        "significado": "La primera pregunta de la consulta.",
+        "x": 1,
+        "y": 2,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      }
+    ]
+  },
+  {
+    "slug": "cruz-celta",
+    "nombre": "Cruz celta",
+    "descripcion": "La tirada clásica de diez cartas para recorrer una situación a fondo, de la raíz al consejo.",
+    "cartas": [
+      10
+    ],
+    "allowReversed": true,
+    "forma": "grilla",
+    "retirada": false,
+    "fuente": "cruz-celta",
+    "grupos": [],
+    "posiciones": [
+      {
+        "n": 1,
+        "nombre": "Situación actual",
+        "significado": "Cómo está hoy la situación y lo que todavía no ves de vos.",
+        "x": 1,
+        "y": 1,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 2,
+        "nombre": "Obstáculo y reto",
+        "significado": "Lo que se cruza, lo que facilita y cómo actuás ante el problema.",
+        "x": 1,
+        "y": 1,
+        "rotada": true,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 3,
+        "nombre": "Objetivos y deseos",
+        "significado": "Lo que querés lograr y una posible solución.",
+        "x": 1,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 4,
+        "nombre": "Raíz del problema",
+        "significado": "El pasado que pesa hoy y los hechos que lo originaron.",
+        "x": 2,
+        "y": 1,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 5,
+        "nombre": "Apoyos y pasado cercano",
+        "significado": "Las personas y situaciones que te sostienen, y lo reciente.",
+        "x": 1,
+        "y": 2,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 6,
+        "nombre": "Caminos posibles",
+        "significado": "Alternativas disponibles y el futuro cercano.",
+        "x": 0,
+        "y": 1,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 7,
+        "nombre": "Esperanzas y recursos",
+        "significado": "Lo que sentís, cómo reaccionás y con qué contás.",
+        "x": 3,
+        "y": 3,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 8,
+        "nombre": "Obstáculos del entorno",
+        "significado": "Personas o circunstancias que pueden complicar, en especial en la familia.",
+        "x": 3,
+        "y": 2,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 9,
+        "nombre": "Miedos y temores",
+        "significado": "Lo que sentís por dentro y no siempre decís.",
+        "x": 3,
+        "y": 1,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 10,
+        "nombre": "Conclusión y consejo",
+        "significado": "Hacia dónde apunta todo y qué te conviene hacer.",
+        "x": 3,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      }
+    ]
+  },
+  {
+    "slug": "pregunta-situacion",
+    "nombre": "Pregunta sobre una situación",
+    "descripcion": "Trece cartas en cuatro caminos: seguir igual, cambiar, el pasado reciente y lo kármico.",
+    "cartas": [
+      13
+    ],
+    "allowReversed": true,
+    "forma": "grilla",
+    "retirada": false,
+    "fuente": "pregunta-situacion",
+    "grupos": [
+      {
+        "clave": "si-continua",
+        "nombre": "Si seguís igual"
+      },
+      {
+        "clave": "si-cambia",
+        "nombre": "Si introducís un cambio"
+      },
+      {
+        "clave": "pasado-reciente",
+        "nombre": "Lo que viene del pasado reciente"
+      },
+      {
+        "clave": "karmica",
+        "nombre": "Lo kármico, a largo plazo"
+      }
+    ],
+    "posiciones": [
+      {
+        "n": 1,
+        "nombre": "Carta base",
+        "significado": "El centro de la situación sobre la que preguntás.",
+        "x": 3,
+        "y": 3,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 2,
+        "nombre": "Si seguís igual",
+        "significado": "Cómo termina esto si no cambiás nada.",
+        "x": 2,
+        "y": 2,
+        "rotada": false,
+        "grupo": "si-continua",
+        "casa": null
+      },
+      {
+        "n": 3,
+        "nombre": "Pasado reciente",
+        "significado": "Lo vivido hace poco que sigue influyendo.",
+        "x": 2,
+        "y": 4,
+        "rotada": false,
+        "grupo": "pasado-reciente",
+        "casa": null
+      },
+      {
+        "n": 4,
+        "nombre": "Influencia kármica",
+        "significado": "Lo de largo plazo que se repite y pide atención.",
+        "x": 4,
+        "y": 4,
+        "rotada": false,
+        "grupo": "karmica",
+        "casa": null
+      },
+      {
+        "n": 5,
+        "nombre": "Si introducís un cambio",
+        "significado": "Cómo termina esto si te animás a cambiar algo.",
+        "x": 4,
+        "y": 2,
+        "rotada": false,
+        "grupo": "si-cambia",
+        "casa": null
+      },
+      {
+        "n": 6,
+        "nombre": "Si seguís igual",
+        "significado": "Cómo termina esto si no cambiás nada.",
+        "x": 1,
+        "y": 1,
+        "rotada": false,
+        "grupo": "si-continua",
+        "casa": null
+      },
+      {
+        "n": 7,
+        "nombre": "Pasado reciente",
+        "significado": "Lo vivido hace poco que sigue influyendo.",
+        "x": 1,
+        "y": 5,
+        "rotada": false,
+        "grupo": "pasado-reciente",
+        "casa": null
+      },
+      {
+        "n": 8,
+        "nombre": "Influencia kármica",
+        "significado": "Lo de largo plazo que se repite y pide atención.",
+        "x": 5,
+        "y": 5,
+        "rotada": false,
+        "grupo": "karmica",
+        "casa": null
+      },
+      {
+        "n": 9,
+        "nombre": "Si introducís un cambio",
+        "significado": "Cómo termina esto si te animás a cambiar algo.",
+        "x": 5,
+        "y": 1,
+        "rotada": false,
+        "grupo": "si-cambia",
+        "casa": null
+      },
+      {
+        "n": 10,
+        "nombre": "Si seguís igual",
+        "significado": "Cómo termina esto si no cambiás nada.",
+        "x": 0,
+        "y": 0,
+        "rotada": false,
+        "grupo": "si-continua",
+        "casa": null
+      },
+      {
+        "n": 11,
+        "nombre": "Pasado reciente",
+        "significado": "Lo vivido hace poco que sigue influyendo.",
+        "x": 0,
+        "y": 6,
+        "rotada": false,
+        "grupo": "pasado-reciente",
+        "casa": null
+      },
+      {
+        "n": 12,
+        "nombre": "Influencia kármica",
+        "significado": "Lo de largo plazo que se repite y pide atención.",
+        "x": 6,
+        "y": 6,
+        "rotada": false,
+        "grupo": "karmica",
+        "casa": null
+      },
+      {
+        "n": 13,
+        "nombre": "Si introducís un cambio",
+        "significado": "Cómo termina esto si te animás a cambiar algo.",
+        "x": 6,
+        "y": 0,
+        "rotada": false,
+        "grupo": "si-cambia",
+        "casa": null
+      }
+    ]
+  },
+  {
+    "slug": "karma",
+    "nombre": "Tirada del karma",
+    "descripcion": "Ocho cartas para mirar qué karma te toca, cómo se muestra y qué hay para aprender.",
+    "cartas": [
+      8
+    ],
+    "allowReversed": true,
+    "forma": "grilla",
+    "retirada": false,
+    "fuente": "karma",
+    "grupos": [
+      {
+        "clave": "manifestacion",
+        "nombre": "Cómo se manifiesta"
+      }
+    ],
+    "posiciones": [
+      {
+        "n": 1,
+        "nombre": "Consultante",
+        "significado": "Vos, quien consulta.",
+        "x": 1,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 2,
+        "nombre": "Karma a cumplir",
+        "significado": "Lo que tenés pendiente de resolver.",
+        "x": 1,
+        "y": 1,
+        "rotada": true,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 3,
+        "nombre": "Cómo se manifiesta",
+        "significado": "Una forma en que ese karma aparece en tu vida.",
+        "x": 0,
+        "y": 2,
+        "rotada": false,
+        "grupo": "manifestacion",
+        "casa": null
+      },
+      {
+        "n": 4,
+        "nombre": "Cómo se manifiesta",
+        "significado": "Otra forma en que ese karma aparece en tu vida.",
+        "x": 1,
+        "y": 2,
+        "rotada": false,
+        "grupo": "manifestacion",
+        "casa": null
+      },
+      {
+        "n": 5,
+        "nombre": "Cómo se manifiesta",
+        "significado": "Una tercera forma en que ese karma aparece en tu vida.",
+        "x": 2,
+        "y": 2,
+        "rotada": false,
+        "grupo": "manifestacion",
+        "casa": null
+      },
+      {
+        "n": 6,
+        "nombre": "Qué situaciones vivir",
+        "significado": "Las experiencias que te toca atravesar.",
+        "x": 0,
+        "y": 3,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 7,
+        "nombre": "Qué aprender",
+        "significado": "La enseñanza que trae todo esto.",
+        "x": 1,
+        "y": 3,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 8,
+        "nombre": "Consejo",
+        "significado": "Una guía para acompañar el proceso.",
+        "x": 2,
+        "y": 3,
+        "rotada": true,
+        "grupo": null,
+        "casa": null
+      }
+    ]
+  },
+  {
+    "slug": "relaciones",
+    "nombre": "Tirada de las relaciones",
+    "descripcion": "Seis cartas para mirar un vínculo desde las dos personas.",
+    "cartas": [
+      6
+    ],
+    "allowReversed": true,
+    "forma": "grilla",
+    "retirada": false,
+    "fuente": "relaciones",
+    "grupos": [
+      {
+        "clave": "a",
+        "nombre": "Persona A"
+      },
+      {
+        "clave": "b",
+        "nombre": "Persona B"
+      }
+    ],
+    "posiciones": [
+      {
+        "n": 1,
+        "nombre": "Persona A",
+        "significado": "Cómo se vive el vínculo desde la persona A.",
+        "x": 0,
+        "y": 0,
+        "rotada": false,
+        "grupo": "a",
+        "casa": null
+      },
+      {
+        "n": 2,
+        "nombre": "Persona B",
+        "significado": "Cómo se vive el vínculo desde la persona B.",
+        "x": 0,
+        "y": 1,
+        "rotada": false,
+        "grupo": "b",
+        "casa": null
+      },
+      {
+        "n": 3,
+        "nombre": "Persona A",
+        "significado": "Cómo se vive el vínculo desde la persona A.",
+        "x": 1,
+        "y": 0,
+        "rotada": false,
+        "grupo": "a",
+        "casa": null
+      },
+      {
+        "n": 4,
+        "nombre": "Persona B",
+        "significado": "Cómo se vive el vínculo desde la persona B.",
+        "x": 1,
+        "y": 1,
+        "rotada": false,
+        "grupo": "b",
+        "casa": null
+      },
+      {
+        "n": 5,
+        "nombre": "Persona A",
+        "significado": "Cómo se vive el vínculo desde la persona A.",
+        "x": 2,
+        "y": 0,
+        "rotada": false,
+        "grupo": "a",
+        "casa": null
+      },
+      {
+        "n": 6,
+        "nombre": "Persona B",
+        "significado": "Cómo se vive el vínculo desde la persona B.",
+        "x": 2,
+        "y": 1,
+        "rotada": false,
+        "grupo": "b",
+        "casa": null
+      }
+    ]
+  },
+  {
+    "slug": "astrologica",
+    "nombre": "Tirada astrológica",
+    "descripcion": "Doce cartas, una por cada casa del cielo, para recorrer todas las áreas de tu vida.",
+    "cartas": [
+      12
+    ],
+    "allowReversed": true,
+    "forma": "rueda",
+    "retirada": false,
+    "fuente": "astrologica",
+    "grupos": [],
+    "posiciones": [
+      {
+        "n": 1,
+        "nombre": "Casa I · Identidad",
+        "significado": "Cómo te mostrás y cómo te ven.",
+        "x": 0,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": 1
+      },
+      {
+        "n": 2,
+        "nombre": "Casa II · Valores",
+        "significado": "Tu autoestima y lo material.",
+        "x": 1,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": 2
+      },
+      {
+        "n": 3,
+        "nombre": "Casa III · Conocimiento",
+        "significado": "Cómo pensás y aprendés.",
+        "x": 2,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": 3
+      },
+      {
+        "n": 4,
+        "nombre": "Casa IV · Seguridad",
+        "significado": "Tu mundo emocional más íntimo.",
+        "x": 3,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": 4
+      },
+      {
+        "n": 5,
+        "nombre": "Casa V · Creatividad",
+        "significado": "Lo que vivís y disfrutás creando.",
+        "x": 4,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": 5
+      },
+      {
+        "n": 6,
+        "nombre": "Casa VI · Deber",
+        "significado": "Lo práctico del día a día.",
+        "x": 5,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": 6
+      },
+      {
+        "n": 7,
+        "nombre": "Casa VII · Cooperación",
+        "significado": "Cómo te vinculás con los demás.",
+        "x": 6,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": 7
+      },
+      {
+        "n": 8,
+        "nombre": "Casa VIII · Regeneración",
+        "significado": "Los recursos que tenés guardados.",
+        "x": 7,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": 8
+      },
+      {
+        "n": 9,
+        "nombre": "Casa IX · Aspiración",
+        "significado": "El sentido que le das a tu vida.",
+        "x": 8,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": 9
+      },
+      {
+        "n": 10,
+        "nombre": "Casa X · Honor",
+        "significado": "Lo que fuiste logrando.",
+        "x": 9,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": 10
+      },
+      {
+        "n": 11,
+        "nombre": "Casa XI · Conciencia social",
+        "significado": "Tu compromiso con los demás.",
+        "x": 10,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": 11
+      },
+      {
+        "n": 12,
+        "nombre": "Casa XII · Subconciencia",
+        "significado": "Lo que se disuelve y queda en lo profundo.",
+        "x": 11,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": 12
+      }
     ]
   },
   {
     "slug": "pasado-presente-futuro",
     "nombre": "Pasado, presente y futuro",
     "descripcion": "Tres cartas para ver de dónde viene la situación, dónde está y hacia dónde tiende.",
-    "cartas": [3],
+    "cartas": [
+      3
+    ],
     "allowReversed": true,
     "posiciones": [
-      { "n": 1, "nombre": "Pasado", "significado": "Lo que trajo la situación hasta acá.", "x": 0, "y": 0, "rotada": false },
-      { "n": 2, "nombre": "Presente", "significado": "Lo que está pasando ahora.", "x": 1, "y": 0, "rotada": false },
-      { "n": 3, "nombre": "Futuro", "significado": "Hacia dónde tiende si nada cambia.", "x": 2, "y": 0, "rotada": false }
-    ]
-  },
-  {
-    "slug": "cruz-celta",
-    "nombre": "Cruz celta",
-    "descripcion": "La tirada clásica de diez cartas, tal como la describió Waite en 1911.",
-    "cartas": [10],
-    "allowReversed": true,
-    "posiciones": [
-      { "n": 1, "nombre": "Lo que te cubre", "significado": "La atmósfera general de la pregunta.", "x": 1, "y": 1, "rotada": false },
-      { "n": 2, "nombre": "Lo que te cruza", "significado": "La fuerza que se opone o que complica.", "x": 1, "y": 1, "rotada": true },
-      { "n": 3, "nombre": "Lo que te corona", "significado": "Lo mejor que puede salir, o lo que está en tu conciencia.", "x": 1, "y": 0, "rotada": false },
-      { "n": 4, "nombre": "Lo que está debajo", "significado": "La raíz, lo que ya es parte de la experiencia.", "x": 1, "y": 2, "rotada": false },
-      { "n": 5, "nombre": "Lo que queda atrás", "significado": "La influencia que se está yendo.", "x": 0, "y": 1, "rotada": false },
-      { "n": 6, "nombre": "Lo que viene", "significado": "La influencia que se acerca.", "x": 2, "y": 1, "rotada": false },
-      { "n": 7, "nombre": "Vos", "significado": "Tu actitud frente a la situación.", "x": 3, "y": 3, "rotada": false },
-      { "n": 8, "nombre": "Tu entorno", "significado": "Las personas y circunstancias alrededor.", "x": 3, "y": 2, "rotada": false },
-      { "n": 9, "nombre": "Esperanzas y temores", "significado": "Lo que deseás y lo que te asusta, a menudo lo mismo.", "x": 3, "y": 1, "rotada": false },
-      { "n": 10, "nombre": "Lo que vendrá", "significado": "El resultado si todo sigue su curso.", "x": 3, "y": 0, "rotada": false }
-    ]
+      {
+        "n": 1,
+        "nombre": "Pasado",
+        "significado": "Lo que trajo la situación hasta acá.",
+        "x": 0,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 2,
+        "nombre": "Presente",
+        "significado": "Lo que está pasando ahora.",
+        "x": 1,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      },
+      {
+        "n": 3,
+        "nombre": "Futuro",
+        "significado": "Hacia dónde tiende si nada cambia.",
+        "x": 2,
+        "y": 0,
+        "rotada": false,
+        "grupo": null,
+        "casa": null
+      }
+    ],
+    "forma": "grilla",
+    "retirada": true,
+    "fuente": null,
+    "grupos": []
   }
 ]

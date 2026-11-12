@@ -6,7 +6,10 @@ import { positionsFor, spreadBySlug, type Position, type Spread } from "./spread
 import { yesNoVerdict, type Verdict } from "./yes-no";
 
 export type Domain = "amor" | "trabajo" | "dinero" | "salud";
-export type PlacedCard = { position: Position; card: Card; reversed: boolean; meaning: string; keywords: string[]; domainText: string | null };
+export type Mode = "equilibrio" | "desequilibrio";
+export type PlacedCard = { position: Position; card: Card; reversed: boolean; meaning: string; keywords: string[]; domainText: string | null; mode: Mode };
+export type Group = { clave: string; nombre: string; placed: PlacedCard[] };
+export type Contrast = { kind: "relaciones"; winner: "parejo" | "a" | "b" } | { kind: "camino"; winner: "parejo" | "continua" | "cambio" };
 export type Link = { from: PlacedCard; to: PlacedCard; dignity: Dignity };
 export type Proportions = {
   majors: number;
@@ -31,6 +34,8 @@ export type ReadingFacts = {
   combos: Combo[];
   quintessence: Card | null;
   yesNo: { verdict: Verdict; votes: Verdict[]; tiebreak: boolean } | null;
+  groups: Group[];
+  contrast: Contrast | null;
 };
 
 const COMBOS: Combo[] = combosRaw;
@@ -52,7 +57,7 @@ export function classifyDomain(question: string | null): Domain | null {
   return null;
 }
 
-function place(position: Position, indice: number, reversed: boolean, domain: Domain | null): PlacedCard {
+function place(position: Position, indice: number, reversed: boolean, domain: Domain | null): Omit<PlacedCard, "mode"> {
   const card = cardByIndex(indice);
   if (!card) throw new Error(`índice de carta inválido: ${indice}`);
   return {
@@ -63,6 +68,25 @@ function place(position: Position, indice: number, reversed: boolean, domain: Do
     keywords: reversed ? card.palabras_clave_invertida : card.palabras_clave_derecha,
     domainText: domain ? card[domain] : null,
   };
+}
+
+function groupsOf(spread: Spread, placed: PlacedCard[]): Group[] {
+  return spread.grupos.map((g) => ({ ...g, placed: placed.filter((p) => p.position.grupo === g.clave) }));
+}
+
+const fluye = (g: Group | undefined) => (g ? g.placed.filter((p) => p.mode === "equilibrio").length : 0);
+
+function contrastOf(spread: Spread, groups: Group[]): Contrast | null {
+  const by = (k: string) => groups.find((g) => g.clave === k);
+  if (spread.slug === "relaciones") {
+    const a = fluye(by("a")), b = fluye(by("b"));
+    return { kind: "relaciones", winner: a === b ? "parejo" : a > b ? "a" : "b" };
+  }
+  if (spread.slug === "pregunta-situacion") {
+    const c = fluye(by("si-continua")), m = fluye(by("si-cambia"));
+    return { kind: "camino", winner: c === m ? "parejo" : c > m ? "continua" : "cambio" };
+  }
+  return null;
 }
 
 function proportions(placed: PlacedCard[]): Proportions {
@@ -111,13 +135,25 @@ export function buildReading(reading: Reading, question: string | null = null): 
   if (!spread) throw new Error(`tirada desconocida: ${reading.spread}`);
   const positions = positionsFor(spread, reading.cards.length);
   const domain = classifyDomain(question);
-  const placed = reading.cards.map((c, i) => place(positions[i]!, c.indice, c.reversed, domain));
-  const links: Link[] = [];
-  for (let i = 1; i < placed.length; i++) {
-    const from = placed[i - 1]!;
-    const to = placed[i]!;
-    links.push({ from, to, dignity: dignityBetween(baseElement(from.card), baseElement(to.card)) });
+  const raw = reading.cards.map((c, i) => place(positions[i]!, c.indice, c.reversed, domain));
+  const grouped = spread.grupos.length > 0;
+  const prev = new Map<number, number>();
+  const chains = new Map<string, number[]>();
+  raw.forEach((p, i) => {
+    const key = grouped ? (p.position.grupo ?? "") : "";
+    chains.set(key, [...(chains.get(key) ?? []), i]);
+  });
+  for (const idx of chains.values()) {
+    idx.sort((x, y) => raw[x]!.position.n - raw[y]!.position.n);
+    for (let k = 1; k < idx.length; k++) prev.set(idx[k]!, idx[k - 1]!);
   }
+  const dignityAt = (i: number) => dignityBetween(baseElement(raw[prev.get(i)!]!.card), baseElement(raw[i]!.card));
+  const placed: PlacedCard[] = raw.map((p, i) => ({
+    ...p,
+    mode: p.reversed || (prev.has(i) && dignityAt(i) === "debilita") ? "desequilibrio" : "equilibrio",
+  }));
+  const links: Link[] = placed.flatMap((to, i) => (prev.has(i) ? [{ from: placed[prev.get(i)!]!, to, dignity: dignityAt(i) }] : []));
+  const groups = groupsOf(spread, placed);
   return {
     spread,
     question,
@@ -128,5 +164,7 @@ export function buildReading(reading: Reading, question: string | null = null): 
     combos: findCombos(placed),
     quintessence: spread.slug === "cruz-celta" ? quintessence(placed) : null,
     yesNo: spread.slug === "si-o-no" ? yesNoVerdict(placed.map((p) => ({ card: p.card, reversed: p.reversed }))) : null,
+    groups,
+    contrast: contrastOf(spread, groups),
   };
 }

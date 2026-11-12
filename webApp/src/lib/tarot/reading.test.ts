@@ -105,3 +105,88 @@ describe("buildReading", () => {
     expect(buildReading(ppf).yesNo).toBeNull();
   });
 });
+
+function lcg(seed: number) {
+  let x = seed >>> 0;
+  return () => ((x = (Math.imul(x, 1664525) + 1013904223) >>> 0) / 2 ** 32);
+}
+function deal(rnd: () => number, n: number) {
+  const deck = Array.from({ length: 78 }, (_, i) => i);
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    [deck[i], deck[j]] = [deck[j]!, deck[i]!];
+  }
+  return deck.slice(0, n).map((indice) => ({ indice, reversed: rnd() < 0.5 }));
+}
+
+describe("modo, grupos y contraste", () => {
+  it("modo: invertida o vínculo que debilita => desequilibrio", () => {
+    const r = buildReading({ spread: "cruz-simple", cards: [
+      { indice: idx("as-de-bastos"), reversed: false },
+      { indice: idx("as-de-copas"), reversed: false },
+      { indice: idx("el-sol"), reversed: true },
+      { indice: idx("as-de-oros"), reversed: false },
+      { indice: idx("as-de-espadas"), reversed: false },
+    ] });
+    expect(r.placed.map((p) => p.mode)).toEqual(["equilibrio", "desequilibrio", "desequilibrio", "equilibrio", "desequilibrio"]);
+  });
+
+  it("relaciones arma los grupos A y B y elige el que fluye más", () => {
+    const cards = ["el-sol", "la-torre", "la-estrella", "cinco-de-copas", "el-mundo", "tres-de-espadas"].map((s, i) => ({ indice: idx(s), reversed: i % 2 === 1 }));
+    const r = buildReading({ spread: "relaciones", cards });
+    expect(r.groups.map((g) => [g.clave, g.placed.length])).toEqual([["a", 3], ["b", 3]]);
+    expect(r.contrast).toEqual({ kind: "relaciones", winner: "a" });
+  });
+
+  it("pregunta-situacion contrasta seguir igual contra cambiar", () => {
+    const cards = Array.from({ length: 13 }, (_, i) => ({ indice: i, reversed: false }));
+    const r = buildReading({ spread: "pregunta-situacion", cards });
+    expect(r.groups.map((g) => g.clave)).toEqual(["si-continua", "si-cambia", "pasado-reciente", "karmica"]);
+    expect(r.contrast?.kind).toBe("camino");
+  });
+
+  it("relaciones: intercambiar las cartas de A y B intercambia el ganador", () => {
+    const flip = (w: string) => (w === "a" ? "b" : w === "b" ? "a" : w);
+    for (const seed of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]) {
+      const rnd = lcg(seed);
+      const draw = deal(rnd, 6);
+      const swapped = [draw[1]!, draw[0]!, draw[3]!, draw[2]!, draw[5]!, draw[4]!];
+      const w1 = buildReading({ spread: "relaciones", cards: draw }).contrast;
+      const w2 = buildReading({ spread: "relaciones", cards: swapped }).contrast;
+      expect(w2).toEqual({ kind: "relaciones", winner: flip((w1 as { winner: string }).winner) });
+    }
+  });
+
+  it("relaciones: sin sesgo hacia A o B en 5000 tiradas deterministas", () => {
+    const rnd = lcg(20261112);
+    const tally = { a: 0, b: 0, parejo: 0 };
+    const N = 5000;
+    for (let i = 0; i < N; i++) {
+      const c = buildReading({ spread: "relaciones", cards: deal(rnd, 6) }).contrast as { winner: "a" | "b" | "parejo" };
+      tally[c.winner]++;
+    }
+    expect(Math.abs(tally.a - tally.b) / N).toBeLessThan(0.03);
+  });
+
+  it("los vínculos no cruzan grupos (relaciones y pregunta-situacion)", () => {
+    const rnd = lcg(7);
+    for (const [spread, n] of [["relaciones", 6], ["pregunta-situacion", 13]] as const) {
+      for (let i = 0; i < 50; i++) {
+        const f = buildReading({ spread, cards: deal(rnd, n) });
+        expect(f.links.length).toBeGreaterThan(0);
+        for (const l of f.links) {
+          expect(l.from.position.grupo).toBe(l.to.position.grupo);
+          expect(l.from.position.n).toBeLessThan(l.to.position.n);
+        }
+      }
+    }
+    const f = buildReading({ spread: "relaciones", cards: deal(lcg(3), 6) });
+    expect(f.links.map((l) => [l.from.position.n, l.to.position.n])).toEqual([[1, 3], [3, 5], [2, 4], [4, 6]].sort((x, y) => x[1]! - y[1]!));
+  });
+
+  it("tiradas sin grupos no tienen contraste", () => {
+    const r = buildReading({ spread: "carta-del-dia", cards: [{ indice: 0, reversed: false }] });
+    expect(r.groups).toEqual([]);
+    expect(r.contrast).toBeNull();
+  });
+});

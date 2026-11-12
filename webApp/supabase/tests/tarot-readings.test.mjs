@@ -120,4 +120,29 @@ describe('tarot_readings', () => {
     assert.equal(r.ok, false);
     assert.equal(r.code, '42501');
   });
+
+  const cartas = (n) => JSON.stringify(Array.from({ length: n }, (_, i) => ({ i, r: false })));
+
+  for (const [spread, n] of [['cruz-simple', 5], ['consulta-situacion', 5], ['pregunta-situacion', 13], ['karma', 8], ['relaciones', 6], ['astrologica', 12]]) {
+    test(`0079 · ${spread} acepta ${n} cartas`, async () => {
+      const r = await save(db, asStudent, { spread, cards: cartas(n) });
+      assert.equal(r.ok, true, r.message);
+    });
+    test(`0079 · ${spread} rechaza ${n - 1} cartas`, async () => {
+      const r = await save(db, asStudent, { spread, cards: cartas(n - 1) });
+      assert.equal(r.ok, false);
+      assert.equal(r.code, '23514');
+    });
+  }
+
+  test('0079 · la retirada pasado-presente-futuro sigue siendo válida para filas existentes', async () => {
+    const r = await save(db, asStudent, { spread: 'pasado-presente-futuro', cards: cartas(3) });
+    assert.equal(r.ok, true, r.message);
+  });
+
+  test('0079 · un slug desconocido se rechaza', async () => {
+    const r = await save(db, asStudent, { spread: 'herradura', cards: cartas(7) });
+    assert.equal(r.ok, false);
+    assert.equal(r.code, '23514');
+  });
 });

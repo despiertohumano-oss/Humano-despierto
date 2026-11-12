@@ -1,0 +1,65 @@
+{
+  "doc": "Primer escrito.doc",
+  "casas": [
+    {
+      "casa": 1,
+      "clave": "IDENTIDAD",
+      "subtitulo": "Proyección de la persona"
+    },
+    {
+      "casa": 2,
+      "clave": "VALORES",
+      "subtitulo": "Autoestima y bienes materiales"
+    },
+    {
+      "casa": 3,
+      "clave": "CONOCIMIENTO",
+      "subtitulo": "Desarrollo mental"
+    },
+    {
+      "casa": 4,
+      "clave": "SEGURIDAD",
+      "subtitulo": "Entorno emocional íntimo"
+    },
+    {
+      "casa": 5,
+      "clave": "CREATIVIDAD",
+      "subtitulo": "Experiencia"
+    },
+    {
+      "casa": 6,
+      "clave": "DEBER",
+      "subtitulo": "Integración práctica"
+    },
+    {
+      "casa": 7,
+      "clave": "COOPERACIÓN",
+      "subtitulo": "Relaciones"
+    },
+    {
+      "casa": 8,
+      "clave": "REGENERACIÓN",
+      "subtitulo": "Recursos ocultos"
+    },
+    {
+      "casa": 9,
+      "clave": "ASPIRACIÓN",
+      "subtitulo": "El sentido de la vida"
+    },
+    {
+      "casa": 10,
+      "clave": "HONOR",
+      "subtitulo": "Lo conseguido"
+    },
+    {
+      "casa": 11,
+      "clave": "CONCIENCIA SOCIAL",
+      "subtitulo": "Compromiso social"
+    },
+    {
+      "casa": 12,
+      "clave": "SUBCONCIENCIA",
+      "subtitulo": "Disolución"
+    }
+  ]
+}

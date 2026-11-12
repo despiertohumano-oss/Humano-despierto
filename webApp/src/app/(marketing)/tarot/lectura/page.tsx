@@ -34,7 +34,7 @@ export default async function LecturaPage({ searchParams }: { searchParams: Prom
         <div className="mt-10"><ReadingView facts={facts} text={text} /></div>
         <div className="mt-12 flex flex-wrap items-center gap-3">
           <ButtonLink href={`/tarot/${reading.spread}`} arrow>Tirar de nuevo</ButtonLink>
-          {user ? (
+          {facts.spread.retirada ? null : user ? (
             <SaveReadingButton t={reading.spread} c={encodeReading(reading)} q={question} inv={facts.spread.allowReversed} />
           ) : (
             <ButtonLink href={`/entrar?next=${encodeURIComponent(shareHref)}`} variant="ghost">Creá tu cuenta para guardar tus tiradas</ButtonLink>

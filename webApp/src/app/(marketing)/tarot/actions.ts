@@ -5,6 +5,7 @@ import { z } from "@/lib/validation/zod";
 import { createClient } from "@/lib/supabase/server";
 import type { ActionState } from "@/lib/action-state";
 import { decodeReading } from "@/lib/tarot/codec";
+import { spreadBySlug } from "@/lib/tarot/spreads";
 import { sanitizeQuestion } from "@/lib/tarot/question";
 import { withRateLimit } from "@/lib/server/rate-limit";
 import { limitedState } from "@/lib/rate-limit/core";
@@ -16,6 +17,7 @@ export const saveTarotReadingAction = withRateLimit(
   async function saveTarotReadingAction(_prev: ActionState, formData: FormData): Promise<ActionState & { id?: string }> {
     const reading = decodeReading(String(formData.get("t") ?? ""), String(formData.get("c") ?? ""));
     if (!reading) return { error: "La tirada no es válida.", success: null };
+    if (spreadBySlug(reading.spread)?.retirada) return { error: "Esa tirada ya no está disponible para guardar.", success: null };
     const reversedEnabled = String(formData.get("inv") ?? "1") !== "0";
     if (!reversedEnabled && reading.cards.some((c) => c.reversed)) {
       return { error: "La tirada tiene cartas invertidas pero las invertidas estaban apagadas.", success: null };

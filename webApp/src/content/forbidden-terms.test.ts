@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 // «oficios» y no se promete acceso ilimitado ni certificado como regla general. Los tests que
 // prueban su ausencia quedan fuera: citan los términos a propósito.
 const BANNED =
-  /herbolar|herborist|reiki|\boficios\b|sin vencimiento|acceso ilimitado|queda tu certificado|certificado con tu nombre/i;
+  /herbolar|herborist|reiki|\boficios\b|sin vencimiento|acceso ilimitado|queda tu certificado|certificado con tu nombre|m[aá]scara de la esencia|\bpreguntarse\b/i;
 
 const SRC = join(process.cwd(), "src");
 

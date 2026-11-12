@@ -42,22 +42,29 @@ describe("saveTarotReadingAction", () => {
 
   it("sin sesión devuelve error de sesión", async () => {
     client({ user: null });
-    const r = await saveTarotReadingAction(INITIAL, form({ t: "pasado-presente-futuro", c: "0r.45.12", inv: "1" }));
+    const r = await saveTarotReadingAction(INITIAL, form({ t: "cruz-simple", c: "0r.45.12.20.30", inv: "1" }));
     expect(r.error).toMatch(/sesión/);
   });
 
   it("inserta con la forma {i, r}, sin user_id, y devuelve el id", async () => {
     const { insert } = client();
-    const r = await saveTarotReadingAction(INITIAL, form({ t: "pasado-presente-futuro", c: "0r.45.12", q: "  ¿Vuelve?\n ", inv: "1" }));
+    const r = await saveTarotReadingAction(INITIAL, form({ t: "cruz-simple", c: "0r.45.12.20.30", q: "  ¿Vuelve?\n ", inv: "1" }));
     expect(r.error).toBeNull();
     expect(r.id).toBe("r-1");
-    expect(insert).toHaveBeenCalledWith({ spread_id: "pasado-presente-futuro", question: "¿Vuelve?", cards: [{ i: 0, r: true }, { i: 45, r: false }, { i: 12, r: false }], reversed_enabled: true });
+    expect(insert).toHaveBeenCalledWith({ spread_id: "cruz-simple", question: "¿Vuelve?", cards: [{ i: 0, r: true }, { i: 45, r: false }, { i: 12, r: false }, { i: 20, r: false }, { i: 30, r: false }], reversed_enabled: true });
     expect(JSON.stringify(insert.mock.calls[0])).not.toContain("user_id");
+  });
+
+  it("rechaza guardar una tirada retirada", async () => {
+    client();
+    const r = await saveTarotReadingAction(INITIAL, form({ t: "pasado-presente-futuro", c: "16.19r.49", inv: "1" }));
+    expect(r.error).toMatch(/ya no está disponible/);
+    expect(createClient).not.toHaveBeenCalled();
   });
 
   it("si hay invertidas pero inv=0, rechaza antes de la base", async () => {
     client();
-    const r = await saveTarotReadingAction(INITIAL, form({ t: "pasado-presente-futuro", c: "0r.45.12", inv: "0" }));
+    const r = await saveTarotReadingAction(INITIAL, form({ t: "cruz-simple", c: "0r.45.12.20.30", inv: "0" }));
     expect(r.error).toMatch(/invertid/i);
     expect(createClient).not.toHaveBeenCalled();
   });
@@ -66,7 +73,7 @@ describe("saveTarotReadingAction", () => {
 describe("saveTarotReadingAction (error de base)", () => {
   it("si el insert falla, devuelve el error genérico", async () => {
     client({ insertError: { code: "23514" } });
-    const r = await saveTarotReadingAction(INITIAL, form({ t: "pasado-presente-futuro", c: "0r.45.12", inv: "1" }));
+    const r = await saveTarotReadingAction(INITIAL, form({ t: "cruz-simple", c: "0r.45.12.20.30", inv: "1" }));
     expect(r.error).toBe("No se pudo guardar la tirada.");
     expect(r.id).toBeUndefined();
   });

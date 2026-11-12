@@ -27,7 +27,10 @@ const nextConfig: NextConfig = {
   },
   // T-043 · el checkout maqueta se fue (D2). Los links viejos caen en la ficha, donde se pide.
   async redirects() {
-    return [{ source: "/inscribirme/:curso", destination: "/cursos/:curso", permanent: true }];
+    return [
+      { source: "/inscribirme/:curso", destination: "/cursos/:curso", permanent: true },
+      { source: "/tarot/pasado-presente-futuro", destination: "/tarot/cruz-simple", permanent: true },
+    ];
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

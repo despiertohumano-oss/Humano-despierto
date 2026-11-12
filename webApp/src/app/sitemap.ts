@@ -5,7 +5,7 @@ import { getPublishedCourses } from "@/lib/server/courses";
 import { getPublishedPosts } from "@/lib/server/diario";
 import { getPublicTeachers } from "@/lib/server/guias";
 import { CARDS } from "@/lib/tarot/cards";
-import { SPREADS } from "@/lib/tarot/spreads";
+import { activeSpreads } from "@/lib/tarot/spreads";
 import { HOUSE_KEYS } from "@/lib/astro/prose";
 import { BODY_IDS, SIGN_IDS, bodySlug } from "@/lib/astro/zodiac";
 
@@ -28,7 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const tarot: MetadataRoute.Sitemap = [
     { url: `${site}/tarot`, priority: 0.9 },
     { url: `${site}/tarot/cartas`, priority: 0.7 },
-    ...SPREADS.map((s) => ({ url: `${site}/tarot/${s.slug}`, priority: 0.7 })),
+    ...activeSpreads().map((s) => ({ url: `${site}/tarot/${s.slug}`, priority: 0.7 })),
     ...CARDS.map((c) => ({ url: `${site}/tarot/cartas/${c.id}`, priority: 0.5 })),
   ];
 
