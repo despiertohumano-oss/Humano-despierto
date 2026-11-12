@@ -1,7 +1,7 @@
 import { z } from "@/lib/validation/zod";
 import raw from "./data/spreads.json";
 
-export const SPREAD_SLUGS = ["carta-del-dia", "si-o-no", "pasado-presente-futuro", "cruz-celta"] as const;
+export const SPREAD_SLUGS = ["carta-del-dia", "si-o-no", "cruz-simple", "consulta-situacion", "cruz-celta", "pregunta-situacion", "karma", "relaciones", "astrologica", "pasado-presente-futuro"] as const;
 export type SpreadSlug = (typeof SPREAD_SLUGS)[number];
 
 const positionSchema = z.object({
@@ -11,6 +11,8 @@ const positionSchema = z.object({
   x: z.number().int().min(0),
   y: z.number().int().min(0),
   rotada: z.boolean(),
+  grupo: z.string().min(1).nullable(),
+  casa: z.number().int().min(1).max(12).nullable(),
 });
 
 const spreadSchema = z.object({
@@ -19,13 +21,21 @@ const spreadSchema = z.object({
   descripcion: z.string().min(1),
   cartas: z.array(z.number().int().min(1)).min(1),
   allowReversed: z.boolean(),
+  forma: z.enum(["grilla", "rueda"]),
+  retirada: z.boolean(),
+  fuente: z.enum(["cruz-simple", "consulta-situacion", "cruz-celta", "pregunta-situacion", "karma", "relaciones", "astrologica"]).nullable(),
+  grupos: z.array(z.object({ clave: z.string().min(1), nombre: z.string().min(1) })),
   posiciones: z.array(positionSchema).min(1),
 });
 
 export type Position = z.infer<typeof positionSchema>;
 export type Spread = z.infer<typeof spreadSchema>;
 
-export const SPREADS: readonly Spread[] = z.array(spreadSchema).length(4).parse(raw);
+export const SPREADS: readonly Spread[] = z.array(spreadSchema).length(10).parse(raw);
+
+export function activeSpreads(): Spread[] {
+  return SPREADS.filter((s) => !s.retirada);
+}
 
 const BY_SLUG = new Map(SPREADS.map((s) => [s.slug, s]));
 
