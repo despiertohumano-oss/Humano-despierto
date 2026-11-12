@@ -175,7 +175,7 @@ under `(app)/`, which re-read `profiles.role`.
 - **Founder content is on HOLD** (B4): the flag and the card exist, but no founder profile is
   seeded; the owner loads her own photo and bio. `/guias` shows only the grid until the admin
   marks her.
-- **Tarot e2e specs never ran** (new spreads in `e2e/tarot.spec.ts`: 9 spreads, 308 redirect, karma, relaciones, astrologica on mobile): written and listed by Playwright, pending a local stack with 0079 applied. The older PPF specs there still target the retired spread and need review when they run.
+- **Tarot e2e specs never ran** (`e2e/tarot.spec.ts`, new and updated: 9 spreads, 308 redirect, cruz simple, karma, relaciones, astrologica on mobile): written and listed by Playwright, pending a local stack with 0079 applied (Docker off).
 - **Block B e2e specs never ran** (`catalogo-disciplinas`, `modalidad`, `diario-revista`,
   `creadora`): written and listed by Playwright, pending a local stack with 0074-0077 applied.
 
