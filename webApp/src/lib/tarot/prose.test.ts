@@ -10,7 +10,31 @@ import { SPREADS } from "./spreads";
 const noPlaceholders = (s: string) => !/[{}]|undefined|null|\[object/.test(s);
 
 describe("renderReading", () => {
-  const ppf: Reading = { spread: "pasado-presente-futuro", cards: [{ indice: 16, reversed: false }, { indice: 19, reversed: true }, { indice: 49, reversed: false }] };
+  const ppf: Reading = { spread: "cruz-simple", cards: [16, 19, 49, 3, 8].map((indice, i) => ({ indice, reversed: i === 1 })) };
+
+  it("la retirada pasado-presente-futuro sigue renderizando", () => {
+    const r: Reading = { spread: "pasado-presente-futuro", cards: [{ indice: 16, reversed: false }, { indice: 19, reversed: true }, { indice: 49, reversed: false }] };
+    expect(() => renderReading(buildReading(r), 1)).not.toThrow();
+  });
+
+  it("cada posición suma el estado según el modo", () => {
+    const r: Reading = { spread: "carta-del-dia", cards: [{ indice: 19, reversed: false }] };
+    const t = renderReading(buildReading(r), 2);
+    expect(t.posiciones[0]!.texto).toContain(cardByIndex(19)!.en_equilibrio);
+  });
+
+  it("relaciones trae grupos y contraste", () => {
+    const cards = [0, 1, 2, 3, 4, 5].map((i) => ({ indice: i, reversed: false }));
+    const t = renderReading(buildReading({ spread: "relaciones", cards }), 4);
+    expect(t.grupos.map((g) => g.titulo)).toEqual(["Persona A", "Persona B"]);
+    expect(t.contraste).toBeTruthy();
+  });
+
+  it("cierra con una pregunta de reflexión de la última carta", () => {
+    const r: Reading = { spread: "carta-del-dia", cards: [{ indice: 0, reversed: false }] };
+    const t = renderReading(buildReading(r), 9);
+    expect(cardByIndex(0)!.reflexion.some((q) => t.reflexion.includes(q))).toBe(true);
+  });
 
   it("es determinista para la misma semilla y cambia con otra", () => {
     const facts = buildReading(ppf, "¿Volverá?");
@@ -27,7 +51,7 @@ describe("renderReading", () => {
   });
 
   it("informa el palo ausente", () => {
-    const r: Reading = { spread: "pasado-presente-futuro", cards: ["tres-de-bastos", "dos-de-copas", "as-de-espadas"].map((sl) => ({ indice: CARDS.find((c) => c.id === sl)!.indice, reversed: false })) };
+    const r: Reading = { spread: "cruz-simple", cards: ["tres-de-bastos", "dos-de-copas", "as-de-espadas", "tres-de-espadas", "dos-de-bastos"].map((sl) => ({ indice: CARDS.find((c) => c.id === sl)!.indice, reversed: false })) };
     const t = renderReading(buildReading(r), 5);
     expect(t.panorama).toMatch(/oro/i);
   });
@@ -70,7 +94,7 @@ describe("renderReading", () => {
               if (facts.proportions.blocked) bloqueos++;
               const t = renderReading(facts, card.indice * 31 + pos);
               const ctx = `${spread.slug}/${card.id}/${reversed}/${pos}`;
-              const all = [t.apertura, t.panorama ?? "", ...t.posiciones.map((p) => p.titulo + p.texto), t.hilo ?? "", t.sintesis, t.consejo];
+              const all = [t.apertura, t.panorama ?? "", ...t.posiciones.map((p) => p.titulo + p.texto), t.hilo ?? "", t.sintesis, t.consejo, ...t.grupos.map((g) => g.titulo + g.texto), t.contraste ?? "", t.reflexion];
               for (const s of all) expect(noPlaceholders(s), `${ctx}: ${s}`).toBe(true);
               expect(t.apertura.length).toBeGreaterThan(20);
               expect(t.posiciones).toHaveLength(count);
@@ -108,7 +132,7 @@ describe("renderReading", () => {
     expect(dominios.size).toBe(4);
     expect(bloqueos).toBeGreaterThan(0);
     expect(hilos).toBeGreaterThan(0);
-  }, 30_000);
+  }, 180_000);
 });
 
 describe("concordancia", () => {

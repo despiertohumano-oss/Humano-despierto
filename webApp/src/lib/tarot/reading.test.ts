@@ -105,3 +105,36 @@ describe("buildReading", () => {
     expect(buildReading(ppf).yesNo).toBeNull();
   });
 });
+
+describe("modo, grupos y contraste", () => {
+  it("modo: invertida o vínculo que debilita => desequilibrio", () => {
+    const r = buildReading({ spread: "cruz-simple", cards: [
+      { indice: idx("as-de-bastos"), reversed: false },
+      { indice: idx("as-de-copas"), reversed: false },
+      { indice: idx("el-sol"), reversed: true },
+      { indice: idx("as-de-oros"), reversed: false },
+      { indice: idx("as-de-espadas"), reversed: false },
+    ] });
+    expect(r.placed.map((p) => p.mode)).toEqual(["equilibrio", "desequilibrio", "desequilibrio", "equilibrio", "desequilibrio"]);
+  });
+
+  it("relaciones arma los grupos A y B y elige el que fluye más", () => {
+    const cards = ["el-sol", "la-torre", "la-estrella", "cinco-de-copas", "el-mundo", "tres-de-espadas"].map((s, i) => ({ indice: idx(s), reversed: i % 2 === 1 }));
+    const r = buildReading({ spread: "relaciones", cards });
+    expect(r.groups.map((g) => [g.clave, g.placed.length])).toEqual([["a", 3], ["b", 3]]);
+    expect(r.contrast).toEqual({ kind: "relaciones", winner: "a" });
+  });
+
+  it("pregunta-situacion contrasta seguir igual contra cambiar", () => {
+    const cards = Array.from({ length: 13 }, (_, i) => ({ indice: i, reversed: false }));
+    const r = buildReading({ spread: "pregunta-situacion", cards });
+    expect(r.groups.map((g) => g.clave)).toEqual(["si-continua", "si-cambia", "pasado-reciente", "karmica"]);
+    expect(r.contrast?.kind).toBe("camino");
+  });
+
+  it("tiradas sin grupos no tienen contraste", () => {
+    const r = buildReading({ spread: "carta-del-dia", cards: [{ indice: 0, reversed: false }] });
+    expect(r.groups).toEqual([]);
+    expect(r.contrast).toBeNull();
+  });
+});

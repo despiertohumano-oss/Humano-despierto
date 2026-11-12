@@ -168,5 +168,61 @@
     "Consejo de la tirada: {consejo}",
     "Para llevarte: {consejo}",
     "Si te quedás con una sola cosa: {consejo}"
+  ],
+  "estado": {
+    "equilibrio": [
+      "Bien llevada, esta energía se ve así: {texto}",
+      "Cuando fluye, {nombre} se expresa de esta manera: {texto}",
+      "En su mejor versión: {texto}"
+    ],
+    "desequilibrio": [
+      "Acá todavía está trabada: {texto}",
+      "Cuando se traba, {nombre} se nota así: {texto}",
+      "Lo que conviene mirar es su lado en proceso: {texto}"
+    ]
+  },
+  "grupo": [
+    "{grupo}: aparecen {claves}.",
+    "En {grupo} se juntan {claves}.",
+    "{grupo} reúne {claves}."
+  ],
+  "contraste_relaciones": {
+    "parejo": [
+      "Las dos personas llegan con un peso parecido: ninguna lleva sola el vínculo.",
+      "Lo que cada una trae está bastante equilibrado.",
+      "Hay paridad: el vínculo se sostiene de los dos lados."
+    ],
+    "a": [
+      "La persona A llega más entera al vínculo; la B está todavía en proceso.",
+      "Del lado de A las cartas fluyen más; del lado de B hay cosas que se están acomodando.",
+      "A trae más soltura; B necesita su tiempo."
+    ],
+    "b": [
+      "La persona B llega más entera al vínculo; la A está todavía en proceso.",
+      "Del lado de B las cartas fluyen más; del lado de A hay cosas que se están acomodando.",
+      "B trae más soltura; A necesita su tiempo."
+    ]
+  },
+  "contraste_camino": {
+    "parejo": [
+      "Seguir igual o cambiar pesan parecido: la decisión es más tuya que de las cartas.",
+      "Los dos caminos tienen luces y sombras en la misma medida.",
+      "No hay un camino claramente mejor: mirá cuál te representa más."
+    ],
+    "continua": [
+      "Si seguís como estás, las cartas fluyen más que si cambiás.",
+      "El camino actual tiene más a favor que el cambio, por ahora.",
+      "Quedarte donde estás aparece más sereno que moverte."
+    ],
+    "cambio": [
+      "Si introducís un cambio, las cartas fluyen más que si seguís igual.",
+      "El cambio aparece con más a favor que el camino actual.",
+      "Moverte se ve más liviano que quedarte."
+    ]
+  },
+  "reflexion": [
+    "Para llevarte: {pregunta}",
+    "Una pregunta para quedarte pensando: {pregunta}",
+    "Te dejo esta pregunta: {pregunta}"
   ]
 }
