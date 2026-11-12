@@ -179,3 +179,9 @@ Trabajo en `dev`; release por merge a `main` con `0079` aplicada en la nube y `c
 Decisión del PO (2026-11-12): los documentos originales de `docs/TAROT/` (≈25 MB, material del taller) **no
 se versionan**; solo `docs/TAROT/fuente/`. `.gitignore` ignora `docs/TAROT/*` salvo `fuente/`. Re-extraer
 requiere tener los originales en la máquina.
+
+## 13. Desvíos aceptados en la implementación (2026-11-12)
+
+- (a) §5.4: no hay plantillas separadas de «casa astrológica» ni de «cierre del karma». La casa aparece en el nombre de la posición y el cierre del karma sale de la posición 8 (el consejo de la última carta).
+- (b) §8: la lista móvil no lleva mini-mapa; la lista numerada conserva el orden.
+- (c) En tiradas con grupos, los vínculos, el estado (`mode`) y el hilo se encadenan dentro de cada grupo (por `n`); las posiciones sin grupo forman su propia cadena. Evita que A y B se juzguen entre sí y el sesgo hacia A del contraste de «relaciones».

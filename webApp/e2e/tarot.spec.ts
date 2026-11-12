@@ -82,5 +82,5 @@ test("astrológica en móvil: lista numerada de las doce casas", async ({ page, 
   await assertStackUp(request);
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto("/tarot/lectura?t=astrologica&c=0.1.2.3.4.5.6.7.8.9.10.11");
-  await expect(page.getByText("1. Casa I · Identidad")).toBeVisible();
+  await expect(page.getByRole("listitem").filter({ hasText: "1. Casa I · Identidad" })).toBeVisible();
 });
