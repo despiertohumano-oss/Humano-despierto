@@ -1,0 +1,533 @@
+{
+  "doc": "TIRADAS.doc / TIRADAS.pdf",
+  "pautas": [
+    "Definir claramente la pregunta mientras se barajan las cartas (hay quienes dan la tarea de barajar al consultante, particularmente prefiero que  sólo lo realice el cartómano)",
+    "Dejar la baraja sobre la mesa, para que el consultante realice un solo corte con su mano izquierda ( mano del corazón)",
+    "Disponer de las cartas boca abajo (según los distintos métodos)",
+    "Dar vueltas las cartas de a una, para ir tomando una idea lineal interpretativa y luego una visión general del grupo de cartas para proceder a la lectura de cada una en el orden y en la posición del método elegido."
+  ],
+  "criterio_invertidas": "Para algunos intérpretes las cartas invertidas pueden tomar el significado contrario o alguno en particular.\nDesde mi punto de vista, el símbolo sigue siendo el mismo, sólo que al encontrarse invertido indicaría que sus influencias son menores, o que aún están en proceso\n(Ej.: el Sol, uno de los arcanos de mayor éxito y realización por el sólo hecho de salir invertido no lo podría interpretar como símbolo de pérdidas o rupturas, solo como indicio de que aún falta tiempo para concretarse, es por eso que es importante analizar las otras cartas de la tirada)",
+  "tiradas": [
+    {
+      "clave": "cruz-simple",
+      "nombre": "CRUZ SIMPLE",
+      "forma": "grilla",
+      "posiciones": [
+        {
+          "n": 1,
+          "etiqueta": "pasado",
+          "grupo": null,
+          "x": 0,
+          "y": 1,
+          "rotada": false
+        },
+        {
+          "n": 2,
+          "etiqueta": "futuro",
+          "grupo": null,
+          "x": 2,
+          "y": 1,
+          "rotada": false
+        },
+        {
+          "n": 3,
+          "etiqueta": "información del pasado",
+          "grupo": null,
+          "x": 1,
+          "y": 0,
+          "rotada": false
+        },
+        {
+          "n": 4,
+          "etiqueta": "información del futuro",
+          "grupo": null,
+          "x": 1,
+          "y": 2,
+          "rotada": false
+        },
+        {
+          "n": 5,
+          "etiqueta": "presente",
+          "grupo": null,
+          "x": 1,
+          "y": 1,
+          "rotada": false
+        }
+      ]
+    },
+    {
+      "clave": "consulta-situacion",
+      "nombre": "CONSULTA DE UNA SITUACIÓN",
+      "forma": "grilla",
+      "posiciones": [
+        {
+          "n": 1,
+          "etiqueta": "A favor",
+          "grupo": null,
+          "x": 0,
+          "y": 1,
+          "rotada": false
+        },
+        {
+          "n": 2,
+          "etiqueta": "Oposiciones",
+          "grupo": null,
+          "x": 2,
+          "y": 1,
+          "rotada": false
+        },
+        {
+          "n": 3,
+          "etiqueta": "Pregunta",
+          "grupo": null,
+          "x": 1,
+          "y": 0,
+          "rotada": false
+        },
+        {
+          "n": 4,
+          "etiqueta": "Síntesis",
+          "grupo": null,
+          "x": 1,
+          "y": 1,
+          "rotada": false
+        },
+        {
+          "n": 5,
+          "etiqueta": "Primera pregunta",
+          "grupo": null,
+          "x": 1,
+          "y": 2,
+          "rotada": false
+        }
+      ]
+    },
+    {
+      "clave": "cruz-celta",
+      "nombre": "CRUZ CELTA DE 10 CARTAS",
+      "forma": "grilla",
+      "posiciones": [
+        {
+          "n": 1,
+          "etiqueta": "Situación actual. Parte oculta del consultante",
+          "grupo": null,
+          "x": 1,
+          "y": 1,
+          "rotada": false
+        },
+        {
+          "n": 2,
+          "etiqueta": "Influencias-obstáculos. Reto inmediato. Facilidades. Como actúa ante el problema",
+          "grupo": null,
+          "x": 1,
+          "y": 1,
+          "rotada": true
+        },
+        {
+          "n": 3,
+          "etiqueta": "Objetivos, deseos, posible solución",
+          "grupo": null,
+          "x": 1,
+          "y": 0,
+          "rotada": false
+        },
+        {
+          "n": 4,
+          "etiqueta": "Pasado-consecuencias hoy. Raíz del problema. Incluye eventos",
+          "grupo": null,
+          "x": 2,
+          "y": 1,
+          "rotada": false
+        },
+        {
+          "n": 5,
+          "etiqueta": "Personas que te apoyan, situaciones a favor. Pasado cercano",
+          "grupo": null,
+          "x": 1,
+          "y": 2,
+          "rotada": false
+        },
+        {
+          "n": 6,
+          "etiqueta": "Posibilidades, alternativas, caminos disponibles. Futuro cercano",
+          "grupo": null,
+          "x": 0,
+          "y": 1,
+          "rotada": false
+        },
+        {
+          "n": 7,
+          "etiqueta": "Esperanzas recursos. Sentimientos, reacción del consultante",
+          "grupo": null,
+          "x": 3,
+          "y": 3,
+          "rotada": false
+        },
+        {
+          "n": 8,
+          "etiqueta": "Obstáculos que se pueden presentar, personas, entorno familiar",
+          "grupo": null,
+          "x": 3,
+          "y": 2,
+          "rotada": false
+        },
+        {
+          "n": 9,
+          "etiqueta": "Miedos y temores, emociones internas",
+          "grupo": null,
+          "x": 3,
+          "y": 1,
+          "rotada": false
+        },
+        {
+          "n": 10,
+          "etiqueta": "Conclusión, consejo",
+          "grupo": null,
+          "x": 3,
+          "y": 0,
+          "rotada": false
+        }
+      ]
+    },
+    {
+      "clave": "pregunta-situacion",
+      "nombre": "TIRADA PREGUNTA SOBRE UNA SITUACIÓN",
+      "forma": "grilla",
+      "posiciones": [
+        {
+          "n": 1,
+          "etiqueta": "Carta Base",
+          "grupo": null,
+          "x": 3,
+          "y": 3,
+          "rotada": false
+        },
+        {
+          "n": 2,
+          "etiqueta": "Resultado si continúa en la situación actual",
+          "grupo": "si-continua",
+          "x": 2,
+          "y": 2,
+          "rotada": false
+        },
+        {
+          "n": 3,
+          "etiqueta": "Influencia del pasado reciente",
+          "grupo": "pasado-reciente",
+          "x": 2,
+          "y": 4,
+          "rotada": false
+        },
+        {
+          "n": 4,
+          "etiqueta": "Influencia kármica a largo plazo",
+          "grupo": "karmica",
+          "x": 4,
+          "y": 4,
+          "rotada": false
+        },
+        {
+          "n": 5,
+          "etiqueta": "Resultado si introduce un cambio",
+          "grupo": "si-cambia",
+          "x": 4,
+          "y": 2,
+          "rotada": false
+        },
+        {
+          "n": 6,
+          "etiqueta": "Resultado si continúa en la situación actual",
+          "grupo": "si-continua",
+          "x": 1,
+          "y": 1,
+          "rotada": false
+        },
+        {
+          "n": 7,
+          "etiqueta": "Influencia del pasado reciente",
+          "grupo": "pasado-reciente",
+          "x": 1,
+          "y": 5,
+          "rotada": false
+        },
+        {
+          "n": 8,
+          "etiqueta": "Influencia kármica a largo plazo",
+          "grupo": "karmica",
+          "x": 5,
+          "y": 5,
+          "rotada": false
+        },
+        {
+          "n": 9,
+          "etiqueta": "Resultado si introduce un cambio",
+          "grupo": "si-cambia",
+          "x": 5,
+          "y": 1,
+          "rotada": false
+        },
+        {
+          "n": 10,
+          "etiqueta": "Resultado si continúa en la situación actual",
+          "grupo": "si-continua",
+          "x": 0,
+          "y": 0,
+          "rotada": false
+        },
+        {
+          "n": 11,
+          "etiqueta": "Influencia del pasado reciente",
+          "grupo": "pasado-reciente",
+          "x": 0,
+          "y": 6,
+          "rotada": false
+        },
+        {
+          "n": 12,
+          "etiqueta": "Influencia kármica a largo plazo",
+          "grupo": "karmica",
+          "x": 6,
+          "y": 6,
+          "rotada": false
+        },
+        {
+          "n": 13,
+          "etiqueta": "Resultado si introduce un cambio",
+          "grupo": "si-cambia",
+          "x": 6,
+          "y": 0,
+          "rotada": false
+        }
+      ]
+    },
+    {
+      "clave": "karma",
+      "nombre": "TIRADA DEL KARMA",
+      "forma": "grilla",
+      "posiciones": [
+        {
+          "n": 1,
+          "etiqueta": "Consultante",
+          "grupo": null,
+          "x": 1,
+          "y": 0,
+          "rotada": false
+        },
+        {
+          "n": 2,
+          "etiqueta": "Karma que debe cumplir",
+          "grupo": null,
+          "x": 1,
+          "y": 1,
+          "rotada": true
+        },
+        {
+          "n": 3,
+          "etiqueta": "¿Cómo se manifiesta ese karma?",
+          "grupo": "manifestacion",
+          "x": 0,
+          "y": 2,
+          "rotada": false
+        },
+        {
+          "n": 4,
+          "etiqueta": "¿Cómo se manifiesta ese karma?",
+          "grupo": "manifestacion",
+          "x": 1,
+          "y": 2,
+          "rotada": false
+        },
+        {
+          "n": 5,
+          "etiqueta": "¿Cómo se manifiesta ese karma?",
+          "grupo": "manifestacion",
+          "x": 2,
+          "y": 2,
+          "rotada": false
+        },
+        {
+          "n": 6,
+          "etiqueta": "¿Qué situaciones debo vivir?",
+          "grupo": null,
+          "x": 0,
+          "y": 3,
+          "rotada": false
+        },
+        {
+          "n": 7,
+          "etiqueta": "¿Qué es lo que debo aprender?",
+          "grupo": null,
+          "x": 1,
+          "y": 3,
+          "rotada": false
+        },
+        {
+          "n": 8,
+          "etiqueta": "Consejo de la Esencia Divina",
+          "grupo": null,
+          "x": 2,
+          "y": 3,
+          "rotada": true
+        }
+      ]
+    },
+    {
+      "clave": "relaciones",
+      "nombre": "TIRADA DE LAS RELACIONES",
+      "forma": "grilla",
+      "posiciones": [
+        {
+          "n": 1,
+          "etiqueta": "Persona A",
+          "grupo": "a",
+          "x": 0,
+          "y": 0,
+          "rotada": false
+        },
+        {
+          "n": 2,
+          "etiqueta": "Persona B",
+          "grupo": "b",
+          "x": 0,
+          "y": 1,
+          "rotada": false
+        },
+        {
+          "n": 3,
+          "etiqueta": "Persona A",
+          "grupo": "a",
+          "x": 1,
+          "y": 0,
+          "rotada": false
+        },
+        {
+          "n": 4,
+          "etiqueta": "Persona B",
+          "grupo": "b",
+          "x": 1,
+          "y": 1,
+          "rotada": false
+        },
+        {
+          "n": 5,
+          "etiqueta": "Persona A",
+          "grupo": "a",
+          "x": 2,
+          "y": 0,
+          "rotada": false
+        },
+        {
+          "n": 6,
+          "etiqueta": "Persona B",
+          "grupo": "b",
+          "x": 2,
+          "y": 1,
+          "rotada": false
+        }
+      ]
+    },
+    {
+      "clave": "astrologica",
+      "nombre": "TIRADA ASTROLÓGICA",
+      "forma": "rueda",
+      "posiciones": [
+        {
+          "n": 1,
+          "etiqueta": "Casa I",
+          "grupo": null,
+          "x": 0,
+          "y": 0,
+          "rotada": false
+        },
+        {
+          "n": 2,
+          "etiqueta": "Casa II",
+          "grupo": null,
+          "x": 1,
+          "y": 0,
+          "rotada": false
+        },
+        {
+          "n": 3,
+          "etiqueta": "Casa III",
+          "grupo": null,
+          "x": 2,
+          "y": 0,
+          "rotada": false
+        },
+        {
+          "n": 4,
+          "etiqueta": "Casa IV",
+          "grupo": null,
+          "x": 3,
+          "y": 0,
+          "rotada": false
+        },
+        {
+          "n": 5,
+          "etiqueta": "Casa V",
+          "grupo": null,
+          "x": 4,
+          "y": 0,
+          "rotada": false
+        },
+        {
+          "n": 6,
+          "etiqueta": "Casa VI",
+          "grupo": null,
+          "x": 5,
+          "y": 0,
+          "rotada": false
+        },
+        {
+          "n": 7,
+          "etiqueta": "Casa VII",
+          "grupo": null,
+          "x": 6,
+          "y": 0,
+          "rotada": false
+        },
+        {
+          "n": 8,
+          "etiqueta": "Casa VIII",
+          "grupo": null,
+          "x": 7,
+          "y": 0,
+          "rotada": false
+        },
+        {
+          "n": 9,
+          "etiqueta": "Casa IX",
+          "grupo": null,
+          "x": 8,
+          "y": 0,
+          "rotada": false
+        },
+        {
+          "n": 10,
+          "etiqueta": "Casa X",
+          "grupo": null,
+          "x": 9,
+          "y": 0,
+          "rotada": false
+        },
+        {
+          "n": 11,
+          "etiqueta": "Casa XI",
+          "grupo": null,
+          "x": 10,
+          "y": 0,
+          "rotada": false
+        },
+        {
+          "n": 12,
+          "etiqueta": "Casa XII",
+          "grupo": null,
+          "x": 11,
+          "y": 0,
+          "rotada": false
+        }
+      ]
+    }
+  ]
+}
