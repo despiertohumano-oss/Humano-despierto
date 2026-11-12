@@ -99,8 +99,12 @@ reescribe a partir de la etiqueta del diagrama y, en `astrologica`, de la clave 
 
 ### 5.4 `templates.json`
 Plantillas nuevas para: invertida como «en proceso», lectura por grupo (A vs B; continúa vs cambia), casa
-astrológica, cierre del karma, panorama por cuerpo («lo vital», «lo emocional», «lo mental», «lo físico»,
-«lo cósmico»), pregunta de reflexión final. `_meta.estado` se mantiene y se replica en `cards.json`.
+astrológica, cierre del karma, pregunta de reflexión final. Los textos de `panorama_palo` y
+`panorama_mayores` nombran el cuerpo («lo vital», «lo emocional», «lo mental», «lo físico», «lo cósmico»): el
+motor ya sabe qué palo domina o si dominan los mayores, no hace falta un campo nuevo.
+
+El estado de revisión de la dueña vive en `docs/TAROT/fuente/revision.json`
+(`{ "estado": "pendiente" | "aprobado", "fecha": "AAAA-MM-DD" }`); `cards.json` es un array y no lleva `_meta`.
 
 ## 6. Motor
 
@@ -111,7 +115,6 @@ astrológica, cierre del karma, panorama por cuerpo («lo vital», «lo emociona
   - `groups: { nombre, placed[] }[]` cuando la tirada tiene grupos;
   - `contrast` para `relaciones` (A vs B) y `pregunta-situacion` (continúa vs cambia);
   - `house` por carta en `astrologica` (de `casas`, guardado en la posición);
-  - `proportions` suma `dominantBody` (cuerpo del palo dominante o cosmos si dominan los mayores);
   - modo de lectura por carta: `desequilibrio` si la carta está invertida o su vínculo entrante `debilita`,
     si no `equilibrio`;
   - quintaesencia sigue en `cruz-celta`.
