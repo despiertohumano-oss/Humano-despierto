@@ -74,8 +74,8 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 
 | Area | State |
 |------|-------|
-| `webApp/src` | **~27.1k LOC** (non-test). 47 routes (`page.tsx`), 157 non-test files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`; 78 card scans in `public/tarot/rws/`; the owner's 9 brand images in `public/brand/` (WebP, `CREDITS.md`). Natal-chart engine (pure, no DB) in `src/lib/astro/` on `astronomy-engine` (MIT, ADR-017; credits in `src/lib/astro/CREDITS.md`). Tests: Vitest (1283 unit tests in 167 files, next to the file) + Playwright (`e2e/`), T-039. |
-| `webApp/supabase` | **Schema live.** 50 migrations (last `0078`; `0032` applies before `0031` by timestamp, independent), 27 tables (`tarot_readings`, ADR-016; `places`, `natal_charts`, T-024; `diario_post_courses`, B3; `error_events`, 0078), RLS + per-column grants + guard triggers, 966 mutation tests (PGlite). Private Storage bucket `uploads`: `avatars/` (T-042), `covers/` (T-047) and `diario/` (B3), uploads only via service_role; its policies are only tested over HTTP by b1. Fixtures `@test.local` (admin, docente, alumna) in `seed.fixtures.sql`, content seed in `seed.sql`, demo data in `demo.sql`: all **local only**, never run in the cloud (see `webApp/supabase/README.md`). |
+| `webApp/src` | **~27.1k LOC** (non-test). 47 routes (`page.tsx`), 157 non-test files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`; 78 card scans in `public/tarot/rws/`; the owner's 9 brand images in `public/brand/` (WebP, `CREDITS.md`). Tarot text comes from the owner's course material in `docs/TAROT/fuente/` (originals outside git). Natal-chart engine (pure, no DB) in `src/lib/astro/` on `astronomy-engine` (MIT, ADR-017; credits in `src/lib/astro/CREDITS.md`). Tests: Vitest (1323 unit tests in 170 files, next to the file) + Playwright (`e2e/`), T-039. |
+| `webApp/supabase` | **Schema live.** 51 migrations (last `0079`; `0032` applies before `0031` by timestamp, independent), 27 tables (`tarot_readings`, ADR-016; `places`, `natal_charts`, T-024; `diario_post_courses`, B3; `error_events`, 0078), RLS + per-column grants + guard triggers, 980 mutation tests (PGlite). Private Storage bucket `uploads`: `avatars/` (T-042), `covers/` (T-047) and `diario/` (B3), uploads only via service_role; its policies are only tested over HTTP by b1. Fixtures `@test.local` (admin, docente, alumna) in `seed.fixtures.sql`, content seed in `seed.sql`, demo data in `demo.sql`: all **local only**, never run in the cloud (see `webApp/supabase/README.md`). |
 | `mobileApp/` | **Empty directory.** No Expo scaffold. **Out of scope for Phase 2.** |
 | `packages/tokens` | 763 LOC of the old Cosmos palette (marked historical in its README, D-66) — **consumed by nobody**: `webApp` does not import it (it uses its own `src/styles/tokens.css`) and `mobileApp` does not exist. Kept for when mobile returns. |
 | `Gentleman-Skills/` | **Empty directory.** Referenced by the old CLAUDE.md; there is nothing in it. |
@@ -117,8 +117,9 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 /panel/admin/resenas                Review moderation: report queue, hide     [admin]
 /panel/admin/anuncios               Withdraw published announcements (T-031)   [admin]
 /panel/admin/errores                Site errors grouped by fingerprint, resolve (0078) [admin]
-/tarot                              Tarot online (portada, 4 tiradas)
+/tarot                              Tarot online (portada, 9 tiradas: 2 quick + 7 from the workshop)
 /tarot/[tirada]                     Tirada interactiva
+/tarot/pasado-presente-futuro       308 -> /tarot/cruz-simple (retired spread)
 /tarot/lectura                      Lectura por query string (noindex)
 /tarot/lectura/[id]                 Tirada guardada                           [auth]
 /tarot/cartas  ·  /tarot/cartas/[slug]   Las 78 fichas
@@ -174,6 +175,7 @@ under `(app)/`, which re-read `profiles.role`.
 - **Founder content is on HOLD** (B4): the flag and the card exist, but no founder profile is
   seeded; the owner loads her own photo and bio. `/guias` shows only the grid until the admin
   marks her.
+- **Tarot e2e specs never ran** (new spreads in `e2e/tarot.spec.ts`: 9 spreads, 308 redirect, karma, relaciones, astrologica on mobile): written and listed by Playwright, pending a local stack with 0079 applied. The older PPF specs there still target the retired spread and need review when they run.
 - **Block B e2e specs never ran** (`catalogo-disciplinas`, `modalidad`, `diario-revista`,
   `creadora`): written and listed by Playwright, pending a local stack with 0074-0077 applied.
 
@@ -402,6 +404,7 @@ visual reference: `design_handoff_humano_humano/reference/brote/b4-brote2.html`.
 - `cn()` = `clsx` + `tailwind-merge`.
 - Server Components by default; `'use client'` only for interactivity or animation.
 - There are no mocks left (T-053 removed the last one). Do not add mocks.
+- Exception: tarot text is rewritten in the site's voice from `docs/TAROT/fuente/` (PO 2026-11-12); the owner's method (máscara de la esencia, equilibrio/desequilibrio, preguntarse) feeds the readings and is never named (`src/lib/tarot/exposicion.test.ts`, `forbidden-terms.test.ts`).
 - Copy lives in `src/content/` (`landing.ts`, `site-copy.ts`); the owner's texts are literal, and
   `src/content/forbidden-terms.test.ts` fails if `herbolaria`, `herboristas`, `reiki`, `oficios`,
   `sin vencimiento` or `acceso ilimitado` come back to `src/`.
@@ -429,6 +432,7 @@ Several things block work and require the repo owner's accounts:
   Check `select extname, extnamespace::regnamespace from pg_extension` first (`pg_trgm`/`unaccent`).
 - **Legal consultation on birth data** and **the owner's review of the 78 texts**
   (`templates.json`, `_meta.estado`): they block the T-024 release, not development.
+- **Owner's review of the tarot texts** (`docs/TAROT/fuente/revision.json` in `pendiente`): blocks the tarot release.
 - **Auth OTP expiry = 86400** (24 h) in the cloud dashboard (Authentication > Email): the direct
   access of the teacher-invitation mail lives that long (default 1 h). Local: `config.toml`.
 - **Gmail App Password** (T-090, stopgap until a domain exists): 2-step verification on
@@ -445,6 +449,7 @@ must **never** carry the `NEXT_PUBLIC_` prefix: the first bypasses RLS entirely,
 mail as the school, and the prefix would ship either to the browser.
 
 ## History
+On 2026-11-12 the tarot was rebuilt on the owner's course material (78 rewritten cards, suits, 9 spreads with groups and reflection, migration 0079).
 On 2026-11-08 the owner's content document replaced the landing, footer, catalogue, teachers, journal and tarot copy and added the cosmic surfaces (blocks A and C of `docs/superpowers/specs/2026-11-08-contenidos-duena-design.md`).
 On 2026-10-22 T-060 replaced the Cosmos design language (dark theme, Cinzel, no raster, three.js
 login canvas) with «Brote» (ADR-015); the old rules were deleted, not kept as an alternative.

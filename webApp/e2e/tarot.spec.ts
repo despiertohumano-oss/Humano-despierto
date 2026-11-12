@@ -47,3 +47,36 @@ test("alumna: guarda la tirada, la ve en el panel y la borra", async ({ page }) 
   await page.getByRole("button", { name: "Borrar tirada" }).click();
   await expect.poll(() => psql(`select count(*) from public.tarot_readings where user_id = '${ALUMNA_ID}';`)).toBe("0");
 });
+
+test("/tarot lista las nueve tiradas", async ({ page, request }) => {
+  await assertStackUp(request);
+  await page.goto("/tarot");
+  await expect(page.getByRole("link", { name: "Tirar", exact: true })).toHaveCount(9);
+});
+
+test("la tirada retirada redirige a la cruz simple", async ({ page }) => {
+  await page.goto("/tarot/pasado-presente-futuro");
+  await expect(page).toHaveURL(/\/tarot\/cruz-simple$/);
+});
+
+test("karma: ocho cartas y la síntesis cierra con una pregunta de reflexión", async ({ page }) => {
+  await page.goto("/tarot/karma?listo=1");
+  for (const n of [3, 11, 17, 24, 31, 40, 52, 60]) await page.getByRole("button", { name: `Carta ${n} del mazo` }).click();
+  await expect(page).toHaveURL(/\/tarot\/lectura\?t=karma/);
+  const sintesis = page.getByRole("heading", { name: "Síntesis" });
+  await expect(sintesis).toBeVisible();
+  await expect(page.getByText(/^(Una última pregunta|Una pregunta|Te dejo)/).first()).toBeVisible();
+});
+
+test("relaciones: la lectura se ve por grupos, Persona A y Persona B", async ({ page }) => {
+  await page.goto("/tarot/lectura?t=relaciones&c=0.1.2.3.4.5");
+  await expect(page.getByRole("heading", { name: "Por grupos" })).toBeVisible();
+  await expect(page.getByText("Persona A").first()).toBeVisible();
+  await expect(page.getByText("Persona B").first()).toBeVisible();
+});
+
+test("astrológica en móvil: lista numerada de las doce casas", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/tarot/lectura?t=astrologica&c=0.1.2.3.4.5.6.7.8.9.10.11");
+  await expect(page.getByText("1. Casa I · Identidad")).toBeVisible();
+});
