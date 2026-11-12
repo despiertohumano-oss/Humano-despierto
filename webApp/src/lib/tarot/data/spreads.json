@@ -106,7 +106,7 @@
       {
         "n": 3,
         "nombre": "Información del pasado",
-        "significado": "Qué te enseña lo vivido sobre el momento actual.",
+        "significado": "Lo que el pasado te informa.",
         "x": 1,
         "y": 0,
         "rotada": false,
@@ -116,7 +116,7 @@
       {
         "n": 4,
         "nombre": "Información del futuro",
-        "significado": "Qué conviene saber sobre lo que viene.",
+        "significado": "Lo que el futuro te informa.",
         "x": 1,
         "y": 2,
         "rotada": false,
@@ -126,7 +126,7 @@
       {
         "n": 5,
         "nombre": "Presente",
-        "significado": "Dónde estás parada o parado hoy.",
+        "significado": "Dónde estás hoy.",
         "x": 1,
         "y": 1,
         "rotada": false,
@@ -171,7 +171,7 @@
       {
         "n": 3,
         "nombre": "Pregunta",
-        "significado": "El corazón de lo que querés saber.",
+        "significado": "Lo que querés preguntar.",
         "x": 1,
         "y": 0,
         "rotada": false,
@@ -191,7 +191,7 @@
       {
         "n": 5,
         "nombre": "Primera pregunta",
-        "significado": "Lo primero que aparece al abrir la consulta.",
+        "significado": "La primera pregunta de la consulta.",
         "x": 1,
         "y": 2,
         "rotada": false,
@@ -498,7 +498,7 @@
       {
         "n": 1,
         "nombre": "Consultante",
-        "significado": "Quién sos hoy frente a esta pregunta.",
+        "significado": "Vos, quien consulta.",
         "x": 1,
         "y": 0,
         "rotada": false,
@@ -538,7 +538,7 @@
       {
         "n": 5,
         "nombre": "Cómo se manifiesta",
-        "significado": "Una tercera forma en que ese karma aparece.",
+        "significado": "Una tercera forma en que ese karma aparece en tu vida.",
         "x": 2,
         "y": 2,
         "rotada": false,
@@ -580,7 +580,7 @@
   {
     "slug": "relaciones",
     "nombre": "Tirada de las relaciones",
-    "descripcion": "Seis cartas para mirar un vínculo desde las dos personas, en tres momentos.",
+    "descripcion": "Seis cartas para mirar un vínculo desde las dos personas.",
     "cartas": [
       6
     ],
@@ -602,7 +602,7 @@
       {
         "n": 1,
         "nombre": "Persona A",
-        "significado": "Cómo se vive el vínculo desde la persona A",
+        "significado": "Cómo se vive el vínculo desde la persona A.",
         "x": 0,
         "y": 0,
         "rotada": false,
@@ -612,7 +612,7 @@
       {
         "n": 2,
         "nombre": "Persona B",
-        "significado": "Cómo se vive el vínculo desde la persona B",
+        "significado": "Cómo se vive el vínculo desde la persona B.",
         "x": 0,
         "y": 1,
         "rotada": false,
@@ -622,7 +622,7 @@
       {
         "n": 3,
         "nombre": "Persona A",
-        "significado": "Cómo se vive el vínculo desde la persona A",
+        "significado": "Cómo se vive el vínculo desde la persona A.",
         "x": 1,
         "y": 0,
         "rotada": false,
@@ -632,7 +632,7 @@
       {
         "n": 4,
         "nombre": "Persona B",
-        "significado": "Cómo se vive el vínculo desde la persona B",
+        "significado": "Cómo se vive el vínculo desde la persona B.",
         "x": 1,
         "y": 1,
         "rotada": false,
@@ -642,7 +642,7 @@
       {
         "n": 5,
         "nombre": "Persona A",
-        "significado": "Cómo se vive el vínculo desde la persona A",
+        "significado": "Cómo se vive el vínculo desde la persona A.",
         "x": 2,
         "y": 0,
         "rotada": false,
@@ -652,7 +652,7 @@
       {
         "n": 6,
         "nombre": "Persona B",
-        "significado": "Cómo se vive el vínculo desde la persona B",
+        "significado": "Cómo se vive el vínculo desde la persona B.",
         "x": 2,
         "y": 1,
         "rotada": false,
