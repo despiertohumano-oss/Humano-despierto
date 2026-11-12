@@ -136,21 +136,23 @@ export function buildReading(reading: Reading, question: string | null = null): 
   const positions = positionsFor(spread, reading.cards.length);
   const domain = classifyDomain(question);
   const raw = reading.cards.map((c, i) => place(positions[i]!, c.indice, c.reversed, domain));
-  const linksOf = (list: PlacedCard[]): Link[] => {
-    const out: Link[] = [];
-    for (let i = 1; i < list.length; i++) {
-      const from = list[i - 1]!;
-      const to = list[i]!;
-      out.push({ from, to, dignity: dignityBetween(baseElement(from.card), baseElement(to.card)) });
-    }
-    return out;
-  };
-  const firstLinks = linksOf(raw.map((p) => ({ ...p, mode: "equilibrio" as Mode })));
+  const grouped = spread.grupos.length > 0;
+  const prev = new Map<number, number>();
+  const chains = new Map<string, number[]>();
+  raw.forEach((p, i) => {
+    const key = grouped ? (p.position.grupo ?? "") : "";
+    chains.set(key, [...(chains.get(key) ?? []), i]);
+  });
+  for (const idx of chains.values()) {
+    idx.sort((x, y) => raw[x]!.position.n - raw[y]!.position.n);
+    for (let k = 1; k < idx.length; k++) prev.set(idx[k]!, idx[k - 1]!);
+  }
+  const dignityAt = (i: number) => dignityBetween(baseElement(raw[prev.get(i)!]!.card), baseElement(raw[i]!.card));
   const placed: PlacedCard[] = raw.map((p, i) => ({
     ...p,
-    mode: p.reversed || (i > 0 && firstLinks[i - 1]!.dignity === "debilita") ? "desequilibrio" : "equilibrio",
+    mode: p.reversed || (prev.has(i) && dignityAt(i) === "debilita") ? "desequilibrio" : "equilibrio",
   }));
-  const links = linksOf(placed);
+  const links: Link[] = placed.flatMap((to, i) => (prev.has(i) ? [{ from: placed[prev.get(i)!]!, to, dignity: dignityAt(i) }] : []));
   const groups = groupsOf(spread, placed);
   return {
     spread,
