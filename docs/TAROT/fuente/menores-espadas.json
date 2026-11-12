@@ -1,0 +1,137 @@
+{
+  "doc": "Arcanos menores. Espadas.docx",
+  "palo": "espadas",
+  "correspondencias": {
+    "energia": "Mente",
+    "cuerpo": "Cuerpo Mental",
+    "elemento": "Elemento Aire",
+    "reino": "Reino Humano",
+    "solido": "Octaedro (Sólidos platónicos)"
+  },
+  "narrativa": [
+    "Tenemos la oportunidad de llevar a cabo una idea, es arriesgada, puede salir muy bien o muy mal (As Espadas).",
+    "Es por ello que debemos pensarlo bien, escuchar nuestro corazón y nuestra cabeza (2 Espadas).",
+    "Muchas veces esto implica que debemos renunciar a algo y esto nos produce un gran dolor, un sentimiento de pérdida (3 Espadas).",
+    "Y es por eso que deberemos descansar, poner en orden nuestras ideas y coger fuerzas (4 Espadas).",
+    "Pero no debemos dormirnos en los laureles por que otros pueden aprovechar nuestra pasividad para jugarnos alguna mala pasada y con no muy buenas artes aprovecharse de nuestras ideas (5 Espadas).",
+    "Si esto sucede deberemos llevar nuestras ideas hacia otro lugar y con ello tomaremos distancia (6 Espadas).",
+    "Aprenderemos a ser diplomáticos, a ir con cuidado y a ser más listos (7 Espadas).",
+    "Pero hemos pasado tantas cosas que va a ser casi imposible no sentirnos atados (8 Espadas).",
+    "Habrá momentos en los que lo veremos todo muy negro y no sabremos qué debemos hacer (9 Espadas).",
+    "Pero llegará el momento en el que tocaremos fondo, nos daremos cuenta que así no podemos seguir y no nos quedará más remedio que volver a empezar, al final siempre sale el sol (10 Espadas). La vida es una lucha constante."
+  ],
+  "cartas": [
+    {
+      "doc": "Arcanos menores. Espadas.docx",
+      "seccion": "Rey de Espadas",
+      "numero": 14,
+      "imagen": "Un hombre de mirada severa está sentando en un juicio con su espada desenvainada. Obviamente, éste reclama justicia en los Arcanos Mayores y puede representar esta virtud pero, en este caso, más bien representa el poder de la vida y de la muerte, en virtud de su labor como juez terrenal.",
+      "significados": "Cualquier cosa relacionada con los juicios; poder, mando, autoridad, actitud política, ley, prerrogativas concernientes a la corona, etc.",
+      "invertida": "Crueldad, perversión, barbarie, perfidia, intenciones deshonestas."
+    },
+    {
+      "doc": "Arcanos menores. Espadas.docx",
+      "seccion": "Reina de Espadas",
+      "numero": 13,
+      "imagen": "Esta reina eleva a una dimensión mayor la repercusión del uso de la lógica en cada aspecto de la vida, es así como reposando en su trono, se le ve de perfil sosteniendo una espada, a la vez, su mirada dominante da a entender que tiene todo bajo control. Como es propio del palo de espadas, apela al intelecto y a las respuestas rápidas, adicional a esto pone por encima de todo los valores morales, de ahí que condene las mentiras y las segundas intenciones en el actuar.",
+      "significados": "Valor, inteligencia práctica, asuntos y actividades intelectuales, quizás una actitud matemática y una gran cultura en este campo; éxito en estos ámbitos.",
+      "invertida": "Vicio, debilidad, bajeza, perversidad, corrupción, peligro."
+    },
+    {
+      "doc": "Arcanos menores. Espadas.docx",
+      "seccion": "Caballo de Espadas",
+      "numero": 12,
+      "imagen": "Aparece un caballero en plena carrera, como si estuviera persiguiendo a sus enemigos. El dibujo nos muestra el verdadero prototipo del héroe romántico de la caballería. Podría tratarse de Sir Galahad, un héroe de las novelas del Santo Grial, cuya espada es segura y veloz porque él posee un corazón puro y sincero.",
+      "significados": "Habilidad, valor, capacidad, defensa, destreza, hostilidad, cólera, destrucción, oposición, resistencia, ruina. En cierto sentido, esta carta también puede representar la muerte, pero ello sólo sucede si va acompañada por otras cartas de fatalidad.",
+      "invertida": "Imprudencia, incapacidad, extravagancia, enojo, mal carácter"
+    },
+    {
+      "doc": "Arcanos menores. Espadas.docx",
+      "seccion": "Sota de Espadas",
+      "numero": 11,
+      "imagen": "Un ágil guerrero levanta una espada con ambas manos mientras camina. Está atravesando una tierra árida y, encima de él las nubes están dispuestas de forma desordenada. Está preparado y en estado de alerta, mirando aquí y allí, como si esperase que el enemigo fuese a aparecer en cualquier momento.",
+      "significados": "Autoridad, atención, reserva, vigilancia, espionaje, circunspección y todas las características que de ésta se derivan.",
+      "invertida": "El aspecto negativo de estas características; aquello que no se puede ver ni prevenir, falta de preparación, también la enfermedad."
+    },
+    {
+      "doc": "Arcanos menores. Espadas.docx",
+      "seccion": "Diez de Espadas",
+      "numero": 10,
+      "imagen": "Un hombre tumbado sobre un altar ha sido herido por diez espadas. Un amanecer está ante él, pero no puede verlo y menos disfrutarlo.",
+      "significados": "Cualquier cosa relacionada con el dibujo; también pena, aflicción, lágrimas, tristeza, desolación. No es exclusivamente una carta de muerte. Más bien su tono es psicólogico.",
+      "invertida": "Ventaja, provecho, éxito, favor, pero ninguno de éstos será duradero; también autoridad y poder."
+    },
+    {
+      "doc": "Arcanos menores. Espadas.docx",
+      "seccion": "Nueve de Espadas",
+      "numero": 9,
+      "imagen": "Una persona llorando, sentada en su lecho y con las espadas detrás de ella. Es como alguien que no conociese más dolor que el suyo. Se trata de una carta de amarga desolación. Extrema preocupación, por problemas propios y ajenos. Insomnio, no parar de pensar.",
+      "significados": "Muerte, fracaso, extravío, desilusión, decepción, desesperación.",
+      "invertida": "Cautiverio, sospecha, duda, temor fundado."
+    },
+    {
+      "doc": "Arcanos menores. Espadas.docx",
+      "seccion": "Ocho de Espadas",
+      "numero": 8,
+      "imagen": "Una mujer fuertemente atada y con los ojos vendados se encuentra rodeada de espadas. Se trata de una carta que representa una situación con una duración determinada, más que una esclavitud irremediable. La persona puede liberarse e irse de ese lugar, aunque no lo nota",
+      "significados": "Malas noticias, disgustos, crisis, censura, poder de los impedimentos, conflictos, calumnias y también enfermedades.",
+      "invertida": "Inquietud, dificultades, oposiciones, traición, acontecimientos imprevistos, fatalidad."
+    },
+    {
+      "doc": "Arcanos menores. Espadas.docx",
+      "seccion": "Siete de Espadas",
+      "numero": 7,
+      "imagen": "En las proximidades de un campamento vemos a un hombre cargando y transportando rápidamente cinco espadas, mientras que otras dos espadas permanecen clavadas en el suelo. Aparentemente no quiere ser detectado.",
+      "significados": "Escapismo, tentativa, deseo, esperanza, infidelidad; también habladurías y divagaciones, un plan que puede fracasar, molestias.",
+      "invertida": "Buen consejo, advertencia, enseñanza, maledicencia, habladurías malintencionadas vergüenza"
+    },
+    {
+      "doc": "Arcanos menores. Espadas.docx",
+      "seccion": "Seis de Espadas",
+      "numero": 6,
+      "imagen": "Un hombre en un transbordador transporta a los pasajeros, que también pueden ser familiares. El río está tranquilo en la otra orilla, y si observamos lo ligera que parece la carga, podemos deducir que el trabajo que realiza no es superior a sus fuerzas.",
+      "significados": "Viaje, alejamiento, solución mental. Destierro. Abandono de viejos sistemas de creencias.",
+      "invertida": "Declaración, confesión; falta de madurez, imposibilidad de soltar, auto exilio."
+    },
+    {
+      "doc": "Arcanos menores. Espadas.docx",
+      "seccion": "Cinco de Espadas",
+      "numero": 5,
+      "imagen": "Un hombre de aspecto desdeñoso sigue con la mirada dos tristes figuras que se alejan hacia el mar. Sus espadas yacen en el suelo. El hombre se está cargando otras dos espadas sobre su hombro izquierdo y lleva una tercera en su mano derecha con la punta mirando hacia el suelo. Ahora él es el dueño del campo.",
+      "significados": "Degradación, distribución, revocación, infamia, deshonor, pérdida, con todas sus correspondientes variantes y analogías.",
+      "invertida": "Lo mismo; culpa, negación al disfrute."
+    },
+    {
+      "doc": "Arcanos menores. Espadas.docx",
+      "seccion": "Cuatro de Espadas",
+      "numero": 4,
+      "imagen": "Un caballero con las manos juntas, como si estuviese rezando, está echado sobre su tumba, pero sin estar muerto. Se indica la necesidad de descansar la mente.",
+      "significados": "Vigilancia, retiro, soledad; el eremita solitario, el refugio del ermitaño; exilio, tumba y ataúd.",
+      "invertida": "Ahorro, circunspección, economía, avaricia, precaución, testamento."
+    },
+    {
+      "doc": "Arcanos menores. Espadas.docx",
+      "seccion": "Tres de Espadas",
+      "numero": 3,
+      "imagen": "Tres espadas atraviesan un corazón suspendido en un cielo encapotado de nubes y lluvia.",
+      "significados": "Degradación, ausencia, retraso, división, ruptura, dispersión y todo aquello cuanto pueda representar el dibujo ante los ojos del intérprete.",
+      "invertida": "Alienación mental, error, pérdida, distracción, desorden, confusión."
+    },
+    {
+      "doc": "Arcanos menores. Espadas.docx",
+      "seccion": "Dos de Espadas",
+      "numero": 2,
+      "imagen": "Una mujer con los ojos vendados sostiene en equilibrio dos espadas sobre sus hombros. Es de noche y en el cielo aparece la luna menguante. Las aguas a sus espaldas están tranquilas. Ella cuida su corazón y está en guardia.",
+      "significados": "Necesidad de decidir algo desde la mente. Negación a ver la realidad. Desequilibrio entre mente y emoción. Inercia. Testarudez",
+      "invertida": "Impostura, falsedad, duplicidad, deslealtad."
+    },
+    {
+      "doc": "Arcanos menores. Espadas.docx",
+      "seccion": "As de Espadas",
+      "numero": 1,
+      "imagen": "Una mano sale de una nube sosteniendo una espada cuya punta está rodeada por una corona adornada con los símbolos de la victoria. Es un gran inicio en la mente",
+      "significados": "Triunfo, el máximo grado que se pueda obtener en cualquier actividad, conquista, exaltación de la fuerza. Es una carta con un gran poder, sea en el amor, sea en el odio. La corona puede conllevar un significado más profundo respecto a aquello reconocido en el ámbito de la adivinación.",
+      "invertida": "Lo mismo, pero los resultados no son tan buenos; otra versión la interpreta como concepción, nacimiento, embarazo, fertilidad."
+    }
+  ]
+}
