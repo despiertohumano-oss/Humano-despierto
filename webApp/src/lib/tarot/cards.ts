@@ -31,6 +31,10 @@ const cardSchema = z.object({
   si_no: z.enum(["sí", "no", "depende"]),
   descripcion_imagen: z.string().min(1),
   waite_divinatory: z.object({ upright: z.string(), reversed: z.string() }),
+  en_equilibrio: z.string().min(80),
+  en_desequilibrio: z.string().min(80),
+  reflexion: z.array(z.string().regex(/^¿.+\?$/)).min(2).max(3),
+  fuente: z.string().regex(/^(mayores|bastos|copas|espadas|oros)#(\d{1,2}|sota|caballo|reina|rey)$/),
 });
 
 export type Card = z.infer<typeof cardSchema>;
