@@ -12,35 +12,43 @@
     "letra_hebrea": "Álef (א)",
     "numerologia": null,
     "palabras_clave_derecha": [
-      "comienzos",
-      "inocencia",
-      "espontaneidad",
-      "libertad",
-      "salto de fe",
+      "inicio",
       "aventura",
-      "potencial"
+      "inocencia",
+      "entusiasmo",
+      "confianza ciega",
+      "imprevisión",
+      "salto de fe"
     ],
     "palabras_clave_invertida": [
-      "imprudencia",
-      "temeridad",
-      "ingenuidad",
-      "bloqueo por miedo",
-      "falta de rumbo",
-      "riesgo innecesario"
+      "inicio que se posterga",
+      "entusiasmo con dudas",
+      "aventura a medio planear",
+      "confianza que vacila",
+      "imprevisión que pide atención",
+      "paso que todavía no se da"
     ],
-    "significado_derecha": "El Loco es el punto cero del viaje: la energía pura antes de cualquier forma. Cuando aparece, algo nuevo está pidiendo permiso para empezar, y lo hace sin garantías ni mapa. Habla de confiar en el proceso, de animarse a dar un paso aunque no se vea el suelo, y de recuperar una mirada fresca sobre la vida. No es ingenuidad tonta sino apertura: la capacidad de jugar, de equivocarse y de seguir. En una tirada suele marcar una decisión que se toma con el corazón liviano. Es buena señal para empezar proyectos, viajes o vínculos, siempre que mantengas los ojos abiertos mientras caminás hacia el borde.",
-    "significado_invertida": "Invertido, el Loco avisa que el salto se está dando sin mirar o, al contrario, que el miedo te tiene paralizado al borde del precipicio. Puede haber impulsividad, descuido con los detalles o una tendencia a evitar compromisos. También señala que te estás tomando algo demasiado a la ligera. La invitación es revisar: ni frenar por completo ni tirarte de cabeza, sino encontrar el momento justo para avanzar con conciencia.",
+    "significado_derecha": "El Loco es el arcano del comienzo: el viajero que camina hacia el borde del precipicio con paso liviano, mirando lejos y sin miedo. Cuando aparece, algo nuevo quiere empezar y lo hace desde la inocencia y el entusiasmo, con una confianza que no pide garantías. Es el peregrino que sale en busca de sí mismo, con la memoria de todo lo vivido guardada en la bolsa que lleva al hombro. Habla de aventura, de seguir un sueño y de sentirte merecedor de lo bueno que la vida trae. Su única advertencia es la imprevisión: confiar no es lo mismo que no mirar dónde pisás.",
+    "significado_invertida": "Invertido, el Loco no pierde las ganas de empezar: avisa que el salto todavía no está maduro. El entusiasmo está, pero lo frenan las dudas, la falta de un plan o la sensación de no saber por dónde avanzar. Puede ser un inicio que se demora, una aventura que se piensa más de lo que se vive o una confianza que necesita un poco más de realismo. No es momento de tirarte de cabeza ni de abandonar el sueño: date tiempo para ordenar la mochila y el paso va a llegar.",
+    "en_equilibrio": "Bien llevado, el Loco es entusiasmo tierno y confianza en la vida. Te sentís merecedor de lo bueno, te animás a empezar sin garantías y recibís cada experiencia con curiosidad, sin cargar el pasado como una deuda.",
+    "en_desequilibrio": "Trabado, el entusiasmo choca con quienes se oponen y se vuelve oposición. Cada traba se vive como un ataque personal, aparece el deseo de revancha y la aventura se convierte en una huida de la responsabilidad que termina dañándote.",
+    "reflexion": [
+      "¿Estás siguiendo tus sueños o escapando de la rutina?",
+      "¿Sentís que tenés que avanzar y no sabés cómo?",
+      "¿Tu optimismo te deja ver la realidad tal como es?"
+    ],
     "amor": "Un vínculo nuevo, liviano y sin cálculo. Si ya estás en pareja, invita a volver a jugar y a sorprenderse.",
     "trabajo": "Momento de empezar algo distinto o cambiar de rumbo. Las ideas poco convencionales tienen chance.",
     "dinero": "Gastos impulsivos a la vista. Está bien arriesgar, pero con un pequeño colchón de seguridad.",
     "salud": "Energía renovada y ganas de moverse. Cuidado con los accidentes por distracción.",
     "consejo": "Dá el paso, pero mirá dónde pisás.",
     "si_no": "sí",
-    "descripcion_imagen": "Un joven de ropa colorida avanza hacia el borde de un precipicio con la mirada al cielo, un atado en la vara sobre el hombro y una rosa blanca en la mano. Un perrito blanco salta a su lado, alertándolo o acompañándolo. El sol brilla detrás y las montañas nevadas del fondo marcan la altura espiritual desde la que parte.",
+    "descripcion_imagen": "Un joven de ropas coloridas camina con paso ligero hacia el borde de un precipicio, entre altas montañas, mirando la lejanía azul en lugar del abismo. Lleva una rosa blanca en una mano y, al hombro, un bastón del que cuelga una bolsa. Un perrito blanco salta a su lado y un sol amarillo brilla a sus espaldas.",
     "waite_divinatory": {
       "upright": "Folly, mania, extravagance, intoxication, delirium, frenzy, bewrayment.",
       "reversed": "Negligence, absence, distribution, carelessness, apathy, nullity, vanity."
-    }
+    },
+    "fuente": "mayores#0"
   },
   {
     "indice": 1,
@@ -55,35 +63,44 @@
     "letra_hebrea": "Bet (ב)",
     "numerologia": null,
     "palabras_clave_derecha": [
-      "manifestación",
-      "voluntad",
-      "habilidad",
+      "acción",
+      "poder personal",
+      "potencial",
+      "liderazgo",
+      "inteligencia",
+      "ingenio",
       "recursos",
-      "concentración",
-      "iniciativa",
-      "poder personal"
+      "energía yang"
     ],
     "palabras_clave_invertida": [
-      "manipulación",
-      "engaño",
-      "talento desaprovechado",
-      "dispersión",
-      "falta de plan",
-      "charlatanería"
+      "potencial dormido",
+      "acción que se demora",
+      "recursos sin usar todavía",
+      "liderazgo en formación",
+      "ingenio disperso",
+      "poder que no se reconoce"
     ],
-    "significado_derecha": "El Mago reúne sobre su mesa los cuatro elementos y los pone al servicio de una intención. Es la carta del hacer consciente: tenés las herramientas, el conocimiento y la energía para convertir una idea en algo concreto. Cuando sale, el mensaje es que el momento es ahora y que el poder está en tus manos, no en las circunstancias. Habla de comunicación clara, de ingenio, de saber conectar lo que pensás con lo que hacés. Es excelente para lanzar emprendimientos, negociar o estudiar algo nuevo. Pide enfocarte: la magia no es truco sino atención sostenida sobre un objetivo.",
-    "significado_invertida": "Invertido, el Mago puede ser alguien que usa su habilidad para manipular, o un talento que no se está usando por inseguridad o pereza. Hay dispersión: muchas ideas, poca acción. También puede marcar que alguien cercano promete más de lo que puede cumplir. Volvé a lo esencial: una meta, un plan, un primer paso real. Si representa a otra persona, mirá los hechos y no las palabras: un verdadero mago muestra resultados, no solo promesas brillantes.",
+    "significado_derecha": "El Mago es la energía activa, yang, que transforma una intención en hecho. Con una mano alza la vara hacia el cielo y con la otra señala la tierra: trae lo que está arriba y lo vuelve concreto. Sobre su mesa están los cuatro palos del tarot, todos los recursos de la vida a disposición de su voluntad. Cuando aparece, te recuerda que tenés el poder, la inteligencia y el ingenio para empezar algo propio y liderarlo. Habla de acción, de potencial que se pone en marcha y de animarte a elegir y mostrar con franqueza lo que de verdad te importa.",
+    "significado_invertida": "Invertido, el Mago conserva sus herramientas, pero todavía no las usa del todo. El potencial está, aunque quizá no lo reconocés, lo dispersás en muchas direcciones o esperás un permiso que no hace falta. Puede marcar un proyecto que tarda en arrancar o una voz que todavía no se anima a decir lo que quiere. No es falta de capacidad: es poder en proceso. Elegí una sola cosa, dale tu atención y empezá por el primer paso concreto.",
+    "en_equilibrio": "Bien llevado, el Mago es la persona que se anima a elegir y a mostrar de frente lo que le importa. Usa su inteligencia y sus recursos con honestidad, toma la iniciativa y conecta lo que piensa con lo que hace.",
+    "en_desequilibrio": "Trabado, el Mago calla. Después de sentirse ignorado o ridiculizado deja de elegir y de pelear por lo suyo, se da por vencido antes de empezar o usa su ingenio para manipular en lugar de crear. El poder sigue ahí, pero mudo.",
+    "reflexion": [
+      "¿Sos consciente de tu poder y de tu potencial?",
+      "¿Usás tu inteligencia y tus recursos de manera provechosa, o para manipular?",
+      "¿Te sentís víctima de una situación y no te animás a elegir?"
+    ],
     "amor": "Atracción fuerte y buena comunicación. Decí lo que sentís con claridad, el otro va a responder.",
     "trabajo": "Momento ideal para emprender, presentar proyectos o demostrar lo que sabés hacer.",
     "dinero": "Tenés los recursos para generar ingresos nuevos. Usá tu ingenio.",
     "salud": "Buena vitalidad. La mente influye en el cuerpo: pensá en positivo y actuá.",
     "consejo": "Tenés todo lo que necesitás; usalo con intención.",
     "si_no": "sí",
-    "descripcion_imagen": "Un hombre joven con túnica blanca y manto rojo alza una vara hacia el cielo con la derecha y señala la tierra con la izquierda. Sobre la mesa descansan la copa, la espada, el bastón y el pentáculo. Un lemniscata flota sobre su cabeza y una serpiente que se muerde la cola le ciñe la cintura; rosas y lirios lo rodean.",
+    "descripcion_imagen": "Un joven vestido de mago, de mirada viva y sonrisa confiada, levanta una vara hacia el cielo con la mano derecha y señala la tierra con la izquierda. Sobre su cabeza flota el ocho acostado, signo de lo infinito. En la mesa que tiene delante están la copa, la espada, el basto y el oro, y a sus pies crecen rosas y lirios.",
     "waite_divinatory": {
       "upright": "Skill, diplomacy, address, subtlety; sickness, pain, loss, disaster, snares of enemies; self-confidence, will; the Querent, if male.",
       "reversed": "Physician, Magus, mental disease, disgrace, disquiet."
-    }
+    },
+    "fuente": "mayores#1"
   },
   {
     "indice": 2,
@@ -99,34 +116,42 @@
     "numerologia": null,
     "palabras_clave_derecha": [
       "intuición",
-      "misterio",
-      "sabiduría interior",
-      "silencio",
-      "inconsciente",
+      "subconsciente",
+      "secretos ocultos",
+      "estudio",
       "receptividad",
-      "secretos"
+      "emoción",
+      "energía yin"
     ],
     "palabras_clave_invertida": [
-      "intuición bloqueada",
-      "secretos dañinos",
-      "superficialidad",
-      "desconexión",
-      "chismes",
-      "negación"
+      "intuición que tarda en hablar",
+      "secreto a punto de revelarse",
+      "estudio que pide más tiempo",
+      "emoción contenida",
+      "receptividad cansada",
+      "saber todavía en gestación"
     ],
-    "significado_derecha": "La Sacerdotisa custodia lo que todavía no se dice. Sentada entre las columnas de la luz y la sombra, invita a escuchar hacia adentro antes de actuar. Cuando aparece, hay información que no está a la vista y la respuesta llega por la intuición, los sueños o las señales sutiles, no por la lógica. Es una carta de paciencia y de profundidad: no es momento de forzar nada, sino de observar, estudiar y dejar que lo oculto se revele a su tiempo. En lo cotidiano habla de una persona sabia y reservada, o de tu propia capacidad de saber sin saber cómo. Confiá en lo que sentís aunque no puedas explicarlo todavía.",
-    "significado_invertida": "Invertida, la Sacerdotisa señala que estás ignorando tu voz interior o que la información se maneja con poca honestidad: rumores, secretos que lastiman, medias verdades. Puede ser desconexión con vos mismo, exceso de racionalidad o una intuición que confundís con ansiedad. Hacé silencio, bajá el ruido externo y volvé a escucharte. También puede señalar que alguien cercano guarda algo que te conviene saber; no lo fuerces, pero prestá atención a lo que no se dice en voz alta.",
+    "significado_derecha": "La Sacerdotisa es la energía receptiva, yin, que sabe antes de actuar. Sentada entre una columna blanca y una negra, con la luna a sus pies y el libro de la ley entre las manos, muestra que algunas cosas están a la vista y otras siguen ocultas. Cuando aparece, invita a escuchar el subconsciente, a estudiar antes de decidir y a confiar en lo que sentís aunque no puedas explicarlo. Habla de secretos, de enseñanza, de cuidado de la salud y de una entrega que es fecunda cuando no te borra a vos. Es tiempo de observar, aprender y guardar silencio.",
+    "significado_invertida": "Invertida, la Sacerdotisa sigue guardando su saber, pero tarda en compartirlo. La intuición habla bajito y cuesta oírla entre las emociones del momento; un secreto todavía no sale a la luz o un estudio necesita más tiempo para dar fruto. Puede marcar una entrega al otro que empezó a pesarte. No hace falta forzar respuestas: hacé silencio, ordená lo que sentís y lo oculto se va a revelar a su ritmo.",
+    "en_equilibrio": "Bien llevada, la Sacerdotisa vive la paz como armonía con el otro y no como sometimiento. Se hace responsable de sus decisiones, cuida sin olvidarse de sí misma y deja que su intuición la guíe con calma.",
+    "en_desequilibrio": "Trabada, la entrega sin medida termina en desilusión. Cuando la persona a la que se le dio todo decepciona, la emoción sube como humo en forma de enojo y después llegan el miedo a perder y la sensación de no merecer amor.",
+    "reflexion": [
+      "¿Guardás algún secreto que te pesa?",
+      "¿Te tomaste tu tiempo para estudiar la situación antes de decidir?",
+      "¿Te olvidaste de vos por atender las necesidades del otro?"
+    ],
     "amor": "Un vínculo con mucho no dicho. Hay atracción profunda, pero también algo que se guarda. Paciencia.",
     "trabajo": "Observá antes de decidir. Hay datos que todavía no tenés. Buen momento para investigar o estudiar.",
     "dinero": "No es momento de movimientos grandes. Esperá a tener la información completa.",
     "salud": "Atendé las señales del cuerpo y los ciclos. Descanso y conexión con lo emocional.",
     "consejo": "Escuchá lo que tu intuición ya sabe.",
     "si_no": "depende",
-    "descripcion_imagen": "Una mujer serena, con corona lunar de tres cuernos y una cruz solar sobre el pecho, se sienta entre dos columnas, una negra con la letra B y una blanca con la J. Sostiene un rollo con la palabra TORA y tiene una luna creciente a sus pies. Detrás, un velo bordado con granadas y palmeras oculta un mar en calma.",
+    "descripcion_imagen": "Una mujer serena se sienta entre dos columnas, una negra con la letra B y una blanca con la J, delante de un velo bordado con palmeras y granadas. Lleva una corona con dos cuernos y un disco, una gran cruz sobre el pecho y una luna creciente a sus pies. Entre las manos, medio cubierto por el manto, sostiene un rollo con la palabra TORA.",
     "waite_divinatory": {
       "upright": "Secrets, mystery, the future as yet unrevealed; the woman who interests the Querent, if male; the Querent herself, if female; silence, tenacity; mystery, wisdom, science.",
       "reversed": "Passion, moral or physical ardour, conceit, surface knowledge."
-    }
+    },
+    "fuente": "mayores#2"
   },
   {
     "indice": 3,
@@ -141,35 +166,43 @@
     "letra_hebrea": "Dálet (ד)",
     "numerologia": null,
     "palabras_clave_derecha": [
+      "fecundidad",
       "abundancia",
-      "fertilidad",
+      "prosperidad",
       "creatividad",
-      "nutrición",
-      "belleza",
-      "naturaleza",
-      "maternidad"
+      "expansión",
+      "expresión",
+      "promesa de crecimiento"
     ],
     "palabras_clave_invertida": [
-      "bloqueo creativo",
-      "dependencia",
-      "sobreprotección",
-      "descuido",
-      "estancamiento",
-      "vacío afectivo"
+      "fruto que todavía madura",
+      "abundancia demorada",
+      "creatividad en gestación",
+      "expansión más lenta",
+      "expresión contenida",
+      "espera que se alarga"
     ],
-    "significado_derecha": "La Emperatriz es la vida que crece: el jardín, el cuerpo, la idea que se vuelve obra. Representa la abundancia que no se fuerza sino que se cultiva, el placer de los sentidos y el cuidado amoroso de lo que uno quiere ver florecer. Cuando aparece, trae fertilidad en todos los planos: proyectos que prosperan, relaciones que se nutren, un hogar que se vuelve refugio. Pide conectar con el cuerpo, con la naturaleza y con la propia capacidad de dar. También puede anunciar embarazo, un nacimiento simbólico o una etapa de bienestar material. Es una carta generosa que recuerda que crear también es un acto de amor y de paciencia.",
-    "significado_invertida": "Invertida, la Emperatriz habla de una creatividad trabada, de dar tanto a los demás que uno queda vacío, o de depender afectiva o económicamente de otro. Puede haber descuido del cuerpo, desconexión con el placer o una maternidad (real o simbólica) que asfixia. La invitación es volver a nutrirte a vos primero. En lo práctico, revisá el cuerpo, la casa y los proyectos descuidados: lo que no se riega se seca, y vos también sos jardín.",
+    "significado_derecha": "La Emperatriz es la fecundidad del mundo visible: la gran madre que hace crecer lo que toca. Sentada en un jardín cuidado, junto a un bosque y un río, con el escudo de Venus a su lado, es la vida que se expande y da fruto. Cuando aparece, trae prosperidad, creatividad y ganas de expresar lo que llevás adentro. Habla de proyectos que se gestan, de vínculos que se vuelven fértiles y de un hogar que nutre. También marca un período de espera: lo sembrado necesita su tiempo de maduración, y respetarlo es parte de la abundancia.",
+    "significado_invertida": "Invertida, la Emperatriz sigue prometiendo crecimiento, pero el fruto todavía no está maduro. La creatividad está en gestación, la abundancia llega más despacio o la expresión queda contenida por un tiempo. Puede marcar ansiedad por cosechar antes de hora o una necesidad de sentirte valorado que todavía no encuentra respuesta. Seguí regando lo que sembraste y cuidate a vos con la misma ternura: la espera también es fértil.",
+    "en_equilibrio": "Bien llevada, la Emperatriz se siente apreciada y aprecia. Confía, se compromete y muestra su interés con generosidad, y desde ese lugar crea, cuida y hace prosperar lo que la rodea.",
+    "en_desequilibrio": "Trabada, la Emperatriz guarda el dolor de haber sido rechazada por quien menos lo esperaba. El resentimiento y la culpa le cierran el corazón, siente que no tiene elección y deja de dar, aunque por dentro siga deseando florecer.",
+    "reflexion": [
+      "¿Estás gestando algún proyecto?",
+      "¿Respetás el tiempo de maduración o te gana la ansiedad?",
+      "¿Confiás en la abundancia que puede traer el futuro?"
+    ],
     "amor": "Relación cálida, sensual y protectora. Puede hablar de formar familia o de un amor que cuida.",
     "trabajo": "Los proyectos creativos y los que involucran cuidado, estética o alimentos prosperan.",
     "dinero": "Etapa de abundancia y buenos frutos. Invertí en lo que te hace bien a largo plazo.",
     "salud": "Fertilidad, vitalidad y bienestar. Atención a los excesos de comida o comodidad.",
     "consejo": "Cuidá lo que querés que crezca, con tiempo y con cariño.",
     "si_no": "sí",
-    "descripcion_imagen": "Una mujer coronada con doce estrellas se reclina en un trono acolchado en medio de un campo de trigo maduro, vestida con una túnica de granadas. Un escudo con forma de corazón y el símbolo de Venus descansa a su lado. Detrás, un bosque y una cascada que alimenta un arroyo.",
+    "descripcion_imagen": "Una mujer joven, de mirada serena y majestuosa, se sienta en un trono acolchado con una corona de doce estrellas y un cetro coronado por una esfera. A su lado descansa un escudo con el signo de Venus. La rodea un campo de trigo maduro, y detrás se extienden un bosque y una cascada que alimenta un río.",
     "waite_divinatory": {
       "upright": "Fruitfulness, action, initiative, length of days; the unknown, clandestine; also difficulty, doubt, ignorance.",
       "reversed": "Light, truth, the unravelling of involved matters, public rejoicings; according to another reading, vacillation."
-    }
+    },
+    "fuente": "mayores#3"
   },
   {
     "indice": 4,
@@ -185,34 +218,42 @@
     "numerologia": null,
     "palabras_clave_derecha": [
       "autoridad",
+      "normas",
       "estructura",
-      "estabilidad",
-      "liderazgo",
-      "protección",
-      "disciplina",
-      "figura paterna"
+      "negocios",
+      "poder terrenal",
+      "masculinidad",
+      "inflexibilidad"
     ],
     "palabras_clave_invertida": [
-      "rigidez",
-      "autoritarismo",
-      "control excesivo",
-      "falta de disciplina",
-      "abuso de poder",
-      "inmadurez"
+      "autoridad que se está afirmando",
+      "estructura en construcción",
+      "normas que se revisan",
+      "negocios que se demoran",
+      "rigidez que empieza a ceder",
+      "liderazgo todavía inseguro"
     ],
-    "significado_derecha": "El Emperador pone orden donde había caos. Es la carta de la estructura, la ley propia y la autoridad que se gana con responsabilidad. Cuando sale, el consejo es organizar, establecer límites claros y sostener lo que se construyó. Habla de liderazgo firme, de planificación y de la capacidad de proteger a los que dependen de uno. Puede representar un padre, un jefe o una institución, pero también tu propia parte adulta que toma decisiones y las banca. En lo práctico favorece contratos, trámites y todo lo que requiera método. Su desafío es no confundir firmeza con dureza: el buen gobierno también escucha.",
-    "significado_invertida": "Invertido, el Emperador se vuelve tirano o se desploma: control excesivo, rigidez que ahoga, o por el contrario desorden, falta de autoridad y de compromiso. Puede señalar un conflicto con figuras de poder o una lucha interna por soltar el control. Revisá dónde ponés tu fuerza y si estás dirigiendo o solo imponiendo. Si hay alguien que te somete, es momento de marcar límites con calma; si el que impone sos vos, aflojá antes de que la estructura se agriete.",
+    "significado_derecha": "El Emperador es el poder de este mundo puesto en orden: el monarca que gobierna desde un trono de piedra adornado con cabezas de carnero. Representa la autoridad, las normas y la estructura que sostienen lo que se construye, y también el trono del pensamiento que organiza la realidad. Cuando aparece, pide liderar, poner reglas claras y ocuparte de lo concreto: negocios, trabajo, responsabilidades. Su sombra está en la misma carta: la inflexibilidad, el apego a lo material y la insensibilidad de quien solo vive para el deber. La buena autoridad también se permite sentir y cambiar.",
+    "significado_invertida": "Invertido, el Emperador sigue hablando de orden y de autoridad, pero en proceso: una estructura que todavía se está armando, un liderazgo que no termina de afirmarse o normas que se están revisando. Puede marcar negocios o trámites que se demoran, o una rigidez que empieza a aflojar. No hace falta imponerse ni rendirse: poné un orden posible, de a poco, y dejá lugar para escuchar.",
+    "en_equilibrio": "Bien llevado, el Emperador elige con franqueza y defiende lo que le importa. Usa su autoridad para ordenar y proteger, respeta las normas que tienen sentido y se anima a cambiar las que ya no sirven.",
+    "en_desequilibrio": "Trabado, el Emperador se encuentra con un mundo de reglas que no deja lugar al cambio y termina pareciéndose a él: deja de elegir, calla lo que siente y se vuelve estricto, insensible y materialista, atrapado en la rutina.",
+    "reflexion": [
+      "¿Estás siendo inflexible con vos o con los demás?",
+      "¿Trabajás en tu vocación o en algo que te impusieron?",
+      "¿Te permitís descansar y mostrar lo que sentís?"
+    ],
     "amor": "Un vínculo estable y comprometido, aunque algo serio. Cuidado con querer controlar al otro.",
     "trabajo": "Ascensos, responsabilidades y reconocimiento de tu autoridad. Organizá y liderá.",
     "dinero": "Finanzas ordenadas y seguras. Buen momento para planificar a largo plazo.",
     "salud": "Resistencia y disciplina. Revisá la tensión acumulada y la rigidez corporal.",
     "consejo": "Poné orden y sostenelo, sin volverte de piedra.",
     "si_no": "sí",
-    "descripcion_imagen": "Un hombre de barba blanca y armadura bajo el manto rojo se sienta en un trono de piedra gris adornado con cuatro cabezas de carnero. Sostiene un cetro en forma de ankh y un orbe. Detrás, montañas áridas y escarpadas, y un hilo de río al pie.",
+    "descripcion_imagen": "Un monarca coronado, de barba blanca y gesto altivo, se sienta en un trono de piedra adornado con cabezas de carnero. Bajo el manto rojo asoma una armadura. En la mano derecha sostiene un cetro con la forma de la cruz egipcia y en la izquierda una esfera. Detrás se levantan montañas áridas y escarpadas.",
     "waite_divinatory": {
       "upright": "Stability, power, protection, realization; a great person; aid, reason, conviction; also authority and will.",
       "reversed": "Benevolence, compassion, credit; also confusion to enemies, obstruction, immaturity."
-    }
+    },
+    "fuente": "mayores#4"
   },
   {
     "indice": 5,
@@ -228,34 +269,42 @@
     "numerologia": null,
     "palabras_clave_derecha": [
       "tradición",
-      "enseñanza",
-      "instituciones",
-      "creencias",
-      "guía espiritual",
+      "sistema de creencias",
+      "clan familiar",
+      "normas",
+      "respeto",
       "conformidad",
-      "rituales"
+      "dogma"
     ],
     "palabras_clave_invertida": [
-      "rebeldía",
-      "dogmatismo",
-      "hipocresía",
-      "cuestionar lo establecido",
-      "creencias propias",
-      "libertad de pensamiento"
+      "creencias en revisión",
+      "tradición que se cuestiona de a poco",
+      "pertenencia todavía incómoda",
+      "respeto que se está ganando",
+      "normas que pesan menos",
+      "conformidad que empieza a aflojar"
     ],
-    "significado_derecha": "El Sumo Sacerdote, también llamado el Papa o el Hierofante, es el puente entre lo sagrado y la comunidad. Representa la enseñanza que se transmite, las tradiciones que sostienen y las instituciones que dan marco: escuela, iglesia, familia, matrimonio. Cuando aparece, sugiere buscar un maestro o mentor, respetar un proceso establecido o formalizar algo. Habla de aprender con humildad y de encontrar sentido en los rituales compartidos. No es una carta de innovación sino de pertenencia: a veces el camino probado es el correcto. También puede marcar un consejo valioso de alguien con más experiencia o una ceremonia significativa.",
-    "significado_invertida": "Invertido, el Sumo Sacerdote cuestiona la norma: te rebelás contra una estructura que ya no te representa o chocás con un dogma rígido e hipócrita. Puede ser liberador, si encontrás tus propias creencias, o conflictivo, si rompés por rebeldía sin reflexión. Preguntate qué tradición querés conservar y cuál te pesa. En lo concreto, puede marcar un desacuerdo con una institución, un maestro o un formato de estudio que ya no te enseña nada nuevo.",
+    "significado_derecha": "El Sumo Sacerdote, también llamado Hierofante o Papa, es la autoridad de la tradición: el maestro que transmite una doctrina y bendice a quienes se arrodillan ante él. Representa el sistema de creencias que recibiste, el clan familiar, las instituciones y las normas que dan marco y pertenencia. Cuando aparece, habla de aprender de quienes recorrieron el camino, de respetar un proceso y de comprometerte con disciplina. También advierte que un dogma vivido con rigidez puede volverse abuso de poder. La pregunta es si tus creencias te sostienen o te limitan.",
+    "significado_invertida": "Invertido, el Sumo Sacerdote sigue hablando de creencias y de pertenencia, pero con menos peso o en plena revisión. Tal vez una tradición familiar empieza a quedarte chica, una norma te incomoda sin que todavía sepas qué poner en su lugar, o un aprendizaje formal se demora. No es tiempo de romper con todo: es tiempo de distinguir qué enseñanza querés conservar y cuál ya cumplió su ciclo.",
+    "en_equilibrio": "Bien llevado, el Sumo Sacerdote está en sintonía con sus valores y con su comunidad. Busca la igualdad y la cooperación, respeta la tradición sin dejar de pensar por sí mismo y comparte lo que sabe con generosidad.",
+    "en_desequilibrio": "Trabado, aparece la vergüenza de mostrarse tal cual uno es. Para pertenecer se acatan las reglas sin cuestionarlas y se renuncia a ser distinto; la norma se vuelve dogma y el clan pesa más que la propia voz.",
+    "reflexion": [
+      "¿Tu sistema de creencias te ayuda o te obstaculiza?",
+      "¿A qué normas te sentís sometido?",
+      "¿Necesitás autorización de otros para creer o para actuar?"
+    ],
     "amor": "Compromiso formal, casamiento o una relación con valores compartidos. Vínculo tradicional.",
     "trabajo": "Instituciones, educación, religión, empresas grandes. Seguí los procedimientos y buscá un mentor.",
     "dinero": "Conservador y seguro. No es momento de experimentos financieros.",
     "salud": "Tratamientos convencionales y rutinas probadas. Consultá a un profesional de confianza.",
     "consejo": "Aprendé de quienes ya recorrieron el camino.",
     "si_no": "sí",
-    "descripcion_imagen": "Un pontífice con tiara de tres niveles y túnica roja se sienta entre dos columnas grises, alzando la mano derecha en bendición y sosteniendo un báculo de triple cruz. A sus pies, dos llaves cruzadas y dos monjes tonsurados arrodillados, uno con rosas y otro con lirios bordados.",
+    "descripcion_imagen": "Un pontífice con la triple corona y vestiduras rojas se sienta entre dos columnas grises. Con la mano derecha da la bendición y con la izquierda sostiene un báculo terminado en triple cruz. A sus pies hay dos llaves cruzadas y dos ministros arrodillados frente a él.",
     "waite_divinatory": {
       "upright": "Marriage, alliance, captivity, servitude; by another account, mercy and goodness; inspiration; the man to whom the Querent has recourse.",
       "reversed": "Society, good understanding, concord, over-kindness, weakness."
-    }
+    },
+    "fuente": "mayores#5"
   },
   {
     "indice": 6,
@@ -270,35 +319,43 @@
     "letra_hebrea": "Zain (ז)",
     "numerologia": null,
     "palabras_clave_derecha": [
-      "amor",
-      "unión",
+      "enamoramiento",
+      "encuentro con el otro",
+      "pasión",
       "elección",
-      "armonía",
-      "valores",
-      "atracción",
-      "alianza"
+      "vulnerabilidad",
+      "tentación",
+      "ideas innovadoras"
     ],
     "palabras_clave_invertida": [
-      "desarmonía",
-      "indecisión",
-      "valores en conflicto",
-      "ruptura",
-      "tentación",
-      "desequilibrio"
+      "enamoramiento que todavía no se define",
+      "pasión contenida",
+      "elección postergada",
+      "vulnerabilidad cuidada",
+      "tentación que se observa",
+      "vínculo que madura despacio"
     ],
-    "significado_derecha": "Los Enamorados hablan del encuentro que transforma: dos que se eligen y, al hacerlo, se vuelven más ellos mismos. Pero más allá del romance, es la carta de la elección consciente. Aparece cuando hay que decidir con el corazón y los valores alineados, no solo con la cabeza. Trae armonía, atracción genuina y la posibilidad de una alianza que funcione en varios planos. También recuerda que toda unión implica renunciar a otras opciones. Si consultás por un vínculo, es muy favorable; si consultás por una decisión, pide que elijas lo que de verdad te representa. El ángel que bendice la escena sugiere que la elección correcta trae paz.",
-    "significado_invertida": "Invertidos, los Enamorados muestran una relación en desequilibrio, una decisión que se evita o valores que no coinciden. Puede haber tentación, infidelidad o simplemente miedo a comprometerse. A veces señala que te estás olvidando de vos en el vínculo. Volvé a preguntarte qué querés y qué estás dispuesto a dar. Si hay una elección pendiente, no la postergues por miedo a perder una de las opciones: la indecisión también elige, y suele elegir peor.",
+    "significado_derecha": "Los Enamorados muestran el encuentro entre el yo y el tú. Bajo un sol radiante, una figura alada extiende los brazos sobre un hombre y una mujer desnudos, como en el primer jardín: detrás de él, el árbol de la vida; detrás de ella, el árbol del conocimiento con la serpiente. Es la carta del enamoramiento, de la pasión y del deseo de completarse con otro, pero también de la elección entre caminos y de la tentación que pone a prueba. Habla de una energía joven, vulnerable y llena de ideas nuevas. Pide elegir con el corazón abierto y sin buscar afuera lo que falta adentro.",
+    "significado_invertida": "Invertidos, los Enamorados siguen hablando de un encuentro y de una elección, pero todavía en proceso. Puede haber un enamoramiento que no termina de definirse, una decisión que se posterga o una pasión que se vive con más cautela. A veces muestra la duda entre dos caminos o el temor a mostrarse vulnerable. No es un cierre: es un vínculo, o una decisión, que madura a su ritmo y pide claridad sobre lo que de verdad buscás.",
+    "en_equilibrio": "Bien llevados, los Enamorados se renuevan en el encuentro: aman con entusiasmo, eligen con honestidad y pueden comprometerse sin perderse. El vínculo suma, no viene a llenar un vacío.",
+    "en_desequilibrio": "Trabados, aparece la búsqueda de alguien que dé seguridad y llene un hueco. Si esa persona empieza a ignorar, se enciende un enojo ardiente, pero el miedo a perder impide decidir y todo queda igual, con una melancolía que se instala.",
+    "reflexion": [
+      "¿Buscás afuera algo que te haga sentir completo por dentro?",
+      "¿La pasión y el deseo pueden más que la razón?",
+      "¿Estás dispuesto a una relación estable y honesta?"
+    ],
     "amor": "Amor correspondido, elección mutua, posible inicio de una relación importante.",
     "trabajo": "Una decisión importante o una sociedad. Elegí lo que esté en línea con tus valores.",
     "dinero": "Decisiones financieras compartidas. Asegurate de que las dos partes estén de acuerdo.",
     "salud": "Armonía entre cuerpo y mente. Equilibrá lo que das y lo que recibís.",
     "consejo": "Elegí con el corazón, pero con los ojos abiertos.",
     "si_no": "sí",
-    "descripcion_imagen": "Un hombre y una mujer desnudos se miran bajo un ángel de alas rojas y cabello de fuego que extiende los brazos sobre ellos desde una nube iluminada por el sol. Detrás de la mujer, un árbol con la serpiente enroscada; detrás del hombre, un árbol con doce llamas. Una montaña se alza entre ambos.",
+    "descripcion_imagen": "Bajo un sol resplandeciente, un ángel de alas rojas extiende los brazos desde una nube sobre un hombre y una mujer desnudos que se miran. Detrás del hombre crece un árbol con frutos de fuego; detrás de la mujer, el árbol del conocimiento con una serpiente enroscada. Entre ambos se alza una montaña.",
     "waite_divinatory": {
       "upright": "Attraction, love, beauty, trials overcome.",
       "reversed": "Failure, foolish designs. Another account speaks of marriage frustrated and contrarieties of all kinds."
-    }
+    },
+    "fuente": "mayores#6"
   },
   {
     "indice": 7,
@@ -313,35 +370,43 @@
     "letra_hebrea": "Jet (ח)",
     "numerologia": null,
     "palabras_clave_derecha": [
-      "victoria",
-      "voluntad",
-      "control",
       "determinación",
-      "avance",
-      "disciplina",
-      "triunfo"
+      "decisión",
+      "control",
+      "metas",
+      "planeamiento",
+      "madurez",
+      "triunfo de la inteligencia"
     ],
     "palabras_clave_invertida": [
-      "falta de dirección",
-      "agresividad",
-      "obstáculos",
-      "pérdida de control",
-      "dispersión",
-      "derrota"
+      "decisión que se demora",
+      "control que todavía se busca",
+      "metas por ajustar",
+      "avance más lento",
+      "rumbo en definición",
+      "impulso que se reordena"
     ],
-    "significado_derecha": "El Carro es la voluntad en movimiento. Las dos esfinges tiran en direcciones opuestas y el conductor las domina sin riendas, solo con la fuerza de su enfoque. Cuando aparece, hay un impulso fuerte hacia una meta y la capacidad de sostenerlo a pesar de las contradicciones internas. Es victoria por esfuerzo, no por suerte: avanzar, imponerse a las dudas y mantener el rumbo. Favorece viajes, mudanzas, competencias y cualquier situación donde haga falta determinación. Habla de confianza en uno mismo y de un éxito que se conquista con disciplina. Su advertencia es sutil: controlar no es lo mismo que aplastar, y el camino importa tanto como la llegada.",
-    "significado_invertida": "Invertido, el Carro pierde el control: las fuerzas internas tiran para lados distintos y uno queda estancado o va a los golpes. Puede indicar agresividad, ambición desmedida, un viaje que se demora o una derrota por falta de dirección. Pará, revisá el destino y recuperá el foco antes de seguir acelerando. En viajes y trámites, prevé demoras y revisá la documentación; en lo personal, cuidá la tendencia a ganar discusiones que no necesitabas tener.",
+    "significado_derecha": "El Carro es la madurez que sale al mundo. Un príncipe de pie sobre su carro, con un pequeño cetro en la mano, avanza tirado por dos esfinges, una blanca y una negra: las fuerzas opuestas que aprendió a conducir. Es el triunfo de la inteligencia y de la voluntad, el lugar propio frente a la sociedad. Cuando aparece, pide decidir, fijar metas razonables, planificar y tomar las riendas con determinación. Habla de trabajo, de avance y de autonomía. Su límite es que conquista hacia afuera: el camino interior pide otra clase de respuestas.",
+    "significado_invertida": "Invertido, el Carro sigue en camino, pero más despacio. Las metas están, aunque todavía no se definió bien el rumbo o el control se reparte con otros. Puede marcar una decisión que se demora, un viaje o un proyecto que avanza con pausas, o la sensación de estar en un cruce sin animarte a elegir. No hace falta acelerar: ajustá el plan, recuperá tu dirección y retomá las riendas cuando estés listo.",
+    "en_equilibrio": "Bien llevado, el Carro lucha con franqueza por lo que le importa, sabe hacia dónde va y toma las riendas de su vida. Decide, planifica y avanza sin necesidad de dominar a nadie.",
+    "en_desequilibrio": "Trabado, otros manejan el carro. Tras sentirse controlado y desvalorizado, deja de elegir y calla; cuando la vida vuelve a ponerlo frente a una decisión, el miedo a perder otra vez lo deja quieto en el cruce.",
+    "reflexion": [
+      "¿Encontraste el norte de tu vida?",
+      "¿Quiénes manejan tu carro y a quiénes tratás de controlar?",
+      "¿Estás en un cruce de caminos y te toca elegir una dirección?"
+    ],
     "amor": "Un vínculo que avanza con decisión. Cuidado con imponerse demasiado al otro.",
     "trabajo": "Éxito por esfuerzo, ascenso o viaje laboral. Mantené la disciplina.",
     "dinero": "Avance financiero gracias a tu empuje. Controlá los impulsos.",
     "salud": "Mucha energía y recuperación rápida. Evitá el exceso de tensión y el estrés.",
     "consejo": "Mantené el rumbo; vos conducís.",
     "si_no": "sí",
-    "descripcion_imagen": "Un guerrero coronado con estrellas, armadura con lunas en los hombros y una vara en la mano, está de pie en un carro de piedra bajo un dosel de estrellas. Lo tiran una esfinge negra y una blanca, sentadas y quietas. Detrás, una ciudad amurallada y un río.",
+    "descripcion_imagen": "Un príncipe coronado de estrellas, con armadura y lunas sobre los hombros, va de pie en un carro de piedra bajo un dosel estrellado, con un pequeño cetro en la mano. Lo tiran dos esfinges, una blanca y una negra, sentadas y quietas. Detrás se ven una ciudad amurallada y un río.",
     "waite_divinatory": {
       "upright": "Succour, providence; also war, triumph, presumption, vengeance, trouble.",
       "reversed": "Riot, quarrel, dispute, litigation, defeat."
-    }
+    },
+    "fuente": "mayores#7"
   },
   {
     "indice": 8,
@@ -357,34 +422,42 @@
     "numerologia": null,
     "palabras_clave_derecha": [
       "coraje",
-      "paciencia",
-      "compasión",
-      "dominio de sí",
-      "fuerza interior",
-      "suavidad",
-      "confianza"
+      "perseverancia",
+      "dominio de las pasiones",
+      "sutileza",
+      "equilibrio emocional",
+      "entendimiento",
+      "fuerza interior"
     ],
     "palabras_clave_invertida": [
-      "inseguridad",
-      "debilidad",
-      "impulsos descontrolados",
-      "miedo",
-      "agresividad",
-      "falta de confianza"
+      "coraje que se está juntando",
+      "perseverancia cansada",
+      "pasiones a medio domar",
+      "sutileza que cuesta",
+      "fuerza en recuperación",
+      "emoción que pide calma"
     ],
-    "significado_derecha": "La Fuerza no es la del músculo sino la del corazón que no se asusta. La mujer cierra la boca del león con suavidad, sin violencia: domina el instinto desde el amor y la paciencia. Cuando aparece, el mensaje es que tenés más fortaleza interior de la que creés, y que el camino es la calma firme, no la pelea. Habla de perseverar, de manejar las emociones intensas sin reprimirlas y de tratar con ternura lo salvaje, propio o ajeno. Es excelente para procesos de sanación, para situaciones que requieren paciencia y para vínculos difíciles. Recuerda que la valentía más grande suele ser silenciosa.",
-    "significado_invertida": "Invertida, la Fuerza muestra inseguridad, miedo a no poder o, en el otro extremo, impulsos que se desbordan. Puede ser falta de confianza en tus capacidades, agotamiento emocional o reacciones agresivas por sentirte acorralado. El león sigue ahí: la propuesta es reconciliarte con tu propia fuerza en lugar de pelearte con ella. Si el león sos vos, no te castigues por tener instintos; si el león es otro, no intentes domarlo a gritos: la paciencia vence donde la fuerza bruta fracasa.",
+    "significado_derecha": "La Fuerza muestra a una mujer que sostiene con suavidad las fauces de un león, con el mismo ocho acostado que el Mago lleva sobre la cabeza. No vence por violencia: su influencia serena amansa al animal. Es la fuerza del corazón que entiende, el coraje sutil que domina las pasiones sin negarlas. Cuando aparece, habla de perseverancia, de trabajo sostenido y de un equilibrio emocional que te permite enfrentar lo difícil. Te recuerda que tenés más vigor del que creés y que la calma firme llega más lejos que la pelea.",
+    "significado_invertida": "Invertida, la Fuerza sigue presente, pero cansada o en recuperación. El coraje está, aunque cuesta sostenerlo; las emociones intensas todavía no encuentran su cauce y a veces se desbordan. Puede marcar un esfuerzo largo que pide descanso o un instinto que estás aprendiendo a escuchar sin dejar que mande. No es debilidad: es una fuerza que se está templando. Bajá un cambio, nutrite y volvé a la tarea con más suavidad.",
+    "en_equilibrio": "Bien llevada, la Fuerza es conciencia del propio vigor. La persona disfruta de lo que logró con esfuerzo, se siente unida con la vida y guía sus impulsos con suavidad, sin pelearse con ellos.",
+    "en_desequilibrio": "Trabada, la misma energía que sirve para luchar se vuelve en contra. Cuando falta reconocimiento o aparece la sensación de abandono, la emoción se desborda en reacciones histéricas y la vida se vive como una guerra.",
+    "reflexion": [
+      "¿Tus instintos te dominan o los sabés guiar?",
+      "¿Te estás desgastando para lograr tus objetivos?",
+      "¿En qué parte de tu vida te conviene ser más sutil?"
+    ],
     "amor": "Un amor paciente y profundo que supera dificultades. Pasión manejada con ternura.",
     "trabajo": "Perseverancia que da frutos. Enfrentá los desafíos con calma y confianza.",
     "dinero": "Disciplina y control sobre los gastos. Resistencia ante tentaciones.",
     "salud": "Recuperación y resistencia. Buen momento para hábitos saludables sostenidos.",
     "consejo": "La fuerza verdadera es suave y no se apura.",
     "si_no": "sí",
-    "descripcion_imagen": "Una mujer con vestido blanco, una guirnalda de flores en el pelo y la cintura, y una lemniscata sobre la cabeza, cierra con las manos las fauces de un león de pie que la mira mansamente. El fondo es un paisaje dorado y sereno con una montaña azul lejana.",
+    "descripcion_imagen": "Una mujer vestida de blanco, con una guirnalda de flores en el pelo y en la cintura y el ocho acostado sobre la cabeza, sostiene con las manos las fauces de un león que la mira manso. Detrás se abre un paisaje dorado y sereno, con una montaña azul a lo lejos.",
     "waite_divinatory": {
       "upright": "Power, energy, action, courage, magnanimity; also complete success and honours.",
       "reversed": "Despotism, abuse of power, weakness, discord, sometimes even disgrace."
-    }
+    },
+    "fuente": "mayores#8"
   },
   {
     "indice": 9,
@@ -400,34 +473,42 @@
     "numerologia": null,
     "palabras_clave_derecha": [
       "introspección",
-      "búsqueda",
-      "soledad elegida",
-      "sabiduría",
-      "guía interior",
-      "retiro",
-      "reflexión"
+      "búsqueda interior",
+      "espiritualidad",
+      "soledad",
+      "pausa",
+      "observación",
+      "meditación"
     ],
     "palabras_clave_invertida": [
-      "aislamiento",
-      "soledad no deseada",
-      "rechazo de ayuda",
-      "paranoia",
-      "obsesión",
-      "desconexión"
+      "pausa que se posterga",
+      "introspección a medias",
+      "búsqueda interior que recién empieza",
+      "soledad que pesa un poco",
+      "descanso pendiente",
+      "luz propia todavía tenue"
     ],
-    "significado_derecha": "El Ermitaño se aleja del ruido para encontrar su propia luz. Es la carta del retiro voluntario, del tiempo a solas que no es castigo sino necesidad: pensar, revisar, madurar. Cuando aparece, invita a bajar el ritmo, a hacerte las preguntas importantes y a buscar respuestas adentro o en un maestro que ya recorrió el camino. Habla de sabiduría ganada con experiencia, de prudencia y de una búsqueda espiritual sincera. No es momento de decisiones apresuradas ni de vida social intensa. La linterna que sostiene ilumina solo el próximo paso, y eso alcanza. También puede representar a un guía discreto que aparece justo cuando hace falta.",
-    "significado_invertida": "Invertido, el Ermitaño se aísla demasiado o rechaza la soledad que necesita. Puede haber encierro, desconfianza, obsesión con una idea o una desconexión del mundo que ya no es sana. También señala a alguien que no quiere escuchar consejos. Ni huir de la gente ni huir de vos: encontrá el balance entre el retiro y el regreso. Si llevás demasiado tiempo sin ver a nadie, proponete un encuentro breve con alguien de confianza; la linterna sirve para alumbrar, no para esconderse detrás.",
+    "significado_derecha": "El Ermitaño es el sabio que se aparta del ruido para escuchar su voz interior. Envuelto en su capa, apoyado en el bastón de la prudencia, levanta un farol con una estrella adentro: la luz de la conciencia que alumbra el pasado, el presente y lo que viene. Cuando aparece, pide una pausa, reposo, observación y tiempo a solas para meditar. Habla de búsqueda interior y de espiritualidad vivida con discreción. No es aislamiento por miedo, sino un retiro que madura, y a veces anuncia a un guía que comparte su luz con quien está listo para recibirla.",
+    "significado_invertida": "Invertido, el Ermitaño sigue llamando a la pausa, pero todavía no te la das del todo. Puede haber un retiro postergado por las obligaciones, una búsqueda interior que recién empieza o una soledad que se siente más pesada que fértil. La luz está, aunque alumbra poco. Regalate un rato de silencio de verdad, aunque sea corto, y dejá que la respuesta llegue de adentro antes de pedirla afuera.",
+    "en_equilibrio": "Bien llevado, el Ermitaño frena la vorágine para escuchar su corazón. Desde ese silencio elige con sinceridad lo que de verdad necesita y confía en su propia sabiduría para dar el próximo paso.",
+    "en_desequilibrio": "Trabado, deja que otros elijan por él en lugar de atender lo que su ser necesita. Aparecen la culpa y la sensación de haberse rendido por no escuchar su voz interior, o un retiro que se vuelve huida del mundo.",
+    "reflexion": [
+      "¿Qué te impide hacer una pausa?",
+      "¿Te detenés a escuchar tu voz interior?",
+      "¿Estás escapando del mundo o buscando un silencio que te nutra?"
+    ],
     "amor": "Tiempo para estar con uno mismo. Si hay pareja, cada uno necesita su espacio.",
     "trabajo": "Trabajo solitario, investigación o estudio. Analizá antes de actuar.",
     "dinero": "Prudencia y austeridad. No es momento de gastar ni de arriesgar.",
     "salud": "Descanso, retiro y chequeos. Atendé la salud mental y el silencio.",
     "consejo": "Hacé silencio para escuchar tu propia luz.",
     "si_no": "depende",
-    "descripcion_imagen": "Un anciano encapuchado, de manto gris y larga barba blanca, se detiene en la cima de una montaña nevada. Sostiene en alto una linterna con una estrella de seis puntas en su interior y se apoya en un bastón dorado. Mira hacia abajo, hacia el camino que otros recorrerán.",
+    "descripcion_imagen": "Un anciano de larga barba blanca, envuelto en una capa gris con capucha, se detiene en la cima de una montaña nevada. Con una mano levanta un farol en cuyo interior brilla una estrella de seis puntas y con la otra se apoya en un largo bastón. Mira hacia abajo, hacia el camino que otros todavía recorren.",
     "waite_divinatory": {
       "upright": "Prudence, circumspection; also and especially treason, dissimulation, roguery, corruption.",
       "reversed": "Concealment, disguise, policy, fear, unreasoned caution."
-    }
+    },
+    "fuente": "mayores#9"
   },
   {
     "indice": 10,
@@ -442,35 +523,43 @@
     "letra_hebrea": "Kaf (כ)",
     "numerologia": null,
     "palabras_clave_derecha": [
-      "cambio",
       "ciclos",
       "destino",
-      "suerte",
-      "giro",
+      "movimiento",
+      "causa y efecto",
       "oportunidad",
+      "suerte",
       "karma"
     ],
     "palabras_clave_invertida": [
-      "mala racha",
-      "resistencia al cambio",
-      "ciclos que se repiten",
-      "demoras",
-      "pérdida de control",
-      "fatalismo"
+      "giro que se demora",
+      "ciclo que todavía no cierra",
+      "oportunidad que madura",
+      "movimiento lento",
+      "lección que se repite",
+      "suerte en camino"
     ],
-    "significado_derecha": "La Rueda gira y nada queda igual: lo que estaba abajo sube, lo que estaba arriba baja. Es la carta de los ciclos y de los giros inesperados, en general favorables. Cuando aparece, algo cambia de rumbo por una causa que no controlás del todo, y la respuesta es adaptarse con confianza. Habla de suerte, de oportunidades que llegan y de un destino que se mueve a tu favor si te animás a subirte. También recuerda que todo lo que sembraste vuelve: las consecuencias de acciones pasadas se hacen visibles. Es un buen momento para apostar al movimiento y aceptar que la vida tiene sus propios tiempos.",
-    "significado_invertida": "Invertida, la Rueda marca una mala racha, demoras o la sensación de que la vida da vueltas sin avanzar. Puede ser resistencia a un cambio necesario o la repetición de un patrón que no se aprendió. Nada es permanente: en vez de pelearte con el giro, preguntate qué lección se está repitiendo y qué podés hacer distinto. En lo práctico, evitá apuestas y decisiones impulsivas mientras la racha es adversa; la rueda vuelve a subir, pero conviene llegar entero a ese momento.",
+    "significado_derecha": "La Rueda de la Fortuna muestra el movimiento constante de un universo que cambia. En el centro gira la rueda con la palabra TARO y las letras del nombre divino; arriba, una esfinge con espada guarda el equilibrio, y en las esquinas leen las cuatro criaturas aladas. Es la carta de los ciclos, del destino y de la ley de causa y efecto: lo que sembraste vuelve. Cuando aparece, se abre una oportunidad o llega un giro de suerte. Pide fluir con el cambio sin perder tu eje y asumir la responsabilidad de tus actos, porque la rueda también la movés vos.",
+    "significado_invertida": "Invertida, la Rueda sigue girando, pero más lento. El cambio está en marcha aunque todavía no se ve, una oportunidad tarda en presentarse o un ciclo se repite hasta que se entienda su lección. No es mala suerte: es un tiempo de espera dentro del movimiento. Mirá qué patrón se repite, qué parte depende de vos, y preparate para cuando la rueda vuelva a tomar impulso.",
+    "en_equilibrio": "Bien llevada, la Rueda se vive con confianza en un orden que sostiene: la persona se siente apreciada por la vida, aprovecha sus oportunidades y se hace responsable de lo que siembra.",
+    "en_desequilibrio": "Trabada, cuando las cosas no salen como se esperaba aparecen el resentimiento y la confusión. La persona se siente castigada o rechazada por el destino, se resiste a los cambios y repite situaciones dolorosas.",
+    "reflexion": [
+      "¿Sentís que tenés buena o mala suerte?",
+      "¿Repetís situaciones dolorosas?",
+      "¿Ante los movimientos del mundo, te mantenés en tu eje?"
+    ],
     "amor": "Giro inesperado: un encuentro casual o una etapa nueva en la pareja. Dejá que fluya.",
     "trabajo": "Cambios de rumbo, oportunidades imprevistas. Aprovechá el impulso.",
     "dinero": "Golpe de suerte o entrada inesperada. Recordá que la rueda también baja: guardá algo.",
     "salud": "Mejoría cíclica. Las cosas se destraban. Atención a los altibajos.",
     "consejo": "Subite al cambio en vez de resistirlo.",
     "si_no": "sí",
-    "descripcion_imagen": "Una gran rueda con letras TARO y símbolos alquímicos flota entre nubes. Sobre ella se posa una esfinge azul con espada; a un lado baja una serpiente amarilla y por el otro sube Anubis rojo. En las esquinas, cuatro seres alados con libros: ángel, águila, león y toro, los cuatro evangelistas o elementos fijos.",
+    "descripcion_imagen": "Una gran rueda con las letras TARO y signos alquímicos flota entre nubes. Arriba se sienta una esfinge azul con una espada; por un costado baja una serpiente y por el otro sube una figura roja con cabeza de chacal. En las cuatro esquinas, sobre nubes, un ángel, un águila, un león y un toro leen sus libros.",
     "waite_divinatory": {
       "upright": "Destiny, fortune, success, elevation, luck, felicity.",
       "reversed": "Increase, abundance, superfluity."
-    }
+    },
+    "fuente": "mayores#10"
   },
   {
     "indice": 11,
@@ -485,35 +574,43 @@
     "letra_hebrea": "Lámed (ל)",
     "numerologia": null,
     "palabras_clave_derecha": [
-      "equilibrio",
-      "verdad",
-      "responsabilidad",
-      "causa y efecto",
-      "decisión justa",
-      "claridad",
-      "ley"
+      "justicia",
+      "honestidad",
+      "igualdad",
+      "rendición de cuentas",
+      "trámites",
+      "juicios",
+      "exámenes"
     ],
     "palabras_clave_invertida": [
-      "injusticia",
-      "deshonestidad",
-      "evasión de responsabilidad",
-      "parcialidad",
-      "desequilibrio",
-      "complicaciones legales"
+      "trámite demorado",
+      "justicia que tarda",
+      "honestidad que se está revisando",
+      "juicio todavía abierto",
+      "examen pendiente",
+      "cuentas por ordenar"
     ],
-    "significado_derecha": "La Justicia sostiene la balanza con una mano y la espada con la otra: pesa y luego corta. Es la carta de la verdad sin adornos y de la responsabilidad por lo que uno hace. Cuando aparece, las cosas se acomodan según el mérito: lo que diste vuelve, lo que evitaste también. Habla de decisiones claras, de contratos, trámites legales y acuerdos que necesitan ser justos para las dos partes. Pide objetividad, honestidad con uno mismo y la valentía de asumir las consecuencias. Es favorable si actuaste con integridad; si no, invita a reparar. Su equilibrio no es frialdad sino lucidez.",
-    "significado_invertida": "Invertida, la Justicia muestra una situación injusta, un juicio parcial o la negativa a hacerse cargo de las consecuencias. Puede haber engaño, complicaciones legales o la sensación de que no se recibe lo merecido. También señala una autoexigencia desmedida o una culpa que no corresponde. Revisá la balanza: qué falta compensar y a quién. Si hay un litigio o una negociación en curso, buscá asesoramiento y documentá todo; la carta pide hechos, no impresiones ni versiones.",
+    "significado_derecha": "La Justicia se sienta entre dos columnas con la espada en alto y la balanza en la mano: es el principio que trata a cada uno según sus actos. Habla de honestidad con vos y con los demás, de igualdad y de rendir cuentas por las propias elecciones. Cuando aparece, también se refiere a lo concreto: trámites, papeles, juicios, abogados, exámenes y todo lo que pase por una ley o un reglamento. Es favorable cuando actuaste con integridad y pide hacerte cargo de lo que te toca, sin culpar a otros ni culparte de más.",
+    "significado_invertida": "Invertida, la Justicia sigue en marcha, pero tarda. Un trámite se demora, un juicio o un examen queda abierto, o la burocracia frena lo que esperabas. También puede marcar una cuenta pendiente con vos mismo: algo que todavía no terminás de asumir. No es que la balanza no se vaya a equilibrar, es que necesita tiempo y datos. Ordená tus papeles, sé honesto con lo que hiciste y seguí el proceso con paciencia.",
+    "en_equilibrio": "Bien llevada, la Justicia es confianza en que las cosas se acomodan con honestidad. La persona se siente considerada, segura y con energía para emprender, porque se hace responsable de sus elecciones.",
+    "en_desequilibrio": "Trabada, la persona se siente ignorada y teme perder lo poco que tiene. Cree que solo se consigue algo peleando, desconfía del afecto y vive la ley como un castigo o como una traba sin salida.",
+    "reflexion": [
+      "¿Sos honesto con vos y con los demás?",
+      "¿Te hacés responsable de tus elecciones o culpás a otros de los resultados?",
+      "¿Tenés trámites o cuestiones legales pendientes?"
+    ],
     "amor": "Vínculo equilibrado y honesto. Si hay una deuda emocional, es momento de saldarla.",
     "trabajo": "Contratos, decisiones justas, resolución de conflictos. Actuá con integridad.",
     "dinero": "Equilibrio en las cuentas. Trámites, impuestos, herencias o acuerdos favorables si fuiste honesto.",
     "salud": "Equilibrio y moderación. Las consecuencias de tus hábitos se hacen visibles.",
     "consejo": "Sé honesto y hacete cargo; la balanza se acomoda.",
     "si_no": "depende",
-    "descripcion_imagen": "Una figura coronada y vestida de rojo se sienta entre dos columnas de piedra ante un velo púrpura. Sostiene una espada erguida en la mano derecha y una balanza en la izquierda. Un pie asoma bajo la túnica y un broche cuadrado le cierra el manto.",
+    "descripcion_imagen": "Una figura coronada, vestida de rojo, se sienta entre dos columnas de piedra delante de un velo púrpura. En la mano derecha sostiene una espada en alto y en la izquierda una balanza. Un pie blanco asoma bajo la túnica.",
     "waite_divinatory": {
       "upright": "Equity, rightness, probity, executive; triumph of the deserving side in law.",
       "reversed": "Law in all its departments, legal complications, bigotry, bias, excessive severity."
-    }
+    },
+    "fuente": "mayores#11"
   },
   {
     "indice": 12,
@@ -528,35 +625,43 @@
     "letra_hebrea": "Mem (מ)",
     "numerologia": null,
     "palabras_clave_derecha": [
-      "pausa",
+      "espera",
+      "latencia",
       "entrega",
-      "nueva perspectiva",
       "sacrificio",
-      "suspensión",
-      "soltar",
-      "espera fértil"
+      "metamorfosis",
+      "no acción",
+      "cambio de mirada"
     ],
     "palabras_clave_invertida": [
-      "estancamiento",
-      "resistencia",
-      "sacrificio inútil",
-      "demoras",
-      "victimismo",
-      "indecisión"
+      "espera que se alarga",
+      "entrega a medias",
+      "cambio de mirada en proceso",
+      "metamorfosis lenta",
+      "sacrificio que se revisa",
+      "pausa que cuesta aceptar"
     ],
-    "significado_derecha": "El Colgado cuelga cabeza abajo y, sin embargo, su rostro está sereno y rodeado de luz. Es la carta de la pausa que transforma: dejar de luchar, cambiar el punto de vista y aceptar un tiempo de espera que no depende de uno. Cuando aparece, algo está suspendido y la mejor acción es no actuar. Habla de entrega, de sacrificar una comodidad por un sentido mayor, de mirar el mundo al revés para entenderlo mejor. Puede ser un período de transición, de enfermedad que obliga a parar o de una decisión postergada. No es una carta de pérdida sino de maduración: lo que soltás ahora te libera después.",
-    "significado_invertida": "Invertido, el Colgado marca una espera que se volvió estancamiento, un sacrificio sin sentido o una resistencia a ver las cosas de otra manera. Puede haber victimismo, demoras que irritan o indecisión crónica. El tiempo de colgar terminó: es hora de bajar del árbol y moverse, aunque sea despacio. Si llevás meses en pausa esperando que algo cambie solo, el mensaje es claro: la perspectiva ya la tenés, ahora falta el paso.",
+    "significado_derecha": "El Colgado cuelga cabeza abajo de un árbol vivo en forma de tau, con las piernas cruzadas y una aureola alrededor de la cabeza. Su rostro no expresa sufrimiento sino calma: es una vida en suspenso, no una pérdida. Es la carta de la latencia, de la espera y de la no acción que transforma. Cuando aparece, algo se detiene para que puedas mirar desde otro ángulo y cambiar la forma de pensar. Habla de entrega, de un sacrificio con sentido y de una metamorfosis que ocurre por dentro antes de verse afuera.",
+    "significado_invertida": "Invertido, el Colgado sigue en pausa, y la pausa se alarga. El cambio de mirada está empezando pero todavía no termina de asentarse, o cuesta aceptar la espera y aparece la impaciencia. Puede marcar un sacrificio que estás revisando o una situación que se siente estancada. La transformación sigue su curso: soltá un poco el control y dejá que el nuevo punto de vista madure.",
+    "en_equilibrio": "Bien llevado, el Colgado sabe esperar con optimismo. Acepta la pausa, se entrega a lo que no puede forzar y aprovecha ese tiempo para cambiar creencias y encontrar armonía entre lo que piensa y lo que siente.",
+    "en_desequilibrio": "Trabado, la persona se siente cuestionada y pisoteada, y se endurece para protegerse. Se vuelve rígida e inflexible, vive la espera como un castigo y siente que su vida está estancada.",
+    "reflexion": [
+      "¿Qué estás sacrificando para lograr tus metas?",
+      "¿Necesitás detenerte para encontrar otra solución?",
+      "¿Qué creencias podrías cambiar para destrabar tu camino?"
+    ],
     "amor": "Pausa en la relación o un sacrificio por el otro. Esperá antes de decidir.",
     "trabajo": "Proyectos detenidos. Usá el tiempo para repensar el enfoque.",
     "dinero": "Inversiones congeladas y gastos que no avanzan. Paciencia; no fuerces nada.",
     "salud": "Descanso obligado. Enfermedad que invita a cambiar hábitos y perspectiva.",
     "consejo": "Soltá el control y mirá desde otro ángulo.",
     "si_no": "no",
-    "descripcion_imagen": "Un joven cuelga de un pie atado a una cruz tau de madera viva, con la otra pierna cruzada formando un cuatro y las manos detrás de la espalda. Viste calzas rojas y túnica azul, y un halo dorado rodea su cabeza. Su expresión es tranquila, casi contemplativa.",
+    "descripcion_imagen": "Un hombre cuelga cabeza abajo de un árbol de madera viva con forma de tau, atado por un pie, con la otra pierna cruzada detrás de la rodilla y las manos a la espalda. Una aureola dorada le rodea la cabeza. Su rostro está sereno, más cerca de la contemplación que del dolor.",
     "waite_divinatory": {
       "upright": "Wisdom, circumspection, discernment, trials, sacrifice, intuition, divination, prophecy.",
       "reversed": "Selfishness, the crowd, body politic."
-    }
+    },
+    "fuente": "mayores#12"
   },
   {
     "indice": 13,
@@ -571,35 +676,42 @@
     "letra_hebrea": "Nun (נ)",
     "numerologia": null,
     "palabras_clave_derecha": [
-      "transformación",
-      "fin de ciclo",
-      "cambio profundo",
-      "renacimiento",
-      "soltar",
+      "fin de una etapa",
+      "cambio inevitable",
       "transición",
-      "cierre"
+      "corte",
+      "transformación",
+      "renovación"
     ],
     "palabras_clave_invertida": [
-      "resistencia al cambio",
-      "miedo",
-      "estancamiento",
-      "duelo prolongado",
+      "cierre que se demora",
+      "cambio en proceso",
+      "transición lenta",
+      "corte postergado",
       "transformación interna",
-      "aferrarse"
+      "etapa que todavía no termina"
     ],
-    "significado_derecha": "La Muerte casi nunca habla de muerte física: habla de un final que ya está ocurriendo y que deja lugar a algo nuevo. El esqueleto avanza sin apuro y nadie puede detenerlo, pero el sol sale entre las torres del fondo. Cuando aparece, una etapa, una relación o una forma de ser está terminando, y resistirse solo prolonga el dolor. Es una carta de transformación profunda: se suelta lo que ya no tiene vida para que crezca lo que sí. Pide aceptar el duelo, cerrar con dignidad y confiar en el renacimiento. Muchas veces anuncia un cambio liberador que se venía postergando.",
-    "significado_invertida": "Invertida, la Muerte muestra un final que no se acepta: aferrarse a lo que ya no funciona, miedo paralizante al cambio o un duelo que no termina de procesarse. También puede indicar una transformación interna lenta que todavía no se ve afuera. Lo que no se suelta a tiempo se pudre; permitite cerrar el ciclo. Si el duelo es por una persona o una relación, date el tiempo que necesites, pero no conviertas el recuerdo en un lugar donde vivir.",
+    "significado_derecha": "La Muerte casi nunca habla de un final físico: habla de una etapa que termina para que empiece otra. Un esqueleto con armadura avanza lento en su caballo blanco, con un estandarte negro que lleva la rosa de la vida; frente a él caen reyes y se inclinan niños y doncellas, y entre dos torres sale el sol. Es la transición inevitable, el corte que ya no se puede postergar, el momento más oscuro de un proceso de transformación. Cuando aparece, pide aceptar el cambio y estar receptivo: detrás de cada final viene un comienzo.",
+    "significado_invertida": "Invertido, este arcano sigue anunciando un cambio, pero en proceso o más lento. Una etapa está terminando aunque todavía no se cerró del todo, un corte se posterga o la transformación ocurre por dentro antes de mostrarse afuera. Puede haber cansancio o miedo frente a lo nuevo. No hace falta forzar el final ni aferrarte a lo que se va: date el tiempo del duelo y pedí cuidado a quienes te quieren.",
+    "en_equilibrio": "Bien llevada, la Muerte se vive con receptividad: se acepta que algo terminó, se atraviesa el duelo y se deja espacio para lo nuevo, confiando en que todo final trae un comienzo.",
+    "en_desequilibrio": "Trabada, aparecen el abatimiento y la desilusión. Cada intento de cambio que no funcionó enciende el enojo, se ve todo negro, cuesta encontrar motivación y crece la necesidad de cuidado y de afecto.",
+    "reflexion": [
+      "¿Hay algo en tu vida que necesita cambiar?",
+      "¿Sentís que algo está llegando a su final?",
+      "¿Reconocés que detrás de un final viene un nuevo comienzo?"
+    ],
     "amor": "Fin de una etapa o de una relación. Si el vínculo sobrevive, se transforma por completo.",
     "trabajo": "Cierre de un ciclo laboral, cambio de carrera o de rol. Lo nuevo viene después.",
     "dinero": "Pérdida o cambio drástico que obliga a reestructurar. Soltá lo que no rinde.",
     "salud": "Transformación profunda; fin de una enfermedad o de un hábito. Renovación.",
     "consejo": "Dejá morir lo que ya terminó para que nazca lo que sigue.",
     "si_no": "no",
-    "descripcion_imagen": "Un esqueleto en armadura negra cabalga un caballo blanco llevando un estandarte negro con una rosa blanca de cinco pétalos. A sus pies yace un rey muerto; un obispo, una joven y un niño lo reciben de distintas maneras. Al fondo, un río, un barco y el sol que sale entre dos torres.",
+    "descripcion_imagen": "Un esqueleto con armadura negra avanza despacio montado en un caballo blanco y lleva un estandarte negro con una rosa blanca. Frente a él yace un rey caído, un obispo con las manos unidas espera su turno, y una doncella y un niño lo reciben de distintas maneras. Al fondo, entre dos torres, sale el sol.",
     "waite_divinatory": {
       "upright": "End, mortality, destruction, corruption; also, for a man, the loss of a benefactor; for a woman, many contrarieties; for a maid, failure of marriage projects.",
       "reversed": "Inertia, sleep, lethargy, petrifaction, somnambulism; hope destroyed."
-    }
+    },
+    "fuente": "mayores#13"
   },
   {
     "indice": 14,
@@ -614,35 +726,43 @@
     "letra_hebrea": "Sámej (ס)",
     "numerologia": null,
     "palabras_clave_derecha": [
-      "equilibrio",
-      "moderación",
       "paciencia",
-      "armonía",
-      "sanación",
-      "integración",
-      "propósito"
+      "moderación",
+      "fluidez",
+      "curación",
+      "purificación",
+      "protección",
+      "mensaje"
     ],
     "palabras_clave_invertida": [
-      "exceso",
-      "desequilibrio",
-      "impaciencia",
-      "conflicto interno",
-      "falta de medida",
-      "desalineación"
+      "paciencia que se pone a prueba",
+      "fluidez que cuesta",
+      "curación lenta",
+      "moderación en aprendizaje",
+      "mensaje que tarda en llegar",
+      "armonía en construcción"
     ],
-    "significado_derecha": "La Templanza mezcla el agua de dos copas sin derramar una gota: es el arte de combinar opuestos hasta encontrar la medida justa. Cuando aparece, pide calma, paciencia y moderación. Habla de sanación lenta pero verdadera, de integrar partes de uno que parecían contradictorias y de encontrar un ritmo sostenible. Es muy favorable para procesos de recuperación, para negociaciones donde hay que ceder un poco de cada lado y para cualquier situación que necesite tiempo y templanza. También señala un sentido de propósito que empieza a aclararse. El ángel tiene un pie en el agua y otro en la tierra: ese equilibrio es el consejo.",
-    "significado_invertida": "Invertida, la Templanza marca excesos, impaciencia y desequilibrio: demasiado trabajo, demasiada comida, demasiada intensidad. Puede haber conflicto entre lo que querés y lo que hacés, o una falta de armonía en el entorno. Recuperá la medida: menos velocidad, más atención a cómo mezclás las cosas. En vínculos, suele mostrar a dos personas que viven a ritmos distintos y no logran sincronizarse; hablen de tiempos antes de hablar de culpas.",
+    "significado_derecha": "La Templanza es un ángel con el sol en la frente que vierte agua de una copa a otra, con un pie en la tierra y el otro en el agua. Mezcla lo distinto hasta encontrar la medida justa: modera, combina y armoniza la mente y la emoción, lo material y lo espiritual. Cuando aparece, habla de paciencia, de fluir con las situaciones y de un tiempo de curación y purificación. Puede anunciar un mensaje o una protección que llega. Un sendero sube hacia una luz con forma de corona: el camino es largo, pero está bien orientado.",
+    "significado_invertida": "Invertida, la Templanza sigue mezclando, pero la medida todavía no se encuentra. La curación avanza más despacio, la paciencia se pone a prueba o cuesta acompasar lo que pensás con lo que sentís. Puede marcar un mensaje que tarda o una armonía que se está construyendo de a poco. No hace falta apurarte: volvé a lo simple, ordená tus ritmos y dejá que el proceso siga.",
+    "en_equilibrio": "Bien llevada, la Templanza mira la vida con optimismo y paciencia. Busca el punto medio entre la cabeza y el corazón, deja fluir las situaciones y se cuida sin depender de la aprobación de los demás.",
+    "en_desequilibrio": "Trabada, la persona busca admiración y, cuando no la recibe, se endurece. Se vuelve rígida, se estanca, le pesan demasiado las opiniones ajenas y deja de escuchar lo que de verdad necesita.",
+    "reflexion": [
+      "¿Hay paz y armonía en tu vida?",
+      "¿La ansiedad te está dominando?",
+      "¿Qué cosas necesitás limpiar o purificar en tu vida?"
+    ],
     "amor": "Relación armoniosa, paciente y en proceso de sanar. Buscar el término medio.",
     "trabajo": "Cooperación, mediación y avance gradual. Combiná habilidades distintas.",
     "dinero": "Equilibrio entre ingresos y gastos. Ahorro moderado y constante.",
     "salud": "Recuperación y equilibrio. Moderación en todo, especialmente en comida y bebida.",
     "consejo": "Encontrá la medida justa y sostenela.",
     "si_no": "depende",
-    "descripcion_imagen": "Un ángel de grandes alas rojas y túnica blanca con un triángulo en el pecho vierte agua de una copa a otra. Un pie se apoya en una laguna y el otro en la orilla. Lirios amarillos crecen junto al agua y, al fondo, un camino lleva hacia montañas donde brilla una corona de luz.",
+    "descripcion_imagen": "Un ángel de alas rojas y túnica blanca, con un sol en la frente y un triángulo dentro de un cuadrado sobre el pecho, vierte agua de una copa a otra. Tiene un pie en el agua y el otro en la orilla. Junto a él crecen lirios, y un sendero recto sube hacia el horizonte, donde una gran luz deja ver una corona.",
     "waite_divinatory": {
       "upright": "Economy, moderation, frugality, management, accommodation.",
       "reversed": "Things connected with churches, religions, sects, the priesthood, sometimes even the priest who will marry the Querent; also disunion, unfortunate combinations, competing interests."
-    }
+    },
+    "fuente": "mayores#14"
   },
   {
     "indice": 15,
@@ -658,34 +778,42 @@
     "numerologia": null,
     "palabras_clave_derecha": [
       "ataduras",
-      "dependencia",
-      "sombra",
-      "materialismo",
-      "tentación",
+      "pasiones",
       "adicción",
-      "deseo"
+      "deseo",
+      "apego material",
+      "posesión",
+      "vicios"
     ],
     "palabras_clave_invertida": [
-      "liberación",
-      "romper cadenas",
-      "recuperar el control",
-      "desapego",
-      "toma de conciencia",
-      "independencia"
+      "atadura que empieza a verse",
+      "pasión más contenida",
+      "dependencia que afloja de a poco",
+      "apego en revisión",
+      "deseo que se observa",
+      "cadena todavía puesta"
     ],
-    "significado_derecha": "El Diablo muestra las cadenas que uno mismo podría sacarse: están flojas, pero las figuras no se van. Es la carta de las ataduras elegidas sin darse cuenta: adicciones, relaciones de dependencia, miedos que gobiernan, un apego excesivo a lo material o al placer. Cuando aparece, invita a mirar la sombra sin culpa: qué te tiene atrapado y qué ganás con eso. No es una carta maldita; es un espejo. También puede hablar de deseo intenso, de sexualidad y de energía vital que, bien canalizada, es poderosa. El primer paso para liberarse es reconocer que la puerta nunca estuvo cerrada con llave.",
-    "significado_invertida": "Invertido, el Diablo anuncia liberación: te das cuenta de la atadura y empezás a soltarla. Puede ser el fin de una dependencia, de una relación tóxica o de un patrón de autosabotaje. También señala un momento de toma de conciencia incómodo pero necesario. Celebrá el paso y cuidá la recaída: las cadenas conocen el camino de vuelta. Si la atadura es una adicción, la carta invertida es un buen augurio para pedir ayuda profesional; soltar solo es más difícil que soltar acompañado.",
+    "significado_derecha": "El Diablo es un ser con cuernos y alas de murciélago sentado sobre un altar, con una antorcha que apunta a la tierra. A sus pies, un hombre y una mujer están encadenados por el cuello, como los amantes del sexto arcano después de la caída. Es la carta de las ataduras: las pasiones, los vicios, las adicciones, el deseo y la esclavitud a lo material. Cuando aparece, invita a mirar sin culpa qué te tiene atrapado y por dónde te atrapa. Su secreto está en la imagen: las cadenas están flojas, y nadie está condenado a seguir siendo esclavo de lo que lo domina.",
+    "significado_invertida": "Invertido, el Diablo sigue hablando de ataduras, pero con menos fuerza o en proceso de ser vistas. Puede ser una dependencia que empieza a reconocerse, una pasión que se vive con más conciencia o un apego que todavía pesa aunque ya no mande del todo. La cadena sigue puesta, pero floja. Es un buen momento para pedir ayuda y sostener los pequeños pasos, sin exigirte más de la cuenta.",
+    "en_equilibrio": "Bien llevado, el Diablo es energía vital puesta al servicio de la vida. La persona se siente preparada para los desafíos, reconoce sus deseos sin avergonzarse y sabe pedir ayuda cuando la necesita.",
+    "en_desequilibrio": "Trabado, aparece quien nunca se siente lo bastante preparado. Disimula sus debilidades, se exige de más, se adapta y transa con el mundo; por fuera parece fuerte, pero por dentro arde y está a punto de quebrarse.",
+    "reflexion": [
+      "¿De qué o de quién te sentís esclavo?",
+      "¿Las pasiones tomaron el control de tu vida?",
+      "¿Cuánto creés que es suficiente para ser feliz?"
+    ],
     "amor": "Pasión intensa o relación de dependencia. Preguntate si es deseo o necesidad.",
     "trabajo": "Ambición que ata, un jefe controlador o un trabajo que no soltás por miedo.",
     "dinero": "Deudas, apego material, gastos compulsivos. Revisá tu relación con el dinero.",
     "salud": "Adicciones, excesos y tensión acumulada. Momento de cortar con lo que daña.",
     "consejo": "Mirá qué te ata; la cadena está floja.",
     "si_no": "no",
-    "descripcion_imagen": "Un ser con cuernos de carnero, alas de murciélago y pentagrama invertido en la frente se sienta en un pedestal negro, con la mano alzada y una antorcha invertida. Un hombre y una mujer desnudos, con cuernos y colas, están encadenados al pedestal con cadenas sueltas. El fondo es negro.",
+    "descripcion_imagen": "Un ser con cuernos de carnero, alas de murciélago y un pentagrama invertido sobre la cabeza se sienta en un altar oscuro. Alza la mano derecha y con la izquierda sostiene una antorcha que apunta hacia abajo. A sus pies, un hombre y una mujer desnudos, con pequeños cuernos y colas, están atados por el cuello con cadenas flojas.",
     "waite_divinatory": {
       "upright": "Ravage, violence, vehemence, extraordinary efforts, force, fatality; that which is predestined but is not for this reason evil.",
       "reversed": "Evil fatality, weakness, pettiness, blindness."
-    }
+    },
+    "fuente": "mayores#15"
   },
   {
     "indice": 16,
@@ -700,35 +828,43 @@
     "letra_hebrea": "Pe (פ)",
     "numerologia": null,
     "palabras_clave_derecha": [
-      "ruptura",
-      "revelación",
-      "cambio súbito",
-      "crisis",
-      "despertar",
-      "derrumbe",
-      "liberación"
+      "cambio drástico",
+      "caída de la ilusión",
+      "pérdida de control",
+      "agitación",
+      "rigidez que se quiebra",
+      "reconstrucción",
+      "renacer"
     ],
     "palabras_clave_invertida": [
-      "evitar el desastre",
-      "miedo al cambio",
-      "crisis contenida",
-      "transformación interna",
-      "resistencia",
-      "caída suave"
+      "cambio que se gesta",
+      "ilusión que empieza a caer",
+      "sacudón más leve",
+      "crisis que se demora",
+      "reconstrucción en curso",
+      "rigidez que se agrieta"
     ],
-    "significado_derecha": "La Torre es el rayo que derriba lo que se construyó sobre bases falsas. Cuando aparece, algo se rompe de golpe: una creencia, una estructura, una relación, un plan. Es una de las cartas más temidas, pero su función es liberar: lo que cae ya no podía sostenerse. Habla de revelaciones súbitas, de verdades que salen a la luz y de un caos necesario para reconstruir con honestidad. Pide aceptar el impacto, no negarlo, y usar la claridad que deja. Muchas veces la Torre llega cuando uno se negó demasiado tiempo a ver. Después del derrumbe, el terreno queda despejado para algo más verdadero.",
-    "significado_invertida": "Invertida, la Torre muestra una crisis que se evita o se contiene, un cambio que se resiste, o una caída más lenta pero igualmente inevitable. Puede ser miedo a que todo se derrumbe o una transformación interna que todavía no estalla afuera. También: lo peor ya pasó y empieza la reconstrucción. No apuntales lo que ya no se sostiene. Si sentís que algo está por caerse, no esperes al rayo: desarmalo vos con cuidado, pieza por pieza, y guardá lo que todavía sirve.",
+    "significado_derecha": "La Torre es el rayo que cae sobre lo que se construyó sobre bases falsas. La corona salta, salen llamas por las ventanas y dos figuras caen al vacío: es la caída de la ilusión, de la personalidad rígida y de las estructuras que ya no podían sostenerse. Cuando aparece, llega un cambio drástico, una agitación o una pérdida de control que duele. Pero su sentido no es castigar: lo que se derrumba es lo que no era verdadero. Después del golpe queda el terreno despejado para reconstruir con bases reales y renacer.",
+    "significado_invertida": "Invertida, la Torre sigue hablando de un cambio profundo, pero menos brusco o todavía en gestación. Una ilusión empieza a resquebrajarse, una estructura muestra grietas o el sacudón llega de a poco en lugar de golpe. También puede marcar una reconstrucción que ya empezó. No apuntales lo que ya no se sostiene: aprovechá que el proceso es más lento para revisar tus bases con calma.",
+    "en_equilibrio": "Bien llevada, la Torre se atraviesa con comprensión: la persona acepta que una ilusión cayó, entiende lo que pasó sin castigarse y reconstruye sobre bases más honestas.",
+    "en_desequilibrio": "Trabada, la persona hace todo con responsabilidad y espera que los demás lo reconozcan. Cuando no se siente apreciada lo vive como un golpe, se castiga durante mucho tiempo, pierde confianza y deja de elegir.",
+    "reflexion": [
+      "¿Tus bases son sólidas o construiste sobre falsos valores?",
+      "¿Estás sosteniendo una ilusión que ya no se puede sostener?",
+      "¿Aparentás ser alguien que no sos?"
+    ],
     "amor": "Ruptura o revelación que sacude la relación. Lo que sobrevive, sobrevive más honesto.",
     "trabajo": "Despido, cierre o cambio abrupto. Oportunidad de reconstruir sobre bases reales.",
     "dinero": "Pérdida inesperada o gasto de emergencia. Revisá las estructuras financieras.",
     "salud": "Crisis repentina o diagnóstico que cambia hábitos. Atención al estrés agudo.",
     "consejo": "Dejá que caiga lo que estaba mal construido.",
     "si_no": "no",
-    "descripcion_imagen": "Un rayo golpea una torre gris construida sobre una roca y arranca su corona dorada; las llamas salen por las ventanas. Dos figuras, una coronada, caen de cabeza hacia el abismo. El cielo es negro y veintidós llamas en forma de yod flotan en el aire.",
+    "descripcion_imagen": "Un rayo golpea una torre alta levantada sobre una roca y le arranca la corona; salen llamas por las ventanas. Dos figuras, una de ellas coronada, caen de cabeza hacia el vacío. El cielo es negro y en el aire flotan pequeñas llamas.",
     "waite_divinatory": {
       "upright": "Misery, distress, indigence, adversity, calamity, disgrace, deception, ruin. It is a card in particular of unforeseen catastrophe.",
       "reversed": "According to one account, the same in a lesser degree; also oppression, imprisonment, tyranny."
-    }
+    },
+    "fuente": "mayores#16"
   },
   {
     "indice": 17,
@@ -744,34 +880,42 @@
     "numerologia": null,
     "palabras_clave_derecha": [
       "esperanza",
-      "renovación",
-      "inspiración",
-      "fe",
-      "sanación",
-      "serenidad",
+      "curación",
+      "limpieza",
+      "intuición",
+      "generosidad",
+      "promesa",
       "guía"
     ],
     "palabras_clave_invertida": [
-      "desesperanza",
-      "desánimo",
-      "falta de fe",
-      "desconexión",
-      "inseguridad",
-      "sueños postergados"
+      "esperanza que se recupera",
+      "curación lenta",
+      "promesa demorada",
+      "intuición tenue",
+      "generosidad cansada",
+      "guía que se busca"
     ],
-    "significado_derecha": "La Estrella llega después de la Torre: es la calma, el cielo despejado y la promesa de que todo se puede volver a sembrar. Cuando aparece, trae esperanza real, no ilusoria, y una conexión renovada con lo que te inspira. Habla de sanación, de generosidad, de volver a confiar en uno y en el universo. Es una carta de vulnerabilidad luminosa: la mujer está desnuda y vierte agua sin medir, porque la fuente no se agota. Favorece la creatividad, la espiritualidad y los procesos de recuperación. También señala que vas por buen camino aunque los resultados tarden. Mirá hacia arriba: hay una guía.",
-    "significado_invertida": "Invertida, la Estrella muestra desaliento, pérdida de fe o la sensación de que nada tiene sentido. Puede ser agotamiento después de una crisis, pesimismo o desconexión con tus sueños. La luz sigue ahí, aunque no la veas; buscá pequeñas fuentes de inspiración y cuidá tu salud emocional. No es una carta de mal augurio: la invertida solo señala que la esperanza necesita un poco de cuidado activo para volver a brillar.",
+    "significado_derecha": "La Estrella brilla grande sobre una mujer desnuda que vierte el agua de la vida de dos cántaros, uno sobre la tierra y otro sobre la laguna; siete estrellas menores la rodean y un pájaro se posa en un árbol cercano. Es la carta de la esperanza: después de la tormenta, el cielo se abre y llega una promesa. Habla de limpieza, de curación, de intuición y de una generosidad que no se agota. Cuando aparece, te recuerda que vas guiado, que tu camino tiene sentido y que podés confiar en lo que sentís.",
+    "significado_invertida": "Invertida, la Estrella sigue prometiendo, pero su luz llega más tenue o con demora. La esperanza está, aunque cansada; una curación avanza despacio o una señal que esperabas todavía no aparece. Puede marcar una necesidad de sentirte acompañado y protegido. No es un cielo apagado: es un cielo con nubes. Cuidá tu ánimo con pequeñas cosas que te den alegría y seguí confiando.",
+    "en_equilibrio": "Bien llevada, la Estrella se siente preparada y en calma frente a la vida. Se deja guiar por su intuición, vive con generosidad y confía en que hay una protección que la acompaña.",
+    "en_desequilibrio": "Trabada, la búsqueda de un ángel guardián que resuelva todo termina en amargura. Si nadie responde, aparece la sensación de abandono, de no ser aceptada ni siquiera por lo sagrado, y una tensión que está por quebrarse.",
+    "reflexion": [
+      "¿Qué cosas te dan alegría y paz?",
+      "¿Te dejás guiar por tu intuición?",
+      "¿Sentís que tenés una misión en esta vida?"
+    ],
     "amor": "Esperanza renovada, sanación después de una herida. Un amor que inspira.",
     "trabajo": "Inspiración y reconocimiento. Proyectos creativos o con sentido avanzan.",
     "dinero": "Recuperación gradual. Confiá, pero seguí sembrando.",
     "salud": "Sanación, bienestar y renovación. Excelente para procesos de recuperación.",
     "consejo": "Confiá: después de la tormenta, el cielo se despeja.",
     "si_no": "sí",
-    "descripcion_imagen": "Una mujer desnuda se arrodilla junto a una laguna, con un pie en el agua y otro en tierra, vertiendo agua de dos jarras: una sobre la laguna y otra sobre la tierra. Sobre ella brilla una gran estrella amarilla de ocho puntas rodeada de siete estrellas menores. Un ibis se posa en un árbol al fondo.",
+    "descripcion_imagen": "Una mujer desnuda se arrodilla junto a una laguna, con una rodilla en la tierra y un pie en el agua, y vierte el agua de dos cántaros: uno sobre la laguna y otro sobre la tierra. Sobre ella brilla una gran estrella de ocho puntas rodeada de siete estrellas más chicas. Al fondo, un pájaro se posa en un árbol.",
     "waite_divinatory": {
       "upright": "Loss, theft, privation, abandonment; another reading says—hope and bright prospects.",
       "reversed": "Arrogance, haughtiness, impotence."
-    }
+    },
+    "fuente": "mayores#17"
   },
   {
     "indice": 18,
@@ -786,35 +930,43 @@
     "letra_hebrea": "Qof (ק)",
     "numerologia": null,
     "palabras_clave_derecha": [
-      "ilusión",
-      "intuición",
-      "miedos",
       "inconsciente",
-      "confusión",
+      "sombra",
+      "miedos",
       "sueños",
+      "confusión",
+      "complejos",
       "lo oculto"
     ],
     "palabras_clave_invertida": [
-      "claridad",
-      "miedos que se disipan",
-      "confusión que se aclara",
-      "engaño revelado",
-      "ansiedad",
-      "intuición reprimida"
+      "miedos menos intensos",
+      "confusión que todavía no se aclara",
+      "sombra que empieza a mirarse",
+      "sueños que piden atención",
+      "inquietud de fondo",
+      "lo oculto a medio revelar"
     ],
-    "significado_derecha": "La Luna ilumina un paisaje donde nada es lo que parece. Es la carta del inconsciente, de los miedos que aúllan de noche y de las ilusiones que confunden el camino. Cuando aparece, hay algo que no está claro: información incompleta, engaños, o tus propias proyecciones distorsionando la realidad. Pide no tomar decisiones importantes hasta que amanezca. Pero también es la carta de la intuición profunda, los sueños reveladores y la creatividad que nace de lo oscuro. Habla de atravesar la incertidumbre sin pánico, de prestar atención a lo que sentís y de sospechar de lo que brilla demasiado. La noche tiene su propia sabiduría.",
-    "significado_invertida": "Invertida, la Luna suele anunciar que la niebla se levanta: los miedos se disipan, un engaño se revela, la confusión da paso a la claridad. También puede marcar ansiedad reprimida o una intuición que no te animás a escuchar. Aprovechá la luz que vuelve para mirar lo que la oscuridad escondía. Si estuviste tomando decisiones a ciegas, es un buen momento para revisarlas con la información que ahora sí tenés a la vista.",
+    "significado_derecha": "La Luna ilumina con luz reflejada un sendero que se pierde entre dos torres. Un perro y un lobo le aúllan, y de la laguna sale un cangrejo: lo que vive en lo profundo quiere subir a la superficie. Es la carta del inconsciente, de los sueños, de los miedos y de la sombra que cada uno lleva. Cuando aparece, no todo está claro: hay información oculta, fantasmas de la mente o emociones que distorsionan lo que ves. Pide atravesar la noche sin pánico, mirar de frente lo que temés y esperar a tener más luz antes de decidir.",
+    "significado_invertida": "Invertida, la Luna sigue hablando de lo oculto y de los miedos, pero con menos fuerza. La confusión persiste aunque empieza a ordenarse, una sombra se deja ver de a poco o un sueño insiste en dar su mensaje. Todavía no es pleno día: hay inquietud de fondo y conviene ir despacio. Prestá atención a lo que sentís, nombrá tus miedos y dejá que la claridad llegue a su tiempo.",
+    "en_equilibrio": "Bien llevada, la Luna permite bajar a lo profundo y volver. La persona reconoce sus miedos y su sombra, escucha sus sueños y se mantiene en calma porque no necesita esconder lo que siente.",
+    "en_desequilibrio": "Trabada, la persona reprime un enojo al rojo vivo por miedo a no ser aceptada. Muestra una calma que no siente, depende de la aprobación ajena y deja que los fantasmas de la mente crezcan en la oscuridad.",
+    "reflexion": [
+      "¿Podés dominar los fantasmas de tu mente?",
+      "¿Cuál es tu mayor miedo?",
+      "¿Podés hacerle frente a tu sombra?"
+    ],
     "amor": "Confusión, celos o secretos. Algo no está claro; esperá a ver con luz.",
     "trabajo": "Situación poco transparente. Leé la letra chica y confiá en tu olfato.",
     "dinero": "Riesgo de engaño o de decisiones basadas en ilusiones. No firmes nada todavía.",
     "salud": "Ansiedad, insomnio, síntomas difusos. Atendé lo emocional y el descanso.",
     "consejo": "No decidas en la niebla; esperá a que amanezca.",
     "si_no": "no",
-    "descripcion_imagen": "Una luna con rostro, mitad llena y mitad creciente, deja caer gotas de luz sobre un paisaje nocturno. Un perro y un lobo aúllan desde la hierba, y un cangrejo sale de una laguna hacia un camino que serpentea entre dos torres hasta las montañas lejanas.",
+    "descripcion_imagen": "Una luna con rostro, en fase creciente dentro del disco lleno, deja caer gotas de luz sobre un paisaje nocturno. Un perro y un lobo le aúllan desde la hierba, y un cangrejo sale de una laguna hacia un sendero que se aleja entre dos torres hasta las montañas.",
     "waite_divinatory": {
       "upright": "Hidden enemies, danger, calumny, darkness, terror, deception, occult forces, error.",
       "reversed": "Instability, inconstancy, silence, lesser degrees of deception and error."
-    }
+    },
+    "fuente": "mayores#18"
   },
   {
     "indice": 19,
@@ -829,35 +981,43 @@
     "letra_hebrea": "Resh (ר)",
     "numerologia": null,
     "palabras_clave_derecha": [
+      "iluminación",
+      "conciencia",
+      "niño interior",
       "alegría",
-      "éxito",
-      "vitalidad",
-      "claridad",
-      "confianza",
-      "plenitud",
-      "calidez"
+      "oportunidad",
+      "crecimiento",
+      "desbloqueo"
     ],
     "palabras_clave_invertida": [
-      "optimismo excesivo",
-      "alegría forzada",
-      "bloqueo",
-      "vanidad",
-      "desánimo pasajero",
-      "éxito demorado"
+      "éxito demorado",
+      "alegría que todavía no se asienta",
+      "oportunidad que madura",
+      "crecimiento más lento",
+      "desbloqueo en proceso",
+      "luz detrás de las nubes"
     ],
-    "significado_derecha": "El Sol es la carta más luminosa de la baraja: alegría sin motivo, claridad total, energía que sobra. Cuando aparece, las cosas salen bien y se ve el camino con nitidez. Habla de éxito, de vitalidad física, de un niño interior que vuelve a jugar y de una confianza que contagia. Es favorable para prácticamente cualquier pregunta: amor, trabajo, salud, proyectos. También señala verdad y transparencia: bajo este sol nada se esconde. Pide disfrutar sin culpa y compartir la luz. Si hubo un tiempo oscuro, el Sol marca que terminó. Es el calor que hace madurar lo sembrado y la celebración de estar vivo.",
-    "significado_invertida": "Invertido, el Sol sigue siendo bueno, pero con nubes: el éxito se demora, la alegría se fuerza o hay un optimismo que no mira los detalles. Puede señalar vanidad, exceso de confianza o un desánimo que no corresponde a la realidad. Las nubes pasan; buscá qué está tapando tu luz. Suele ser un retraso más que una negación: lo que esperabas va a llegar, aunque probablemente no con la grandeza que imaginabas.",
+    "significado_derecha": "El Sol es la carta de la luz: un niño desnudo, montado en un caballo blanco, despliega un estandarte rojo frente a un muro con girasoles, bajo un sol enorme. Es la conciencia que se ilumina y el niño interior que vuelve a jugar con la sabiduría de la inocencia. Cuando aparece, la energía fluye sin bloqueos, las cosas se aclaran y el mundo abre sus puertas. Habla de alegría, de crecimiento, de oportunidades y de éxito. Pide mostrarte tal cual sos, bajar los muros que levantaste para proteger tu corazón y dejar salir tu propia luz.",
+    "significado_invertida": "Invertido, el Sol no apaga lo que promete: avisa que todavía falta un poco para que se concrete. La alegría y el éxito están en camino, pero se demoran; una oportunidad madura más despacio o la energía se destraba de a poco. Puede haber algún muro que todavía protege de más al corazón. Mirá las otras cartas para saber qué falta, y seguí: la luz está detrás de las nubes.",
+    "en_equilibrio": "Bien llevado, el Sol es energía que fluye sin trabas. La conciencia se expande, la persona se siente orgullosa de sí y en sintonía con la vida, y su alegría abre puertas y se contagia.",
+    "en_desequilibrio": "Trabado, ese brillo cuesta sostenerse. Basta que alguien no acepte para sentirse rechazado y abandonado; el miedo paraliza, el enojo toma el mando y se reacciona de forma desbordada, sin medida.",
+    "reflexion": [
+      "¿Construiste un muro para proteger tu corazón?",
+      "¿Dejaste en el olvido a tu niño interior?",
+      "¿Te mostrás tal cual sos?"
+    ],
     "amor": "Amor pleno, feliz y transparente. Puede anunciar una unión o un embarazo.",
     "trabajo": "Éxito, reconocimiento y logros visibles. Tu energía rinde.",
     "dinero": "Prosperidad y abundancia. Buen momento para cosechar.",
     "salud": "Vitalidad, recuperación y fuerza. Excelente augurio.",
     "consejo": "Disfrutá y compartí tu luz.",
     "si_no": "sí",
-    "descripcion_imagen": "Un niño desnudo, coronado de flores y con una pluma roja, cabalga un caballo blanco llevando un gran estandarte rojo. Detrás, un muro de piedra con girasoles y un sol enorme con rostro y rayos rectos y ondulados que ocupa todo el cielo.",
+    "descripcion_imagen": "Un niño desnudo, con una corona de flores y una pluma roja, cabalga un caballo blanco y despliega un gran estandarte rojo. Detrás de él, un muro de piedra con girasoles separa el jardín del resto del mundo, y en el cielo brilla un sol enorme, con rostro, de rayos rectos y ondulados.",
     "waite_divinatory": {
       "upright": "Material happiness, fortunate marriage, contentment.",
       "reversed": "The same in a lesser sense."
-    }
+    },
+    "fuente": "mayores#19"
   },
   {
     "indice": 20,
@@ -874,33 +1034,40 @@
     "palabras_clave_derecha": [
       "despertar",
       "llamado",
+      "transformación",
       "renacimiento",
-      "evaluación",
-      "perdón",
-      "decisión definitiva",
-      "redención"
+      "señales",
+      "aceptación"
     ],
     "palabras_clave_invertida": [
-      "dudas",
-      "autocrítica",
-      "ignorar el llamado",
-      "juicio severo",
-      "miedo a decidir",
-      "estancamiento"
+      "llamado que todavía no se responde",
+      "despertar gradual",
+      "transformación en curso",
+      "señales confusas",
+      "renacimiento demorado",
+      "aceptación que cuesta"
     ],
-    "significado_derecha": "El Juicio es la trompeta que despierta: un llamado interior que ya no se puede ignorar. Cuando aparece, hay un balance de vida que se impone, un momento de ver con honestidad qué hiciste y qué querés hacer de ahora en adelante. Habla de renacer, de perdonar y perdonarse, de un cambio de nivel que viene después de la toma de conciencia. Puede marcar una decisión definitiva, el cierre de un ciclo largo o una vocación que se revela. No es un juicio que castiga sino uno que libera: el pasado se revisa para soltarlo. Levantate, respondé al llamado y dejá atrás lo que ya cumplió su función.",
-    "significado_invertida": "Invertido, el Juicio muestra que estás escuchando el llamado pero no te animás a responder, o que te juzgás con tanta dureza que no podés avanzar. Puede haber miedo a tomar una decisión importante, arrepentimiento que paraliza o una lección que se niega. Perdonate y decidí: la trompeta no va a sonar para siempre. Si la duda es sobre una vocación o un cambio de vida, el consejo es darte permiso para equivocarte: el despertar no exige perfección, exige respuesta.",
+    "significado_derecha": "El Juicio muestra a un ángel que, entre nubes, toca una trompeta con una bandera de cruz. Abajo, una mujer, un hombre y un niño se levantan de sus tumbas con los brazos abiertos, en actitud de asombro. Es la carta del despertar: un llamado interior que ya no se puede ignorar y que pone en marcha una gran transformación. Cuando aparece, hay señales que indican que llegó el momento de renacer, de hacer un balance honesto de tu vida y de aceptar lo vivido para dar el paso siguiente. No juzga para castigar sino para liberar.",
+    "significado_invertida": "Invertido, el Juicio sigue llamando, pero la respuesta tarda. El despertar es gradual, las señales llegan algo confusas o la transformación avanza por dentro sin verse todavía. Puede haber un juicio duro sobre vos o sobre otros que frena el paso. No es que el llamado se haya ido: es que necesita que lo escuches con más atención. Perdonate lo que haga falta y preparate para responder.",
+    "en_equilibrio": "Bien llevado, el Juicio es estar atento a lo que de verdad importa. La persona escucha su llamado, elige en consecuencia y su vida se vuelve productiva, con la mirada puesta en un futuro mejor.",
+    "en_desequilibrio": "Trabado, aparece la ofensa de dar lo mejor sin que a nadie le importe. Si lo construido con esfuerzo se desarma, la persona se juzga con dureza a sí misma y a los demás, y siente que ya no puede aspirar a más.",
+    "reflexion": [
+      "¿Llegó el momento de transformar tu vida?",
+      "¿Juzgás con dureza a los otros, y a vos mismo?",
+      "¿Sos honesto con la forma en que llevás tu vida?"
+    ],
     "amor": "Reconciliación, perdón o una decisión que define el futuro del vínculo.",
     "trabajo": "Vocación que se aclara, cambio de carrera, resultado de una evaluación.",
     "dinero": "Resolución de asuntos pendientes. Las decisiones pasadas muestran su resultado.",
     "salud": "Recuperación y renovación profunda. Buen momento para cambiar hábitos de raíz.",
     "consejo": "Respondé al llamado; es tu momento de renacer.",
     "si_no": "sí",
-    "descripcion_imagen": "Un ángel, probablemente Gabriel, emerge de las nubes tocando una trompeta con una bandera de cruz roja. Abajo, hombres, mujeres y niños de piel grisácea se levantan de sus ataúdes flotantes con los brazos abiertos. Al fondo, montañas nevadas y un mar en calma.",
+    "descripcion_imagen": "Un ángel rodeado de nubes toca una trompeta de la que cuelga una bandera con una cruz. Abajo, una mujer, un hombre y un niño de espaldas se levantan de sus tumbas abiertas con los brazos extendidos, mirando hacia arriba con asombro. Al fondo se ven montañas nevadas y un mar en calma.",
     "waite_divinatory": {
       "upright": "Change of position, renewal, outcome. Another account specifies total loss though lawsuit.",
       "reversed": "Weakness, pusillanimity, simplicity; also deliberation, decision, sentence."
-    }
+    },
+    "fuente": "mayores#20"
   },
   {
     "indice": 21,
@@ -915,35 +1082,42 @@
     "letra_hebrea": "Tav (ת)",
     "numerologia": null,
     "palabras_clave_derecha": [
+      "éxito",
+      "logros",
       "culminación",
       "plenitud",
-      "logro",
       "integración",
-      "viaje",
-      "cierre de ciclo",
-      "totalidad"
+      "cierre de ciclo"
     ],
     "palabras_clave_invertida": [
-      "incompleto",
-      "demoras",
-      "falta de cierre",
-      "atajos",
-      "estancamiento",
-      "búsqueda de cierre"
+      "éxito demorado",
+      "logro casi completo",
+      "culminación pendiente",
+      "cierre que todavía falta",
+      "integración en proceso",
+      "plenitud a medio camino"
     ],
-    "significado_derecha": "El Mundo es la última carta del viaje: todo lo que empezó con el Loco encuentra aquí su forma completa. Es la culminación, el logro reconocido, la sensación de que las piezas encajan. Cuando aparece, un ciclo se cierra con éxito y uno se siente en su lugar, integrado con el entorno y consigo mismo. Habla de viajes largos, de reconocimiento público, de metas alcanzadas y de una plenitud que no necesita justificación. También recuerda que todo final es un comienzo: la danzarina gira dentro de la corona y el movimiento no para. Celebrá lo que lograste antes de pensar en lo que sigue.",
-    "significado_invertida": "Invertido, el Mundo señala algo que no termina de cerrar: un proyecto que queda a medias, una meta alcanzada que no satisface o atajos que impiden la verdadera culminación. Puede ser demora en viajes o la sensación de estar cerca pero no llegar. Revisá qué falta completar y hacelo bien, sin saltearte pasos. También puede marcar que necesitás un cierre simbólico (una despedida, una celebración, un agradecimiento) para sentir que la etapa de verdad terminó.",
+    "significado_derecha": "El Mundo es la última carta del viaje: lo que empezó con el Loco encuentra aquí su forma completa. Una figura danza dentro de una corona de laurel, rodeada por el ángel, el águila, el león y el toro: el universo entero en armonía. Es la culminación, el éxito y el logro reconocido, la sensación de que las piezas encajan y de que todo se une para un fin mayor. Cuando aparece, un ciclo se cierra bien y podés recibir el fruto de tu trabajo. Pide celebrar, aceptar los elogios y sostener el triunfo sin miedo, en sintonía con los demás.",
+    "significado_invertida": "Invertido, el Mundo sigue anunciando una culminación, pero todavía falta algo para completarla. El éxito se demora, un proyecto está casi terminado o cuesta recibir el reconocimiento por lo que hiciste. Puede marcar un cierre que necesita un último paso. Revisá qué queda pendiente y completalo sin saltearte etapas: la meta está cerca.",
+    "en_equilibrio": "Bien llevado, el Mundo es sintonía con lo más alto que cada uno puede ser. La persona elige con libertad, coopera de igual a igual y puede disfrutar de lo logrado sabiendo que forma parte de algo mayor.",
+    "en_desequilibrio": "Trabado, aparece el dolor de no poder elegir y la vergüenza de ser distinto. La persona ve cómo otros se imponen, se achica para no destacar y le cuesta sostener el reconocimiento cuando por fin llega.",
+    "reflexion": [
+      "¿Cuál es tu mayor deseo o ambición?",
+      "¿Podés recibir los elogios por lo que lograste?",
+      "¿Podés sostener el éxito cuando llega?"
+    ],
     "amor": "Plenitud, unión completa o relación que llega a su mejor forma. Puede implicar distancia o viaje.",
     "trabajo": "Logro mayor, cierre exitoso de un proyecto, reconocimiento. Posible trabajo en el exterior.",
     "dinero": "Estabilidad conseguida con esfuerzo. Disfrutá el resultado.",
     "salud": "Bienestar integral. Cuerpo, mente y espíritu en armonía.",
     "consejo": "Celebrá lo logrado; el ciclo está completo.",
     "si_no": "sí",
-    "descripcion_imagen": "Una figura danzante, desnuda y envuelta en un velo púrpura, sostiene una vara en cada mano dentro de una gran corona ovalada de laurel atada con cintas rojas. En las cuatro esquinas, sobre nubes, aparecen el ángel, el águila, el león y el toro.",
+    "descripcion_imagen": "Una figura desnuda, envuelta en un velo púrpura, danza dentro de una gran corona ovalada de laurel atada con cintas rojas y sostiene una vara en cada mano. En las cuatro esquinas, sobre nubes, aparecen el ángel, el águila, el león y el toro.",
     "waite_divinatory": {
       "upright": "Assured success, recompense, voyage, route, emigration, flight, change of place.",
       "reversed": "Inertia, fixity, stagnation, permanence."
-    }
+    },
+    "fuente": "mayores#21"
   },
   {
     "indice": 22,
