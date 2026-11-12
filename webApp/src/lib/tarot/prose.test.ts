@@ -132,7 +132,7 @@ describe("renderReading", () => {
     expect(dominios.size).toBe(4);
     expect(bloqueos).toBeGreaterThan(0);
     expect(hilos).toBeGreaterThan(0);
-  }, 180_000);
+  }, 60_000);
 });
 
 describe("concordancia", () => {

@@ -221,7 +221,7 @@
     ]
   },
   "reflexion": [
-    "Para llevarte: {pregunta}",
+    "Una última pregunta: {pregunta}",
     "Una pregunta para quedarte pensando: {pregunta}",
     "Te dejo esta pregunta: {pregunta}"
   ]
