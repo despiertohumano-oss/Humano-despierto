@@ -6,3 +6,7 @@ node_modules/
 
 # Textos de dominio público bajados para investigación (35 MB); URLs en cursos-y-bibliografia.md §6
 docs/superpowers/research/astrologia/fuentes/
+
+# Material original del taller de tarot (no se versiona; solo la fuente extraída)
+docs/TAROT/*
+!docs/TAROT/fuente/

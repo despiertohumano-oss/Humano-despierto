@@ -94,8 +94,8 @@ palo reescrita (el viaje del As al Diez).
 Esquema: `posiciones[]` suma `grupo?: string`; la tirada suma `retirada?: boolean`. El texto de cada posición se
 reescribe a partir de la etiqueta del diagrama y, en `astrologica`, de la clave de la casa.
 
-**A confirmar por la dueña:** el documento no nombra las tres columnas de `relaciones`. Propuesta: «cómo se
-ve», «cómo ve al otro», «qué espera del vínculo».
+`relaciones` no nombra sus columnas (decisión del PO, 2026-11-12): cada posición es «Persona A» o
+«Persona B» con su orden (1-3-5 / 2-4-6); la lectura compara las dos filas como un todo.
 
 ### 5.4 `templates.json`
 Plantillas nuevas para: invertida como «en proceso», lectura por grupo (A vs B; continúa vs cambia), casa
@@ -167,11 +167,12 @@ Trabajo en `dev`; release por merge a `main` con `0079` aplicada en la nube y `c
 
 ## 11. Gates y fuera de alcance
 
-- **Release bloqueada** hasta que la dueña revise los textos reescritos y confirme las columnas de `relaciones`.
+- **Release bloqueada** hasta que la dueña revise los textos reescritos.
 - Fuera de alcance: IA en tiempo de ejecución; cambios en la carta natal (anotado: «Primer escrito» puede
   alimentarla más adelante); pagos o gating por curso.
 
-## 12. Abierto
+## 12. Originales fuera de git
 
-- ¿Se versionan los documentos originales de `docs/TAROT/` (≈25 MB, material del taller) o solo la fuente
-  extraída? Por defecto: solo `fuente/`; los originales quedan fuera de git.
+Decisión del PO (2026-11-12): los documentos originales de `docs/TAROT/` (≈25 MB, material del taller) **no
+se versionan**; solo `docs/TAROT/fuente/`. `.gitignore` ignora `docs/TAROT/*` salvo `fuente/`. Re-extraer
+requiere tener los originales en la máquina.
