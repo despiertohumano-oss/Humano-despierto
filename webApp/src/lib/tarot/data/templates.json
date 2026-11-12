@@ -10,30 +10,30 @@
     "\"{pregunta}\". Con eso en mente, mirá primero las cartas y después el texto."
   ],
   "panorama_mayores": [
-    "Hay más arcanos mayores que menores: lo que se mueve acá es grande, de fondo, y no depende solo de lo cotidiano.",
-    "Predominan los mayores. Las fuerzas en juego son de las que marcan etapas, no las que se arreglan en una semana.",
-    "Casi todo son mayores: la tirada habla de un proceso de vida, no de un detalle."
+    "Hay más arcanos mayores que menores: lo que se mueve acá es espiritual, de fondo, y no depende solo de lo cotidiano.",
+    "Predominan los mayores: la tirada habla de lo cósmico, de fuerzas que marcan etapas y no se arreglan en una semana.",
+    "Casi todo son mayores: lo espiritual está en primer plano, y la tirada habla de un proceso de vida más que de un detalle."
   ],
   "panorama_palo": {
     "bastos": [
-      "Pesan los bastos: energía, impulso, proyectos. El tema pide acción.",
-      "Mucho fuego de bastos: ganas, movimiento y algo de impaciencia.",
-      "Los bastos dominan: hay deseo de hacer, y conviene encauzarlo."
+      "Pesan los bastos: lo vital está en el centro. Energía, impulso y proyectos piden acción.",
+      "Mucho fuego de bastos: lo vital se enciende, con ganas, movimiento y algo de impaciencia.",
+      "Los bastos dominan: lo vital pide cauce. Hay deseo de hacer, y conviene encauzarlo."
     ],
     "copas": [
       "Pesan las copas: lo emocional y los vínculos están en el centro.",
-      "Mucha agua de copas: sentimientos, afectos, intuición.",
-      "Las copas dominan: lo que importa acá se siente antes que se piensa."
+      "Mucha agua de copas: lo emocional manda, con sentimientos, afectos e intuición.",
+      "Las copas dominan: lo emocional va primero; lo que importa acá se siente antes de pensarse."
     ],
     "espadas": [
-      "Pesan las espadas: pensamientos, decisiones, conflicto o claridad.",
-      "Mucho aire de espadas: la cabeza está trabajando de más.",
-      "Las espadas dominan: hay algo que resolver con lucidez, no con fuerza."
+      "Pesan las espadas: lo mental está en el centro, con pensamientos, decisiones, conflicto o claridad.",
+      "Mucho aire de espadas: lo mental está trabajando de más.",
+      "Las espadas dominan: lo mental pide resolver algo con lucidez, no con fuerza."
     ],
     "oros": [
-      "Pesan los oros: lo material, el cuerpo, el trabajo y la plata.",
-      "Mucha tierra de oros: el tema es concreto y se construye despacio.",
-      "Los oros dominan: hablamos de bases, recursos y constancia."
+      "Pesan los oros: lo físico está en el centro, con el cuerpo, el trabajo y la plata.",
+      "Mucha tierra de oros: lo físico y lo concreto se construyen despacio.",
+      "Los oros dominan: lo físico manda; hablamos de bases, recursos y constancia."
     ]
   },
   "panorama_ausente": {
@@ -64,9 +64,9 @@
     "Dos o más figuras: el tema tiene nombres y apellidos."
   ],
   "panorama_bloqueo": [
-    "Muchas cartas invertidas: la energía está, pero trabada o mirando hacia adentro. No es un mal augurio, es una pausa.",
-    "La mayoría salió invertida. Leelo como procesos internos y demoras, no como negaciones.",
-    "Predominan las invertidas: algo se está cocinando por dentro antes de salir."
+    "Muchas cartas invertidas: lo que se mueve todavía está en proceso. La energía está, pero madura por dentro antes de salir.",
+    "La mayoría salió invertida: leelo como procesos que todavía se están cocinando y demoras, no como puertas cerradas.",
+    "Predominan las invertidas: nada está bloqueado para siempre. Los temas de la tirada están en camino, a su ritmo."
   ],
   "panorama_numero": [
     "Se repite el {numero}: insistí en ese tema, la tirada lo subraya.",
@@ -79,9 +79,9 @@
     "{Nombre}, para \"{posicion}\". {significado}"
   ],
   "posicion_invertida": [
-    "{Nombre} al revés en \"{posicion}\". {significado}",
-    "En \"{posicion}\", {nombre} al revés: {significado}",
-    "{Nombre}, en posición invertida, para \"{posicion}\". {significado}"
+    "{Nombre} sale al revés en \"{posicion}\": lo que trae está presente, aunque más suave o todavía en proceso. {significado}",
+    "En \"{posicion}\", {nombre} al revés no niega su mensaje: lo demora o lo atenúa. {significado}",
+    "{Nombre}, en posición invertida, para \"{posicion}\". Lo que anuncia está en camino, todavía madurando. {significado}"
   ],
   "posicion_dominio": {
     "amor": [

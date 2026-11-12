@@ -1,0 +1,47 @@
+[
+  {
+    "palo": "bastos",
+    "cuerpo": "vital",
+    "elemento": "fuego",
+    "reino": "vegetal",
+    "solido": "tetraedro",
+    "narrativa": "Los bastos cuentan el viaje de la energía vital. Empieza con la chispa de un proyecto que apasiona y en el que se quiere poner todo (As), apoyado en una base que ya existe y en una buena mirada sobre las personas y las circunstancias (Dos). Lo nuevo pide salir del propio terreno, mirar las oportunidades y manejar las emociones con inteligencia (Tres), hasta que llega algo para celebrar y compartir (Cuatro). Después hay que seguir luchando limpiamente para defender lo propio (Cinco), y eso trae éxito y reconocimiento (Seis). Sostenerlo exige estar atento a cada dificultad (Siete) mientras aparecen proyectos nuevos a toda velocidad (Ocho). Con tantos frentes abiertos la energía baja y vuelven viejas heridas que levantan barreras (Nueve), hasta que el cansancio enseña a delegar y a hacer el último esfuerzo: falta poco (Diez).",
+    "fuente": "menores-bastos"
+  },
+  {
+    "palo": "copas",
+    "cuerpo": "emocional",
+    "elemento": "agua",
+    "reino": "animal",
+    "solido": "icosaedro",
+    "narrativa": "Las copas cuentan el viaje de las emociones. Empieza con el corazón abierto y la oportunidad de algo que llena (As), y con la aparición de alguien con quien compartir esa ilusión (Dos). La alegría se celebra con quienes nos rodean (Tres), pero la estabilidad alcanzada puede cerrar el corazón a lo nuevo (Cuatro) y, cuando se pierden la energía y la esperanza, la tristeza no deja ver lo que todavía queda (Cinco). La memoria trae de vuelta, con cariño, los buenos momentos (Seis), y eso despierta otra vez los sueños y los castillos en el aire (Siete). Entonces aparece el coraje de dejar atrás lo que no llena y buscar un camino nuevo (Ocho), hasta encontrar una satisfacción serena por todo lo vivido (Nueve) y compartir con los propios la alegría de vivir (Diez).",
+    "fuente": "menores-copas"
+  },
+  {
+    "palo": "espadas",
+    "cuerpo": "mental",
+    "elemento": "aire",
+    "reino": "humano",
+    "solido": "octaedro",
+    "narrativa": "Las espadas cuentan el viaje de la mente. Empieza con una idea arriesgada que puede salir muy bien o muy mal (As), y por eso hay que pensarla escuchando a la cabeza y al corazón (Dos). Decidir muchas veces implica renunciar, y la renuncia duele (Tres), así que hace falta descansar, ordenar las ideas y juntar fuerzas (Cuatro). Pero dormirse tiene su riesgo: otros pueden aprovechar la pasividad y quedarse con las propias ideas (Cinco). Entonces conviene llevarlas a otro lugar y tomar distancia (Seis), y aprender a ser diplomático y más astuto (Siete). Después de tanto, es difícil no sentirse atado (Ocho), y hay noches en que todo se ve negro (Nueve). Hasta que se toca fondo, se entiende que así no se puede seguir y se vuelve a empezar: al final, siempre sale el sol (Diez).",
+    "fuente": "menores-espadas"
+  },
+  {
+    "palo": "oros",
+    "cuerpo": "físico",
+    "elemento": "tierra",
+    "reino": "mineral",
+    "solido": "cubo",
+    "narrativa": "Los oros cuentan el viaje de lo material y del cuerpo. Empieza con una gran oportunidad que trae el destino (As), que pide moverse con ingenio para aprovecharla (Dos) y mirar al futuro para construir un proyecto con otros (Tres). Después hay que consolidar, valorar lo que se tiene y aprender a ahorrar (Cuatro), porque si no se cuida se corre el riesgo de perder lo conseguido (Cinco). Por eso importa saber dar y recibir con justicia y generosidad (Seis). Cuando las cosas van por buen camino, toca tener paciencia y seguir cuidando el esfuerzo (Siete), trabajar y perfeccionar el oficio (Ocho), hasta poder disfrutar con tranquilidad de lo construido (Nueve). Y lo ganado se comparte con los propios y con los más jóvenes, para que la riqueza fluya para todos (Diez).",
+    "fuente": "menores-oros"
+  },
+  {
+    "palo": "mayores",
+    "cuerpo": "espiritual",
+    "elemento": "cosmos",
+    "reino": "—",
+    "solido": "dodecaedro",
+    "narrativa": "Los arcanos mayores cuentan el viaje del Loco, el peregrino que sale con su bolsa al hombro en busca de sí mismo. En el camino aprende a crear con el Mago, a escuchar con la Sacerdotisa, a nutrir con la Emperatriz y a ordenar con el Emperador; encuentra sentido con el Sumo Sacerdote, elige con los Enamorados y avanza con el Carro. Pasa por la Fuerza, la búsqueda del Ermitaño y los giros de la Rueda de la Fortuna, se mide con la Justicia y aprende a ver distinto con el Colgado. Atraviesa la Muerte, encuentra la Templanza, mira de frente sus ataduras en el Diablo y ve caer sus ilusiones en la Torre. Después vienen la esperanza de la Estrella, los miedos de la Luna, la alegría del Sol y el despertar del Juicio, hasta llegar al Mundo, donde el viaje se completa para volver a empezar.",
+    "fuente": "mayores"
+  }
+]
