@@ -7,6 +7,8 @@ import { ButtonLink } from "@/components/atoms/Button";
 import { SITE_OG_IMAGE } from "@/lib/og/site";
 import { getSiteUrl } from "@/lib/server/site-url";
 import { CARDS, cardBySlug } from "@/lib/tarot/cards";
+import { cap } from "@/lib/tarot/prose";
+import { suitInfo } from "@/lib/tarot/suits";
 
 export function generateStaticParams() {
   return CARDS.map((c) => ({ slug: c.id }));
@@ -34,6 +36,7 @@ export default async function CartaPage({ params }: { params: Promise<{ slug: st
   const { slug } = await params;
   const card = cardBySlug(slug);
   if (!card) notFound();
+  const info = suitInfo(card);
   const prev = CARDS[(card.indice + 77) % 78]!;
   const next = CARDS[(card.indice + 1) % 78]!;
   const jsonLd = {
@@ -60,6 +63,8 @@ export default async function CartaPage({ params }: { params: Promise<{ slug: st
           <dl className="mt-6 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
             <dt className="text-suave">Arcano</dt><dd>{card.arcano === "mayor" ? `Mayor, ${card.numero}` : `Menor, ${card.palo}`}</dd>
             <dt className="text-suave">Elemento</dt><dd>{card.elemento}</dd>
+            <dt className="text-suave">Plano</dt><dd>{cap(info.cuerpo)}</dd>
+            <dt className="text-suave">Forma</dt><dd>{cap(info.solido)}</dd>
             {card.astrologia && <><dt className="text-suave">Astrología</dt><dd>{card.astrologia}</dd></>}
             {card.letra_hebrea && <><dt className="text-suave">Letra hebrea</dt><dd>{card.letra_hebrea}</dd></>}
             {card.numerologia && <><dt className="text-suave">Número</dt><dd>{card.numerologia}</dd></>}

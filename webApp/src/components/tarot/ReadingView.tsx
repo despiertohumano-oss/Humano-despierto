@@ -9,7 +9,7 @@ export default function ReadingView({ facts, text }: { facts: ReadingFacts; text
   const positions = positionsFor(facts.spread, facts.placed.length);
   return (
     <div className="space-y-12">
-      <SpreadLayout positions={positions} render={(_p, i) => <TarotCard card={facts.placed[i]!.card} reversed={facts.placed[i]!.reversed} size={facts.placed.length > 3 ? "sm" : "md"} priority={i === 0} />} />
+      <SpreadLayout positions={positions} forma={facts.spread.forma} render={(_p, i) => <TarotCard card={facts.placed[i]!.card} reversed={facts.placed[i]!.reversed} size={facts.placed.length > 3 ? "sm" : "md"} priority={i === 0} />} />
       <section className="mx-auto max-w-[68ch] space-y-5 text-lg leading-relaxed text-tinta">
         <p>{text.apertura}</p>
         {text.panorama && <p className="text-suave">{text.panorama}</p>}
@@ -25,6 +25,15 @@ export default function ReadingView({ facts, text }: { facts: ReadingFacts; text
           </article>
         ))}
       </section>
+      {text.grupos.length > 0 && (
+        <section className="mx-auto max-w-[68ch] space-y-3">
+          <h2 className="text-xl font-bold text-bosque">Por grupos</h2>
+          {text.grupos.map((g) => (
+            <p key={g.titulo} className="text-tinta"><strong className="text-bosque">{g.titulo}.</strong> {g.texto}</p>
+          ))}
+          {text.contraste && <p className="text-tinta">{text.contraste}</p>}
+        </section>
+      )}
       {text.hilo && (
         <section className="mx-auto max-w-[68ch]">
           <h2 className="text-xl font-bold text-bosque">El hilo entre las cartas</h2>
@@ -35,6 +44,7 @@ export default function ReadingView({ facts, text }: { facts: ReadingFacts; text
         <h2 className="text-xl font-bold text-bosque">Síntesis</h2>
         <p className="mt-2 text-tinta">{text.sintesis}</p>
         <p className="mt-4 font-semibold text-miel-800">{text.consejo}</p>
+        <p className="mt-4 text-tinta">{text.reflexion}</p>
       </section>
       <div className="mx-auto max-w-[68ch]"><EthicsNote /></div>
     </div>

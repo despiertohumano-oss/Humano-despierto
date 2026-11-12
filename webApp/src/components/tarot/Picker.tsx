@@ -56,7 +56,7 @@ export default function Picker({ spread, count, reversedEnabled, question, names
       <p ref={liveRef} tabIndex={-1} aria-live="polite" className="text-center text-lg font-semibold text-bosque outline-none">
         {placed}{current ? `Elegí la carta para: ${current.nombre}` : "Leyendo…"}
       </p>
-      <SpreadLayout positions={positions} render={(p, i) => {
+      <SpreadLayout positions={positions} forma={spread.forma} render={(p, i) => {
         const c = chosen[i];
         return c ? <TarotCard card={names[c.card.indice]!} reversed={c.card.reversed} size="sm" /> : <div role="img" className="aspect-[1/1.7] w-16 rounded-md border border-dashed border-salvia" aria-label={`${p.nombre}, vacía`} />;
       }} />

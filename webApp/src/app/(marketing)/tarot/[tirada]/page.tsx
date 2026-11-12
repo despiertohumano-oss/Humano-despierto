@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import Button from "@/components/atoms/Button";
 import Icon from "@/components/atoms/Icon";
 import Picker from "@/components/tarot/Picker";
 import { CARDS } from "@/lib/tarot/cards";
 import type { CardName } from "@/lib/tarot/card-names";
 import { MAX_QUESTION, sanitizeQuestion } from "@/lib/tarot/question";
-import { spreadBySlug, SPREADS } from "@/lib/tarot/spreads";
+import { activeSpreads, spreadBySlug } from "@/lib/tarot/spreads";
 
 type Param = string | string[] | undefined;
 type Search = { listo?: Param; q?: Param; inv?: Param; n?: Param };
@@ -15,7 +15,7 @@ type Search = { listo?: Param; q?: Param; inv?: Param; n?: Param };
 const first = (v: Param) => (Array.isArray(v) ? v[0] : v);
 
 export function generateStaticParams() {
-  return SPREADS.map((s) => ({ tirada: s.slug }));
+  return activeSpreads().map((s) => ({ tirada: s.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ tirada: string }> }): Promise<Metadata> {
@@ -29,6 +29,7 @@ export default async function TiradaPage({ params, searchParams }: { params: Pro
   const { tirada } = await params;
   const spread = spreadBySlug(tirada);
   if (!spread) notFound();
+  if (spread.retirada) permanentRedirect("/tarot/cruz-simple");
   const sp = await searchParams;
   const question = sanitizeQuestion(first(sp.q));
   const n = Number(first(sp.n));

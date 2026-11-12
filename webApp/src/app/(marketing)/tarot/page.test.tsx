@@ -23,11 +23,11 @@ describe("Tarot (pantalla 8)", () => {
     expect(html).not.toContain("Italia del siglo XV");
   });
 
-  it("conserva \"Cómo leer esto\", las cuatro tiradas y el enlace a las 78 cartas", () => {
+  it("conserva \"Cómo leer esto\", las nueve tiradas y el enlace a las 78 cartas", () => {
     expect(html).toContain("Cómo leer esto");
     expect(html).toContain("No reemplaza a una profesional");
     expect(html).toContain("Ver las 78 cartas y sus significados");
-    expect(html.match(/>Tirar</g)).toHaveLength(4);
+    expect(html.match(/>Tirar</g)).toHaveLength(9);
   });
 
   it("bloque final: título, texto y botón hacia el catálogo filtrado por Tarot", () => {
