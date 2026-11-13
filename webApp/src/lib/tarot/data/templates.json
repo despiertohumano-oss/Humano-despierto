@@ -58,30 +58,10 @@
       "Ningún oro a la vista: el tema no pasa por lo concreto ni por la plata."
     ]
   },
-  "panorama_gente": [
-    "Aparecen varias figuras: hay otras personas con peso real en esto.",
-    "Las figuras de corte se repiten: no estás sola en la situación, y eso cuenta.",
-    "Dos o más figuras: el tema tiene nombres y apellidos."
-  ],
   "panorama_bloqueo": [
     "Muchas cartas invertidas: lo que se mueve todavía está en proceso. La energía está, pero madura por dentro antes de salir.",
     "La mayoría salió invertida: leelo como procesos que todavía se están cocinando y demoras, no como puertas cerradas.",
     "Predominan las invertidas: nada está bloqueado para siempre. Los temas de la tirada están en camino, a su ritmo."
-  ],
-  "panorama_numero": [
-    "Se repite el {numero}: insistí en ese tema, la tirada lo subraya.",
-    "El número {numero} aparece más de una vez: es una lección que vuelve.",
-    "Varias cartas con el {numero}: un mismo ritmo atraviesa toda la tirada."
-  ],
-  "posicion_derecha": [
-    "{Nombre} en \"{posicion}\". {significado}",
-    "En \"{posicion}\" aparece {nombre}. {significado}",
-    "{Nombre}, para \"{posicion}\". {significado}"
-  ],
-  "posicion_invertida": [
-    "{Nombre} sale al revés en \"{posicion}\": lo que trae está presente, aunque más suave o todavía en proceso. {significado}",
-    "En \"{posicion}\", {nombre} al revés no niega su mensaje: lo demora o lo atenúa. {significado}",
-    "{Nombre}, en posición invertida, para \"{posicion}\". Lo que anuncia está en camino, todavía madurando. {significado}"
   ],
   "posicion_dominio": {
     "amor": [
@@ -105,28 +85,6 @@
       "En lo físico: {texto}"
     ]
   },
-  "hilo": {
-    "intensifica": [
-      "{A} y {b} comparten elemento: lo que trae la primera, la segunda lo amplifica.",
-      "{Dea} {ab} no hay freno: misma energía, más intensa.",
-      "Con {b} sube el volumen de lo que viene {dea}."
-    ],
-    "refuerza": [
-      "Lo que viene {dea} alimenta {ab}: una le da pie a la otra.",
-      "Entre {a} y {b} hay buena química; el pasaje es natural.",
-      "Lo que viene {dea} sigue su curso con {b} y llega más lejos."
-    ],
-    "debilita": [
-      "{A} y {b} se contradicen: lo que una enciende, la otra lo enfría. Ahí está la tensión.",
-      "{Dea} {ab} hay un choque; no se anulan, pero se frenan.",
-      "Con {b} aparece un límite para {a}."
-    ],
-    "neutral": [
-      "Pasar {dea} {ab} no empuja ni frena: cada una sigue su ritmo.",
-      "{Dea} {ab} el paso es tranquilo.",
-      "Entre {a} y {b} no hay choque ni empuje: cada una sigue su propio camino."
-    ]
-  },
   "combo": [
     "Dos cartas de esta tirada tienen una lectura clásica en conjunto: {texto}",
     "Hay una pareja conocida entre las cartas: {texto}",
@@ -136,11 +94,6 @@
     "Sumando los mayores aparece {nombre} como carta de síntesis: {palabras}.",
     "La quintaesencia de la tirada es {nombre}: {palabras}.",
     "Si hubiera que resumir todo en una carta sería {nombre}: {palabras}."
-  ],
-  "sintesis": [
-    "En conjunto, la tirada muestra {claves}. Quedate con lo que resonó; lo que no, dejalo pasar.",
-    "El hilo de todo es {claves}. No hace falta que todo encaje hoy.",
-    "Si una frase resume la tirada: {claves}."
   ],
   "sino": {
     "sí": [
@@ -169,18 +122,6 @@
     "Para llevarte: {consejo}",
     "Si te quedás con una sola cosa: {consejo}"
   ],
-  "estado": {
-    "equilibrio": [
-      "Bien llevada, esta energía se ve así: {texto}",
-      "Cuando fluye, {nombre} se expresa de esta manera: {texto}",
-      "En su mejor versión: {texto}"
-    ],
-    "desequilibrio": [
-      "Acá todavía está trabada: {texto}",
-      "Cuando se traba, {nombre} se nota así: {texto}",
-      "Lo que conviene mirar es su lado en proceso: {texto}"
-    ]
-  },
   "grupo": [
     "{grupo}: aparecen {claves}.",
     "En {grupo} se juntan {claves}.",
@@ -254,24 +195,6 @@
     "Para «{posicion}», la carta es {nombre}. {texto}",
     "En «{posicion}», la carta que sale es {nombre}. {texto}"
   ],
-  "estado_nuevo": {
-    "pleno": [
-      "Con {nombre}, acá la energía se expresa con toda su fuerza. {texto}",
-      "Las cartas vecinas no le restan nada a esta energía: con {nombre} hay espacio para desplegarse. {texto}",
-      "Con {nombre} en su mejor versión, esto es lo que hay a mano. {texto}"
-    ],
-    "en_proceso": [
-      "Acá, con {nombre}, la energía aparece con menos fuerza: el tema es el mismo, pero todavía está en camino. Hacia esto apunta, aunque no termine de llegar. {texto}",
-      "Con {nombre} al revés, el sentido no cambia: la energía es la misma, solo que más baja o todavía gestándose. Lo que se está formando es esto. {texto}",
-      "{texto} Acá eso todavía no se concreta del todo: con {nombre} el proceso está en marcha y le falta un poco para mostrarse entero.",
-      "La energía en {nombre} sigue presente, en voz baja o a medio camino. Cuando termine de madurar, se ve así. {texto}"
-    ],
-    "trabada": [
-      "Acá las cartas vecinas le restan fuerza a esta energía, y con {nombre} cuesta desplegarla. Así se nota cuando se traba. {texto}",
-      "Lo que hay alrededor juega en contra, y con {nombre} asoma el costado más difícil. {texto}",
-      "Con estas vecinas, la energía en {nombre} no fluye y aparece su costado más trabado. {texto} Reconocerlo ya empieza a aflojar el nudo."
-    ]
-  },
   "patron_numero": {
     "1": [
       "Se repite el As, con {cartas}: hay una oportunidad nueva que se abre, algo que entusiasma y pide poner energía para empezar.",
@@ -483,5 +406,23 @@
     "La tirada termina con {nombre}. {texto}",
     "{Nombre}, para cerrar la lectura, {texto_min}",
     "Si buscás hacia dónde ir con todo esto, {nombre} {texto_min}"
-  ]
+  ],
+  "estado": {
+    "pleno": [
+      "Con {nombre}, acá la energía se expresa con toda su fuerza. {texto}",
+      "Las cartas vecinas no le restan nada a esta energía: con {nombre} hay espacio para desplegarse. {texto}",
+      "Con {nombre} en su mejor versión, esto es lo que hay a mano. {texto}"
+    ],
+    "en_proceso": [
+      "Acá, con {nombre}, la energía aparece con menos fuerza: el tema es el mismo, pero todavía está en camino. Hacia esto apunta, aunque no termine de llegar. {texto}",
+      "Con {nombre} al revés, el sentido no cambia: la energía es la misma, solo que más baja o todavía gestándose. Lo que se está formando es esto. {texto}",
+      "{texto} Acá eso todavía no se concreta del todo: con {nombre} el proceso está en marcha y le falta un poco para mostrarse entero.",
+      "La energía en {nombre} sigue presente, en voz baja o a medio camino. Cuando termine de madurar, se ve así. {texto}"
+    ],
+    "trabada": [
+      "Acá las cartas vecinas le restan fuerza a esta energía, y con {nombre} cuesta desplegarla. Así se nota cuando se traba. {texto}",
+      "Lo que hay alrededor juega en contra, y con {nombre} asoma el costado más difícil. {texto}",
+      "Con estas vecinas, la energía en {nombre} no fluye y aparece su costado más trabado. {texto} Reconocerlo ya empieza a aflojar el nudo."
+    ]
+  }
 }

@@ -10,7 +10,7 @@ const HOJAS: [string, string[]][] = [
   ["idea_paso", ["a", "clave"]],
   ["idea_fin", ["a", "clave"]],
   ["posicion_lente", ["nombre", "Nombre", "posicion", "texto", "texto_min"]],
-  ...["pleno", "en_proceso", "trabada"].map((k) => [`estado_nuevo.${k}`, ["nombre", "texto"]] as [string, string[]]),
+  ...["pleno", "en_proceso", "trabada"].map((k) => [`estado.${k}`, ["nombre", "texto"]] as [string, string[]]),
   ...Array.from({ length: 10 }, (_, i) => [`patron_numero.${i + 1}`, ["cartas"]] as [string, string[]]),
   ["progresion.avanza", []],
   ["progresion.retrocede", []],
