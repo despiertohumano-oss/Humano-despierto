@@ -115,10 +115,17 @@ Marcá como secretas (Contains secret values) solo las cuatro **secretas** de la
 
 ## 5. Límites del plan gratuito que importan
 
-- Functions sincrónicas cortan a los ~10 s por defecto; `maxDuration = 300` de `/api/mail/retry`
-  no se respeta. Por eso la corrida de reintento se acota sola a ~8 s (sección 6).
+- Límites de ejecución según la documentación de Netlify (Functions > Configuration > Default
+  values, verificada el 2026-11-13): **60 s** las funciones sincrónicas (donde corre Next, incluido
+  `/api/mail/retry` y el `after()` de cada acción) y **30 s** las Scheduled Functions. No son
+  configurables, y `maxDuration = 300` de `/api/mail/retry` no se respeta. La auditoría partía de
+  ~10 s; los plazos propios de abajo quedaron conservadores a propósito.
 - Lo que corre en `after()` (mails) sigue después de la respuesta, pero dentro del mismo tope de la
-  función. El envío de un anuncio deja de empezar mails a los ~6 s y lo que falta lo retoma el cron.
+  función. El envío de un anuncio deja de **empezar** mails a los ~6 s y lo que falta lo retoma el cron.
+- **Los plazos propios no son topes duros:** solo impiden empezar un envío nuevo cuando quedan menos
+  de 2,5 s. Un envío ya empezado puede tardar hasta el timeout del transporte (5 s), así que el peor
+  caso con un SMTP mudo es de **~10,5 s** para una corrida de reintento (8 − 2,5 + 5, más la base) y
+  de ~8,5 s para el `after()` de un anuncio. Los dos quedan lejos de los 60 s y de los 30 s del cron.
 - Si la build falla por secret scanning con una variable pública, ver arriba; no apagues el scanning
   entero.
 
@@ -135,7 +142,13 @@ Solo corre en el deploy publicado de `main`, nunca en previews.
 - **Qué hace cada corrida:** retoma hasta 2 anuncios con turnos pendientes y hasta 25 mails
   transaccionales (bienvenida, inscripción aprobada o rechazada, aviso a la docente, certificado),
   con un plazo de ~8 s: deja de empezar envíos cuando quedan menos de 2,5 s y lo demás queda en
-  `mail_log` para la corrida siguiente. Un mail ya confirmado nunca se repite (dedupe de
+  `mail_log` para la corrida siguiente. No es un tope duro: el peor caso es de ~10,5 s (§5). La
+  función programada espera la respuesta hasta 20 s, dentro de sus 30 s.
+- **Turnos huérfanos:** al pasar por un anuncio se retiran (`attempts = 3`,
+  `last_error = 'permanent:000/<causa>'`) los turnos pendientes que nadie va a volver a reclamar:
+  `not_recipient` (la alumna ya no está inscripta), `unresolved` (sin mail resoluble) y
+  `not_published` (anuncio retirado o borrado). Así no ocupan para siempre los 2 cupos por corrida.
+  La recuperación de §T-054 (`last_error ~ '^permanent:(401|403|535)/'`) no los toca. Un mail ya confirmado nunca se repite (dedupe de
   `mail_log`).
 - **Primera corrida después del deploy:** reenvía todo lo que haya quedado trabado de los
   **últimos 3 días** (transaccionales con `sent_at` nulo, con intentos y turno vencido) y los
@@ -152,6 +165,27 @@ Solo corre en el deploy publicado de `main`, nunca en previews.
 - **Cómo verificar:** Netlify > Logs > Functions > `mail-retry`: una línea `mail_retry_cron` con
   `ok: true` y el conteo `{ announcements, transactional }` cada 15 min. Para dispararla a mano:
   `curl -X POST -H "Authorization: Bearer $CRON_SECRET" https://<sitio>/api/mail/retry`.
-- **Conexión SMTP por lote:** no se reutiliza. El cliente SMTP propio abre, conversa y cierra en
-  cada envío (un solo plazo de 5 s para todo el diálogo); reutilizarla exigiría reescribirlo (ver
-  el informe de T-098).
+- **Conexión SMTP por lote: no se reutiliza (deuda D-129).** El cliente SMTP propio abre, conversa
+  y cierra en cada envío, con un solo plazo de 5 s para todo el diálogo; reutilizarla exige
+  reescribirlo (plazos por mensaje, `RSET`, reconexión, pool para la concurrencia de 5). El
+  orquestador lo sacó del alcance de T-098: lo cubre el plazo por corrida.
+
+## 7. Antes de cada release con migraciones: `0082` y `cloud-parity`
+
+`0082_lesson_notes_body_max` (T-098, G-11) agrega el CHECK `lesson_notes_body_max_length`
+(`char_length(body) <= 4000`). Nace `not valid` y se valida solo si ninguna nota lo viola, así que
+nunca rompe el release ni recorta texto de alumnas. Antes de aplicarla en la nube, en el SQL editor:
+
+```sql
+select id, user_id, lesson_id, char_length(body) as caracteres, created_at
+  from public.lesson_notes
+ where char_length(body) > 4000
+ order by caracteres desc;
+```
+
+- **0 filas:** el CHECK queda validado y `bash supabase/harness/cloud-parity.sh` sale igual que el local.
+- **1 o más filas:** el CHECK queda `NOT VALID`. Frena las escrituras nuevas, y la nota vieja sigue
+  ahí: editarla exige acortarla. `cloud-parity.sh` va a mostrar **una línea de diferencia esperada**
+  en las constraints de `lesson_notes`, porque `pg_get_constraintdef` agrega ` NOT VALID`. Para
+  cerrarla, la dueña de cada nota (o el admin, con su acuerdo) la acorta y después se corre
+  `alter table public.lesson_notes validate constraint lesson_notes_body_max_length;`.

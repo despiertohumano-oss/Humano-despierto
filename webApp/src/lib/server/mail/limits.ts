@@ -13,10 +13,12 @@ export function assertTransportTimeout(ms: number): void {
 }
 
 /**
- * G-02 (T-098): una función de Netlify corta a ~10 s y `after()` corre dentro de ese tope. Una corrida
- * de reintento (o el envío de un anuncio) deja de EMPEZAR mails cuando quedan menos de
+ * G-02 (T-098): `after()` corre dentro del tope de la función (Netlify: 60 s sincrónicas, 30 s las
+ * programadas; la auditoría partía de ~10 s y estos plazos quedaron conservadores). Una corrida de
+ * reintento (o el envío de un anuncio) deja de EMPEZAR mails cuando quedan menos de
  * `MAIL_START_RESERVE_MS` para su plazo: lo que ya está en vuelo termina, y lo demás queda pendiente
- * en `mail_log` para la próxima corrida del cron (cada 15 min).
+ * en `mail_log` para la próxima corrida del cron (cada 15 min). NO es un tope duro: un envío empezado
+ * puede durar hasta `TRANSPORT_TIMEOUT_MS`, así que el peor caso es ~8 − 2,5 + 5 ≈ 10,5 s.
  */
 export const MAIL_RUN_BUDGET_MS = 8_000;
 /** Plazo del envío de un anuncio dentro del `after()` de la publicación: la acción ya gastó parte. */

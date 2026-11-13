@@ -42,7 +42,9 @@ weekly drip. Active enrollment grants access to the whole curriculum at once.
 - **Production deploys only from GitHub `main` (CD).** Netlify site `humano-despierto`
   (account `despiertohumano@gmail.com`) is linked to `escuela` `main` and builds on every push;
   `netlify.toml` is the build config; its command runs `npm test` (Vitest) before `npm run build`,
-  so a red unit test stops the deploy (T-098, G-03). No `netlify deploy --prod` from a laptop, no branch deploys
+  so a red unit test stops the deploy (T-098, G-03). The suite is hermetic: `src/test/hermetic-env.ts`
+  (Vitest `setupFiles`) clears every deploy variable before each test file; a test that needs one
+  sets it with `vi.stubEnv`. No `netlify deploy --prod` from a laptop, no branch deploys
   or deploy previews (they would share production's database). Runbook: `docs/deploy-netlify.md`.
 
 ## Commands
@@ -58,6 +60,7 @@ npm run lint     # ESLint
 npx tsc --noEmit # typecheck
 npm run build    # production build (don't run unless asked)
 npm test         # Vitest, unit layer only (src/lib/**, Server Actions); no stack, no network
+npm run test:netlify-env # same suite under the Netlify build env (fake values); must stay green (T-098)
 npm run test:unit # same as npm test
 npm run test:e2e # Playwright; needs `npx supabase start`; starts its own `next dev` on localhost:3101
 ```
@@ -176,11 +179,14 @@ images and any path with a file extension.
   enrollment no longer active). Since T-098 (G-02, closes D-127) the Netlify Scheduled Function
   `webApp/netlify/functions/mail-retry.mts` POSTs to it every 15 min with `Bearer CRON_SECRET`
   (logic in `src/lib/deploy/mail-retry-cron.ts`). A run stops starting sends ~2.5 s before an
-  8 s budget (`MAIL_RUN_BUDGET_MS`, functions die at ~10 s); an announcement sent in the publish
+  8 s budget (`MAIL_RUN_BUDGET_MS`; not a hard cap: a started send may last the 5 s transport timeout,
+  worst case ~10.5 s; Netlify allows 60 s synchronous, 30 s scheduled); an announcement sent in the publish
   `after()` stops at 6 s and leaves one released slot so the cron resumes it, skipping recipients
-  already confirmed. Enrollment (approve, reject, grant) and course-completed mails go out in
+  already confirmed. Orphan pending slots (recipient no longer enrolled, no resolvable mail,
+  announcement withdrawn) are retired as `permanent:000/<cause>` so they never hold the 2 per-run slots.
+  Enrollment (approve, reject, grant) and course-completed mails go out in
   `after()` through `mailAfterResponse` (`src/lib/server/mail/after-mail.ts`), never awaited in the
-  request. SMTP connections are not reused per batch (the hand-rolled client is one dialog per send).
+  request. SMTP connections are not reused per batch (the hand-rolled client is one dialog per send; debt D-129).
 - **Server Actions never return the engine's message** (T-097, D-120). `actionError(err, msg)`
   (`src/lib/server/action-error.ts`) logs the detail as `action_failed` and returns `msg`; only a
   `UserFacingError` (`requireTeacher`, `assertOwnsCourse`, `assertOwnsPost`) passes its own text.
@@ -199,10 +205,12 @@ images and any path with a file extension.
   `UserFacingError` or `RateLimitError` (`request_expected_error` at warn level, T-098 G-04).
 - **The player's progress and note actions return `{ ok: false, error }`, never throw** (T-098,
   G-04, `src/lib/player/action-result.ts`): no session, missing note, rate limit and engine errors
-  (via `actionError`) come back in Spanish; the player shows «no se está guardando tu avance»
+  (via `actionError`) come back in Spanish; the player shows the action's own message (e.g. «Tu sesión se cerró. Volvé a iniciar sesión para guardar.»,
+  or «No pudimos guardar tu avance. Revisá tu conexión: seguimos intentando.» on a network failure)
   (`ProgressSaveNotice`). `lesson_notes.body` is capped at 4000 characters in the action and by the
   CHECK `lesson_notes_body_max_length` (migration 0082, born `not valid` and validated only when no
-  row violates it). `requireTeacher()` in `cursos/[courseId]/actions.ts` and `requireSession()` in
+  row violates it; if the cloud has longer notes it stays NOT VALID and `cloud-parity.sh` shows one
+  expected diff: run the SQL in `docs/deploy-netlify.md` §7 before the release). `requireTeacher()` in `cursos/[courseId]/actions.ts` and `requireSession()` in
   `circulo/actions.ts` run inside the `try`; `panel/docente/actions.ts` and `diario/actions.ts`
   still call `requireTeacher()` outside it.
 - **Deleting a module or a lesson from the course editor asks to type its title** (T-098, G-01,

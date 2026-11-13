@@ -2,8 +2,9 @@ import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { retryPendingMail } from "@/lib/server/mail/notify";
 
-// Netlify no respeta esto (corta a ~10 s); en local o en otro host deja margen. Lo que acota la
-// corrida es el plazo propio de `retryPendingMail` (G-02, ~8 s), no este valor.
+// Netlify no respeta esto (sus funciones sincrónicas cortan a 60 s); en local o en otro host deja
+// margen. Lo que acota la corrida es el plazo propio de `retryPendingMail` (G-02, ~8 s para empezar
+// envíos, peor caso ~10,5 s), no este valor.
 export const maxDuration = 300;
 
 function validSecret(header: string | null, secret: string): boolean {
