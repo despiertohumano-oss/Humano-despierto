@@ -59,6 +59,8 @@ test("c.1 c.2 cuenta nueva: el link del mail entra solo, elige su clave y queda 
   await invitada.goto(link);
   await expect(invitada).toHaveURL(/\/entrar\/nueva-clave\?invitacion=1$/);
   await expect(invitada.getByText("Ya sos docente de Humano Despierto.", { exact: false })).toBeVisible();
+  // NB-1 (T-097): quien abrió el link ve con qué cuenta quedó.
+  await expect(invitada.getByRole("status").filter({ hasText: email })).toContainText("¿No sos vos?");
   await invitada.getByLabel("Clave nueva", { exact: true }).fill(PASSWORD);
   await invitada.getByLabel(/Repet/).fill(PASSWORD);
   await invitada.getByRole("button", { name: /Guardar/ }).click();
@@ -93,7 +95,14 @@ test("c.2 cuenta existente: el link entra directo con su cuenta y queda docente"
   const ctx = await browser.newContext();
   const invitada = await ctx.newPage();
   await invitada.goto(link);
-  await expect(invitada).toHaveURL(/\/panel\/docente$/);
+  await expect(invitada).toHaveURL(/\/panel\/docente\?invitacion=1$/);
+  // NB-1 (T-097): un link reenviado deja a otra persona en esta cuenta; el aterrizaje lo dice y deja salir.
+  const aviso = invitada.getByRole("status").filter({ hasText: email });
+  await expect(aviso).toContainText("¿No sos vos?");
+  await aviso.getByRole("button", { name: "Salir" }).click();
+  await expect(invitada).toHaveURL(/\/entrar$/);
+  await invitada.goto("/panel/docente");
+  await expect(invitada).toHaveURL(/\/entrar/);
   await ctx.close();
 });
 

@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
+import { InvitedAccountBanner } from "@/components/molecules/InvitedAccountNotice";
 import { getCurrentUser } from "@/lib/server/auth";
 
 // Guard de servidor (defensa en profundidad — el middleware ya protege estas
@@ -11,5 +13,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     redirect("/entrar");
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      {user.email && (
+        <Suspense fallback={null}>
+          <InvitedAccountBanner email={user.email} />
+        </Suspense>
+      )}
+      {children}
+    </>
+  );
 }

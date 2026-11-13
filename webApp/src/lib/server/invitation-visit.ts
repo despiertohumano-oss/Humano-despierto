@@ -7,7 +7,8 @@ export const INVALID_INVITATION_PATH = "/invitacion/invalida";
 /** Hay una sesión y no es la de la invitación (o venció): se le dice que pruebe saliendo. */
 export const INVALID_WITH_SESSION_PATH = "/invitacion/invalida?sesion=1";
 /** La cuenta la creó la invitación: elige su clave y después va a su panel. */
-export const INVITED_NEW_PASSWORD_PATH = "/entrar/nueva-clave?invitacion=1";
+export const INVITED_LANDING_QUERY = "invitacion=1";
+export const INVITED_NEW_PASSWORD_PATH = `/entrar/nueva-clave?${INVITED_LANDING_QUERY}`;
 
 export interface VisitDeps {
   /** Canjea el acceso del mail: deja la sesión de la cuenta invitada. false si venció o ya se usó. */
@@ -56,5 +57,7 @@ export async function resolveInvitationVisit(
   }
   // `signup`: la cuenta la creó la invitación y no tiene clave todavía.
   if (viaAccess && access?.type === "signup") return INVITED_NEW_PASSWORD_PATH;
-  return homeForRole(await deps.roleOf(userId));
+  const home = homeForRole(await deps.roleOf(userId));
+  // NB-1 (T-097): si la sesión la dejó el acceso del link, el aterrizaje muestra qué cuenta es.
+  return viaAccess ? `${home}?${INVITED_LANDING_QUERY}` : home;
 }
