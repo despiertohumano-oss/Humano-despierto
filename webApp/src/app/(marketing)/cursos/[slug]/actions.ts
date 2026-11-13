@@ -23,6 +23,7 @@ import {
 } from "@/lib/enrollment/messages";
 import { withRateLimit } from "@/lib/server/rate-limit";
 import { limitedState } from "@/lib/rate-limit/core";
+import { actionError } from "@/lib/server/action-error";
 
 export interface ReviewActionState extends RateLimitFields {
   error: string | null;
@@ -65,7 +66,7 @@ export const saveReviewAction = withRateLimit(
     });
 
     if (error) {
-      return { error: traducirErrorResena(error, `No se pudo guardar la reseña: ${error.message}`), success: null };
+      return { error: traducirErrorResena(error, "") || actionError(error, "No se pudo guardar la reseña."), success: null };
     }
 
     revalidatePath(`/cursos/${slug}`);
@@ -100,7 +101,7 @@ export const respondReviewAction = withRateLimit(
     const { error } = await responderResena(supabase, { reviewId, response: parsed.data });
 
     if (error) {
-      return { error: traducirErrorResena(error, `No se pudo responder: ${error.message}`), success: null };
+      return { error: traducirErrorResena(error, "") || actionError(error, "No se pudo responder."), success: null };
     }
 
     revalidatePath(`/cursos/${slug}`);
