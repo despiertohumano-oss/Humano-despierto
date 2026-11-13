@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentUser } from "@/lib/server/auth";
+import type { AuthUser } from "@/lib/stores/useAuthStore";
 import { CAMPUS_ACTION_INITIAL_STATE, type CampusActionState } from "@/lib/campus/action-state";
 import { withRateLimit } from "@/lib/server/rate-limit";
 import { limitedState } from "@/lib/rate-limit/core";
@@ -32,6 +33,18 @@ async function requireSession() {
   return user;
 }
 
+// G-04 (T-098): la sesión se resuelve dentro de un try para que su UserFacingError vuelva en el
+// estado del formulario (y no como pantalla de error ni como error del sitio).
+async function sessionOrState(
+  fallback: string,
+): Promise<{ user: AuthUser; state: null } | { user: null; state: CampusActionState }> {
+  try {
+    return { user: await requireSession(), state: null };
+  } catch (err) {
+    return { user: null, state: { error: actionError(err, fallback), success: null } };
+  }
+}
+
 function threadPath(courseSlug: string | null): string {
   return courseSlug ? `/circulo/${courseSlug}` : "/circulo";
 }
@@ -42,7 +55,8 @@ export const createCampusPostAction = withRateLimit(
     _prevState: CampusActionState,
     formData: FormData
   ): Promise<CampusActionState> {
-    const user = await requireSession();
+    const { user, state } = await sessionOrState("No se pudo publicar.");
+    if (state) return state;
 
     const courseId = String(formData.get("courseId") ?? "").trim() || null;
     const courseSlug = String(formData.get("courseSlug") ?? "").trim() || null;
@@ -85,7 +99,8 @@ export const updateCampusPostAction = withRateLimit(
     _prevState: CampusActionState,
     formData: FormData
   ): Promise<CampusActionState> {
-    await requireSession();
+    const { state } = await sessionOrState("No se pudo editar.");
+    if (state) return state;
 
     const postId = String(formData.get("postId") ?? "");
     const courseSlug = String(formData.get("courseSlug") ?? "").trim() || null;
@@ -120,7 +135,8 @@ export const moderateCampusPostAction = withRateLimit(
     _prevState: CampusActionState,
     formData: FormData
   ): Promise<CampusActionState> {
-    const user = await requireSession();
+    const { user, state } = await sessionOrState("No se pudo borrar.");
+    if (state) return state;
 
     const postId = String(formData.get("postId") ?? "");
     const courseSlug = String(formData.get("courseSlug") ?? "").trim() || null;

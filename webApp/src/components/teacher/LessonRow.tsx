@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import Link from "next/link";
 import { moveLessonAction, deleteLessonAction } from "@/app/(app)/panel/docente/cursos/[courseId]/actions";
 import Button from "@/components/atoms/Button";
@@ -8,6 +8,7 @@ import StatusChip from "@/components/panel/StatusChip";
 import StatusMessage from "@/components/panel/StatusMessage";
 import { TEACHER_ACTION_INITIAL_STATE } from "@/lib/teacher/action-state";
 import type { TeacherLessonSummary } from "@/lib/server/teacher";
+import { DeleteConfirmZone } from "@/components/teacher/DeleteConfirm";
 
 interface Props {
   courseId: string;
@@ -15,9 +16,12 @@ interface Props {
   lesson: TeacherLessonSummary;
   isFirst: boolean;
   isLast: boolean;
+  /** G-01: calculado por el servidor; `null` si no se pudo contar. */
+  studentsWithProgress: number | null;
 }
 
-export default function LessonRow({ courseId, moduleId, lesson, isFirst, isLast }: Props) {
+export default function LessonRow({ courseId, moduleId, lesson, isFirst, isLast, studentsWithProgress }: Props) {
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [moveState, moveAction, movePending] = useActionState(moveLessonAction, TEACHER_ACTION_INITIAL_STATE);
   const [deleteState, deleteAction, deletePending] = useActionState(deleteLessonAction, TEACHER_ACTION_INITIAL_STATE);
 
@@ -48,15 +52,27 @@ export default function LessonRow({ courseId, moduleId, lesson, isFirst, isLast 
         </Button>
       </form>
 
-      <form action={deleteAction}>
-        <input type="hidden" name="courseId" value={courseId} />
-        <input type="hidden" name="lessonId" value={lesson.id} />
-        <Button type="submit" variant="danger" size="sm" disabled={deletePending}>
-          Borrar
-        </Button>
-      </form>
+      <Button variant="danger" size="sm" onClick={() => setConfirmingDelete(true)} aria-expanded={confirmingDelete}>
+        Borrar
+      </Button>
 
-      <StatusMessage error={moveState.error || deleteState.error} className="w-full" />
+      {confirmingDelete && (
+        <div className="w-full">
+          <DeleteConfirmZone
+            scope="lesson"
+            title={lesson.title}
+            detail="Se borra con sus capítulos y recursos."
+            studentsWithProgress={studentsWithProgress}
+            action={deleteAction}
+            isPending={deletePending}
+            error={deleteState.error}
+            hidden={{ courseId, lessonId: lesson.id }}
+            onCancel={() => setConfirmingDelete(false)}
+          />
+        </div>
+      )}
+
+      <StatusMessage error={confirmingDelete ? moveState.error : moveState.error || deleteState.error} className="w-full" />
     </li>
   );
 }

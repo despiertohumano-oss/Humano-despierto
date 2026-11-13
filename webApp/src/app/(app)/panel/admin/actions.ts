@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { revalidateLanding } from "@/lib/server/landing-cache";
 import { z } from "zod";
 import { notifyEnrollmentActivated, notifyEnrollmentRejected } from "@/lib/server/mail/notify";
+import { mailAfterResponse } from "@/lib/server/mail/after-mail";
 import { hasLocator } from "@/lib/validation/locator.mjs";
 import { ENROLLMENT_COPY, NO_ROWS, REASON_MAX, translateEnrollmentError } from "@/lib/enrollment/messages";
 import { getFounderId, requireAdmin } from "@/lib/server/admin";
@@ -133,9 +134,8 @@ async function setEnrollment(
     return { error: actionError(error, "No se pudo actualizar la inscripción."), success: null };
   }
 
-  // El mail se dispara DESPUÉS de que la inscripción ya quedó otorgada, y esta llamada nunca
-  // tira (T-020 criterio 2, garantizado en `notify.ts`/`send.ts`) — un SMTP caído no puede
-  // deshacer lo de arriba ni impedir el `return` de éxito de abajo.
+  // El mail sale DESPUÉS de responder (G-02, `after()`): un SMTP caído o lento no puede deshacer
+  // lo de arriba ni demorar el `return` de éxito de abajo.
   //
   // No se lee el estado ANTERIOR para decidir si notificar (T-020, juez ciego D3): esa lectura
   // seguida de este upsert es exactamente la carrera que dos activaciones concurrentes pueden
@@ -143,7 +143,7 @@ async function setEnrollment(
   // — es `claimMailSlot` (UNIQUE de `mail_log`, migración 0019), no esta lectura, quien decide
   // atómicamente si el mail ya se mandó antes para este (alumna, curso).
   if (status === "active") {
-    await notifyEnrollmentActivated({ studentId: userId, courseId });
+    mailAfterResponse("mail_enrollment_activated_failed", () => notifyEnrollmentActivated({ studentId: userId, courseId }));
   }
 
   revalidatePath("/panel/admin", "layout");
@@ -231,9 +231,11 @@ export const approveEnrollmentRequestAction = withRateLimit(
     const row = data?.[0];
     if (!row) return { error: translateEnrollmentError({ code: NO_ROWS, message: "" }), success: null };
 
-    // Después de guardar y sin try/catch: `notify*` atrapa todo (T-020), un SMTP caído no deshace
-    // la aprobación ni cambia esta respuesta (c.11).
-    await notifyEnrollmentActivated({ studentId: row.user_id, courseId: row.course_id });
+    // Después de guardar y fuera del request (G-02): un SMTP caído o lento no deshace la aprobación
+    // ni cambia ni demora esta respuesta (c.11).
+    mailAfterResponse("mail_enrollment_activated_failed", () =>
+      notifyEnrollmentActivated({ studentId: row.user_id, courseId: row.course_id }),
+    );
 
     revalidatePath("/panel/admin", "layout");
     revalidatePath("/cursos/[slug]", "page");
@@ -273,7 +275,9 @@ export const rejectEnrollmentRequestAction = withRateLimit(
     const row = data?.[0];
     if (!row) return { error: translateEnrollmentError({ code: NO_ROWS, message: "" }), success: null };
 
-    await notifyEnrollmentRejected({ studentId: row.user_id, courseId: row.course_id, reason: decidedReason });
+    mailAfterResponse("mail_enrollment_rejected_failed", () =>
+      notifyEnrollmentRejected({ studentId: row.user_id, courseId: row.course_id, reason: decidedReason }),
+    );
 
     revalidatePath("/panel/admin", "layout");
     revalidatePath("/cursos/[slug]", "page");

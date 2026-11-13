@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCourseRoster } from "@/lib/server/teacher-metrics";
+import { getStudentProgressCounts } from "@/lib/server/student-impact";
+import { log } from "@/lib/server/log";
 import { ButtonLink } from "@/components/atoms/Button";
 import PanelFrame from "@/components/panel/PanelFrame";
 import PanelSection from "@/components/panel/PanelSection";
@@ -29,7 +31,19 @@ export default async function TeacherCourseEditorPage({ params }: Props) {
   const course = await getTeacherCourseDetail(courseId, teacher.id);
 
   if (!course) notFound();
-  const roster = await getCourseRoster(course.id, teacher.id);
+  const [roster, impact] = await Promise.all([
+    getCourseRoster(course.id, teacher.id),
+    // G-01: el conteo de alumnas afectadas por un borrado. Si falla, el editor se sirve igual y el
+    // texto de confirmación avisa que no se pudo contar.
+    getStudentProgressCounts(
+      course.id,
+      teacher.id,
+      course.modules.map((m) => ({ id: m.id, lessonIds: m.lessons.map((l) => l.id) })),
+    ).catch((err) => {
+      log.warn("student_impact_unavailable", { err });
+      return null;
+    }),
+  ]);
 
   // Firma con la SESION de la duena (policy uploads_covers_select_own): el editor ve la portada
   // aunque el curso sea borrador, y nunca pasa por service_role (c.6).
@@ -79,7 +93,7 @@ export default async function TeacherCourseEditorPage({ params }: Props) {
       <PanelSection id="modulos-titulo" title="Módulos y lecciones">
         <div className="space-y-4">
           {course.modules.map((mod, i) => (
-            <ModuleBlock key={mod.id} courseId={course.id} module={mod} isFirst={i === 0} isLast={i === course.modules.length - 1} />
+            <ModuleBlock key={mod.id} courseId={course.id} module={mod} isFirst={i === 0} isLast={i === course.modules.length - 1} impact={impact} />
           ))}
           {course.modules.length === 0 && <p className="tarjeta p-5 text-suave">Sin módulos todavía — creá el primero abajo.</p>}
           <NewModuleForm courseId={course.id} />

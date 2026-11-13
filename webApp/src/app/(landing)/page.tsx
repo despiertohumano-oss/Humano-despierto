@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { connection } from "next/server";
 import { redirect } from "next/navigation";
 import { authReturnRedirect } from "@/lib/auth/paths";
@@ -12,9 +13,16 @@ import Testimonios from "@/components/landing/Testimonios";
 import Empezar from "@/components/landing/Empezar";
 import LunarCalendar from "@/components/landing/LunarCalendar";
 import { lunarDays } from "@/lib/lunar";
+import { SITE_DEFAULT_DESCRIPTION, SITE_DEFAULT_TITLE, pageOpenGraph } from "@/lib/seo/meta";
 import { getLandingData } from "@/lib/server/landing";
 import { getPublishedCourses, signCatalogCovers } from "@/lib/server/courses";
 import { getPublicTeachers, signTeacherAvatars } from "@/lib/server/guias";
+
+// El title sale del default del layout; acá solo el canonical (la portada acepta ?parámetros de retorno de auth) y su og:url.
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+  openGraph: pageOpenGraph({ title: SITE_DEFAULT_TITLE, description: SITE_DEFAULT_DESCRIPTION, url: "/" }),
+};
 
 export default async function LandingPage({
   searchParams,

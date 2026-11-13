@@ -14,6 +14,7 @@ import { settleWithConcurrency } from "@/lib/utils/concurrency";
 import { renderTeacherInvitationMail } from "@/lib/server/mail/templates/teacher-invitation";
 import { formatCertificateDate } from "@/lib/utils/format";
 import { log } from "@/lib/server/log";
+import { ANNOUNCEMENT_AFTER_BUDGET_MS, MAIL_RUN_BUDGET_MS, canStartMail } from "@/lib/server/mail/limits";
 
 // T-020 · capa de orquestación: junta los datos (nombre, curso, docente, email) y llama a
 // `sendMail`. Cada función atrapa TODO internamente — DB incluida, no solo el transporte — así
@@ -27,6 +28,13 @@ import { log } from "@/lib/server/log";
 // propia registrándose): esta capa no vuelve a autorizar nada, solo notifica.
 
 
+type RecipientLookup =
+  | { kind: "found"; id: string; email: string; name: string }
+  /** Confirmado: la cuenta no existe (404 de GoTrue), no tiene mail o no tiene perfil. */
+  | { kind: "missing" }
+  /** GoTrue o PostgREST fallaron: no se sabe; reintentar más tarde (B-3, QA T-098). */
+  | { kind: "error" };
+
 /**
  * Devuelve tambien el `id` CANONICO -- el que resolvio la base, no el string que vino en el
  * request. Es la misma razon por la que `getCourseInfo` devuelve el suyo: cualquier scope de
@@ -35,9 +43,7 @@ import { log } from "@/lib/server/log";
  * scope. `auth-js` valida el uuid con una regex insensible a mayusculas, asi que las
  * permutaciones de caja llegan enteras hasta aca.
  */
-async function getUserEmail(
-  userId: string,
-): Promise<{ id: string; email: string; name: string } | null> {
+async function lookupRecipient(userId: string): Promise<RecipientLookup> {
   const db = createServiceRoleClient();
 
   const [{ data: authData, error: authError }, { data: profile, error: profileError }] =
@@ -46,16 +52,34 @@ async function getUserEmail(
       db.from("profiles").select("id, full_name").eq("id", userId).maybeSingle(),
     ]);
 
-  if (authError || !authData?.user?.email) {
-    log.error("mail_recipient_email_unresolved", { user_id: userId, message: authError?.message ?? "sin email" });
-    return null;
+  if (authError) {
+    const status = (authError as { status?: number }).status;
+    log.error("mail_recipient_email_unresolved", { user_id: userId, message: authError.message, status });
+    return status === 404 ? { kind: "missing" } : { kind: "error" };
   }
-  if (profileError || !profile) {
-    log.error("mail_recipient_profile_unresolved", { user_id: userId, message: profileError?.message });
-    return null;
+  if (profileError) {
+    log.error("mail_recipient_profile_unresolved", { user_id: userId, message: profileError.message });
+    return { kind: "error" };
+  }
+  if (!authData?.user?.email) {
+    log.error("mail_recipient_email_unresolved", { user_id: userId, message: "sin email" });
+    return { kind: "missing" };
+  }
+  if (!profile) {
+    log.error("mail_recipient_profile_unresolved", { user_id: userId, message: "sin perfil" });
+    return { kind: "missing" };
   }
 
-  return { id: profile.id, email: authData.user.email, name: profile.full_name || "—" };
+  return { kind: "found", id: profile.id, email: authData.user.email, name: profile.full_name || "—" };
+}
+
+/** Para los transaccionales: `null` en los dos casos (faltante o falla), como siempre. Ninguno de
+ *  ellos reclama turno antes de resolver, así que una falla no gasta nada. */
+async function getUserEmail(
+  userId: string,
+): Promise<{ id: string; email: string; name: string } | null> {
+  const r = await lookupRecipient(userId);
+  return r.kind === "found" ? { id: r.id, email: r.email, name: r.name } : null;
 }
 
 export type MailType =
@@ -243,7 +267,9 @@ const RETRY_ANNOUNCEMENTS_PER_RUN = 2;
  * ya salta lo confirmado y lo vivo, así que es idempotente. Pensado para un cron (ver
  * /api/mail/retry); nunca lanza.
  */
-export async function retryPendingAnnouncementMail(): Promise<{ announcements: number }> {
+export async function retryPendingAnnouncementMail(
+  deadline: number = Date.now() + MAIL_RUN_BUDGET_MS,
+): Promise<{ announcements: number }> {
   try {
     const cutoff = new Date(Date.now() - 10 * 60_000).toISOString();
     const { data, error } = await createServiceRoleClient()
@@ -260,8 +286,13 @@ export async function retryPendingAnnouncementMail(): Promise<{ announcements: n
       return { announcements: 0 };
     }
     const ids = [...new Set((data ?? []).map((r: { scope_key: string }) => r.scope_key))].slice(0, RETRY_ANNOUNCEMENTS_PER_RUN);
-    for (const announcementId of ids) await notifyAnnouncementPublished({ announcementId });
-    return { announcements: ids.length };
+    let started = 0;
+    for (const announcementId of ids) {
+      if (!canStartMail(deadline)) break;
+      await notifyAnnouncementPublished({ announcementId, deadline });
+      started += 1;
+    }
+    return { announcements: started };
   } catch (err) {
     log.error("mail_retry_failed", { err });
     return { announcements: 0 };
@@ -511,7 +542,67 @@ async function listActiveEnrollmentUserIds(courseId: string): Promise<{ user_id:
   }
 }
 
-type AnnouncementDelivery = "sent" | "failed" | "not_claimed" | "unresolved";
+type AnnouncementDelivery = "sent" | "failed" | "not_claimed" | "unresolved" | "lookup_failed" | "deferred";
+
+interface AnnouncementLog {
+  /** Confirmado o con los 3 intentos gastados: no hay que volver a intentarlo. */
+  settled: Set<string>;
+  /** Sin confirmar y con intentos: lo que el retry vuelve a encontrar. */
+  pending: Set<string>;
+}
+
+/** Estado de `mail_log` para un anuncio. `settled` evita que cada corrida con plazo vuelva a
+ *  resolver la dirección de quien ya lo recibió (un anuncio grande no avanzaría nunca); `pending`
+ *  permite retirar los turnos huérfanos (N-2). */
+async function readAnnouncementLog(announcementId: string): Promise<AnnouncementLog> {
+  const db = createServiceRoleClient();
+  const out: AnnouncementLog = { settled: new Set(), pending: new Set() };
+  for (let from = 0; ; from += ENROLLMENT_PAGE) {
+    const { data, error } = await db
+      .from("mail_log")
+      .select("recipient_user_id, sent_at, attempts")
+      .eq("mail_type", "course_announcement")
+      .eq("scope_key", announcementId)
+      .order("recipient_user_id")
+      .range(from, from + ENROLLMENT_PAGE - 1);
+    if (error) throw new Error(`no se pudo leer mail_log del anuncio: ${error.message}`);
+    const rows = (data ?? []) as { recipient_user_id?: string; sent_at?: string | null; attempts?: number }[];
+    for (const r of rows) {
+      if (!r.recipient_user_id) continue;
+      if (r.sent_at || (r.attempts ?? 0) >= 3) out.settled.add(r.recipient_user_id);
+      else out.pending.add(r.recipient_user_id);
+    }
+    if (rows.length < ENROLLMENT_PAGE) return out;
+  }
+}
+
+type OrphanCause = "not_recipient" | "unresolved" | "not_published";
+
+/**
+ * N-2 (QA T-098): un turno pendiente que nadie va a volver a reclamar se retira con su causa
+ * (`attempts = 3`, `last_error` con el formato de 0036). Sin esto el retry, que toma 2 anuncios por
+ * corrida ordenados por `claimed_at`, volvía siempre al mismo anuncio huérfano y los demás no se
+ * reintentaban nunca. Sin `recipients` retira todos los pendientes del anuncio (anuncio retirado).
+ */
+async function retireAnnouncementSlots(announcementId: string, cause: OrphanCause, recipients?: string[]): Promise<void> {
+  if (recipients && recipients.length === 0) return;
+  let q = createServiceRoleClient()
+    .from("mail_log")
+    .update({ attempts: 3, last_error: `permanent:000/${cause}` })
+    .eq("mail_type", "course_announcement")
+    .eq("scope_key", announcementId);
+  if (recipients) q = q.in("recipient_user_id", recipients);
+  const { error } = await q.is("sent_at", null).lt("attempts", 3);
+  if (error) log.error("mail_slot_retire_failed", { mail_type: "course_announcement", error: error.message });
+  else log.warn("mail_announcement_orphans_retired", { announcement_id: announcementId, cause, count: recipients?.length ?? null });
+}
+
+/** Deja UN turno pendiente y sin intento gastado (mismo RPC que el tope de envío): con eso la
+ *  próxima corrida de `/api/mail/retry` encuentra el anuncio y sigue con quien no lo recibió. */
+async function markAnnouncementPending(userId: string, announcementId: string): Promise<void> {
+  const claim = await claimOrReclaimMailSlot(userId, "course_announcement", announcementId);
+  if (claim) await releaseRateLimitedSlot(claim);
+}
 
 /**
  * T-031 · un mail por inscripta activa cuando la docente publica. Corre en `after()` (lo dispara
@@ -524,7 +615,8 @@ type AnnouncementDelivery = "sent" | "failed" | "not_claimed" | "unresolved";
  *
  * Atrapa TODO: un SMTP caído deja el anuncio publicado y las filas con `sent_at` nulo.
  */
-export async function notifyAnnouncementPublished(input: { announcementId: string }): Promise<void> {
+export async function notifyAnnouncementPublished(input: { announcementId: string; deadline?: number }): Promise<void> {
+  const deadline = input.deadline ?? Date.now() + ANNOUNCEMENT_AFTER_BUDGET_MS;
   try {
     const db = createServiceRoleClient();
     const { data: announcement, error } = await db
@@ -532,29 +624,49 @@ export async function notifyAnnouncementPublished(input: { announcementId: strin
       .select("id, course_id, author_id, title, body, status, deleted_at")
       .eq("id", input.announcementId)
       .maybeSingle();
-    if (error || !announcement) {
-      log.error("mail_announcement_unresolved", { announcement_id: input.announcementId, message: error?.message ?? "no existe" });
+    if (error) {
+      log.error("mail_announcement_unresolved", { announcement_id: input.announcementId, message: error.message });
       return;
     }
-    // Un retiro entre el click y este `after` no manda nada.
-    if (announcement.status !== "published" || announcement.deleted_at) return;
+    // Un retiro entre el click y este `after` no manda nada, y sus turnos pendientes se retiran.
+    if (!announcement || announcement.status !== "published" || announcement.deleted_at) {
+      if (!announcement) log.error("mail_announcement_unresolved", { announcement_id: input.announcementId, message: "no existe" });
+      await retireAnnouncementSlots(announcement?.id ?? input.announcementId, "not_published");
+      return;
+    }
 
     const course = await getCourseInfo(announcement.course_id);
     if (!course) return;
 
-    const recipients = buildAnnouncementRecipients(
-      await listActiveEnrollmentUserIds(course.id),
-      announcement.author_id,
-    );
+    const mailLog = await readAnnouncementLog(announcement.id);
+    const everyone = buildAnnouncementRecipients(await listActiveEnrollmentUserIds(course.id), announcement.author_id);
+    const recipients = everyone.filter((userId) => !mailLog.settled.has(userId));
+    const unresolved: string[] = [];
     const courseUrl = `${getSiteUrl()}/cursos/${course.slug}`;
 
+    let marked = false;
     const results = await settleWithConcurrency(
       recipients,
       ANNOUNCEMENT_MAIL_CONCURRENCY,
       async (userId): Promise<AnnouncementDelivery> => {
+        // G-02: cerca del corte de la función no se empieza otro envío; el primero que se salta
+        // deja el anuncio pendiente para el cron.
+        if (!canStartMail(deadline)) {
+          if (!marked) {
+            marked = true;
+            await markAnnouncementPending(userId, announcement.id);
+          }
+          return "deferred";
+        }
         // Resolver antes de reclamar (orden de notifyWelcome): sin dirección no se gasta el turno.
-        const student = await getUserEmail(userId);
-        if (!student) return "unresolved";
+        const student = await lookupRecipient(userId);
+        // B-3: solo la falta CONFIRMADA de dirección retira el turno; una falla de GoTrue o de
+        // PostgREST lo deja pendiente para la próxima corrida.
+        if (student.kind === "missing") {
+          unresolved.push(userId);
+          return "unresolved";
+        }
+        if (student.kind === "error") return "lookup_failed";
         const claim = await claimOrReclaimMailSlot(student.id, "course_announcement", announcement.id);
         if (!claim) return "not_claimed";
         const { subject, html, text } = renderCourseAnnouncementMail({
@@ -576,6 +688,11 @@ export async function notifyAnnouncementPublished(input: { announcementId: strin
       tally[key] = (tally[key] ?? 0) + 1;
     }
     log.info("mail_announcement_sent", { announcement_id: announcement.id, recipients: recipients.length, tally });
+
+    // N-2: turnos pendientes de quien ya no es destinataria (baja, autora) o no tiene dirección.
+    const current = new Set(everyone);
+    await retireAnnouncementSlots(announcement.id, "not_recipient", [...mailLog.pending].filter((u) => !current.has(u)));
+    await retireAnnouncementSlots(announcement.id, "unresolved", unresolved.filter((u) => mailLog.pending.has(u)));
   } catch (err) {
     log.error("mail_announcement_published_failed", { err });
   }
@@ -621,7 +738,7 @@ const TRANSACTIONAL_MAIL_TYPES: readonly TransactionalMailType[] = [
   "course_completed",
   "enrollment_rejected",
 ];
-const RETRY_TRANSACTIONAL_PER_RUN = 50;
+const RETRY_TRANSACTIONAL_PER_RUN = 25;
 // Una bienvenida o un «te aprobaron» de hace una semana confunde más de lo que informa: lo que
 // quedó pendiente más de 3 días no se retoma (el anuncio no tiene corte, sigue vigente).
 const TRANSACTIONAL_MAX_AGE_MS = 3 * 24 * 60 * 60_000;
@@ -688,7 +805,9 @@ async function redispatchTransactional(row: PendingTransactional, done: Set<stri
 
 /** D-128 · como `retryPendingAnnouncementMail`, para inscripción, bienvenida, certificado y
  *  rechazo. Mismo criterio de pendiente (sin confirmar, con intentos, turno vencido); nunca lanza. */
-export async function retryPendingTransactionalMail(): Promise<{ transactional: number }> {
+export async function retryPendingTransactionalMail(
+  deadline: number = Date.now() + MAIL_RUN_BUDGET_MS,
+): Promise<{ transactional: number }> {
   try {
     const now = Date.now();
     const { data, error } = await createServiceRoleClient()
@@ -707,23 +826,30 @@ export async function retryPendingTransactionalMail(): Promise<{ transactional: 
     }
     const rows = (data ?? []) as PendingTransactional[];
     const done = new Set<string>();
+    let started = 0;
     for (const row of rows) {
+      if (!canStartMail(deadline)) break;
+      started += 1;
       try {
         await redispatchTransactional(row, done);
       } catch (err) {
         log.error("mail_retry_transactional_failed", { mail_type: row.mail_type, err });
       }
     }
-    return { transactional: rows.length };
+    return { transactional: started };
   } catch (err) {
     log.error("mail_retry_failed", { err, scope: "transactional" });
     return { transactional: 0 };
   }
 }
 
-/** Lo que corre `/api/mail/retry`: anuncios y transaccionales, cada uno con su propio tope. */
-export async function retryPendingMail(): Promise<{ announcements: number; transactional: number }> {
-  const announcements = await retryPendingAnnouncementMail();
-  const transactional = await retryPendingTransactionalMail();
+/** Lo que corre `/api/mail/retry`: anuncios y transaccionales, cada uno con su tope de cantidad y
+ *  los dos con UN plazo compartido (G-02): la corrida termina antes de que la función corte. */
+export async function retryPendingMail(
+  { budgetMs = MAIL_RUN_BUDGET_MS }: { budgetMs?: number } = {},
+): Promise<{ announcements: number; transactional: number }> {
+  const deadline = Date.now() + budgetMs;
+  const announcements = await retryPendingAnnouncementMail(deadline);
+  const transactional = await retryPendingTransactionalMail(deadline);
   return { ...announcements, ...transactional };
 }

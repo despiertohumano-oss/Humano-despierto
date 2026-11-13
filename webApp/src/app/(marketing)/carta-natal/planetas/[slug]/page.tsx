@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import FichaLayout from "@/components/carta-natal/FichaLayout";
 import { astroIcon } from "@/components/atoms/Icon";
-import { SITE_OG_IMAGE } from "@/lib/og/site";
+import { bodyDescription, fichaTitle, pageOpenGraph } from "@/lib/seo/meta";
 import { TEMPLATES } from "@/lib/astro/prose";
 import { BODY_IDS, BODY_NAMES, SIGNS, SIGN_IDS, bodyBySlug, bodySlug, type BodyId } from "@/lib/astro/zodiac";
 
@@ -21,10 +21,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const id = bodyBySlug(slug);
   if (!id) return { title: "Planeta no encontrado" };
   const e = TEMPLATES.cuerpos[id];
-  const title = `${e.nombre} en la carta natal: significado`;
-  const description = `${e.nombre}: ${e.palabras_clave.join(", ")}.`;
+  const title = fichaTitle(e.nombre);
+  const description = bodyDescription(e.nombre, e.palabras_clave);
   const url = `/carta-natal/planetas/${slug}`;
-  return { title, description, alternates: { canonical: url }, openGraph: { title, description, url, type: "article", images: [SITE_OG_IMAGE] } };
+  return { title, description, alternates: { canonical: url }, openGraph: pageOpenGraph({ title, description, url, type: "article" }) };
 }
 
 export default async function PlanetaPage({ params }: { params: Promise<{ slug: string }> }) {

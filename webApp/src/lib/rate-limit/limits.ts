@@ -134,5 +134,7 @@ export const RATE_LIMIT_EXEMPT: Readonly<Record<string, string>> = {
   updatePasswordAction: "Exige la sesión del link de recuperación; GoTrue limita token_verifications al canjearlo.",
   resolveClosingHref: "Idempotente: la única escritura posible (el certificado) es una por curso y la decide ensureCertificate.",
   "api/mail/retry/route.ts#GET": "Cron con secreto (CRON_SECRET); sin él responde 401/503 y no envía nada propio: reintenta turnos ya existentes de mail_log.",
+  "api/mail/retry/route.ts#POST": "Mismo cron con secreto que #GET (la Scheduled Function de Netlify llama con POST, G-02); sin él responde 401/503.",
+  "llms.txt/route.ts#GET": "Texto estático público de solo lectura: sin sesión, sin base y sin escritura.",
   "auth/callback/route.ts#GET": "Canje de código de GoTrue: lo limita token_verifications.",
 };

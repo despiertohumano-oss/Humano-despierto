@@ -7,6 +7,7 @@ import { saveLessonProgress } from "@/app/leccion/[id]/actions";
 // escribe a `lesson_progress` como máximo cada THROTTLE_MS — salvo al pausar/terminar/ocultar
 // la pestaña, donde se fuerza el flush para no perder el último tramo visto.
 const THROTTLE_MS = 5000;
+const PROGRESS_UNREACHABLE = "No pudimos guardar tu avance. Revisá tu conexión: seguimos intentando.";
 
 interface Options {
   lessonId: string;
@@ -18,6 +19,8 @@ interface Options {
 
 export interface LessonProgress {
   completed: boolean;
+  /** Por qué el último guardado no llegó (G-04); `null` mientras el avance se guarda bien. */
+  saveError: string | null;
   onTick: (seconds: number, isPlaying: boolean) => void;
   /** Resuelve cuando el último tramo visto ya está guardado; hay que esperarlo antes de navegar. */
   settle: () => Promise<void>;
@@ -30,6 +33,7 @@ export function useLessonProgress({
   initialCompleted,
 }: Options): LessonProgress {
   const [completed, setCompleted] = useState(initialCompleted);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   // Estado de progreso vive en refs: se lee/actualiza desde el tick del player (cada 1s) sin
   // recrear el callback ni disparar renders extra — sólo `completed` importa para la UI.
@@ -61,13 +65,19 @@ export function useLessonProgress({
       const run = (async () => {
         try {
           const result = await saveLessonProgress(lessonId, seconds);
+          if (!result.ok) {
+            // El próximo tick reintenta con los segundos acumulados; mientras, la alumna lo sabe.
+            setSaveError(result.error);
+            return;
+          }
+          setSaveError(null);
           lastSavedRef.current = result.secondsWatched;
           if (result.completed && !completedRef.current) {
             completedRef.current = true;
             setCompleted(true);
           }
         } catch {
-          // El action ya registra el fallo; el próximo tick reintenta con los segundos acumulados.
+          setSaveError(PROGRESS_UNREACHABLE);
         } finally {
           savingRef.current = false;
         }
@@ -108,5 +118,5 @@ export function useLessonProgress({
     };
   }, [flush]);
 
-  return { completed, onTick, settle };
+  return { completed, saveError, onTick, settle };
 }

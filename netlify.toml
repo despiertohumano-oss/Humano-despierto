@@ -6,7 +6,9 @@
   base = "webApp"
   # Sin caché de Next entre builds: el 2026-11-09 un build reusó globals.css viejo con tokens.css
   # nuevo y producción salió sin las reglas .cosmico (títulos oscuros sobre el cielo). check-seo lo vigila.
-  command = "rm -rf .next/cache && npm run build"
+  # G-03 (T-098): Vitest delante del build (~25 s, sin red ni stack). Con `&&` un test rojo corta el
+  # deploy y producción sigue en la versión anterior. La suite PGlite no corre acá: tarda minutos.
+  command = "rm -rf .next/cache && npm test && npm run build"
   publish = ".next"
 
 [build.environment]

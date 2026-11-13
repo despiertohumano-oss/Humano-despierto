@@ -60,3 +60,33 @@ describe("reportRequestError · error_events", () => {
     expect(recordErrorEvent).not.toHaveBeenCalled();
   });
 });
+
+describe("reportRequestError · errores esperables (G-04)", () => {
+  it("un UserFacingError no es un error del sitio: queda en warn y no va a error_events", async () => {
+    const { UserFacingError } = await import("@/lib/server/action-error");
+    const errSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    recordErrorEvent.mockClear();
+    await reportRequestError(
+      new UserFacingError("No autorizado: se requiere rol docente."),
+      { path: "/panel/docente", method: "POST", headers: {} },
+      CTX,
+    );
+    expect(recordErrorEvent).not.toHaveBeenCalled();
+    expect(errSpy).not.toHaveBeenCalled();
+    expect(JSON.parse(String(warnSpy.mock.calls[0][0]))).toMatchObject({ event: "request_expected_error", level: "warn" });
+  });
+
+  it("un RateLimitError tampoco se registra como error del sitio", async () => {
+    const { RateLimitError } = await import("@/lib/server/rate-limit");
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    recordErrorEvent.mockClear();
+    await reportRequestError(
+      new RateLimitError({ ok: false, remaining: 0, retryAfter: 30 }),
+      { path: "/leccion/x", method: "POST", headers: {} },
+      CTX,
+    );
+    expect(recordErrorEvent).not.toHaveBeenCalled();
+  });
+});

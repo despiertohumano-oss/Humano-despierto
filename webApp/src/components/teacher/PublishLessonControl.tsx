@@ -6,8 +6,17 @@ import Button from "@/components/atoms/Button";
 import StatusChip from "@/components/panel/StatusChip";
 import StatusMessage from "@/components/panel/StatusMessage";
 import { TEACHER_ACTION_INITIAL_STATE } from "@/lib/teacher/action-state";
+import { lessonDeleteConfirmText } from "@/lib/teacher/student-impact";
 
-export default function PublishLessonControl({ courseId, lessonId, isPublished }: { courseId: string; lessonId: string; isPublished: boolean }) {
+interface Props {
+  courseId: string;
+  lessonId: string;
+  isPublished: boolean;
+  /** G-01: alumnas con avance en esta lección (servidor); `null` si no se pudo contar. */
+  studentsWithProgress: number | null;
+}
+
+export default function PublishLessonControl({ courseId, lessonId, isPublished, studentsWithProgress }: Props) {
   const [state, formAction, isPending] = useActionState(setLessonPublishedAction, TEACHER_ACTION_INITIAL_STATE);
   const [deleteState, deleteAction, deletePending] = useActionState(deleteLessonAction, TEACHER_ACTION_INITIAL_STATE);
 
@@ -28,7 +37,7 @@ export default function PublishLessonControl({ courseId, lessonId, isPublished }
       <form
         action={deleteAction}
         onSubmit={(e) => {
-          if (!confirm("¿Borrar esta lección? Se pierden sus capítulos y recursos.")) e.preventDefault();
+          if (!confirm(lessonDeleteConfirmText(studentsWithProgress))) e.preventDefault();
         }}
       >
         <input type="hidden" name="courseId" value={courseId} />

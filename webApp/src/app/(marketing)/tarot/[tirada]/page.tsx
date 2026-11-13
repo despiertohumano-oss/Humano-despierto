@@ -4,6 +4,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import Button from "@/components/atoms/Button";
 import Icon from "@/components/atoms/Icon";
 import Picker from "@/components/tarot/Picker";
+import { DESCRIPTION_MAX, pageOpenGraph, spreadTitle, trimAtWord } from "@/lib/seo/meta";
 import { CARDS } from "@/lib/tarot/cards";
 import type { CardName } from "@/lib/tarot/card-names";
 import { MAX_QUESTION, sanitizeQuestion } from "@/lib/tarot/question";
@@ -22,7 +23,9 @@ export async function generateMetadata({ params }: { params: Promise<{ tirada: s
   const { tirada } = await params;
   const spread = spreadBySlug(tirada);
   if (!spread) return { title: "Tirada no encontrada" };
-  return { title: `${spread.nombre}: tirada de tarot online`, description: spread.descripcion, alternates: { canonical: `/tarot/${tirada}` } };
+  const title = spreadTitle(spread.nombre);
+  const url = `/tarot/${tirada}`;
+  return { title, description: trimAtWord(spread.descripcion, DESCRIPTION_MAX), alternates: { canonical: url }, openGraph: pageOpenGraph({ title, description: trimAtWord(spread.descripcion, DESCRIPTION_MAX), url }) };
 }
 
 export default async function TiradaPage({ params, searchParams }: { params: Promise<{ tirada: string }>; searchParams: Promise<Search> }) {

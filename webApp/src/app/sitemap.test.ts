@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { connection, getPublishedCourses, getPublishedPosts, getPublicTeachers } = vi.hoisted(() => ({
   connection: vi.fn(async () => {}),
-  getPublishedCourses: vi.fn(async () => [{ slug: "tarot-1" }]),
+  getPublishedCourses: vi.fn(async () => [{ slug: "tarot-1", updatedAt: "2026-11-01T10:00:00Z" }]),
   getPublishedPosts: vi.fn(async () => []),
   getPublicTeachers: vi.fn(async () => []),
 }));
@@ -48,5 +48,17 @@ describe("T-024 · fichas de carta natal en el sitemap", () => {
     connection.mockResolvedValue(undefined);
     const urls = (await sitemap()).map((e) => e.url);
     expect(urls.filter((u) => /\/carta-natal\/(?!signos|planetas|casas)/.test(u))).toEqual([]);
+  });
+});
+
+describe("T-099 · lastmod solo donde hay fecha real", () => {
+  it("los cursos llevan su updated_at; las páginas estáticas no inventan fecha", async () => {
+    connection.mockResolvedValue(undefined);
+    const entries = await sitemap();
+    const curso = entries.find((e) => e.url.endsWith("/cursos/tarot-1"))!;
+    expect(curso.lastModified).toEqual(new Date("2026-11-01T10:00:00Z"));
+    for (const path of ["/", "/cursos", "/tarot", "/tarot/cartas/el-sol", "/carta-natal"]) {
+      expect(entries.find((e) => e.url === `http://localhost:3000${path === "/" ? "/" : path}`)!.lastModified).toBeUndefined();
+    }
   });
 });

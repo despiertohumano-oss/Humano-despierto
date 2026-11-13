@@ -6,7 +6,15 @@ T-091. Netlify + Supabase Cloud, URL `*.netlify.app`, sin dominio propio. El mai
 
 1. Netlify > Add new project > Import an existing project > GitHub > este repo, rama `main`.
 2. No toques los campos de build: los fija `netlify.toml` en la raíz (`base = "webApp"`,
-   `npm run build`, `publish = ".next"`, Node 22). Netlify instala solo el adaptador
+   `npm test && npm run build`, `publish = ".next"`, Node 22). Desde T-098 (G-03) el build corre
+   los tests unitarios (Vitest, ~25 s) antes de `next build`: un test rojo corta el deploy y
+   producción sigue en la versión anterior. La suite PGlite de `webApp/supabase` no corre acá.
+   La suite corre con las variables del sitio cargadas (scope Builds: `SITE_URL` de producción,
+   `NETLIFY`, `CONTEXT`, `URL`, las de mail y los secretos). Es hermética: `src/test/hermetic-env.ts`
+   (`setupFiles` de Vitest) borra esas variables antes de cada archivo de test. Para comprobarlo
+   antes de un release, desde `webApp/`: `npm run test:netlify-env` (corre `npm test` con ese
+   entorno y valores falsos). Una variable nueva en la tabla de §2 tiene que sumarse a
+   `hermetic-env.ts` y a `scripts/test-netlify-env.sh`; `hermetic-env.test.ts` falla si falta. Netlify instala solo el adaptador
    `@netlify/plugin-nextjs` (OpenNext v5) al detectar Next.
 3. Antes del primer deploy cargá las variables (sección 2). Las `NEXT_PUBLIC_*` y `SITE_URL` se
    **hornean en el build**: si cambian, hay que redeployar (Deploys > Trigger deploy > Clear cache
@@ -32,7 +40,7 @@ como Edge Function y lee `SITE_URL`, `CSP_ENFORCE` y las de Supabase en cada req
 | `MAIL_FROM_ADDRESS` | no secreta | **La misma dirección de Gmail** que `SMTP_USER`: Gmail reescribe cualquier otro From |
 | `MAIL_FROM_NAME` | no secreta | `Humano Despierto` |
 | `YOUTUBE_API_KEY` | **secreta** | Google Cloud, YouTube Data API v3. Sin ella no se publica una lección |
-| `CRON_SECRET` | **secreta** | ≥16 caracteres al azar. Protege `GET /api/mail/retry` |
+| `CRON_SECRET` | **secreta** | ≥16 caracteres al azar (`openssl rand -hex 32`). **Obligatoria desde T-098:** la usa la Scheduled Function `mail-retry` para llamar a `/api/mail/retry` (sección 6). Scope: Functions y Runtime |
 | `CSP_ENFORCE` | no secreta | Vacía (= enforce desde 2026-11-09). `false` vuelve a Report-Only sin redeploy de código: interruptor de emergencia |
 | `ERROR_ALERT_EMAIL` | no secreta, opcional | Adónde llegan los avisos de error (0078). Vacía = `MAIL_FROM_ADDRESS` |
 | `RATE_LIMIT_BACKEND` | no secreta | Vacía (= `postgres`). Nunca `memory` en producción |
@@ -107,10 +115,77 @@ Marcá como secretas (Contains secret values) solo las cuatro **secretas** de la
 
 ## 5. Límites del plan gratuito que importan
 
-- Functions sincrónicas cortan a los ~10 s por defecto. `GET /api/mail/retry` declara
-  `maxDuration = 300`, que Netlify no respeta; y Netlify no tiene Vercel Cron: para dispararlo hace
-  falta un cron externo o una Scheduled Function (fuera de T-091).
+- Límites de ejecución según la documentación de Netlify (Functions > Configuration > Default
+  values, verificada el 2026-11-13): **60 s** las funciones sincrónicas (donde corre Next, incluido
+  `/api/mail/retry` y el `after()` de cada acción) y **30 s** las Scheduled Functions. No son
+  configurables, y `maxDuration = 300` de `/api/mail/retry` no se respeta. La auditoría partía de
+  ~10 s; los plazos propios de abajo quedaron conservadores a propósito.
 - Lo que corre en `after()` (mails) sigue después de la respuesta, pero dentro del mismo tope de la
-  función.
+  función. El envío de un anuncio deja de **empezar** mails a los ~6 s y lo que falta lo retoma el cron.
+- **Los plazos propios no son topes duros:** solo impiden empezar un envío nuevo cuando quedan menos
+  de 2,5 s. Un envío ya empezado puede tardar hasta el timeout del transporte (5 s), así que el peor
+  caso con un SMTP mudo es de **~10,5 s** para una corrida de reintento (8 − 2,5 + 5, más la base) y
+  de ~8,5 s para el `after()` de un anuncio. Los dos quedan lejos de los 60 s y de los 30 s del cron.
 - Si la build falla por secret scanning con una variable pública, ver arriba; no apagues el scanning
   entero.
+
+## 6. Reintento de mails: Scheduled Function `mail-retry` (T-098, G-02)
+
+`webApp/netlify/functions/mail-retry.mts` corre **cada 15 minutos** (`*/15 * * * *`, UTC) y hace
+`POST /api/mail/retry` con `Authorization: Bearer $CRON_SECRET`. Netlify la detecta sola
+(directorio por defecto `netlify/functions` dentro de `base`); no hace falta tocar `netlify.toml`.
+Solo corre en el deploy publicado de `main`, nunca en previews.
+
+- **Requisito:** `CRON_SECRET` cargada en Site configuration > Environment variables, con scope
+  **Functions** (la lee la función) y **Runtime** (la valida la ruta). Sin ella la función no llama
+  a nada y deja `mail_retry_cron` con `reason: "missing_env"` en los logs; la ruta respondería 503.
+- **Qué hace cada corrida:** retoma hasta 2 anuncios con turnos pendientes y hasta 25 mails
+  transaccionales (bienvenida, inscripción aprobada o rechazada, aviso a la docente, certificado),
+  con un plazo de ~8 s: deja de empezar envíos cuando quedan menos de 2,5 s y lo demás queda en
+  `mail_log` para la corrida siguiente. No es un tope duro: el peor caso es de ~10,5 s (§5). La
+  función programada espera la respuesta hasta 20 s, dentro de sus 30 s.
+- **Turnos huérfanos:** al pasar por un anuncio se retiran (`attempts = 3`,
+  `last_error = 'permanent:000/<causa>'`) los turnos pendientes que nadie va a volver a reclamar:
+  `not_recipient` (la alumna ya no está inscripta), `unresolved` (sin mail resoluble) y
+  `not_published` (anuncio retirado o borrado). Así no ocupan para siempre los 2 cupos por corrida.
+  La recuperación de §T-054 (`last_error ~ '^permanent:(401|403|535)/'`) no los toca. Un mail ya confirmado nunca se repite (dedupe de
+  `mail_log`).
+- **Primera corrida después del deploy:** reenvía todo lo que haya quedado trabado de los
+  **últimos 3 días** (transaccionales con `sent_at` nulo, con intentos y turno vencido) y los
+  anuncios con turnos pendientes, sin límite de antigüedad. Los datos se leen de hoy: no sale un
+  «te aprobaron» de una inscripción que ya no está activa. Si hay mucho acumulado se reparte en
+  varias corridas de 15 min. Para ver qué va a salir antes de activarla:
+
+  ```sql
+  select mail_type, count(*) from mail_log
+   where sent_at is null and attempts < 3 and claimed_at < now() - interval '10 minutes'
+     and (mail_type = 'course_announcement' or created_at > now() - interval '3 days')
+   group by 1;
+  ```
+- **Cómo verificar:** Netlify > Logs > Functions > `mail-retry`: una línea `mail_retry_cron` con
+  `ok: true` y el conteo `{ announcements, transactional }` cada 15 min. Para dispararla a mano:
+  `curl -X POST -H "Authorization: Bearer $CRON_SECRET" https://<sitio>/api/mail/retry`.
+- **Conexión SMTP por lote: no se reutiliza (deuda D-129).** El cliente SMTP propio abre, conversa
+  y cierra en cada envío, con un solo plazo de 5 s para todo el diálogo; reutilizarla exige
+  reescribirlo (plazos por mensaje, `RSET`, reconexión, pool para la concurrencia de 5). El
+  orquestador lo sacó del alcance de T-098: lo cubre el plazo por corrida.
+
+## 7. Antes de cada release con migraciones: `0082` y `cloud-parity`
+
+`0082_lesson_notes_body_max` (T-098, G-11) agrega el CHECK `lesson_notes_body_max_length`
+(`char_length(body) <= 4000`). Nace `not valid` y se valida solo si ninguna nota lo viola, así que
+nunca rompe el release ni recorta texto de alumnas. Antes de aplicarla en la nube, en el SQL editor:
+
+```sql
+select id, user_id, lesson_id, char_length(body) as caracteres, created_at
+  from public.lesson_notes
+ where char_length(body) > 4000
+ order by caracteres desc;
+```
+
+- **0 filas:** el CHECK queda validado y `bash supabase/harness/cloud-parity.sh` sale igual que el local.
+- **1 o más filas:** el CHECK queda `NOT VALID`. Frena las escrituras nuevas, y la nota vieja sigue
+  ahí: editarla exige acortarla. `cloud-parity.sh` va a mostrar **una línea de diferencia esperada**
+  en las constraints de `lesson_notes`, porque `pg_get_constraintdef` agrega ` NOT VALID`. Para
+  cerrarla, la dueña de cada nota (o el admin, con su acuerdo) la acorta y después se corre
+  `alter table public.lesson_notes validate constraint lesson_notes_body_max_length;`.

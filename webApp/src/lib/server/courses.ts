@@ -26,6 +26,8 @@ export interface PublishedCourseSummary {
   // `lessons.duration_seconds` publicadas del curso. Usado por T-019 para el filtro de duración.
   totalDurationSeconds: number;
   publishedAt: string | null;
+  /** `courses.updated_at`: el `lastmod` del sitemap. */
+  updatedAt: string;
   /** El path, no la URL: `sitemap.ts` tambien lee el catalogo y no tiene por que firmar nada. */
   coverPath: string | null;
   /** Tiene al menos una lección publicada `is_preview`: lo único que habilita decir «clase gratis» (spec Brote). */
@@ -106,6 +108,7 @@ interface PublishedCourseModuleRow {
 }
 
 interface PublishedCourseRow extends ModalityRow {
+  updated_at: string;
   id: string;
   published_at: string | null;
   slug: string;
@@ -173,7 +176,7 @@ export async function getPublishedCourses(): Promise<PublishedCourseSummary[]> {
   const { data, error } = await supabase
     .from("courses")
     .select(
-      `id, published_at, slug, title, title_em, subtitle, intro, discipline, level, price_cents,
+      `id, published_at, updated_at, slug, title, title_em, subtitle, intro, discipline, level, price_cents,
        currency, moon_glyph, featured, cover_path,
        ${MODALITY_COLUMNS},
        teacher:profiles!courses_teacher_id_fkey(full_name, bio),
@@ -224,6 +227,7 @@ export async function getPublishedCourses(): Promise<PublishedCourseSummary[]> {
       teacherName: teacher?.full_name ?? "—",
       totalDurationSeconds,
       publishedAt: row.published_at,
+      updatedAt: row.updated_at,
       coverPath: row.cover_path ?? null,
       hasPreview: published.some((l) => l.is_preview),
       ...(agg ? { rating: agg.average, reviewCount: agg.total } : {}),

@@ -118,6 +118,14 @@ describe("getStudentDashboard · requests", () => {
     session(null, () => ({ data: [], error: null }));
     expect(await getStudentDashboard()).toEqual({ courses: [], requests: [] });
   });
+
+  it("con el id de la usuaria ya resuelto no vuelve a pedirle la sesión a GoTrue (G-07)", async () => {
+    const getUser = vi.fn();
+    const { chain } = queryChain(() => ({ data: [], error: null }));
+    createClient.mockResolvedValue({ auth: { getUser }, from: () => chain, rpc: () => chain });
+    expect(await getStudentDashboard(USER)).toEqual({ courses: [], requests: [] });
+    expect(getUser).not.toHaveBeenCalled();
+  });
 });
 
 describe("getStudentDashboard · portada (D-90)", () => {

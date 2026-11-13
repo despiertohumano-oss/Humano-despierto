@@ -2,7 +2,7 @@
 
 Guidance for Claude Code when working in this repository.
 
-> **Every claim in this file was verified against the repo on 2026-11-08** (T-024; previously T-038); counts, migrations and the session rules updated on 2026-11-13 (T-096, T-097). The previous
+> **Every claim in this file was verified against the repo on 2026-11-08** (T-024; previously T-038); counts, migrations and the session rules updated on 2026-11-13 (T-096, T-097, T-098). The previous
 > version described a project that did not exist (see "History" at the bottom). If you change
 > the code, change this file — a wrong CLAUDE.md is worse than none, because it is trusted.
 
@@ -41,7 +41,10 @@ weekly drip. Active enrollment grants access to the whole curriculum at once.
 - Push to `main` only for a release, and only from here.
 - **Production deploys only from GitHub `main` (CD).** Netlify site `humano-despierto`
   (account `despiertohumano@gmail.com`) is linked to `escuela` `main` and builds on every push;
-  `netlify.toml` is the build config. No `netlify deploy --prod` from a laptop, no branch deploys
+  `netlify.toml` is the build config; its command runs `npm test` (Vitest) before `npm run build`,
+  so a red unit test stops the deploy (T-098, G-03). The suite is hermetic: `src/test/hermetic-env.ts`
+  (Vitest `setupFiles`) clears every deploy variable before each test file; a test that needs one
+  sets it with `vi.stubEnv`. No `netlify deploy --prod` from a laptop, no branch deploys
   or deploy previews (they would share production's database). Runbook: `docs/deploy-netlify.md`.
 
 ## Commands
@@ -57,6 +60,7 @@ npm run lint     # ESLint
 npx tsc --noEmit # typecheck
 npm run build    # production build (don't run unless asked)
 npm test         # Vitest, unit layer only (src/lib/**, Server Actions); no stack, no network
+npm run test:netlify-env # same suite under the Netlify build env (fake values); must stay green (T-098)
 npm run test:unit # same as npm test
 npm run test:e2e # Playwright; needs `npx supabase start`; starts its own `next dev` on localhost:3101
 ```
@@ -66,7 +70,7 @@ npm run test:e2e # Playwright; needs `npx supabase start`; starts its own `next 
 cd webApp/supabase
 npm install
 npm run places:load  # loads `places` from GeoNames (CC BY): local via `docker exec`, cloud via DATABASE_URL (needs psql)
-npm test         # 1001 tests, ~1-4 min, no Docker and no credentials needed
+npm test         # 1007 tests, ~1-4 min, no Docker and no credentials needed
 ```
 Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply in filename order.
 
@@ -74,8 +78,8 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 
 | Area | State |
 |------|-------|
-| `webApp/src` | **~27.1k LOC** (non-test). 47 routes (`page.tsx`), 163 non-test files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`, with the reading interpreted by lenses, tensions and a reflective answer in `src/lib/tarot/interpret/` (T-094); 78 card scans in `public/tarot/rws/`; the owner's 9 brand images in `public/brand/` (WebP, `CREDITS.md`). Tarot text comes from the owner's course material in `docs/TAROT/fuente/` (originals outside git). Natal-chart engine (pure, no DB) in `src/lib/astro/` on `astronomy-engine` (MIT, ADR-017; credits in `src/lib/astro/CREDITS.md`). Tests: Vitest (1533 unit tests in 185 files, next to the file) + Playwright (`e2e/`), T-039. |
-| `webApp/supabase` | **Schema live.** 53 migrations (last `0081`; `0032` applies before `0031` by timestamp, independent), 27 tables (`tarot_readings`, ADR-016; `places`, `natal_charts`, T-024; `diario_post_courses`, B3; `error_events`, 0078), RLS + per-column grants + guard triggers, 1001 mutation tests (PGlite). Private Storage bucket `uploads`: `avatars/` (T-042), `covers/` (T-047) and `diario/` (B3), uploads only via service_role; its policies are only tested over HTTP by b1. Fixtures `@test.local` (admin, docente, alumna) in `seed.fixtures.sql`, content seed in `seed.sql`, demo data in `demo.sql`: all **local only**, never run in the cloud (see `webApp/supabase/README.md`). |
+| `webApp/src` | **~27.1k LOC** (non-test). 47 routes (`page.tsx`), 163 non-test files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`, with the reading interpreted by lenses, tensions and a reflective answer in `src/lib/tarot/interpret/` (T-094); 78 card scans in `public/tarot/rws/`; the owner's 9 brand images in `public/brand/` (WebP, `CREDITS.md`). Tarot text comes from the owner's course material in `docs/TAROT/fuente/` (originals outside git). Natal-chart engine (pure, no DB) in `src/lib/astro/` on `astronomy-engine` (MIT, ADR-017; credits in `src/lib/astro/CREDITS.md`). Tests: Vitest (1674 unit tests in 200 files, next to the file; `vitest.config.mts` includes every `src/**/*.test.{ts,tsx}`, T-098) + Playwright (`e2e/`), T-039. |
+| `webApp/supabase` | **Schema live.** 54 migrations (last `0082`; `0032` applies before `0031` by timestamp, independent), 27 tables (`tarot_readings`, ADR-016; `places`, `natal_charts`, T-024; `diario_post_courses`, B3; `error_events`, 0078), RLS + per-column grants + guard triggers, 1007 mutation tests (PGlite). Private Storage bucket `uploads`: `avatars/` (T-042), `covers/` (T-047) and `diario/` (B3), uploads only via service_role; its policies are only tested over HTTP by b1. Fixtures `@test.local` (admin, docente, alumna) in `seed.fixtures.sql`, content seed in `seed.sql`, demo data in `demo.sql`: all **local only**, never run in the cloud (see `webApp/supabase/README.md`). |
 | `mobileApp/` | **Empty directory.** No Expo scaffold. **Out of scope for Phase 2.** |
 | `packages/tokens` | 763 LOC of the old Cosmos palette (marked historical in its README, D-66) — **consumed by nobody**: `webApp` does not import it (it uses its own `src/styles/tokens.css`) and `mobileApp` does not exist. Kept for when mobile returns. |
 | `Gentleman-Skills/` | **Empty directory.** Referenced by the old CLAUDE.md; there is nothing in it. |
@@ -100,8 +104,9 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
                                     phone, birth date, avatar
 /leccion/[id]                       Lesson player: YouTube IFrame API,        [auth or preview]
                                     persisted progress, chapters, notes,      [owner teacher and
-                                    Q&A tab (T-030)                            admin open it to
-                                                                              answer and moderate]
+                                    Q&A tab (T-030). No session and no         admin open it to
+                                    preview: 307 to /entrar?next= (G-06);      answer and moderate]
+                                    session without access: 404
 /circulo  ·  /circulo/[curso]       Campus threads                            [auth]
 /panel/docente/**                   Teacher panel: courses, modules, lessons, [teacher]
                                     chapters, resources, diario posts,
@@ -133,6 +138,7 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
                                     invitation, refreshes the session claim
 /invitacion/invalida                Neutral "invalid or expired" page
 /api/csp-report                     POST only: logs csp_violation (no query strings), 20/min per IP
+/llms.txt                           Text guide of the citable sections (T-099); no DB, rate-limit exempt
 /opengraph-image                    Brand OG image (PNG 1200x630, vendored Cinzel, no network)
 /cursos/[slug]/opengraph-image-<h>  Course OG image: cover (jpg/png) or generative card; 404 if not
                                     published. Next adds the -<hash> suffix under a dynamic segment
@@ -170,7 +176,17 @@ images and any path with a file extension.
   A mail that hits a send cap is not an attempt: the slot is released (`release_rate_limited_mail_slot`)
   and `/api/mail/retry` (`retryPendingMail`, `CRON_SECRET`) re-runs announcements and, since T-097
   (D-128), transactional mails up to 3 days old with today's data (no «approved» mail for an
-  enrollment no longer active). There is no scheduler for it yet (D-127).
+  enrollment no longer active). Since T-098 (G-02, closes D-127) the Netlify Scheduled Function
+  `webApp/netlify/functions/mail-retry.mts` POSTs to it every 15 min with `Bearer CRON_SECRET`
+  (logic in `src/lib/deploy/mail-retry-cron.ts`). A run stops starting sends ~2.5 s before an
+  8 s budget (`MAIL_RUN_BUDGET_MS`; not a hard cap: a started send may last the 5 s transport timeout,
+  worst case ~10.5 s; Netlify allows 60 s synchronous, 30 s scheduled); an announcement sent in the publish
+  `after()` stops at 6 s and leaves one released slot so the cron resumes it, skipping recipients
+  already confirmed. Orphan pending slots (recipient no longer enrolled, no resolvable mail,
+  announcement withdrawn) are retired as `permanent:000/<cause>` so they never hold the 2 per-run slots.
+  Enrollment (approve, reject, grant) and course-completed mails go out in
+  `after()` through `mailAfterResponse` (`src/lib/server/mail/after-mail.ts`), never awaited in the
+  request. SMTP connections are not reused per batch (the hand-rolled client is one dialog per send; debt D-129).
 - **Server Actions never return the engine's message** (T-097, D-120). `actionError(err, msg)`
   (`src/lib/server/action-error.ts`) logs the detail as `action_failed` and returns `msg`; only a
   `UserFacingError` (`requireTeacher`, `assertOwnsCourse`, `assertOwnsPost`) passes its own text.
@@ -185,7 +201,22 @@ images and any path with a file extension.
   The first time, a mail to `ERROR_ALERT_EMAIL` (else `MAIL_FROM_ADDRESS`); then at most once per
   fingerprint per 24 h, 3/h and 10/day overall, max 2000 fingerprints, swept after 30 days idle.
   The admin reads and resolves them in `/panel/admin/errores`. It never throws: its own failures
-  go to `log.warn`. `notFound()`/`redirect()` (digest `NEXT_*`) are not errors.
+  go to `log.warn`. `notFound()`/`redirect()` (digest `NEXT_*`) are not errors, nor are a thrown
+  `UserFacingError` or `RateLimitError` (`request_expected_error` at warn level, T-098 G-04).
+- **The player's progress and note actions return `{ ok: false, error }`, never throw** (T-098,
+  G-04, `src/lib/player/action-result.ts`): no session, missing note, rate limit and engine errors
+  (via `actionError`) come back in Spanish; the player shows the action's own message (e.g. «Tu sesión se cerró. Volvé a iniciar sesión para guardar.»,
+  or «No pudimos guardar tu avance. Revisá tu conexión: seguimos intentando.» on a network failure)
+  (`ProgressSaveNotice`). `lesson_notes.body` is capped at 4000 characters in the action and by the
+  CHECK `lesson_notes_body_max_length` (migration 0082, born `not valid` and validated only when no
+  row violates it; if the cloud has longer notes it stays NOT VALID and `cloud-parity.sh` shows one
+  expected diff: run the SQL in `docs/deploy-netlify.md` §7 before the release). `requireTeacher()` in `cursos/[courseId]/actions.ts` and `requireSession()` in
+  `circulo/actions.ts` run inside the `try`; `panel/docente/actions.ts` and `diario/actions.ts`
+  still call `requireTeacher()` outside it.
+- **Deleting a module or a lesson from the course editor asks to type its title** (T-098, G-01,
+  `components/teacher/DeleteConfirm.tsx`), with the number of students with progress counted on the
+  server (`getStudentProgressCounts`, service_role after `assertOwnsCourse`). There is no DB guard:
+  the cascade still deletes their progress, notes and questions.
 - **Founder content is on HOLD** (B4): the flag and the card exist, but no founder profile is
   seeded; the owner loads her own photo and bio. `/guias` shows only the grid until the admin
   marks her.
@@ -420,6 +451,11 @@ visual reference: `design_handoff_humano_humano/reference/brote/b4-brote2.html`.
 - `design_handoff_humano_humano/reference/design-system/` is **historical**. Read the Brote reference
   for spec — do not paste its HTML.
 
+**SEO metadata** (T-099): `src/lib/seo/meta.ts` holds titles, descriptions and `pageOpenGraph` (a segment's own
+`openGraph` replaces the root's whole, so siteName/locale `es_AR` ride in that helper). Descriptions <= 160 (>= 70 for
+natal-chart sheets), titles <= 60 counting the template suffix; `meta.test.ts` walks all 78 cards and 37 sheets. `/`, `/cursos`,
+`/guias`, `/diario` carry a clean canonical. Card OG images use `public/tarot/rws/*` with the sizes in `lib/tarot/image-sizes.ts`.
+
 ## Coding standards
 - TypeScript strict everywhere.
 - No comments unless the WHY is non-obvious.
@@ -457,6 +493,9 @@ Several things block work and require the repo owner's accounts:
 - **Owner's review of the tarot texts** (`docs/TAROT/fuente/revision.json` in `pendiente`): blocks the tarot release.
 - **Auth OTP expiry = 86400** (24 h) in the cloud dashboard (Authentication > Email): the direct
   access of the teacher-invitation mail lives that long (default 1 h). Local: `config.toml`.
+- **`CRON_SECRET` in Netlify** (T-098, scopes Functions and Runtime): without it the `mail-retry`
+  Scheduled Function calls nothing (`missing_env` in its log) and stuck mails are never retried.
+  Its first run re-sends what is stuck from the last 3 days (runbook section 6).
 - **Gmail App Password** (T-090, stopgap until a domain exists): 2-step verification on
   `despiertohumano@gmail.com`, an App Password, then `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`,
   `SMTP_SECURE=true`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM_ADDRESS=despiertohumano@gmail.com`.
@@ -471,6 +510,7 @@ must **never** carry the `NEXT_PUBLIC_` prefix: the first bypasses RLS entirely,
 mail as the school, and the prefix would ship either to the browser.
 
 ## History
+On 2026-11-13 T-098 (post-audit robustness, `engram/qa/AUDIT-general-2026-11-13.md`): typed confirmation for module/lesson deletes (G-01), Netlify mail-retry cron and mails in `after()` (G-02, D-127), `npm test` in the Netlify build (G-03), player actions return results (G-04), login redirect for `/leccion` (G-06), `cache()` on `getCurrentUser` (G-07), Vitest glob include (G-10), note body cap (0082, G-11).
 On 2026-11-13 T-097 (part A) paid debt: account shown after an invitation link (NB-1), minimatch override, neutral action errors (D-120), drafts cut for a downgraded teacher (0081, D-121), retry of capped transactional mails (D-128).
 On 2026-11-13 T-096 closed the session-isolation audit (`engram/qa/AUDIT-sesiones-2026-11-13.md`, S-01..S-07): migration 0080, invitation access never replaces an open session, session refresh on every document, one service_role factory (`createServiceRoleClient`).
 On 2026-11-12 T-094: lectura interpretada por lentes, tensiones y respuesta reflexiva (`src/lib/tarot/interpret/`).

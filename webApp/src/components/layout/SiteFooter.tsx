@@ -12,15 +12,15 @@ const COLS = [
       { label: "Cursos", href: "/cursos" },
       { label: DOCENTES.navLabel, href: "/guias" },
       { label: "Diario", href: "/diario" },
-      { label: "Círculo", href: "/circulo" },
+      { label: "Tarot online", href: "/tarot" },
+      { label: "Las 78 cartas", href: "/tarot/cartas" },
+      { label: "Carta natal", href: "/carta-natal" },
     ],
   },
   {
     title: "Vos",
     links: [
       { label: "Entrar", href: "/entrar" },
-      { label: "Mi panel", href: "/panel" },
-      { label: "Mi perfil", href: "/panel/perfil" },
     ],
   },
 ] as const;

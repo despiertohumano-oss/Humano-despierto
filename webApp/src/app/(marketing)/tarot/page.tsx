@@ -5,14 +5,14 @@ import SectionHeading from "@/components/atoms/SectionHeading";
 import { ButtonLink } from "@/components/atoms/Button";
 import { BRAND } from "@/content/brand-images";
 import EthicsNote from "@/components/tarot/EthicsNote";
-import { SITE_OG_IMAGE } from "@/lib/og/site";
+import { pageOpenGraph } from "@/lib/seo/meta";
 import { activeSpreads, type Spread } from "@/lib/tarot/spreads";
 
 export const metadata: Metadata = {
-  title: "Tarot online gratis: tiradas con el Rider-Waite",
-  description: "Tirá las cartas online con las 78 del tarot Rider-Waite: carta del día, sí o no, cruz celta, karma, relaciones y tirada astrológica, con una lectura que relaciona las cartas entre sí.",
+  title: "Tarot online gratis con el Rider-Waite",
+  description: "Tirá las cartas online con las 78 del tarot Rider-Waite: carta del día, sí o no, cruz celta y más, con una lectura que relaciona las cartas.",
   alternates: { canonical: "/tarot" },
-  openGraph: { title: "Tarot online gratis", description: "Tiradas con las 78 cartas del Rider-Waite y una lectura que las relaciona.", url: "/tarot", type: "website", images: [SITE_OG_IMAGE] },
+  openGraph: pageOpenGraph({ title: "Tarot online gratis", description: "Tiradas con las 78 cartas del Rider-Waite y una lectura que las relaciona.", url: "/tarot" }),
 };
 
 function SpreadList({ spreads }: { spreads: Spread[] }) {
