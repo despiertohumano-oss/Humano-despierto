@@ -6,7 +6,7 @@ vi.mock("@/lib/server/site-url", () => ({ getSiteUrl: () => "https://humano.exam
 vi.mock("@/lib/server/rate-limit", () => ({ limit: mocks.limit }));
 vi.mock("next/headers", () => ({ headers: () => Promise.reject(new Error("fuera de request")) }));
 
-import { notifyAnnouncementPublished, retryPendingAnnouncementMail } from "./notify";
+import { notifyAnnouncementPublished, retryPendingAnnouncementMail, retryPendingMail } from "./notify";
 import { __setTransportForTests } from "./send";
 
 const ANUNCIO = "a3100000-0000-4000-8000-000000000001";
@@ -151,5 +151,58 @@ describe("D-51 · anuncio contra el tope global de sendMail", () => {
   it("sin nada pendiente no hace nada", async () => {
     mocks.db = fakeDb(0);
     await expect(retryPendingAnnouncementMail()).resolves.toEqual({ announcements: 0 });
+  });
+});
+
+// G-02 (T-098): una función de Netlify corta a ~10 s. El envío deja de EMPEZAR mails cerca del plazo
+// y deja un turno pendiente para que la próxima corrida del cron sepa que el anuncio sigue.
+describe("G-02 · anuncio con plazo", () => {
+  const T0 = new Date("2026-11-13T12:00:00Z").getTime();
+  beforeEach(() => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "info").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    mocks.limit.mockReset().mockResolvedValue(OK);
+    vi.useFakeTimers({ now: T0, toFake: ["Date"] });
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+    __setTransportForTests(null);
+    vi.restoreAllMocks();
+  });
+
+  it("pasado el plazo no empieza más envíos y deja el resto para la próxima corrida", async () => {
+    const db = fakeDb(20);
+    mocks.db = db;
+    // Cada envío tarda 1 s de reloj.
+    const send = vi.fn(async () => void vi.setSystemTime(Date.now() + 1000));
+    __setTransportForTests({ send });
+
+    await notifyAnnouncementPublished({ announcementId: ANUNCIO, deadline: T0 + 8000 });
+    const first = send.mock.calls.length;
+    expect(first).toBeGreaterThan(0);
+    expect(first).toBeLessThan(20);
+    // Ningún envío empezó con menos de la reserva por delante.
+    expect(Date.now()).toBeLessThan(T0 + 8000 + 5 * 1000);
+    // Un turno liberado marca el anuncio como pendiente sin gastar intentos.
+    expect(db.released.length).toBeGreaterThan(0);
+
+    vi.setSystemTime(T0 + 15 * 60_000);
+    send.mockImplementation(async () => {});
+    await retryPendingAnnouncementMail();
+    expect(send).toHaveBeenCalledTimes(20);
+    for (const s of db.slots.values()) expect(s.sentAt).not.toBeNull();
+  });
+
+  it("retryPendingMail con el plazo vencido no empieza nada", async () => {
+    const db = fakeDb(3);
+    mocks.db = db;
+    const send = vi.fn(async () => {});
+    __setTransportForTests({ send });
+    mocks.limit.mockResolvedValue(DENIED);
+    await notifyAnnouncementPublished({ announcementId: ANUNCIO });
+    mocks.limit.mockResolvedValue(OK);
+    await expect(retryPendingMail({ budgetMs: 0 })).resolves.toEqual({ announcements: 0, transactional: 0 });
+    expect(send).not.toHaveBeenCalled();
   });
 });

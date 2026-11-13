@@ -6,7 +6,9 @@ T-091. Netlify + Supabase Cloud, URL `*.netlify.app`, sin dominio propio. El mai
 
 1. Netlify > Add new project > Import an existing project > GitHub > este repo, rama `main`.
 2. No toques los campos de build: los fija `netlify.toml` en la raíz (`base = "webApp"`,
-   `npm run build`, `publish = ".next"`, Node 22). Netlify instala solo el adaptador
+   `npm test && npm run build`, `publish = ".next"`, Node 22). Desde T-098 (G-03) el build corre
+   los tests unitarios (Vitest, ~25 s) antes de `next build`: un test rojo corta el deploy y
+   producción sigue en la versión anterior. La suite PGlite de `webApp/supabase` no corre acá. Netlify instala solo el adaptador
    `@netlify/plugin-nextjs` (OpenNext v5) al detectar Next.
 3. Antes del primer deploy cargá las variables (sección 2). Las `NEXT_PUBLIC_*` y `SITE_URL` se
    **hornean en el build**: si cambian, hay que redeployar (Deploys > Trigger deploy > Clear cache
@@ -32,7 +34,7 @@ como Edge Function y lee `SITE_URL`, `CSP_ENFORCE` y las de Supabase en cada req
 | `MAIL_FROM_ADDRESS` | no secreta | **La misma dirección de Gmail** que `SMTP_USER`: Gmail reescribe cualquier otro From |
 | `MAIL_FROM_NAME` | no secreta | `Humano Despierto` |
 | `YOUTUBE_API_KEY` | **secreta** | Google Cloud, YouTube Data API v3. Sin ella no se publica una lección |
-| `CRON_SECRET` | **secreta** | ≥16 caracteres al azar. Protege `GET /api/mail/retry` |
+| `CRON_SECRET` | **secreta** | ≥16 caracteres al azar (`openssl rand -hex 32`). **Obligatoria desde T-098:** la usa la Scheduled Function `mail-retry` para llamar a `/api/mail/retry` (sección 6). Scope: Functions y Runtime |
 | `CSP_ENFORCE` | no secreta | Vacía (= enforce desde 2026-11-09). `false` vuelve a Report-Only sin redeploy de código: interruptor de emergencia |
 | `ERROR_ALERT_EMAIL` | no secreta, opcional | Adónde llegan los avisos de error (0078). Vacía = `MAIL_FROM_ADDRESS` |
 | `RATE_LIMIT_BACKEND` | no secreta | Vacía (= `postgres`). Nunca `memory` en producción |
@@ -107,10 +109,43 @@ Marcá como secretas (Contains secret values) solo las cuatro **secretas** de la
 
 ## 5. Límites del plan gratuito que importan
 
-- Functions sincrónicas cortan a los ~10 s por defecto. `GET /api/mail/retry` declara
-  `maxDuration = 300`, que Netlify no respeta; y Netlify no tiene Vercel Cron: para dispararlo hace
-  falta un cron externo o una Scheduled Function (fuera de T-091).
+- Functions sincrónicas cortan a los ~10 s por defecto; `maxDuration = 300` de `/api/mail/retry`
+  no se respeta. Por eso la corrida de reintento se acota sola a ~8 s (sección 6).
 - Lo que corre en `after()` (mails) sigue después de la respuesta, pero dentro del mismo tope de la
-  función.
+  función. El envío de un anuncio deja de empezar mails a los ~6 s y lo que falta lo retoma el cron.
 - Si la build falla por secret scanning con una variable pública, ver arriba; no apagues el scanning
   entero.
+
+## 6. Reintento de mails: Scheduled Function `mail-retry` (T-098, G-02)
+
+`webApp/netlify/functions/mail-retry.mts` corre **cada 15 minutos** (`*/15 * * * *`, UTC) y hace
+`POST /api/mail/retry` con `Authorization: Bearer $CRON_SECRET`. Netlify la detecta sola
+(directorio por defecto `netlify/functions` dentro de `base`); no hace falta tocar `netlify.toml`.
+Solo corre en el deploy publicado de `main`, nunca en previews.
+
+- **Requisito:** `CRON_SECRET` cargada en Site configuration > Environment variables, con scope
+  **Functions** (la lee la función) y **Runtime** (la valida la ruta). Sin ella la función no llama
+  a nada y deja `mail_retry_cron` con `reason: "missing_env"` en los logs; la ruta respondería 503.
+- **Qué hace cada corrida:** retoma hasta 2 anuncios con turnos pendientes y hasta 25 mails
+  transaccionales (bienvenida, inscripción aprobada o rechazada, aviso a la docente, certificado),
+  con un plazo de ~8 s: deja de empezar envíos cuando quedan menos de 2,5 s y lo demás queda en
+  `mail_log` para la corrida siguiente. Un mail ya confirmado nunca se repite (dedupe de
+  `mail_log`).
+- **Primera corrida después del deploy:** reenvía todo lo que haya quedado trabado de los
+  **últimos 3 días** (transaccionales con `sent_at` nulo, con intentos y turno vencido) y los
+  anuncios con turnos pendientes, sin límite de antigüedad. Los datos se leen de hoy: no sale un
+  «te aprobaron» de una inscripción que ya no está activa. Si hay mucho acumulado se reparte en
+  varias corridas de 15 min. Para ver qué va a salir antes de activarla:
+
+  ```sql
+  select mail_type, count(*) from mail_log
+   where sent_at is null and attempts < 3 and claimed_at < now() - interval '10 minutes'
+     and (mail_type = 'course_announcement' or created_at > now() - interval '3 days')
+   group by 1;
+  ```
+- **Cómo verificar:** Netlify > Logs > Functions > `mail-retry`: una línea `mail_retry_cron` con
+  `ok: true` y el conteo `{ announcements, transactional }` cada 15 min. Para dispararla a mano:
+  `curl -X POST -H "Authorization: Bearer $CRON_SECRET" https://<sitio>/api/mail/retry`.
+- **Conexión SMTP por lote:** no se reutiliza. El cliente SMTP propio abre, conversa y cierra en
+  cada envío (un solo plazo de 5 s para todo el diálogo); reutilizarla exigiría reescribirlo (ver
+  el informe de T-098).

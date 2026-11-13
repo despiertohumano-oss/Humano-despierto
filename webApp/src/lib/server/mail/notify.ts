@@ -14,6 +14,7 @@ import { settleWithConcurrency } from "@/lib/utils/concurrency";
 import { renderTeacherInvitationMail } from "@/lib/server/mail/templates/teacher-invitation";
 import { formatCertificateDate } from "@/lib/utils/format";
 import { log } from "@/lib/server/log";
+import { ANNOUNCEMENT_AFTER_BUDGET_MS, MAIL_RUN_BUDGET_MS, canStartMail } from "@/lib/server/mail/limits";
 
 // T-020 · capa de orquestación: junta los datos (nombre, curso, docente, email) y llama a
 // `sendMail`. Cada función atrapa TODO internamente — DB incluida, no solo el transporte — así
@@ -243,7 +244,9 @@ const RETRY_ANNOUNCEMENTS_PER_RUN = 2;
  * ya salta lo confirmado y lo vivo, así que es idempotente. Pensado para un cron (ver
  * /api/mail/retry); nunca lanza.
  */
-export async function retryPendingAnnouncementMail(): Promise<{ announcements: number }> {
+export async function retryPendingAnnouncementMail(
+  deadline: number = Date.now() + MAIL_RUN_BUDGET_MS,
+): Promise<{ announcements: number }> {
   try {
     const cutoff = new Date(Date.now() - 10 * 60_000).toISOString();
     const { data, error } = await createServiceRoleClient()
@@ -260,8 +263,13 @@ export async function retryPendingAnnouncementMail(): Promise<{ announcements: n
       return { announcements: 0 };
     }
     const ids = [...new Set((data ?? []).map((r: { scope_key: string }) => r.scope_key))].slice(0, RETRY_ANNOUNCEMENTS_PER_RUN);
-    for (const announcementId of ids) await notifyAnnouncementPublished({ announcementId });
-    return { announcements: ids.length };
+    let started = 0;
+    for (const announcementId of ids) {
+      if (!canStartMail(deadline)) break;
+      await notifyAnnouncementPublished({ announcementId, deadline });
+      started += 1;
+    }
+    return { announcements: started };
   } catch (err) {
     log.error("mail_retry_failed", { err });
     return { announcements: 0 };
@@ -511,7 +519,37 @@ async function listActiveEnrollmentUserIds(courseId: string): Promise<{ user_id:
   }
 }
 
-type AnnouncementDelivery = "sent" | "failed" | "not_claimed" | "unresolved";
+type AnnouncementDelivery = "sent" | "failed" | "not_claimed" | "unresolved" | "deferred";
+
+/** Inscriptas que ya no hay que intentar para este anuncio: confirmado o con los 3 intentos gastados.
+ *  Sin esto, cada corrida con plazo volvería a resolver la dirección de quien ya lo recibió y un
+ *  anuncio grande no avanzaría nunca. */
+async function listSettledAnnouncementRecipients(announcementId: string): Promise<Set<string>> {
+  const db = createServiceRoleClient();
+  const settled = new Set<string>();
+  for (let from = 0; ; from += ENROLLMENT_PAGE) {
+    const { data, error } = await db
+      .from("mail_log")
+      .select("recipient_user_id, sent_at, attempts")
+      .eq("mail_type", "course_announcement")
+      .eq("scope_key", announcementId)
+      .order("recipient_user_id")
+      .range(from, from + ENROLLMENT_PAGE - 1);
+    if (error) throw new Error(`no se pudo leer mail_log del anuncio: ${error.message}`);
+    const rows = (data ?? []) as { recipient_user_id?: string; sent_at?: string | null; attempts?: number }[];
+    for (const r of rows) {
+      if (r.recipient_user_id && (r.sent_at || (r.attempts ?? 0) >= 3)) settled.add(r.recipient_user_id);
+    }
+    if (rows.length < ENROLLMENT_PAGE) return settled;
+  }
+}
+
+/** Deja UN turno pendiente y sin intento gastado (mismo RPC que el tope de envío): con eso la
+ *  próxima corrida de `/api/mail/retry` encuentra el anuncio y sigue con quien no lo recibió. */
+async function markAnnouncementPending(userId: string, announcementId: string): Promise<void> {
+  const claim = await claimOrReclaimMailSlot(userId, "course_announcement", announcementId);
+  if (claim) await releaseRateLimitedSlot(claim);
+}
 
 /**
  * T-031 · un mail por inscripta activa cuando la docente publica. Corre en `after()` (lo dispara
@@ -524,7 +562,8 @@ type AnnouncementDelivery = "sent" | "failed" | "not_claimed" | "unresolved";
  *
  * Atrapa TODO: un SMTP caído deja el anuncio publicado y las filas con `sent_at` nulo.
  */
-export async function notifyAnnouncementPublished(input: { announcementId: string }): Promise<void> {
+export async function notifyAnnouncementPublished(input: { announcementId: string; deadline?: number }): Promise<void> {
+  const deadline = input.deadline ?? Date.now() + ANNOUNCEMENT_AFTER_BUDGET_MS;
   try {
     const db = createServiceRoleClient();
     const { data: announcement, error } = await db
@@ -542,16 +581,27 @@ export async function notifyAnnouncementPublished(input: { announcementId: strin
     const course = await getCourseInfo(announcement.course_id);
     if (!course) return;
 
+    const settled = await listSettledAnnouncementRecipients(announcement.id);
     const recipients = buildAnnouncementRecipients(
       await listActiveEnrollmentUserIds(course.id),
       announcement.author_id,
-    );
+    ).filter((userId) => !settled.has(userId));
     const courseUrl = `${getSiteUrl()}/cursos/${course.slug}`;
 
+    let marked = false;
     const results = await settleWithConcurrency(
       recipients,
       ANNOUNCEMENT_MAIL_CONCURRENCY,
       async (userId): Promise<AnnouncementDelivery> => {
+        // G-02: cerca del corte de la función no se empieza otro envío; el primero que se salta
+        // deja el anuncio pendiente para el cron.
+        if (!canStartMail(deadline)) {
+          if (!marked) {
+            marked = true;
+            await markAnnouncementPending(userId, announcement.id);
+          }
+          return "deferred";
+        }
         // Resolver antes de reclamar (orden de notifyWelcome): sin dirección no se gasta el turno.
         const student = await getUserEmail(userId);
         if (!student) return "unresolved";
@@ -621,7 +671,7 @@ const TRANSACTIONAL_MAIL_TYPES: readonly TransactionalMailType[] = [
   "course_completed",
   "enrollment_rejected",
 ];
-const RETRY_TRANSACTIONAL_PER_RUN = 50;
+const RETRY_TRANSACTIONAL_PER_RUN = 25;
 // Una bienvenida o un «te aprobaron» de hace una semana confunde más de lo que informa: lo que
 // quedó pendiente más de 3 días no se retoma (el anuncio no tiene corte, sigue vigente).
 const TRANSACTIONAL_MAX_AGE_MS = 3 * 24 * 60 * 60_000;
@@ -688,7 +738,9 @@ async function redispatchTransactional(row: PendingTransactional, done: Set<stri
 
 /** D-128 · como `retryPendingAnnouncementMail`, para inscripción, bienvenida, certificado y
  *  rechazo. Mismo criterio de pendiente (sin confirmar, con intentos, turno vencido); nunca lanza. */
-export async function retryPendingTransactionalMail(): Promise<{ transactional: number }> {
+export async function retryPendingTransactionalMail(
+  deadline: number = Date.now() + MAIL_RUN_BUDGET_MS,
+): Promise<{ transactional: number }> {
   try {
     const now = Date.now();
     const { data, error } = await createServiceRoleClient()
@@ -707,23 +759,30 @@ export async function retryPendingTransactionalMail(): Promise<{ transactional: 
     }
     const rows = (data ?? []) as PendingTransactional[];
     const done = new Set<string>();
+    let started = 0;
     for (const row of rows) {
+      if (!canStartMail(deadline)) break;
+      started += 1;
       try {
         await redispatchTransactional(row, done);
       } catch (err) {
         log.error("mail_retry_transactional_failed", { mail_type: row.mail_type, err });
       }
     }
-    return { transactional: rows.length };
+    return { transactional: started };
   } catch (err) {
     log.error("mail_retry_failed", { err, scope: "transactional" });
     return { transactional: 0 };
   }
 }
 
-/** Lo que corre `/api/mail/retry`: anuncios y transaccionales, cada uno con su propio tope. */
-export async function retryPendingMail(): Promise<{ announcements: number; transactional: number }> {
-  const announcements = await retryPendingAnnouncementMail();
-  const transactional = await retryPendingTransactionalMail();
+/** Lo que corre `/api/mail/retry`: anuncios y transaccionales, cada uno con su tope de cantidad y
+ *  los dos con UN plazo compartido (G-02): la corrida termina antes de que la función corte. */
+export async function retryPendingMail(
+  { budgetMs = MAIL_RUN_BUDGET_MS }: { budgetMs?: number } = {},
+): Promise<{ announcements: number; transactional: number }> {
+  const deadline = Date.now() + budgetMs;
+  const announcements = await retryPendingAnnouncementMail(deadline);
+  const transactional = await retryPendingTransactionalMail(deadline);
   return { ...announcements, ...transactional };
 }
