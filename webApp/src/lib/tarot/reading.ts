@@ -4,6 +4,7 @@ import type { Reading } from "./codec";
 import { dignityBetween, type Dignity } from "./dignities";
 import { dominantOf, patternsOf, type Patterns } from "./interpret/patterns";
 import { estadoOf, neighborEffect, type Estado } from "./interpret/dignity";
+import { tensionsOf, type Tension } from "./interpret/tensions";
 import { positionsFor, spreadBySlug, type Position, type Spread } from "./spreads";
 import { yesNoVerdict, type Verdict } from "./yes-no";
 
@@ -39,6 +40,7 @@ export type ReadingFacts = {
   contrast: Contrast | null;
   patterns: Patterns;
   dominant: PlacedCard;
+  tensions: Tension[];
 };
 
 const COMBOS: Combo[] = combosRaw;
@@ -165,6 +167,7 @@ export function buildReading(reading: Reading, question: string | null = null): 
   });
   const links: Link[] = placed.flatMap((to, i) => (prev.has(i) ? [{ from: placed[prev.get(i)!]!, to, dignity: dignityAt(i) }] : []));
   const groups = groupsOf(spread, placed);
+  const contrast = contrastOf(spread, groups);
   return {
     spread,
     question,
@@ -176,8 +179,9 @@ export function buildReading(reading: Reading, question: string | null = null): 
     quintessence: spread.slug === "cruz-celta" ? quintessence(placed) : null,
     yesNo: spread.slug === "si-o-no" ? yesNoVerdict(placed.map((p) => ({ card: p.card, reversed: p.reversed }))) : null,
     groups,
-    contrast: contrastOf(spread, groups),
+    contrast,
     patterns: patternsOf(placed),
     dominant: dominantOf(placed),
+    tensions: tensionsOf(placed, contrast !== null),
   };
 }
