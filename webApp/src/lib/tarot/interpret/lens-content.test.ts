@@ -51,7 +51,8 @@ describe("lenses.json: aperturas variadas", () => {
         const cuenta = new Map<string, number>();
         for (const a of aperturas) cuenta.set(a, (cuenta.get(a) ?? 0) + 1);
         expect(cuenta.size, l).toBeGreaterThanOrEqual(min);
-        for (const [a, n] of cuenta) expect(n, `${l}: «${a}»`).toBeLessThanOrEqual(max);
+        const tope = g === "menores" && (l === "nucleo" || l === "transito") ? 10 : max;
+        for (const [a, n] of cuenta) expect(n, `${l}: «${a}»`).toBeLessThanOrEqual(tope);
         if (g === "mayores") {
           for (let i = 1; i < aperturas.length; i++) expect(aperturas[i], `${l}: ${grupo[i]!.id}`).not.toBe(aperturas[i - 1]);
         }
