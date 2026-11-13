@@ -2,7 +2,7 @@
 
 Guidance for Claude Code when working in this repository.
 
-> **Every claim in this file was verified against the repo on 2026-11-08** (T-024; previously T-038). The previous
+> **Every claim in this file was verified against the repo on 2026-11-08** (T-024; previously T-038); counts, migrations and the session rules updated on 2026-11-13 (T-096). The previous
 > version described a project that did not exist (see "History" at the bottom). If you change
 > the code, change this file — a wrong CLAUDE.md is worse than none, because it is trusted.
 
@@ -74,7 +74,7 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 
 | Area | State |
 |------|-------|
-| `webApp/src` | **~27.1k LOC** (non-test). 47 routes (`page.tsx`), 157 non-test files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`, with the reading interpreted by lenses, tensions and a reflective answer in `src/lib/tarot/interpret/` (T-094); 78 card scans in `public/tarot/rws/`; the owner's 9 brand images in `public/brand/` (WebP, `CREDITS.md`). Tarot text comes from the owner's course material in `docs/TAROT/fuente/` (originals outside git). Natal-chart engine (pure, no DB) in `src/lib/astro/` on `astronomy-engine` (MIT, ADR-017; credits in `src/lib/astro/CREDITS.md`). Tests: Vitest (1481 unit tests in 178 files, next to the file) + Playwright (`e2e/`), T-039. |
+| `webApp/src` | **~27.1k LOC** (non-test). 47 routes (`page.tsx`), 162 non-test files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`, with the reading interpreted by lenses, tensions and a reflective answer in `src/lib/tarot/interpret/` (T-094); 78 card scans in `public/tarot/rws/`; the owner's 9 brand images in `public/brand/` (WebP, `CREDITS.md`). Tarot text comes from the owner's course material in `docs/TAROT/fuente/` (originals outside git). Natal-chart engine (pure, no DB) in `src/lib/astro/` on `astronomy-engine` (MIT, ADR-017; credits in `src/lib/astro/CREDITS.md`). Tests: Vitest (1517 unit tests in 182 files, next to the file) + Playwright (`e2e/`), T-039. |
 | `webApp/supabase` | **Schema live.** 52 migrations (last `0080`; `0032` applies before `0031` by timestamp, independent), 27 tables (`tarot_readings`, ADR-016; `places`, `natal_charts`, T-024; `diario_post_courses`, B3; `error_events`, 0078), RLS + per-column grants + guard triggers, 992 mutation tests (PGlite). Private Storage bucket `uploads`: `avatars/` (T-042), `covers/` (T-047) and `diario/` (B3), uploads only via service_role; its policies are only tested over HTTP by b1. Fixtures `@test.local` (admin, docente, alumna) in `seed.fixtures.sql`, content seed in `seed.sql`, demo data in `demo.sql`: all **local only**, never run in the cloud (see `webApp/supabase/README.md`). |
 | `mobileApp/` | **Empty directory.** No Expo scaffold. **Out of scope for Phase 2.** |
 | `packages/tokens` | 763 LOC of the old Cosmos palette (marked historical in its README, D-66) — **consumed by nobody**: `webApp` does not import it (it uses its own `src/styles/tokens.css`) and `mobileApp` does not exist. Kept for when mobile returns. |
@@ -457,6 +457,7 @@ must **never** carry the `NEXT_PUBLIC_` prefix: the first bypasses RLS entirely,
 mail as the school, and the prefix would ship either to the browser.
 
 ## History
+On 2026-11-13 T-096 closed the session-isolation audit (`engram/qa/AUDIT-sesiones-2026-11-13.md`, S-01..S-07): migration 0080, invitation access never replaces an open session, session refresh on every document, one service_role factory (`createServiceRoleClient`).
 On 2026-11-12 T-094: lectura interpretada por lentes, tensiones y respuesta reflexiva (`src/lib/tarot/interpret/`).
 On 2026-11-12 the tarot was rebuilt on the owner's course material (78 rewritten cards, suits, 9 spreads with groups and reflection, migration 0079).
 On 2026-11-08 the owner's content document replaced the landing, footer, catalogue, teachers, journal and tarot copy and added the cosmic surfaces (blocks A and C of `docs/superpowers/specs/2026-11-08-contenidos-duena-design.md`).
