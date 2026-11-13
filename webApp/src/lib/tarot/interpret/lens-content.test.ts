@@ -34,3 +34,28 @@ describe("lenses.json", () => {
     });
   }
 });
+
+const apertura = (t: string) => t.split(/\s+/).slice(0, 2).join(" ").replace(/[.,:;]$/u, "");
+const variedad: Record<string, { f: (c: { arcano: string }) => boolean; min: number; max: number }> = {
+  mayores: { f: (c) => c.arcano === "mayor", min: 4, max: 6 },
+  menores: { f: (c) => c.arcano === "menor", min: 4, max: 15 },
+};
+
+describe("lenses.json: aperturas variadas", () => {
+  for (const [g, { f, min, max }] of Object.entries(variedad)) {
+    const grupo = cards.filter(f).sort((a, b) => a.indice - b.indice);
+    const presente = grupo.length > 0 && grupo.every((c) => data[c.id]);
+    it.skipIf(!presente)(`${g}: ninguna lente abre igual en demasiadas cartas`, () => {
+      for (const l of LENSES) {
+        const aperturas = grupo.map((c) => apertura(data[c.id]![l] ?? ""));
+        const cuenta = new Map<string, number>();
+        for (const a of aperturas) cuenta.set(a, (cuenta.get(a) ?? 0) + 1);
+        expect(cuenta.size, l).toBeGreaterThanOrEqual(min);
+        for (const [a, n] of cuenta) expect(n, `${l}: «${a}»`).toBeLessThanOrEqual(max);
+        if (g === "mayores") {
+          for (let i = 1; i < aperturas.length; i++) expect(aperturas[i], `${l}: ${grupo[i]!.id}`).not.toBe(aperturas[i - 1]);
+        }
+      }
+    });
+  }
+});
