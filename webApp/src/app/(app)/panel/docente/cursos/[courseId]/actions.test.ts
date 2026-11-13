@@ -21,6 +21,7 @@ vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("next/navigation", () => ({ redirect: vi.fn() }));
 
 import { attachLessonVideoAction, createLessonAction, removeCourseCoverAction, updateLessonAction, uploadCourseCoverAction } from "./actions";
+import * as actions from "./actions";
 import { UserFacingError } from "@/lib/server/action-error";
 import { MAX_COVER_BYTES } from "@/lib/validation/image";
 import { __resetRateLimiterForTests } from "@/lib/server/rate-limit";
@@ -274,5 +275,58 @@ describe("attachLessonVideoAction · D-120: el mensaje del motor no llega a la d
     assertOwnsCourse.mockRejectedValue(new UserFacingError("No autorizado: ese curso no te pertenece."));
     const r = await attachLessonVideoAction(INITIAL, videoForm());
     expect(r.error).toBe("No autorizado: ese curso no te pertenece.");
+  });
+});
+
+// G-04 (T-098): `requireTeacher()` corría fuera del try; su UserFacingError no llegaba a
+// actionError y la docente degradada veía la pantalla de error en vez del mensaje.
+describe("sin rol docente, toda acción devuelve el aviso en el estado", () => {
+  const LESSON = "60000000-0000-4000-8000-00000000000a";
+  const MODULE = "50000000-0000-4000-8000-00000000000a";
+  const ITEM = "70000000-0000-4000-8000-00000000000a";
+
+  function fullForm(): FormData {
+    const fd = new FormData();
+    for (const [k, v] of Object.entries({
+      courseId: COURSE,
+      moduleId: MODULE,
+      lessonId: LESSON,
+      chapterId: ITEM,
+      resourceId: ITEM,
+      announcementId: ITEM,
+      title: "Un título válido",
+      description: "",
+      body: "Un cuerpo de anuncio válido para la prueba.",
+      reason: "Un motivo suficiente",
+      direction: "up",
+      nextPublished: "true",
+      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      timestamp: "01:00",
+      label: "Recurso",
+      link: "https://drive.google.com/file/d/abcdefghijk1234/view",
+      kind: "pdf",
+      isPreview: "false",
+    }))
+      fd.set(k, v);
+    fd.set("cover", new File([PNG], "portada.png", { type: "image/png" }));
+    return fd;
+  }
+
+  beforeEach(() => {
+    createClient.mockReset();
+    requireTeacher.mockReset().mockRejectedValue(new UserFacingError("No autorizado: se requiere rol docente."));
+  });
+
+  it.each(
+    Object.entries(actions).filter(([, fn]) => typeof fn === "function") as [string, (s: typeof INITIAL, f: FormData) => Promise<{ error: string | null }>][],
+  )("%s", async (_name, action) => {
+    const r = await action(INITIAL, fullForm());
+    expect(r.error).toBeTruthy();
+    expect(createClient).not.toHaveBeenCalled();
+  });
+
+  it("el texto del rechazo llega tal cual (createModuleAction)", async () => {
+    const r = await actions.createModuleAction(INITIAL, fullForm());
+    expect(r.error).toBe("No autorizado: se requiere rol docente.");
   });
 });

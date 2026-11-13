@@ -21,6 +21,8 @@ import {
 import { log } from "@/lib/server/log";
 import { withRateLimit } from "@/lib/server/rate-limit";
 import { limitedState } from "@/lib/rate-limit/core";
+import { actionError } from "@/lib/server/action-error";
+import { checkNoteBody, playerFail, playerLimited, PLAYER_ERRORS, type PlayerResult } from "@/lib/player/action-result";
 
 /**
  * Destino del cierre de la última lección. Se resuelve al terminar el video y no al renderizar:
@@ -36,10 +38,21 @@ export async function resolveClosingHref(courseId: string): Promise<string> {
   }
 }
 
-export interface ProgressResult {
+export interface ProgressState {
   secondsWatched: number;
   completed: boolean;
   completedAt: string | null;
+}
+
+export type ProgressResult = PlayerResult<ProgressState>;
+
+const PROGRESS_FAILED = "No se pudo guardar tu avance.";
+const NOTE_SAVE_FAILED = "No se pudo guardar la nota.";
+const NOTE_EDIT_FAILED = "No se pudo editar la nota.";
+const NOTE_DELETE_FAILED = "No se pudo borrar la nota.";
+
+function progressOk(row: { seconds_watched: number; completed: boolean; completed_at: string | null }): ProgressResult {
+  return { ok: true, secondsWatched: row.seconds_watched, completed: row.completed, completedAt: row.completed_at };
 }
 
 /**
@@ -100,72 +113,61 @@ async function maybeNotifyCourseCompleted(
  */
 export const saveLessonProgress = withRateLimit(
   "saveLessonProgress",
-  async function saveLessonProgress(
-    lessonId: string,
-    secondsWatched: number
-  ): Promise<ProgressResult> {
+  async function saveLessonProgress(lessonId: string, secondsWatched: number): Promise<ProgressResult> {
     if (!Number.isFinite(secondsWatched) || secondsWatched < 0) {
-      throw new Error("seconds_watched inválido.");
+      return playerFail(PLAYER_ERRORS.invalidProgress);
     }
     const seconds = Math.floor(secondsWatched);
     const nowIso = new Date().toISOString();
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error("No autenticado.");
+    try {
+      const supabase = await createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return playerFail(PLAYER_ERRORS.noSession);
 
-    const { data: updated, error: updateError } = await supabase
-      .from("lesson_progress")
-      .update({ seconds_watched: seconds, last_seen_at: nowIso })
-      .eq("user_id", user.id)
-      .eq("lesson_id", lessonId)
-      .select("seconds_watched, completed, completed_at, course_id")
-      .maybeSingle();
+      const { data: updated, error: updateError } = await supabase
+        .from("lesson_progress")
+        .update({ seconds_watched: seconds, last_seen_at: nowIso })
+        .eq("user_id", user.id)
+        .eq("lesson_id", lessonId)
+        .select("seconds_watched, completed, completed_at, course_id")
+        .maybeSingle();
 
-    if (updateError) {
-      throw new Error(`No se pudo guardar el progreso: ${updateError.message}`);
-    }
-    if (updated) {
-      if (updated.completed) {
-        await maybeNotifyCourseCompleted(user.id, updated.course_id);
+      if (updateError) return playerFail(actionError(updateError, PROGRESS_FAILED));
+      if (updated) {
+        if (updated.completed) await maybeNotifyCourseCompleted(user.id, updated.course_id);
+        return progressOk(updated);
       }
-      return {
-        secondsWatched: updated.seconds_watched,
-        completed: updated.completed,
-        completedAt: updated.completed_at,
-      };
-    }
 
-    // No había fila: primera escritura de progreso de este usuario en esta lección.
-    // course_id lo resuelve el servidor (no se confía en lo que mande el cliente): sólo las
-    // columnas leíbles por el grant de 0003_privileges.sql.
-    const { data: lesson, error: lessonError } = await supabase
-      .from("lessons")
-      .select("course_id")
-      .eq("id", lessonId)
-      .maybeSingle();
-    if (lessonError || !lesson) {
-      throw new Error("Lección no encontrada.");
-    }
+      // No había fila: primera escritura de progreso de este usuario en esta lección.
+      // course_id lo resuelve el servidor (no se confía en lo que mande el cliente): sólo las
+      // columnas leíbles por el grant de 0003_privileges.sql.
+      const { data: lesson, error: lessonError } = await supabase
+        .from("lessons")
+        .select("course_id")
+        .eq("id", lessonId)
+        .maybeSingle();
+      if (lessonError) return playerFail(actionError(lessonError, PROGRESS_FAILED));
+      if (!lesson) return playerFail(PLAYER_ERRORS.lessonNotFound);
 
-    const { data: inserted, error: insertError } = await supabase
-      .from("lesson_progress")
-      .insert({
-        user_id: user.id,
-        course_id: lesson.course_id,
-        lesson_id: lessonId,
-        seconds_watched: seconds,
-        last_seen_at: nowIso,
-      })
-      .select("seconds_watched, completed, completed_at")
-      .single();
+      const { data: inserted, error: insertError } = await supabase
+        .from("lesson_progress")
+        .insert({
+          user_id: user.id,
+          course_id: lesson.course_id,
+          lesson_id: lessonId,
+          seconds_watched: seconds,
+          last_seen_at: nowIso,
+        })
+        .select("seconds_watched, completed, completed_at")
+        .single();
 
-    if (insertError) {
-      // Carrera real: dos pestañas escribiendo el progreso inicial a la vez. La segunda pierde
-      // el INSERT (23505, unique lesson_progress_user_lesson_key) y cae a UPDATE.
-      if (insertError.code === "23505") {
+      if (insertError) {
+        // Carrera real: dos pestañas escribiendo el progreso inicial a la vez. La segunda pierde
+        // el INSERT (23505, unique lesson_progress_user_lesson_key) y cae a UPDATE.
+        if (insertError.code !== "23505") return playerFail(actionError(insertError, PROGRESS_FAILED));
         const { data: retried, error: retryError } = await supabase
           .from("lesson_progress")
           .update({ seconds_watched: seconds, last_seen_at: nowIso })
@@ -173,30 +175,18 @@ export const saveLessonProgress = withRateLimit(
           .eq("lesson_id", lessonId)
           .select("seconds_watched, completed, completed_at")
           .single();
-        if (retryError) {
-          throw new Error(`No se pudo guardar el progreso: ${retryError.message}`);
-        }
-        if (retried.completed) {
-          await maybeNotifyCourseCompleted(user.id, lesson.course_id);
-        }
-        return {
-          secondsWatched: retried.seconds_watched,
-          completed: retried.completed,
-          completedAt: retried.completed_at,
-        };
+        if (retryError) return playerFail(actionError(retryError, PROGRESS_FAILED));
+        if (retried.completed) await maybeNotifyCourseCompleted(user.id, lesson.course_id);
+        return progressOk(retried);
       }
-      throw new Error(`No se pudo iniciar el progreso: ${insertError.message}`);
-    }
 
-    if (inserted.completed) {
-      await maybeNotifyCourseCompleted(user.id, lesson.course_id);
+      if (inserted.completed) await maybeNotifyCourseCompleted(user.id, lesson.course_id);
+      return progressOk(inserted);
+    } catch (err) {
+      return playerFail(actionError(err, PROGRESS_FAILED));
     }
-    return {
-      secondsWatched: inserted.seconds_watched,
-      completed: inserted.completed,
-      completedAt: inserted.completed_at,
-    };
   },
+  playerLimited,
 );
 
 export interface NoteResult {
@@ -206,100 +196,121 @@ export interface NoteResult {
   createdAt: string;
 }
 
+export type NoteActionResult = PlayerResult<{ note: NoteResult }>;
+export type NoteDeleteResult = PlayerResult<object>;
+
+interface NoteRow {
+  id: string;
+  at_seconds: number;
+  body: string;
+  created_at: string;
+}
+
+function noteOk(row: NoteRow): NoteActionResult {
+  return { ok: true, note: { id: row.id, atSeconds: row.at_seconds, body: row.body, createdAt: row.created_at } };
+}
+
 /** Nota propia (T-006 c.7): RLS la ata a `user_id = auth.uid()` en lectura y escritura. */
 export const saveLessonNote = withRateLimit(
   "saveLessonNote",
-  async function saveLessonNote(lessonId: string, atSeconds: number, body: string): Promise<NoteResult> {
-    const trimmed = body.trim();
-    if (!trimmed) throw new Error("La nota no puede estar vacía.");
-    if (!Number.isFinite(atSeconds) || atSeconds < 0) {
-      throw new Error("at_seconds inválido.");
+  async function saveLessonNote(lessonId: string, atSeconds: number, body: string): Promise<NoteActionResult> {
+    const checked = checkNoteBody(body);
+    if (!checked.ok) return checked;
+    if (!Number.isFinite(atSeconds) || atSeconds < 0) return playerFail(PLAYER_ERRORS.invalidTime);
+
+    try {
+      const supabase = await createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return playerFail(PLAYER_ERRORS.noSession);
+
+      const { data: lesson, error: lessonError } = await supabase
+        .from("lessons")
+        .select("course_id")
+        .eq("id", lessonId)
+        .maybeSingle();
+      if (lessonError) return playerFail(actionError(lessonError, NOTE_SAVE_FAILED));
+      if (!lesson) return playerFail(PLAYER_ERRORS.lessonNotFound);
+
+      const { data, error } = await supabase
+        .from("lesson_notes")
+        .insert({
+          user_id: user.id,
+          course_id: lesson.course_id,
+          lesson_id: lessonId,
+          at_seconds: Math.floor(atSeconds),
+          body: checked.body,
+        })
+        .select("id, at_seconds, body, created_at")
+        .single();
+      if (error) return playerFail(actionError(error, NOTE_SAVE_FAILED));
+      return noteOk(data);
+    } catch (err) {
+      return playerFail(actionError(err, NOTE_SAVE_FAILED));
     }
-
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error("No autenticado.");
-
-    const { data: lesson, error: lessonError } = await supabase
-      .from("lessons")
-      .select("course_id")
-      .eq("id", lessonId)
-      .maybeSingle();
-    if (lessonError || !lesson) {
-      throw new Error("Lección no encontrada.");
-    }
-
-    const { data, error } = await supabase
-      .from("lesson_notes")
-      .insert({
-        user_id: user.id,
-        course_id: lesson.course_id,
-        lesson_id: lessonId,
-        at_seconds: Math.floor(atSeconds),
-        body: trimmed,
-      })
-      .select("id, at_seconds, body, created_at")
-      .single();
-
-    if (error) {
-      throw new Error(`No se pudo guardar la nota: ${error.message}`);
-    }
-
-    return { id: data.id, atSeconds: data.at_seconds, body: data.body, createdAt: data.created_at };
   },
+  playerLimited,
 );
 
 // La RLS (`user_id = auth.uid()`) es el control; el `.eq("user_id")` es defensa en profundidad.
 // Una nota ajena no da 403: PostgREST filtra en silencio y devuelve 0 filas, por eso 0 filas es error.
-const NOTE_NOT_FOUND = "No se encontró la nota.";
 
 /** Edita el texto de una nota propia. `at_seconds` no está en el payload: se conserva. */
 export const updateLessonNote = withRateLimit(
   "updateLessonNote",
-  async function updateLessonNote(noteId: string, body: string): Promise<NoteResult> {
-    const trimmed = body.trim();
-    if (!trimmed) throw new Error("La nota no puede estar vacía.");
+  async function updateLessonNote(noteId: string, body: string): Promise<NoteActionResult> {
+    const checked = checkNoteBody(body);
+    if (!checked.ok) return checked;
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error("No autenticado.");
+    try {
+      const supabase = await createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return playerFail(PLAYER_ERRORS.noSession);
 
-    const { data, error } = await supabase
-      .from("lesson_notes")
-      .update({ body: trimmed })
-      .eq("id", noteId)
-      .eq("user_id", user.id)
-      .select("id, at_seconds, body, created_at");
-    if (error) throw new Error(`No se pudo editar la nota: ${error.message}`);
-    const row = data?.[0];
-    if (!row) throw new Error(NOTE_NOT_FOUND);
-
-    return { id: row.id, atSeconds: row.at_seconds, body: row.body, createdAt: row.created_at };
+      const { data, error } = await supabase
+        .from("lesson_notes")
+        .update({ body: checked.body })
+        .eq("id", noteId)
+        .eq("user_id", user.id)
+        .select("id, at_seconds, body, created_at");
+      if (error) return playerFail(actionError(error, NOTE_EDIT_FAILED));
+      const row = data?.[0];
+      if (!row) return playerFail(PLAYER_ERRORS.noteNotFound);
+      return noteOk(row);
+    } catch (err) {
+      return playerFail(actionError(err, NOTE_EDIT_FAILED));
+    }
   },
+  playerLimited,
 );
 
 export const deleteLessonNote = withRateLimit(
   "deleteLessonNote",
-  async function deleteLessonNote(noteId: string): Promise<void> {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error("No autenticado.");
+  async function deleteLessonNote(noteId: string): Promise<NoteDeleteResult> {
+    try {
+      const supabase = await createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return playerFail(PLAYER_ERRORS.noSession);
 
-    const { data, error } = await supabase
-      .from("lesson_notes")
-      .delete()
-      .eq("id", noteId)
-      .eq("user_id", user.id)
-      .select("id");
-    if (error) throw new Error(`No se pudo borrar la nota: ${error.message}`);
-    if (!data?.length) throw new Error(NOTE_NOT_FOUND);
+      const { data, error } = await supabase
+        .from("lesson_notes")
+        .delete()
+        .eq("id", noteId)
+        .eq("user_id", user.id)
+        .select("id");
+      if (error) return playerFail(actionError(error, NOTE_DELETE_FAILED));
+      if (!data?.length) return playerFail(PLAYER_ERRORS.noteNotFound);
+      return { ok: true };
+    } catch (err) {
+      return playerFail(actionError(err, NOTE_DELETE_FAILED));
+    }
   },
+  playerLimited,
 );
 
 // ---------------------------------------------------------------------------------- T-030 · Q&A
