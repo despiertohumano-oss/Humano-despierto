@@ -314,7 +314,7 @@ export default function LessonPlayer({ data, startSeconds = null }: Props) {
               ),
             },
             { id: "recursos", label: "Recursos", panel: <ResourcesTab resources={data.resources} /> },
-            { id: "preguntas", label: "Preguntas", panel: <LessonQA lessonId={data.lessonId} data={data.qa} /> },
+            { id: "preguntas", label: "Preguntas", panel: <LessonQA lessonId={data.lessonId} data={data.qa} isPreview={data.isPreview} /> },
           ]}
         />
       </div>

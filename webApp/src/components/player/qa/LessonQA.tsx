@@ -9,9 +9,11 @@ import QuestionComposer from "./QuestionComposer";
 interface Props {
   lessonId: string;
   data: LessonQaData;
+  /** La lección es `is_preview`: sus preguntas las lee cualquier cuenta registrada. */
+  isPreview?: boolean;
 }
 
-export default function LessonQA({ lessonId, data }: Props) {
+export default function LessonQA({ lessonId, data, isPreview = false }: Props) {
   if (!data.isAuthenticated) {
     return <p className="text-sm text-suave">Iniciá sesión para ver y hacer preguntas sobre esta lección.</p>;
   }
@@ -21,7 +23,7 @@ export default function LessonQA({ lessonId, data }: Props) {
 
   return (
     <div>
-      {data.canAsk && <QuestionComposer lessonId={lessonId} />}
+      {data.canAsk && <QuestionComposer lessonId={lessonId} isPreview={isPreview} />}
       {data.questions.length === 0 ? (
         // Criterio 11: vacío deliberado, con el compositor arriba.
         <p className="text-sm text-suave">Nadie preguntó todavía en esta lección.</p>
