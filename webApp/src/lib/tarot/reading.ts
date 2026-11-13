@@ -2,6 +2,7 @@ import combosRaw from "./data/combos.json";
 import { baseElement, cardByIndex, type Card, type Suit } from "./cards";
 import type { Reading } from "./codec";
 import { dignityBetween, type Dignity } from "./dignities";
+import { dominantOf, patternsOf, type Patterns } from "./interpret/patterns";
 import { estadoOf, neighborEffect, type Estado } from "./interpret/dignity";
 import { positionsFor, spreadBySlug, type Position, type Spread } from "./spreads";
 import { yesNoVerdict, type Verdict } from "./yes-no";
@@ -36,6 +37,8 @@ export type ReadingFacts = {
   yesNo: { verdict: Verdict; votes: Verdict[]; tiebreak: boolean } | null;
   groups: Group[];
   contrast: Contrast | null;
+  patterns: Patterns;
+  dominant: PlacedCard;
 };
 
 const COMBOS: Combo[] = combosRaw;
@@ -174,5 +177,7 @@ export function buildReading(reading: Reading, question: string | null = null): 
     yesNo: spread.slug === "si-o-no" ? yesNoVerdict(placed.map((p) => ({ card: p.card, reversed: p.reversed }))) : null,
     groups,
     contrast: contrastOf(spread, groups),
+    patterns: patternsOf(placed),
+    dominant: dominantOf(placed),
   };
 }
