@@ -60,7 +60,6 @@ interface RequestRow {
   course_id: string;
   status: "requested" | "rejected";
   requested_at: string | null;
-  decided_reason: string | null;
   course: { slug: string; title: string } | { slug: string; title: string }[] | null;
 }
 
@@ -157,8 +156,9 @@ export async function getStudentCourseAccess(courseId: string): Promise<StudentC
 
 /**
  * T-043 · en qué punto está la alumna logueada respecto de UN curso, para elegir el CTA de la
- * ficha. Cliente de sesión: `enrollments_read` solo devuelve la fila propia. `anonymous` existe
- * aparte de `none` porque sin sesión el botón lleva a `/entrar?next=`, no a la action.
+ * ficha. `my_enrollment_requests()` filtra por `auth.uid()` en la base y es la única vía que lee
+ * `decided_reason` (0080, T-096 S-01). `anonymous` existe aparte de `none` porque sin sesión el
+ * botón lleva a `/entrar?next=`, no a la action.
  */
 export async function getStudentEnrollmentState(courseId: string): Promise<StudentEnrollmentState> {
   const supabase = await createClient();
@@ -168,11 +168,9 @@ export async function getStudentEnrollmentState(courseId: string): Promise<Stude
   if (!user) return { status: "anonymous" };
 
   const { data, error } = await supabase
-    .from("enrollments")
-    .select("status, requested_at, decided_reason")
+    .rpc("my_enrollment_requests")
     .eq("course_id", courseId)
-    .eq("user_id", user.id)
-    .maybeSingle();
+    .maybeSingle<{ status: string; requested_at: string | null; decided_reason: string | null }>();
 
   if (error) throw new Error(`No se pudo leer la inscripción: ${error.message}`);
   if (!data) return { status: "none" };
@@ -191,20 +189,35 @@ export async function getStudentEnrollmentState(courseId: string): Promise<Stude
   }
 }
 
+/** El motivo no está en el grant de SELECT (0080): solo lo devuelve la función, y solo el propio. */
+async function getRejectionReasons(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+): Promise<Map<string, string | null>> {
+  const { data, error } = await supabase.rpc("my_enrollment_requests").eq("status", "rejected");
+  if (error) throw new Error(`No se pudieron leer los motivos: ${error.message}`);
+  const rows = (data ?? []) as { course_id: string; decided_reason: string | null }[];
+  return new Map(rows.map((row) => [row.course_id, row.decided_reason]));
+}
+
 async function getStudentRequests(
   supabase: Awaited<ReturnType<typeof createClient>>,
   userId: string,
 ): Promise<StudentRequest[]> {
   const { data, error } = await supabase
     .from("enrollments")
-    .select("course_id, status, requested_at, decided_reason, course:courses(slug, title)")
+    .select("course_id, status, requested_at, course:courses(slug, title)")
     .eq("user_id", userId)
     .in("status", ["requested", "rejected"])
     .order("requested_at", { ascending: false });
 
   if (error) throw new Error(`No se pudieron leer las solicitudes: ${error.message}`);
 
-  return ((data ?? []) as unknown as RequestRow[])
+  const rows = (data ?? []) as unknown as RequestRow[];
+  const reasons = rows.some((row) => row.status === "rejected")
+    ? await getRejectionReasons(supabase)
+    : new Map<string, string | null>();
+
+  return rows
     .map((row) => {
       const course = firstOf(row.course);
       // Un curso archivado deja de ser legible por RLS: la solicitud no tiene a dónde linkear.
@@ -215,7 +228,7 @@ async function getStudentRequests(
         title: course.title,
         status: row.status,
         requestedAt: row.requested_at,
-        decidedReason: row.decided_reason,
+        decidedReason: row.status === "rejected" ? (reasons.get(row.course_id) ?? null) : null,
       };
       return request;
     })

@@ -64,11 +64,11 @@ describe('T-043 · la alumna pide, no se inscribe', () => {
     assert.equal(fila.decided_reason, null);
   });
 
-  test('la alumna lee su propia solicitud (estado, fecha y motivo estan en el grant de SELECT)', async () => {
+  test('la alumna lee su propia solicitud (estado y fechas por select; el motivo, por my_enrollment_requests, T-096)', async () => {
     const r = await asPidiente(db, () =>
       attempt(
         db,
-        `select status, requested_at, decided_at, decided_reason from public.enrollments where user_id = $1`,
+        `select status, requested_at, decided_at from public.enrollments where user_id = $1`,
         [ID.otro],
       ),
     );
