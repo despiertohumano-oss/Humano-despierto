@@ -1,5 +1,5 @@
 import "server-only";
-import { getAdminSupabaseClient } from "@/lib/server/supabase-admin";
+import { createServiceRoleClient } from "@/lib/supabase/service";
 import { PAGE_SIZE, splitPage, type ListParams } from "@/lib/admin/list-params";
 import { invitationStatus, type InvitationStatus } from "@/lib/admin/invitation-status";
 import type { AdminCourseRow, AdminEnrollmentRow, AdminUserRow, CourseStatus, EnrollmentStatus } from "@/lib/server/admin";
@@ -26,7 +26,7 @@ export interface AdminInvitationRow {
 }
 
 async function callList<T>(fn: string, { q, after }: ListParams): Promise<T[]> {
-  const db = getAdminSupabaseClient();
+  const db = createServiceRoleClient();
   const args = { p_q: q, p_after_at: after?.at ?? null, p_after_id: after?.id ?? null, p_limit: PAGE_SIZE + 1 };
   const { data, error } = await db.rpc(fn, args);
   if (!error) return (data ?? []) as T[];

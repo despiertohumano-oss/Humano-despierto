@@ -1,5 +1,5 @@
 import "server-only";
-import { getAdminSupabaseClient } from "@/lib/server/supabase-admin";
+import { createServiceRoleClient } from "@/lib/supabase/service";
 import { getSiteUrl } from "@/lib/server/site-url";
 import { notifyTeacherInvitation } from "@/lib/server/mail/notify";
 import { ACCESS_TYPES, accessQuery, hashInvitationToken, invitationPath, newInvitationToken, type AccessType, type InvitationAccess } from "@/lib/server/invitation-token";
@@ -25,7 +25,7 @@ const PENDING_CONSTRAINT = "teacher_invitations_pending_email";
  *  GoTrue; si el mail no tiene cuenta, la crea). Vence según el OTP expiry de Supabase Auth; sin
  *  él, el link sigue sirviendo con login a mano. Nunca se loguea. */
 async function accessFor(email: string): Promise<InvitationAccess | null> {
-  const { data, error } = await getAdminSupabaseClient().auth.admin.generateLink({ type: "magiclink", email });
+  const { data, error } = await createServiceRoleClient().auth.admin.generateLink({ type: "magiclink", email });
   const hash = data?.properties?.hashed_token;
   const type = data?.properties?.verification_type as AccessType | undefined;
   if (error || !hash || !type || !ACCESS_TYPES.includes(type)) {
@@ -36,7 +36,7 @@ async function accessFor(email: string): Promise<InvitationAccess | null> {
 }
 
 export async function inviteTeacher(input: InviteInput): Promise<InviteOutcome> {
-  const db = getAdminSupabaseClient();
+  const db = createServiceRoleClient();
 
   const { data: accounts, error: lookupError } = await db.rpc("admin_user_by_email", { p_email: input.email });
   if (lookupError) throw new Error(`No se pudo verificar la cuenta: ${lookupError.message}`);
@@ -68,7 +68,7 @@ export async function inviteTeacher(input: InviteInput): Promise<InviteOutcome> 
 /** Reenviar = revocar la pendiente de ese mail y crear otra. No es atómico: si dos admins
  *  reenvían a la vez, el segundo recibe pending_exists, que es lo correcto. */
 export async function reissueInvitation(input: InviteInput): Promise<InviteOutcome> {
-  const db = getAdminSupabaseClient();
+  const db = createServiceRoleClient();
   const { error } = await db
     .from("teacher_invitations")
     .update({ revoked_at: new Date().toISOString(), revoked_by: input.adminId })
@@ -81,7 +81,7 @@ export async function reissueInvitation(input: InviteInput): Promise<InviteOutco
 }
 
 export async function revokeInvitation(input: { id: string; adminId: string }): Promise<boolean> {
-  const db = getAdminSupabaseClient();
+  const db = createServiceRoleClient();
   const { data, error } = await db
     .from("teacher_invitations")
     .update({ revoked_at: new Date().toISOString(), revoked_by: input.adminId })
@@ -97,7 +97,7 @@ export async function revokeInvitation(input: { id: string; adminId: string }): 
 export async function acceptInvitation(input: { token: string; userId: string }): Promise<boolean> {
   const tokenHash = hashInvitationToken(input.token);
   if (!tokenHash) return false;
-  const db = getAdminSupabaseClient();
+  const db = createServiceRoleClient();
   const { data, error } = await db.rpc("accept_teacher_invitation", { p_token_hash: tokenHash, p_user_id: input.userId });
   if (error) {
     log.error("invitation_accept_failed", { message: error.message });

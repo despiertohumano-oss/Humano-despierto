@@ -79,6 +79,8 @@ export interface LessonPlayerData {
   // T-030 · la docente dueña y el admin ven el player pero no cursan: progreso y notas exigen
   // inscripción o preview en RLS (0004), así que el cliente no intenta escribirlos.
   canTrackProgress: boolean;
+  /** `is_preview`: el Q&A de la lección lo lee cualquier sesión, no solo la cohorte (S-06). */
+  isPreview: boolean;
   qa: LessonQaData;
 }
 
@@ -354,6 +356,7 @@ export const getLessonPlayerData = cache(async function getLessonPlayerData(
     nextLesson: nextLesson(modules, row.id),
     isAuthenticated: userId !== null,
     canTrackProgress: access.canTrackProgress,
+    isPreview: row.is_preview,
     qa,
   };
 });

@@ -8,7 +8,10 @@ import FormField from "@/components/molecules/FormField";
 import FormStatus from "@/components/molecules/FormStatus";
 import { cn } from "@/lib/utils/cn";
 
-export default function QuestionComposer({ lessonId }: { lessonId: string }) {
+/** S-06 (T-096): en una vista previa el Q&A no es de la cohorte, lo lee cualquier sesión (0031). */
+export const PREVIEW_QA_NOTICE = "Esta pregunta la puede leer cualquier persona registrada.";
+
+export default function QuestionComposer({ lessonId, isPreview = false }: { lessonId: string; isPreview?: boolean }) {
   const action = useMemo(() => askQuestion.bind(null, lessonId), [lessonId]);
   const [state, formAction, pending] = useActionState(action, QA_ACTION_INITIAL_STATE);
   const formRef = useRef<HTMLFormElement>(null);
@@ -25,6 +28,7 @@ export default function QuestionComposer({ lessonId }: { lessonId: string }) {
       <FormField id={`qa-cuerpo-${lessonId}`} label="Tu pregunta">
         {(c) => <textarea {...c} name="body" required maxLength={4000} rows={3} placeholder="Contá en qué minuto y qué no cerró." className={cn(c.className, "resize-y text-sm")} />}
       </FormField>
+      {isPreview && <p className="text-sm text-suave">{PREVIEW_QA_NOTICE}</p>}
       {/* El error de la action no dice de qué campo es: va como estado del formulario. */}
       <FormStatus state={{ error: state.error, success: null }} />
       <div className="flex justify-end">

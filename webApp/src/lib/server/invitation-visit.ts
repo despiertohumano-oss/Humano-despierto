@@ -18,9 +18,12 @@ export interface VisitDeps {
   roleOf(userId: string): Promise<string | null>;
 }
 
-/** Orquesta la visita al link del mail. Con acceso vigente, el link entra con la cuenta invitada
- *  (reemplaza cualquier otra sesión del navegador); sin él, hace falta entrar a mano. La decisión
- *  de aceptar la toma siempre accept_teacher_invitation en la base, con una sesión validada. */
+/** Orquesta la visita al link del mail. Sin sesión en el navegador, un acceso vigente entra con la
+ *  cuenta invitada; sin él, hace falta entrar a mano. Con una sesión ya abierta el acceso NO se
+ *  canjea (S-02, T-096): reemplazarla en silencio dejaba a quien abrió un link reenviado logueada
+ *  como la invitada, y lo que cargara después quedaba en esa cuenta. Esa sesión va directo a
+ *  accept_teacher_invitation, que exige el mail invitado: si es la misma cuenta acepta, si es otra
+ *  rechaza y la página le dice que salga primero. La base decide "misma cuenta", no esta función. */
 export async function resolveInvitationVisit(
   token: string,
   deps: VisitDeps,
@@ -29,15 +32,16 @@ export async function resolveInvitationVisit(
   if (!hashInvitationToken(token)) return INVALID_INVITATION_PATH;
 
   let viaAccess = false;
-  if (access) {
+  let userId = await deps.userId();
+  if (!userId && access) {
     try {
       viaAccess = await deps.signInWithAccess(access);
     } catch (err) {
       log.warn("invitation_access_failed", { err });
     }
+    if (viaAccess) userId = await deps.userId();
   }
 
-  const userId = await deps.userId();
   if (!userId) return `/entrar?next=${encodeURIComponent(invitationPath(token))}`;
 
   if (!(await deps.accept(token, userId))) return INVALID_WITH_SESSION_PATH;

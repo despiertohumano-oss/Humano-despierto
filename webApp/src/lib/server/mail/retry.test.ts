@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({ db: null as unknown, limit: vi.fn() }));
-vi.mock("@/lib/server/supabase-admin", () => ({ getAdminSupabaseClient: () => mocks.db }));
+vi.mock("@/lib/supabase/service", () => ({ createServiceRoleClient: () => mocks.db }));
 vi.mock("@/lib/server/site-url", () => ({ getSiteUrl: () => "https://humano.example" }));
 vi.mock("@/lib/server/rate-limit", () => ({ limit: mocks.limit }));
 vi.mock("next/headers", () => ({ headers: () => Promise.reject(new Error("fuera de request")) }));

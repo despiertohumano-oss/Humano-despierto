@@ -25,7 +25,8 @@ export interface CourseRoster {
  * Inscripciones por sesión (`enrollments_read` incluye `owns_course`); progreso, certificados y
  * nombres por service_role recién tras `assertOwnsCourse`, porque sus policies son "solo propias".
  * Columnas recortadas a mano: un `select *` acá filtraría datos de alumnas (T-034 c.5).
- * No se lee `decided_reason`: es del admin hacia la alumna, no de la docente.
+ * No se lee `decided_reason`: es del admin hacia la alumna, no de la docente (y desde 0080 la base
+ * tampoco se lo deja leer).
  * Preguntas abiertas por la sesión: `course_open_questions` exige `owns_course` en la base.
  */
 export async function getCourseRoster(courseId: string, teacherId: string): Promise<CourseRoster | null> {

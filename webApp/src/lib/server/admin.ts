@@ -1,6 +1,6 @@
 import "server-only";
 import { getCurrentUser } from "@/lib/server/auth";
-import { getAdminSupabaseClient } from "@/lib/server/supabase-admin";
+import { createServiceRoleClient } from "@/lib/supabase/service";
 import type { AppRole, AuthUser } from "@/lib/stores/useAuthStore";
 
 // `AdminActionState` / `ADMIN_ACTION_INITIAL_STATE` viven en
@@ -33,7 +33,7 @@ export interface AdminUserRow {
 }
 
 export async function countAdmins(): Promise<number> {
-  const db = getAdminSupabaseClient();
+  const db = createServiceRoleClient();
   const { count, error } = await db
     .from("profiles")
     .select("id", { count: "exact", head: true })
@@ -95,7 +95,7 @@ interface AdminEnrollmentRequestQueryRow {
 
 /** T-043 · la cola: solicitudes `requested`, la más vieja primero (se atiende en orden). */
 export async function listPendingEnrollmentRequests(): Promise<AdminEnrollmentRequestRow[]> {
-  const db = getAdminSupabaseClient();
+  const db = createServiceRoleClient();
   const { data, error } = await db
     .from("enrollments")
     .select(
@@ -124,7 +124,7 @@ export async function listPendingEnrollmentRequests(): Promise<AdminEnrollmentRe
 
 /** B4 · id de la creadora destacada, o null. Lectura con service_role tras `requireAdmin` del llamador. */
 export async function getFounderId(): Promise<string | null> {
-  const { data, error } = await getAdminSupabaseClient().from("profiles").select("id").eq("is_founder", true).maybeSingle();
+  const { data, error } = await createServiceRoleClient().from("profiles").select("id").eq("is_founder", true).maybeSingle();
   if (error) throw new Error(`No se pudo leer la creadora: ${error.message}`);
   return (data?.id as string | undefined) ?? null;
 }

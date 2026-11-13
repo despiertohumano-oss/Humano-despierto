@@ -7,12 +7,12 @@ vi.mock("@/lib/server/rate-limit-subject", () => ({ currentRateLimitSubject: rat
 const mocks = vi.hoisted(() => ({
   getCurrentUser: vi.fn(),
   createClient: vi.fn(),
-  getAdminSupabaseClient: vi.fn(),
+  createServiceRoleClient: vi.fn(),
   revalidatePath: vi.fn(),
 }));
 vi.mock("@/lib/server/auth", () => ({ getCurrentUser: mocks.getCurrentUser }));
 vi.mock("@/lib/supabase/server", () => ({ createClient: mocks.createClient }));
-vi.mock("@/lib/server/supabase-admin", () => ({ getAdminSupabaseClient: mocks.getAdminSupabaseClient }));
+vi.mock("@/lib/supabase/service", () => ({ createServiceRoleClient: mocks.createServiceRoleClient }));
 vi.mock("@/lib/server/mail/notify", () => ({ notifyEnrollmentActivated: vi.fn(), notifyEnrollmentRejected: vi.fn() }));
 vi.mock("next/cache", () => ({ revalidatePath: mocks.revalidatePath }));
 
@@ -61,6 +61,6 @@ describe("moderateAnnouncement", () => {
     const r = await moderateAnnouncement(ADMIN_ACTION_INITIAL_STATE, form({ announcementId: ANN, reason: "Fuera de lugar" }));
     expect(r).toEqual({ error: null, success: "Anuncio retirado." });
     expect(values).toMatchObject({ deleted_by: ADMIN.id, deleted_reason: "Fuera de lugar" });
-    expect(mocks.getAdminSupabaseClient).not.toHaveBeenCalled();
+    expect(mocks.createServiceRoleClient).not.toHaveBeenCalled();
   });
 });

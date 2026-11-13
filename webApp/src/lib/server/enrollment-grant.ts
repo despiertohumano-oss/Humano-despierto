@@ -1,12 +1,12 @@
 import "server-only";
-import { getAdminSupabaseClient } from "@/lib/server/supabase-admin";
+import { createServiceRoleClient } from "@/lib/supabase/service";
 
 export type GrantTarget = { ok: true; userId: string; courseId: string } | { ok: false; error: string };
 
 /** El formulario de inscribir ya no recibe la lista de todas las cuentas y cursos (T-049):
  *  el admin escribe mail y slug, y el servidor los resuelve. */
 export async function resolveGrantTarget(input: { email: string; courseSlug: string }): Promise<GrantTarget> {
-  const db = getAdminSupabaseClient();
+  const db = createServiceRoleClient();
   const [{ data: users, error: userError }, { data: course, error: courseError }] = await Promise.all([
     db.rpc("admin_user_by_email", { p_email: input.email }),
     db.from("courses").select("id").eq("slug", input.courseSlug).maybeSingle(),

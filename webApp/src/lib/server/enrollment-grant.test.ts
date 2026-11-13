@@ -5,8 +5,8 @@ const mocks = vi.hoisted(() => ({
   course: { data: null as { id: string } | null, error: null as { message: string } | null },
   filters: [] as unknown[][],
 }));
-vi.mock("@/lib/server/supabase-admin", () => ({
-  getAdminSupabaseClient: () => ({
+vi.mock("@/lib/supabase/service", () => ({
+  createServiceRoleClient: () => ({
     rpc: mocks.rpc,
     from: () => ({
       select: () => ({

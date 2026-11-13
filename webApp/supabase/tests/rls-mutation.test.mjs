@@ -511,7 +511,8 @@ describe('T-001 · RLS y privilegios contra un JWT de student', () => {
       // localizador— y esta declarado como tal en la cabecera de 0016. A `anon` no se le otorga.
       // T-042 suma `my_private_profile`: SECURITY DEFINER porque `phone`/`birth_date` no tienen
       // grant de SELECT para nadie. Filtra por `auth.uid()`, asi que solo devuelve la fila propia;
-      // a `anon` no se le otorga (no tiene fila propia que leer).
+      // a `anon` no se le otorga (no tiene fila propia que leer). T-096 suma `my_enrollment_requests`
+      // por la misma razon: `enrollments.decided_reason` salio del grant de SELECT (0080).
       // T-030 suma los predicados del Q&A (`can_read_lesson_qa`, `can_write_lesson_qa`,
       // `is_lesson_qa_moderator`, `can_vote_lesson_question`), calcados de los del Campus y por la
       // misma razon fuera de `anon`. Y tres lecturas SECURITY DEFINER: `lesson_qa_authors` (el
@@ -527,7 +528,8 @@ describe('T-001 · RLS y privilegios contra un JWT de student', () => {
         'can_author', 'can_read_campus_thread', 'can_read_lesson_qa', 'can_report_review',
         'can_vote_lesson_question', 'can_write_campus_post', 'can_write_lesson_qa',
         'course_open_questions', 'has_course_access', 'is_campus_moderator', 'is_lesson_qa_moderator',
-        'is_service_context', 'lesson_qa_authors', 'lesson_question_vote_counts', 'my_private_profile',
+        'is_service_context', 'lesson_qa_authors', 'lesson_question_vote_counts', 'my_enrollment_requests',
+        'my_private_profile',
         'text_has_locator',
       ].sort();
       const fns = await functionPrivileges(db);

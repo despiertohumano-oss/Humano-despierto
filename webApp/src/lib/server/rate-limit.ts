@@ -1,5 +1,5 @@
 import "server-only";
-import { getAdminSupabaseClient } from "@/lib/server/supabase-admin";
+import { createServiceRoleClient } from "@/lib/supabase/service";
 import { currentRateLimitSubject } from "@/lib/server/rate-limit-subject";
 import { log } from "@/lib/server/log";
 import { RATE_LIMITS, type RateLimitName } from "@/lib/rate-limit/limits";
@@ -64,7 +64,7 @@ export class PostgresRateLimiter implements RateLimiter {
 }
 
 const viaServiceRole: CheckRateLimitRpc = (args, signal) =>
-  getAdminSupabaseClient().rpc("check_rate_limit", args).abortSignal(signal);
+  createServiceRoleClient().rpc("check_rate_limit", args).abortSignal(signal);
 
 export interface LimitDeps {
   deadlineMs: number;

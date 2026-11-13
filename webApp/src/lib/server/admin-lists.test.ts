@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({ rpc: vi.fn() }));
-vi.mock("@/lib/server/supabase-admin", () => ({ getAdminSupabaseClient: () => ({ rpc: mocks.rpc }) }));
+vi.mock("@/lib/supabase/service", () => ({ createServiceRoleClient: () => ({ rpc: mocks.rpc }) }));
 
 import { listInvitationsPage, listUsersPage } from "./admin-lists";
 import { encodeCursor } from "@/lib/admin/cursor";

@@ -14,8 +14,8 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock("@/lib/server/mail/notify", () => ({ notifyTeacherInvitation: mocks.notify }));
-vi.mock("@/lib/server/supabase-admin", () => ({
-  getAdminSupabaseClient: () => ({
+vi.mock("@/lib/supabase/service", () => ({
+  createServiceRoleClient: () => ({
     rpc: mocks.rpc,
     auth: { admin: { generateLink: mocks.generateLink } },
     from: (table: string) => ({
