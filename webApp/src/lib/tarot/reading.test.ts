@@ -119,16 +119,16 @@ function deal(rnd: () => number, n: number) {
   return deck.slice(0, n).map((indice) => ({ indice, reversed: rnd() < 0.5 }));
 }
 
-describe("modo, grupos y contraste", () => {
-  it("modo: invertida o vínculo que debilita => desequilibrio", () => {
+describe("estado, grupos y contraste", () => {
+  it("estados por vecinos dentro de la cadena", () => {
     const r = buildReading({ spread: "cruz-simple", cards: [
       { indice: idx("as-de-bastos"), reversed: false },
-      { indice: idx("as-de-copas"), reversed: false },
-      { indice: idx("el-sol"), reversed: true },
-      { indice: idx("as-de-oros"), reversed: false },
       { indice: idx("as-de-espadas"), reversed: false },
+      { indice: idx("el-sol"), reversed: true },
+      { indice: idx("as-de-copas"), reversed: false },
+      { indice: idx("as-de-oros"), reversed: false },
     ] });
-    expect(r.placed.map((p) => p.mode)).toEqual(["equilibrio", "desequilibrio", "desequilibrio", "equilibrio", "desequilibrio"]);
+    expect(r.placed.map((p) => p.estado)).toEqual(["pleno", "pleno", "en_proceso", "pleno", "pleno"]);
   });
 
   it("relaciones arma los grupos A y B y elige el que fluye más", () => {

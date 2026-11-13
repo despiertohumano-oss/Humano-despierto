@@ -86,8 +86,8 @@ function posicion(p: PlacedCard, facts: ReadingFacts, rng: () => number): { titu
     significado: p.meaning,
   });
   const dominio = facts.domain && p.domainText ? " " + fill(pick(rng, templates.posicion_dominio[facts.domain]), { texto: p.domainText }) : "";
-  const estadoTexto = p.mode === "equilibrio" ? p.card.en_equilibrio : p.card.en_desequilibrio;
-  const estado = " " + fill(pick(rng, templates.estado[p.mode]), { nombre: nombre(p), texto: estadoTexto });
+  const estadoTexto = p.estado === "trabada" ? p.card.en_desequilibrio : p.card.en_equilibrio;
+  const estado = " " + fill(pick(rng, templates.estado[p.estado === "trabada" ? "desequilibrio" : "equilibrio"]), { nombre: nombre(p), texto: estadoTexto });
   return { titulo: `${p.position.n}. ${p.position.nombre}`, texto: base + estado + dominio };
 }
 
