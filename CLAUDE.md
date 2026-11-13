@@ -141,6 +141,10 @@ Any unknown route renders `src/app/not-found.tsx` (404, `noindex` injected by Ne
 `/guias/[slug]` **is** the "Maestra" screen from the original 9-screen plan, renamed.
 Auth is enforced twice: `src/proxy.ts` (session + JWT role for routing) and the server layouts
 under `(app)/`, which re-read `profiles.role`.
+The proxy refreshes the session (`updateSession`) for `/panel` always and, for every other document,
+whenever an `sb-` auth cookie is present (T-096 S-03: a Server Component cannot write the refreshed
+cookie). Excluded: `/auth/**` and `/invitacion/**` (they build their own session), `/api/**`, OG
+images and any path with a file extension.
 
 ### Known gaps (measured 2026-10-21, see `docs/superpowers/specs/2026-10-21-cierre-funcional-master.md`)
 - **Resources are not downloadable.** `lesson_resources` are listed by name only; no route serves

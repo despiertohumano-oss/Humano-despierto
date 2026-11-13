@@ -22,6 +22,23 @@ function matchesPrefix(pathname: string, prefix: string) {
   return pathname === prefix || pathname.startsWith(`${prefix}/`);
 }
 
+// S-03 (T-096): fuera de /panel, getUser() de un Server Component refresca el token pero no puede
+// escribir la cookie; el refresh token quedaba consumido y GoTrue revocaba la sesión después. Por
+// eso el refresco corre acá para todo documento que pueda leer la sesión. Quedan fuera los Route
+// Handlers que arman su propia sesión (`/auth/callback` canjea el código, `/invitacion/[token]`
+// el acceso: dos Set-Cookie del mismo nombre en una respuesta) y lo que no es HTML.
+const SESSION_SELF_MANAGED = ["/auth", "/invitacion", "/api"];
+
+function refreshesSession(request: NextRequest): boolean {
+  const { pathname } = request.nextUrl;
+  if (SESSION_SELF_MANAGED.some((prefix) => matchesPrefix(pathname, prefix))) return false;
+  if (/\/opengraph-image(-[\w-]+)?$/.test(pathname)) return false;
+  // Archivos con extensión: estáticos de public/, sitemap.xml, robots.txt.
+  if (/\.[a-z0-9]+$/i.test(pathname)) return false;
+  // Sin cookie de auth no hay nada que refrescar: el anónimo no paga una consulta.
+  return request.cookies.getAll().some((cookie) => cookie.name.startsWith("sb-"));
+}
+
 export async function proxy(request: NextRequest) {
   const nonce = generateNonce();
   const csp = buildCsp({
@@ -51,6 +68,8 @@ async function route(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (!PROTECTED_PREFIXES.some((prefix) => matchesPrefix(pathname, prefix))) {
+    // updateSession arma su NextResponse.next({ request }) con las cabeceras ya escritas (nonce).
+    if (refreshesSession(request)) return (await updateSession(request)).proxyResponse;
     // Sin `request` el override de cabeceras (nonce) no llega al render.
     return NextResponse.next({ request });
   }
@@ -79,8 +98,8 @@ async function route(request: NextRequest) {
 }
 
 export const config = {
-  // Todo menos estaticos: la CSP va en cada documento, y updateSession sigue corriendo solo
-  // para PROTECTED_PREFIXES (ampliar el matcher no agrega una consulta a la base por request).
+  // Todo menos estaticos: la CSP va en cada documento. updateSession corre en /panel siempre y en
+  // el resto solo con cookie de auth y fuera de lo que excluye `refreshesSession` (S-03).
   // Sin `missing: next-router-prefetch`: excluir prefetches saltearia tambien el guard de auth.
   matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
