@@ -241,12 +241,12 @@ async function getStudentRequests(
  * lista vacía; el layout de `(app)` ya garantiza sesión antes de llegar acá, esto es defensa
  * en profundidad y hace la función usable sin depender de ese guard.
  */
-export async function getStudentDashboard(): Promise<StudentDashboard> {
+export async function getStudentDashboard(knownUserId?: string): Promise<StudentDashboard> {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // G-07: quien ya resolvió la sesión en este request (`getCurrentUser`) pasa el id y se ahorra
+  // otro viaje a GoTrue. Las lecturas siguen con el cliente de sesión: RLS sigue mandando.
+  const user = knownUserId ? { id: knownUserId } : (await supabase.auth.getUser()).data.user;
   if (!user) return { courses: [], requests: [] };
 
   const requests = await getStudentRequests(supabase, user.id);

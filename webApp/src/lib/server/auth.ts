@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import type { AppRole, AuthUser } from "@/lib/stores/useAuthStore";
 
@@ -6,8 +7,11 @@ import type { AppRole, AuthUser } from "@/lib/stores/useAuthStore";
  * Lee la sesión real en el servidor y resuelve el rol contra `profiles.role`
  * (autoridad de permisos — ADR-006, nunca el claim del JWT). `null` si no hay
  * sesión válida o el perfil no existe.
+ *
+ * `cache()` (G-07, T-098): el layout, la página y los helpers del mismo render comparten UN viaje a
+ * GoTrue y UNA lectura del perfil. El alcance es el request: no cruza usuarias ni requests.
  */
-export async function getCurrentUser(): Promise<AuthUser | null> {
+export const getCurrentUser = cache(async function getCurrentUser(): Promise<AuthUser | null> {
   const supabase = await createClient();
 
   const {
@@ -32,4 +36,4 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
     glyph: profile.glyph,
     role: profile.role as AppRole,
   };
-}
+});

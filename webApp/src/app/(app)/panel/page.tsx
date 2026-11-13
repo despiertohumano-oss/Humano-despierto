@@ -38,7 +38,7 @@ export default async function DashboardPage({
   const tab = parseLearningTab((await searchParams).tab);
   const user = await getCurrentUser();
   const [{ courses, requests }, saved] = user
-    ? await Promise.all([getStudentDashboard(), getWishlist()])
+    ? await Promise.all([getStudentDashboard(user.id), getWishlist()])
     : [{ courses: [], requests: [] }, []];
 
   if (courses.length === 0 && saved.length === 0 && requests.length === 0) {
