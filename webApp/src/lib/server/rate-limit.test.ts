@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 // vi.mock se eleva sobre los imports: lo que usan las factories se declara con vi.hoisted.
 const { subject, rpc } = vi.hoisted(() => ({ subject: vi.fn(), rpc: vi.fn() }));
 vi.mock("@/lib/server/rate-limit-subject", () => ({ currentRateLimitSubject: subject }));
-vi.mock("@/lib/server/supabase-admin", () => ({ getAdminSupabaseClient: () => ({ rpc }) }));
+vi.mock("@/lib/supabase/service", () => ({ createServiceRoleClient: () => ({ rpc }) }));
 
 import { MemoryRateLimiter, RATE_LIMITED, type RateLimiter } from "@/lib/rate-limit/core";
 import {

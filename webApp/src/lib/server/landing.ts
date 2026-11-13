@@ -1,7 +1,7 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
 import { LANDING_TAG } from "@/lib/server/landing-cache";
-import { getAdminSupabaseClient } from "@/lib/server/supabase-admin";
+import { createServiceRoleClient } from "@/lib/supabase/service";
 import { getPublicSupabaseClient } from "@/lib/server/supabase-public";
 import {
   buildHeroStats,
@@ -35,7 +35,7 @@ const HEAD = { count: "exact", head: true } as const;
 // conteo, nunca como filas. `count` + `head` porque PostgREST corta las filas en 1000 (D-41); guías
 // y alumnas son PERFILES con al menos una fila (`!inner`), así una alumna en dos cursos cuenta una vez.
 async function readCourseAggregates() {
-  const admin = getAdminSupabaseClient();
+  const admin = createServiceRoleClient();
   const [courses, teachers, students, disciplines] = await Promise.all([
     admin.from("courses").select("id", HEAD).eq("status", "published"),
     admin
@@ -58,7 +58,7 @@ async function readCourseAggregates() {
 // Hace falta cada fila (no un conteo), así que se pagina: PostgREST corta cada respuesta en 1000.
 // Orden por id para que las páginas no se pisen.
 const PAGE = 1000;
-async function readPublishedDisciplines(admin: ReturnType<typeof getAdminSupabaseClient>): Promise<string[]> {
+async function readPublishedDisciplines(admin: ReturnType<typeof createServiceRoleClient>): Promise<string[]> {
   const out: string[] = [];
   for (let from = 0; ; from += PAGE) {
     const { data, error } = await admin

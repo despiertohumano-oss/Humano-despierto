@@ -59,36 +59,73 @@ describe("resolveInvitationVisit", () => {
   describe("con acceso en el link", () => {
     const ACCESO = { hash: "h".repeat(56), type: "magiclink" as const };
 
-    it("entra con la cuenta invitada ANTES de mirar la sesión y acepta", async () => {
-      const { d, calls } = deps();
+    /** Navegador sin sesión: la sesión aparece solo si el canje funcionó. */
+    function sinSesion(over: Partial<VisitDeps> = {}) {
+      let canjeado = false;
+      const calls: string[] = [];
+      const base = deps(over);
+      const d: VisitDeps = {
+        ...base.d,
+        signInWithAccess: vi.fn(async (a) => {
+          calls.push("access");
+          canjeado = await (over.signInWithAccess ?? (async () => true))(a);
+          return canjeado;
+        }),
+        userId: vi.fn(async () => (calls.push("userId"), canjeado ? "u-1" : null)),
+        accept: vi.fn(async (t: string, u: string) => (calls.push("accept"), await (over.accept ?? (async () => true))(t, u))),
+        refreshSession: vi.fn(async () => void calls.push("refresh")),
+        roleOf: vi.fn(async () => (calls.push("roleOf"), "teacher")),
+      };
+      return { d, calls };
+    }
+
+    it("sin sesión previa: entra con la cuenta invitada y acepta", async () => {
+      const { d, calls } = sinSesion();
       await expect(resolveInvitationVisit(TOKEN, d, ACCESO)).resolves.toBe("/panel/docente");
       expect(d.signInWithAccess).toHaveBeenCalledWith(ACCESO);
-      expect(calls).toEqual(["access", "userId", "accept", "refresh", "roleOf"]);
+      expect(calls).toEqual(["userId", "access", "userId", "accept", "refresh", "roleOf"]);
     });
 
     it("cuenta creada por la invitación: va a elegir su clave", async () => {
-      const { d } = deps();
+      const { d } = sinSesion();
       await expect(resolveInvitationVisit(TOKEN, d, { ...ACCESO, type: "signup" as const })).resolves.toBe(INVITED_NEW_PASSWORD_PATH);
     });
 
     it("acceso vencido o usado, sin sesión: a entrar a mano, como sin acceso", async () => {
-      const { d } = deps({ signInWithAccess: vi.fn(async () => false), userId: vi.fn(async () => null) });
+      const { d } = sinSesion({ signInWithAccess: vi.fn(async () => false) });
       await expect(resolveInvitationVisit(TOKEN, d, { ...ACCESO, type: "signup" as const })).resolves.toBe(`/entrar?next=%2Finvitacion%2F${TOKEN}`);
       expect(d.accept).not.toHaveBeenCalled();
     });
 
-    it("acceso vencido con una sesión ya aceptada: al panel, nunca a elegir clave", async () => {
-      const { d } = deps({ signInWithAccess: vi.fn(async () => false) });
-      await expect(resolveInvitationVisit(TOKEN, d, { ...ACCESO, type: "signup" as const })).resolves.toBe("/panel/docente");
-    });
-
     it("si el canje tira error, sigue como sin acceso", async () => {
-      const { d } = deps({
+      const { d } = sinSesion({
         signInWithAccess: vi.fn(async () => {
           throw new Error("red");
         }),
       });
+      await expect(resolveInvitationVisit(TOKEN, d, ACCESO)).resolves.toBe(`/entrar?next=%2Finvitacion%2F${TOKEN}`);
+    });
+
+    // S-02 (T-096): canjear con otra sesión abierta la reemplazaba en silencio, y lo que esa
+    // persona cargara después quedaba en la cuenta invitada (login-CSRF por link reenviado).
+    it("con la sesión de OTRA cuenta abierta: no canjea y la manda a salir primero", async () => {
+      const { d } = deps({ userId: vi.fn(async () => "otra"), accept: vi.fn(async () => false) });
+      await expect(resolveInvitationVisit(TOKEN, d, ACCESO)).resolves.toBe(INVALID_WITH_SESSION_PATH);
+      expect(d.signInWithAccess).not.toHaveBeenCalled();
+      expect(d.accept).toHaveBeenCalledWith(TOKEN, "otra");
+      expect(d.refreshSession).not.toHaveBeenCalled();
+    });
+
+    it("con la sesión de la cuenta invitada ya abierta: acepta sin canjear", async () => {
+      const { d, calls } = deps();
       await expect(resolveInvitationVisit(TOKEN, d, ACCESO)).resolves.toBe("/panel/docente");
+      expect(d.signInWithAccess).not.toHaveBeenCalled();
+      expect(calls).toEqual(["userId", "accept", "refresh", "roleOf"]);
+    });
+
+    it("sesión propia abierta y acceso signup: al panel, nunca a elegir clave", async () => {
+      const { d } = deps();
+      await expect(resolveInvitationVisit(TOKEN, d, { ...ACCESO, type: "signup" as const })).resolves.toBe("/panel/docente");
     });
 
     it("token con otra forma: ni siquiera canjea el acceso", async () => {

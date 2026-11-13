@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { getAdminSupabaseClient } from "@/lib/server/supabase-admin";
+import { createServiceRoleClient } from "@/lib/supabase/service";
 import { acceptInvitation } from "@/lib/server/invitations";
 import { resolveInvitationVisit } from "@/lib/server/invitation-visit";
 import { readAccess } from "@/lib/server/invitation-token";
@@ -34,7 +34,7 @@ export const GET = withRateLimit(
         if (error) throw error;
       },
       roleOf: async (userId) => {
-        const { data } = await getAdminSupabaseClient().from("profiles").select("role").eq("id", userId).maybeSingle();
+        const { data } = await createServiceRoleClient().from("profiles").select("role").eq("id", userId).maybeSingle();
         return data?.role ?? null;
       },
     }, readAccess(request.nextUrl.searchParams));

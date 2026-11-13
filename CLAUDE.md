@@ -2,7 +2,7 @@
 
 Guidance for Claude Code when working in this repository.
 
-> **Every claim in this file was verified against the repo on 2026-11-08** (T-024; previously T-038). The previous
+> **Every claim in this file was verified against the repo on 2026-11-08** (T-024; previously T-038); counts, migrations and the session rules updated on 2026-11-13 (T-096). The previous
 > version described a project that did not exist (see "History" at the bottom). If you change
 > the code, change this file — a wrong CLAUDE.md is worse than none, because it is trusted.
 
@@ -66,7 +66,7 @@ npm run test:e2e # Playwright; needs `npx supabase start`; starts its own `next 
 cd webApp/supabase
 npm install
 npm run places:load  # loads `places` from GeoNames (CC BY): local via `docker exec`, cloud via DATABASE_URL (needs psql)
-npm test         # 966 tests, ~1-4 min, no Docker and no credentials needed
+npm test         # 992 tests, ~1-4 min, no Docker and no credentials needed
 ```
 Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply in filename order.
 
@@ -74,8 +74,8 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 
 | Area | State |
 |------|-------|
-| `webApp/src` | **~27.1k LOC** (non-test). 47 routes (`page.tsx`), 157 non-test files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`, with the reading interpreted by lenses, tensions and a reflective answer in `src/lib/tarot/interpret/` (T-094); 78 card scans in `public/tarot/rws/`; the owner's 9 brand images in `public/brand/` (WebP, `CREDITS.md`). Tarot text comes from the owner's course material in `docs/TAROT/fuente/` (originals outside git). Natal-chart engine (pure, no DB) in `src/lib/astro/` on `astronomy-engine` (MIT, ADR-017; credits in `src/lib/astro/CREDITS.md`). Tests: Vitest (1481 unit tests in 178 files, next to the file) + Playwright (`e2e/`), T-039. |
-| `webApp/supabase` | **Schema live.** 51 migrations (last `0079`; `0032` applies before `0031` by timestamp, independent), 27 tables (`tarot_readings`, ADR-016; `places`, `natal_charts`, T-024; `diario_post_courses`, B3; `error_events`, 0078), RLS + per-column grants + guard triggers, 980 mutation tests (PGlite). Private Storage bucket `uploads`: `avatars/` (T-042), `covers/` (T-047) and `diario/` (B3), uploads only via service_role; its policies are only tested over HTTP by b1. Fixtures `@test.local` (admin, docente, alumna) in `seed.fixtures.sql`, content seed in `seed.sql`, demo data in `demo.sql`: all **local only**, never run in the cloud (see `webApp/supabase/README.md`). |
+| `webApp/src` | **~27.1k LOC** (non-test). 47 routes (`page.tsx`), 162 non-test files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`, with the reading interpreted by lenses, tensions and a reflective answer in `src/lib/tarot/interpret/` (T-094); 78 card scans in `public/tarot/rws/`; the owner's 9 brand images in `public/brand/` (WebP, `CREDITS.md`). Tarot text comes from the owner's course material in `docs/TAROT/fuente/` (originals outside git). Natal-chart engine (pure, no DB) in `src/lib/astro/` on `astronomy-engine` (MIT, ADR-017; credits in `src/lib/astro/CREDITS.md`). Tests: Vitest (1517 unit tests in 182 files, next to the file) + Playwright (`e2e/`), T-039. |
+| `webApp/supabase` | **Schema live.** 52 migrations (last `0080`; `0032` applies before `0031` by timestamp, independent), 27 tables (`tarot_readings`, ADR-016; `places`, `natal_charts`, T-024; `diario_post_courses`, B3; `error_events`, 0078), RLS + per-column grants + guard triggers, 992 mutation tests (PGlite). Private Storage bucket `uploads`: `avatars/` (T-042), `covers/` (T-047) and `diario/` (B3), uploads only via service_role; its policies are only tested over HTTP by b1. Fixtures `@test.local` (admin, docente, alumna) in `seed.fixtures.sql`, content seed in `seed.sql`, demo data in `demo.sql`: all **local only**, never run in the cloud (see `webApp/supabase/README.md`). |
 | `mobileApp/` | **Empty directory.** No Expo scaffold. **Out of scope for Phase 2.** |
 | `packages/tokens` | 763 LOC of the old Cosmos palette (marked historical in its README, D-66) — **consumed by nobody**: `webApp` does not import it (it uses its own `src/styles/tokens.css`) and `mobileApp` does not exist. Kept for when mobile returns. |
 | `Gentleman-Skills/` | **Empty directory.** Referenced by the old CLAUDE.md; there is nothing in it. |
@@ -141,6 +141,10 @@ Any unknown route renders `src/app/not-found.tsx` (404, `noindex` injected by Ne
 `/guias/[slug]` **is** the "Maestra" screen from the original 9-screen plan, renamed.
 Auth is enforced twice: `src/proxy.ts` (session + JWT role for routing) and the server layouts
 under `(app)/`, which re-read `profiles.role`.
+The proxy refreshes the session (`updateSession`) for `/panel` always and, for every other document,
+whenever an `sb-` auth cookie is present (T-096 S-03: a Server Component cannot write the refreshed
+cookie). Excluded: `/auth/**` and `/invitacion/**` (they build their own session), `/api/**`, OG
+images and any path with a file extension.
 
 ### Known gaps (measured 2026-10-21, see `docs/superpowers/specs/2026-10-21-cierre-funcional-master.md`)
 - **Resources are not downloadable.** `lesson_resources` are listed by name only; no route serves
@@ -229,7 +233,10 @@ covered by mutation tests that fail loudly if you regress them.
    Action after checking enrollment. A `select *` on `lessons` from the client fails with 42501.
    Same for personal data: `profiles.phone` and `profiles.birth_date` have no SELECT for any
    client role; the owner reads them through `my_private_profile()`. A `select *` on `profiles`
-   from the client fails with 42501. The locator sweep skips `places` (GeoNames data, public by
+   from the client fails with 42501. `enrollments.decided_reason` (the admin's note to a rejected
+   student) has no client SELECT either (migration 0080, T-096): the owner teacher reads the roster
+   rows, not the reason; the student reads hers through `my_enrollment_requests()` and the admin
+   through `admin_list_enrollments` (service_role). The locator sweep skips `places` (GeoNames data, public by
    design; migration `0073`). Avatars and course covers live in the private bucket
    `uploads` (`avatars/<uid>/<uuid>.<ext>`, `covers/<course_id>/<uuid>.<ext>`).
    **No session writes to `uploads`** (D-34, migration 0030): the bucket only checks size and the
@@ -264,7 +271,9 @@ covered by mutation tests that fail loudly if you regress them.
    token lives only in the mail; the DB keeps its sha256. The mail link also carries a one-time
    GoTrue access (`?acceso=<hashed_token>&tipo=magiclink|signup`, from `auth.admin.generateLink`;
    for a mail without account GoTrue creates it): `/invitacion/[token]` redeems it with
-   `verifyOtp` (replacing any other session in that browser) before accepting, and a `signup`
+   `verifyOtp` only when the browser has no session (T-096 S-02: an open session is never replaced;
+   it goes straight to the accept, which fails for any other account and sends it to «salí
+   primero»), and a `signup`
    account goes to `/entrar/nueva-clave?invitacion=1` to choose its password. When the access
    expired (OTP expiry) the link still works by logging in by hand. The admin lists (`admin_list_*`,
    `admin_user_by_email`) are `service_role`-only SQL functions: the mail lives in `auth.users`.
@@ -448,6 +457,7 @@ must **never** carry the `NEXT_PUBLIC_` prefix: the first bypasses RLS entirely,
 mail as the school, and the prefix would ship either to the browser.
 
 ## History
+On 2026-11-13 T-096 closed the session-isolation audit (`engram/qa/AUDIT-sesiones-2026-11-13.md`, S-01..S-07): migration 0080, invitation access never replaces an open session, session refresh on every document, one service_role factory (`createServiceRoleClient`).
 On 2026-11-12 T-094: lectura interpretada por lentes, tensiones y respuesta reflexiva (`src/lib/tarot/interpret/`).
 On 2026-11-12 the tarot was rebuilt on the owner's course material (78 rewritten cards, suits, 9 spreads with groups and reflection, migration 0079).
 On 2026-11-08 the owner's content document replaced the landing, footer, catalogue, teachers, journal and tarot copy and added the cosmic surfaces (blocks A and C of `docs/superpowers/specs/2026-11-08-contenidos-duena-design.md`).

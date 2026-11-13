@@ -5,18 +5,18 @@ const { rateLimitSubject } = vi.hoisted(() => ({ rateLimitSubject: vi.fn() }));
 vi.mock("@/lib/server/rate-limit-subject", () => ({ currentRateLimitSubject: rateLimitSubject }));
 import { argsOf, queryChain } from "@/test/query-chain";
 
-const { getCurrentUser, getAdminSupabaseClient, notifyEnrollmentActivated, notifyEnrollmentRejected, revalidatePath, revalidateTag, resolveGrantTarget } =
+const { getCurrentUser, createServiceRoleClient, notifyEnrollmentActivated, notifyEnrollmentRejected, revalidatePath, revalidateTag, resolveGrantTarget } =
   vi.hoisted(() => ({
     resolveGrantTarget: vi.fn(),
     getCurrentUser: vi.fn(),
-    getAdminSupabaseClient: vi.fn(),
+    createServiceRoleClient: vi.fn(),
     notifyEnrollmentActivated: vi.fn(),
     notifyEnrollmentRejected: vi.fn(),
     revalidatePath: vi.fn(),
     revalidateTag: vi.fn(),
   }));
 vi.mock("@/lib/server/auth", () => ({ getCurrentUser }));
-vi.mock("@/lib/server/supabase-admin", () => ({ getAdminSupabaseClient }));
+vi.mock("@/lib/supabase/service", () => ({ createServiceRoleClient }));
 vi.mock("@/lib/server/mail/notify", () => ({ notifyEnrollmentActivated, notifyEnrollmentRejected }));
 vi.mock("next/cache", () => ({ revalidatePath, revalidateTag }));
 vi.mock("@/lib/server/enrollment-grant", () => ({ resolveGrantTarget }));
@@ -54,7 +54,7 @@ function form(fields: Record<string, string>): FormData {
 function dbReturning(result: unknown) {
   const { chain, calls } = queryChain(() => result);
   const from = vi.fn(() => chain);
-  getAdminSupabaseClient.mockReturnValue({ from });
+  createServiceRoleClient.mockReturnValue({ from });
   return { from, calls };
 }
 
@@ -67,13 +67,13 @@ describe("approveEnrollmentRequestAction", () => {
   it("sin rol admin tira y no toca la base", async () => {
     getCurrentUser.mockResolvedValue({ ...ADMIN, role: "student" });
     await expect(approveEnrollmentRequestAction(INICIAL, form({ enrollmentId: ENROLLMENT }))).rejects.toThrow(/admin/);
-    expect(getAdminSupabaseClient).not.toHaveBeenCalled();
+    expect(createServiceRoleClient).not.toHaveBeenCalled();
   });
 
   it("un id que no es uuid se rechaza antes de la base", async () => {
     const r = await approveEnrollmentRequestAction(INICIAL, form({ enrollmentId: "1 or 1=1" }));
     expect(r).toEqual({ error: "Datos inválidos.", success: null });
-    expect(getAdminSupabaseClient).not.toHaveBeenCalled();
+    expect(createServiceRoleClient).not.toHaveBeenCalled();
   });
 
   it("aprueba solo desde requested o rejected, firma, limpia el motivo y notifica una vez (c.6, c.9)", async () => {
@@ -102,13 +102,13 @@ describe("rejectEnrollmentRequestAction", () => {
       form({ enrollmentId: ENROLLMENT, reason: "mirá drive.google.com/file/d/abc" }),
     );
     expect(r).toEqual({ error: "El motivo no puede contener links.", success: null });
-    expect(getAdminSupabaseClient).not.toHaveBeenCalled();
+    expect(createServiceRoleClient).not.toHaveBeenCalled();
   });
 
   it("un motivo de más de 500 caracteres se rechaza antes de la base", async () => {
     const r = await rejectEnrollmentRequestAction(INICIAL, form({ enrollmentId: ENROLLMENT, reason: "a".repeat(501) }));
     expect(r.error).toBe("El motivo no puede superar 500 caracteres.");
-    expect(getAdminSupabaseClient).not.toHaveBeenCalled();
+    expect(createServiceRoleClient).not.toHaveBeenCalled();
   });
 
   it("rechaza solo desde requested, guarda el motivo y lo manda en el mail (c.7)", async () => {
@@ -153,7 +153,7 @@ const REPORT = "5a0e3c1d-2b4f-4c6a-9d8e-7f1a2b3c4d5e";
 
 function rpcReturning(result: unknown) {
   const rpc = vi.fn().mockResolvedValue(result);
-  getAdminSupabaseClient.mockReturnValue({ rpc });
+  createServiceRoleClient.mockReturnValue({ rpc });
   return rpc;
 }
 
@@ -161,19 +161,19 @@ describe("hideReviewAction", () => {
   it.each([[null], [{ ...ADMIN, role: "teacher" }]])("sin admin lanza y no toca la base (%#)", async (user) => {
     getCurrentUser.mockResolvedValue(user);
     await expect(hideReviewAction(REVIEW, INICIAL, form({ reason: "spam" }))).rejects.toThrow(/No autorizado/);
-    expect(getAdminSupabaseClient).not.toHaveBeenCalled();
+    expect(createServiceRoleClient).not.toHaveBeenCalled();
   });
 
   it.each([["   "], ["x".repeat(1001)]])("motivo inválido no llega a la base (%#)", async (reason) => {
     const out = await hideReviewAction(REVIEW, INICIAL, form({ reason }));
     expect(out.error).toBeTruthy();
-    expect(getAdminSupabaseClient).not.toHaveBeenCalled();
+    expect(createServiceRoleClient).not.toHaveBeenCalled();
   });
 
   it("un id que no es uuid no llega a la base", async () => {
     const out = await hideReviewAction("x", INICIAL, form({ reason: "spam" }));
     expect(out.error).toBeTruthy();
-    expect(getAdminSupabaseClient).not.toHaveBeenCalled();
+    expect(createServiceRoleClient).not.toHaveBeenCalled();
   });
 
   it("oculta con el id del admin de la sesión y revalida ficha, catálogo y cola", async () => {
@@ -232,7 +232,7 @@ describe("unhideReviewAction", () => {
   it("sin admin lanza", async () => {
     getCurrentUser.mockResolvedValue(null);
     await expect(unhideReviewAction(REVIEW, INICIAL, form({}))).rejects.toThrow(/No autorizado/);
-    expect(getAdminSupabaseClient).not.toHaveBeenCalled();
+    expect(createServiceRoleClient).not.toHaveBeenCalled();
   });
 });
 
@@ -252,7 +252,7 @@ describe("dismissReportAction", () => {
   it("sin admin lanza", async () => {
     getCurrentUser.mockResolvedValue({ ...ADMIN, role: "teacher" });
     await expect(dismissReportAction(REPORT, INICIAL, form({}))).rejects.toThrow(/No autorizado/);
-    expect(getAdminSupabaseClient).not.toHaveBeenCalled();
+    expect(createServiceRoleClient).not.toHaveBeenCalled();
   });
 });
 
@@ -274,7 +274,7 @@ describe("grantEnrollmentByEmailAction", () => {
       error: "No hay ninguna cuenta con ese mail.",
       success: null,
     });
-    expect(getAdminSupabaseClient).not.toHaveBeenCalled();
+    expect(createServiceRoleClient).not.toHaveBeenCalled();
   });
 });
 
@@ -299,12 +299,12 @@ describe("setFounderAction (B4)", () => {
   it("sin admin lanza y no toca la base", async () => {
     getCurrentUser.mockResolvedValue({ ...ADMIN, role: "teacher" });
     await expect(setFounderAction(INICIAL, form({ userId: TEACHER }))).rejects.toThrow(/No autorizado/);
-    expect(getAdminSupabaseClient).not.toHaveBeenCalled();
+    expect(createServiceRoleClient).not.toHaveBeenCalled();
   });
 
   it("un id que no es uuid no llega a la base", async () => {
     expect((await setFounderAction(INICIAL, form({ userId: "x" }))).error).toBe("Datos inválidos.");
-    expect(getAdminSupabaseClient).not.toHaveBeenCalled();
+    expect(createServiceRoleClient).not.toHaveBeenCalled();
   });
 
   it("marca con admin_set_founder y revalida /guias", async () => {
@@ -319,7 +319,7 @@ describe("setFounderAction (B4)", () => {
   function founderIs(currentId: string | null) {
     const rpc = vi.fn().mockResolvedValue({ data: null, error: null });
     const { chain } = queryChain(() => ({ data: currentId ? { id: currentId } : null, error: null }));
-    getAdminSupabaseClient.mockReturnValue({ rpc, from: () => chain });
+    createServiceRoleClient.mockReturnValue({ rpc, from: () => chain });
     return rpc;
   }
 
@@ -339,7 +339,7 @@ describe("setFounderAction (B4)", () => {
 
   it("clear=1 sin id no llega a la base", async () => {
     expect((await setFounderAction(INICIAL, form({ clear: "1" }))).error).toBe("Datos inválidos.");
-    expect(getAdminSupabaseClient).not.toHaveBeenCalled();
+    expect(createServiceRoleClient).not.toHaveBeenCalled();
   });
 
   it("22023 (no es docente) da un mensaje legible", async () => {

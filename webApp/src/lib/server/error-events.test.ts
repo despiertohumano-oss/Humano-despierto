@@ -6,7 +6,7 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock("next/headers", () => ({ headers: () => Promise.reject(new Error("fuera de request")) }));
-vi.mock("@/lib/server/supabase-admin", () => ({ getAdminSupabaseClient: () => ({ rpc: mocks.rpc }) }));
+vi.mock("@/lib/supabase/service", () => ({ createServiceRoleClient: () => ({ rpc: mocks.rpc }) }));
 vi.mock("@/lib/server/mail/send", () => ({ sendMail: mocks.sendMail }));
 
 import { errorFingerprint, normalizeErrorPath, recordErrorEvent } from "./error-events";
@@ -84,8 +84,8 @@ describe("listErrorEvents", () => {
   it("devuelve null si la base todavía no tiene la tabla (0078 sin aplicar)", async () => {
     const { listErrorEvents } = await import("./error-events");
     const chain = { select: () => chain, order: () => chain, limit: () => Promise.resolve({ data: null, error: { code: "PGRST205", message: "no table" } }) };
-    const mod = await import("@/lib/server/supabase-admin");
-    vi.spyOn(mod, "getAdminSupabaseClient").mockReturnValue({ from: () => chain } as never);
+    const mod = await import("@/lib/supabase/service");
+    vi.spyOn(mod, "createServiceRoleClient").mockReturnValue({ from: () => chain } as never);
     expect(await listErrorEvents()).toBeNull();
   });
 });

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // vi.mock se eleva sobre los imports: lo que usa la factory tiene que existir antes, vía vi.hoisted.
 const mocks = vi.hoisted(() => ({ db: null as unknown }));
-vi.mock("@/lib/server/supabase-admin", () => ({ getAdminSupabaseClient: () => mocks.db }));
+vi.mock("@/lib/supabase/service", () => ({ createServiceRoleClient: () => mocks.db }));
 vi.mock("@/lib/server/site-url", () => ({ getSiteUrl: () => "https://humano.example" }));
 
 import { notifyAnnouncementPublished } from "./notify";

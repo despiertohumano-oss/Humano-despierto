@@ -19,27 +19,36 @@ function session(userId: string | null, resolve: (table: string, calls: ChainCal
     log.push({ table, calls });
     return chain;
   });
+  const rpc = vi.fn((fn: string) => {
+    const { chain, calls } = queryChain((c) => resolve(`rpc:${fn}`, c));
+    log.push({ table: `rpc:${fn}`, calls });
+    return chain;
+  });
   createClient.mockResolvedValue({
     auth: { getUser: async () => ({ data: { user: userId ? { id: userId } : null } }) },
     from,
+    rpc,
   });
-  return { from, log };
+  return { from, rpc, log };
 }
 
 describe("getStudentEnrollmentState", () => {
   beforeEach(() => createClient.mockReset());
 
   it("sin sesión es anonymous y no consulta la base", async () => {
-    const { from } = session(null, () => ({ data: null, error: null }));
+    const { from, rpc } = session(null, () => ({ data: null, error: null }));
     expect(await getStudentEnrollmentState(COURSE)).toEqual({ status: "anonymous" });
     expect(from).not.toHaveBeenCalled();
+    expect(rpc).not.toHaveBeenCalled();
   });
 
-  it("con sesión y sin fila es none, filtrando por la alumna de la sesión", async () => {
-    const { log } = session(USER, () => ({ data: null, error: null }));
+  it("con sesión y sin fila es none; lee por my_enrollment_requests (la base filtra por auth.uid())", async () => {
+    const { log, from } = session(USER, () => ({ data: null, error: null }));
     expect(await getStudentEnrollmentState(COURSE)).toEqual({ status: "none" });
+    expect(from).not.toHaveBeenCalled();
+    expect(log[0].table).toBe("rpc:my_enrollment_requests");
     const eqs = log[0].calls.filter((c) => c.method === "eq").map((c) => c.args);
-    expect(eqs).toEqual(expect.arrayContaining([["course_id", COURSE], ["user_id", USER]]));
+    expect(eqs).toEqual([["course_id", COURSE]]);
   });
 
   it.each([
@@ -67,11 +76,14 @@ describe("getStudentDashboard · requests", () => {
       if (table === "enrollments" && esSolicitudes) {
         return {
           data: [
-            { course_id: COURSE, status: "requested", requested_at: "2026-10-21T10:00:00Z", decided_reason: null, course: { slug: "herbario-lunar", title: "Herbario" } },
-            { course_id: "x", status: "rejected", requested_at: "2026-10-20T10:00:00Z", decided_reason: "Cupo completo", course: [{ slug: "reiki-nivel-1", title: "Reiki" }] },
+            { course_id: COURSE, status: "requested", requested_at: "2026-10-21T10:00:00Z", course: { slug: "herbario-lunar", title: "Herbario" } },
+            { course_id: "x", status: "rejected", requested_at: "2026-10-20T10:00:00Z", course: [{ slug: "reiki-nivel-1", title: "Reiki" }] },
           ],
           error: null,
         };
+      }
+      if (table === "rpc:my_enrollment_requests") {
+        return { data: [{ course_id: "x", status: "rejected", decided_reason: "Cupo completo" }], error: null };
       }
       return { data: [], error: null };
     });
@@ -82,10 +94,24 @@ describe("getStudentDashboard · requests", () => {
       { courseId: COURSE, slug: "herbario-lunar", title: "Herbario", status: "requested", requestedAt: "2026-10-21T10:00:00Z", decidedReason: null },
       { courseId: "x", slug: "reiki-nivel-1", title: "Reiki", status: "rejected", requestedAt: "2026-10-20T10:00:00Z", decidedReason: "Cupo completo" },
     ]);
-    const solicitudes = log.find((l) => l.calls.some((c) => c.method === "in"));
+    const solicitudes = log.find((l) => l.table === "enrollments" && l.calls.some((c) => c.method === "in"));
     expect(argsOf(solicitudes!.calls, "in")).toEqual(["status", ["requested", "rejected"]]);
+    expect(String(argsOf(solicitudes!.calls, "select")?.[0])).not.toMatch(/decided_reason/);
+    const motivos = log.find((l) => l.table === "rpc:my_enrollment_requests");
+    expect(argsOf(motivos!.calls, "eq")).toEqual(["status", "rejected"]);
     const activos = log.find((l) => l.table === "enrollments" && !l.calls.some((c) => c.method === "in"));
     expect(activos!.calls.map((c) => c.args)).toContainEqual(["status", "active"]);
+  });
+
+  it("sin rechazos no consulta los motivos", async () => {
+    const { rpc } = session(USER, (table, calls) =>
+      table === "enrollments" && calls.some((c) => c.method === "in")
+        ? { data: [{ course_id: COURSE, status: "requested", requested_at: "2026-10-21T10:00:00Z", course: { slug: "h", title: "H" } }], error: null }
+        : { data: [], error: null },
+    );
+    const dash = await getStudentDashboard();
+    expect(dash.requests).toHaveLength(1);
+    expect(rpc).not.toHaveBeenCalled();
   });
 
   it("sin sesión no hay cursos ni solicitudes", async () => {

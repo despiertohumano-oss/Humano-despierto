@@ -1,5 +1,5 @@
 import "server-only";
-import { getAdminSupabaseClient } from "@/lib/server/supabase-admin";
+import { createServiceRoleClient } from "@/lib/supabase/service";
 import { sendMail, type SendMailInput, type SendResult } from "@/lib/server/mail/send";
 import { renderEnrollmentGrantedMail } from "@/lib/server/mail/templates/enrollment-granted";
 import { renderCourseCompletedMail } from "@/lib/server/mail/templates/course-completed";
@@ -21,7 +21,7 @@ import { log } from "@/lib/server/log";
 // sin su propio try/catch y el criterio 2 (el mail no rompe la operación) queda garantizado acá
 // UNA vez, no repetido en cada call site donde alguien se podría olvidar de envolverlo.
 //
-// `getAdminSupabaseClient` (service_role) es necesario para leer el email real: vive en
+// `createServiceRoleClient` (service_role) es necesario para leer el email real: vive en
 // `auth.users`, no en `profiles` (por eso los listados del admin lo cruzan en la base, `admin_list_users`). Quien llama a
 // estas funciones ya verificó el permiso que corresponda (admin activando inscripción, sesión
 // propia registrándose): esta capa no vuelve a autorizar nada, solo notifica.
@@ -38,7 +38,7 @@ import { log } from "@/lib/server/log";
 async function getUserEmail(
   userId: string,
 ): Promise<{ id: string; email: string; name: string } | null> {
-  const db = getAdminSupabaseClient();
+  const db = createServiceRoleClient();
 
   const [{ data: authData, error: authError }, { data: profile, error: profileError }] =
     await Promise.all([
@@ -132,7 +132,7 @@ async function claimOrReclaimMailSlot(
   mailType: MailType,
   scopeKey: string
 ): Promise<MailClaim | null> {
-  const db = getAdminSupabaseClient();
+  const db = createServiceRoleClient();
   const { data, error } = await db.rpc("claim_or_reclaim_mail_slot", {
     p_recipient_user_id: recipientUserId,
     p_mail_type: mailType,
@@ -166,7 +166,7 @@ async function claimOrReclaimMailSlot(
  * pisa el `sent_at` de un intento que no es el suyo.
  */
 async function confirmMailSent(claim: MailClaim): Promise<void> {
-  const db = getAdminSupabaseClient();
+  const db = createServiceRoleClient();
   const { error, count } = await db
     .from("mail_log")
     .update({ sent_at: new Date().toISOString() }, { count: "exact" })
@@ -198,7 +198,7 @@ function permanentCause(status: number | undefined, code: string | undefined): s
  * de un 401/403 por mala config borre solo esas filas y nunca un 409.
  */
 async function retireMailSlot(claim: MailClaim, result: SendResult): Promise<void> {
-  const db = getAdminSupabaseClient();
+  const db = createServiceRoleClient();
   const lastError = permanentCause(result.status, result.code);
   const { error } = await db
     .from("mail_log")
@@ -226,7 +226,7 @@ async function deliverClaimedMail(claim: MailClaim, mail: Omit<SendMailInput, "i
 /** D-51: un tope de envío no es un intento fallido (no se tocó el transporte): se devuelve el
  * intento y el turno queda reclamable para la tanda diferida. */
 async function releaseRateLimitedSlot(claim: MailClaim): Promise<void> {
-  const { error } = await getAdminSupabaseClient().rpc("release_rate_limited_mail_slot", {
+  const { error } = await createServiceRoleClient().rpc("release_rate_limited_mail_slot", {
     p_id: claim.id,
     p_claimed_at: claim.claimedAt,
   });
@@ -246,7 +246,7 @@ const RETRY_ANNOUNCEMENTS_PER_RUN = 2;
 export async function retryPendingAnnouncementMail(): Promise<{ announcements: number }> {
   try {
     const cutoff = new Date(Date.now() - 10 * 60_000).toISOString();
-    const { data, error } = await getAdminSupabaseClient()
+    const { data, error } = await createServiceRoleClient()
       .from("mail_log")
       .select("scope_key")
       .eq("mail_type", "course_announcement")
@@ -277,7 +277,7 @@ interface CourseInfo {
 }
 
 async function getCourseInfo(courseId: string): Promise<CourseInfo | null> {
-  const db = getAdminSupabaseClient();
+  const db = createServiceRoleClient();
   const { data, error } = await db
     .from("courses")
     .select("id, title, slug, teacher_id, teacher:profiles!courses_teacher_id_fkey(full_name)")
@@ -495,7 +495,7 @@ export async function notifyEnrollmentRejected(input: {
 const ENROLLMENT_PAGE = 1000;
 
 async function listActiveEnrollmentUserIds(courseId: string): Promise<{ user_id: string }[]> {
-  const db = getAdminSupabaseClient();
+  const db = createServiceRoleClient();
   const rows: { user_id: string }[] = [];
   for (let from = 0; ; from += ENROLLMENT_PAGE) {
     const { data, error } = await db
@@ -526,7 +526,7 @@ type AnnouncementDelivery = "sent" | "failed" | "not_claimed" | "unresolved";
  */
 export async function notifyAnnouncementPublished(input: { announcementId: string }): Promise<void> {
   try {
-    const db = getAdminSupabaseClient();
+    const db = createServiceRoleClient();
     const { data: announcement, error } = await db
       .from("course_announcements")
       .select("id, course_id, author_id, title, body, status, deleted_at")

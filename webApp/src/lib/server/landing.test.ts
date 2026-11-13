@@ -9,7 +9,7 @@ const { admin, publicClient, unstableCache } = vi.hoisted(() => ({
 }));
 vi.mock("server-only", () => ({}));
 vi.mock("next/cache", () => ({ unstable_cache: unstableCache }));
-vi.mock("@/lib/server/supabase-admin", () => ({ getAdminSupabaseClient: () => admin }));
+vi.mock("@/lib/supabase/service", () => ({ createServiceRoleClient: () => admin }));
 vi.mock("@/lib/server/supabase-public", () => ({ getPublicSupabaseClient: () => publicClient }));
 vi.mock("@/lib/server/log", () => ({ log: { error: vi.fn() } }));
 

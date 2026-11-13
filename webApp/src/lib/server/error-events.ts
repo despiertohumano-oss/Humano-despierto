@@ -5,7 +5,7 @@ import { log, redactValue } from "@/lib/server/log";
 import { sendMail } from "@/lib/server/mail/send";
 import { renderErrorAlertMail } from "@/lib/server/mail/templates/error-alert";
 import { getSiteUrl } from "@/lib/server/site-url";
-import { getAdminSupabaseClient } from "@/lib/server/supabase-admin";
+import { createServiceRoleClient } from "@/lib/supabase/service";
 
 export interface ErrorEventInput {
   source: "server" | "client";
@@ -58,7 +58,7 @@ export async function recordErrorEvent(input: ErrorEventInput): Promise<void> {
   try {
     const path = normalizeErrorPath(input.path);
     const message = redactValue(input.message).slice(0, 500) || "(sin mensaje)";
-    const { data, error } = await getAdminSupabaseClient().rpc("record_error_event", {
+    const { data, error } = await createServiceRoleClient().rpc("record_error_event", {
       p_fingerprint: errorFingerprint(input.source, path, message),
       p_source: input.source,
       p_path: path,
@@ -88,7 +88,7 @@ export async function recordErrorEvent(input: ErrorEventInput): Promise<void> {
 /** Para /panel/admin/errores. Quien llama ya pasó `requireAdmin()`. `null`: la base todavía no
  *  tiene la migración 0078 (el código puede llegar a producción antes que ella). */
 export async function listErrorEvents(limit = 100): Promise<ErrorEventRow[] | null> {
-  const { data, error } = await getAdminSupabaseClient()
+  const { data, error } = await createServiceRoleClient()
     .from("error_events")
     .select("fingerprint, source, path, message, route_type, last_digest, first_seen, last_seen, hits")
     .order("last_seen", { ascending: false })
@@ -110,6 +110,6 @@ export async function listErrorEvents(limit = 100): Promise<ErrorEventRow[] | nu
 
 /** «Ya está resuelto»: borra la huella. Si vuelve a pasar, nace de nuevo y vuelve a avisar. */
 export async function deleteErrorEvent(fingerprint: string): Promise<{ error: string | null }> {
-  const { error } = await getAdminSupabaseClient().from("error_events").delete().eq("fingerprint", fingerprint);
+  const { error } = await createServiceRoleClient().from("error_events").delete().eq("fingerprint", fingerprint);
   return { error: error ? error.message : null };
 }
