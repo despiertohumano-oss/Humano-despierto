@@ -9,6 +9,7 @@ import { filterChipClass } from "@/lib/utils/chip";
 import { getPublishedCourses, signCatalogCovers } from "@/lib/server/courses";
 import { CATALOGO } from "@/content/site-copy";
 import { getWishlistIds } from "@/lib/server/wishlist";
+import { pageOpenGraph } from "@/lib/seo/meta";
 import { formatPriceCents } from "@/lib/utils/format";
 import { modalitySummary } from "@/lib/catalog/modality";
 import {
@@ -89,6 +90,8 @@ const ORDER_OPTIONS: { key: CatalogOrder; label: string }[] = [
 export const metadata: Metadata = {
   title: "Cursos",
   description: CATALOGO.metaDescription,
+  alternates: { canonical: "/cursos" },
+  openGraph: pageOpenGraph({ title: "Cursos", description: CATALOGO.metaDescription, url: "/cursos" }),
 };
 
 export default async function CatalogPage({ searchParams }: CatalogPageProps) {

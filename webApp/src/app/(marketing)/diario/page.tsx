@@ -4,6 +4,7 @@ import Icon from "@/components/atoms/Icon";
 import SignedImage from "@/components/atoms/SignedImage";
 import PageIntro from "@/components/layout/PageIntro";
 import { DIARIO } from "@/content/site-copy";
+import { pageOpenGraph } from "@/lib/seo/meta";
 import { getPublishedPosts, signDiarioCovers } from "@/lib/server/diario";
 import { DIARIO_CATEGORIES, isDiarioCategory } from "@/lib/taxonomy/diario";
 import { filterChipClass } from "@/lib/utils/chip";
@@ -16,6 +17,8 @@ import { formatCertificateDate } from "@/lib/utils/format";
 export const metadata: Metadata = {
   title: DIARIO.title,
   description: DIARIO.metaDescription,
+  alternates: { canonical: "/diario" },
+  openGraph: pageOpenGraph({ title: DIARIO.title, description: DIARIO.metaDescription, url: "/diario" }),
 };
 
 interface Props {

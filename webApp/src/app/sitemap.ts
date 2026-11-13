@@ -50,7 +50,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...estaticas,
     ...tarot,
     ...cartaNatal,
-    ...cursos.map((c) => ({ url: `${site}/cursos/${c.slug}`, priority: 0.8 })),
+    ...cursos.map((c) => ({ url: `${site}/cursos/${c.slug}`, lastModified: new Date(c.updatedAt), priority: 0.8 })),
     ...guias.map((g) => ({ url: `${site}/guias/${g.slug}`, priority: 0.6 })),
     ...posts.map((p) => ({
       url: `${site}/diario/${p.slug}`,

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import Icon from "@/components/atoms/Icon";
 import TarotCard, { cardImageSrc } from "@/components/tarot/TarotCard";
 import { ButtonLink } from "@/components/atoms/Button";
-import { SITE_OG_IMAGE } from "@/lib/og/site";
+import { cardDescription, cardImageAlt, cardOgImage, cardTitle, pageOpenGraph } from "@/lib/seo/meta";
 import { getSiteUrl } from "@/lib/server/site-url";
 import { CARDS, cardBySlug } from "@/lib/tarot/cards";
 import { cap } from "@/lib/tarot/prose";
@@ -18,9 +18,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const card = cardBySlug(slug);
   if (!card) return { title: "Carta no encontrada" };
-  const title = `${card.nombre_es}: significado en el tarot`;
-  const description = `${card.nombre_es} (${card.nombre_en}) al derecho: ${card.palabras_clave_derecha.slice(0, 4).join(", ")}. Invertida: ${card.palabras_clave_invertida.slice(0, 3).join(", ")}.`;
-  return { title, description, alternates: { canonical: `/tarot/cartas/${slug}` }, openGraph: { title, description, url: `/tarot/cartas/${slug}`, type: "article", images: [SITE_OG_IMAGE] } };
+  const title = cardTitle(card);
+  const description = cardDescription(card);
+  const url = `/tarot/cartas/${slug}`;
+  return { title, description, alternates: { canonical: url }, openGraph: pageOpenGraph({ title, description, url, type: "article", images: [cardOgImage(card)] }) };
 }
 
 function Bloque({ titulo, children }: { titulo: string; children: React.ReactNode }) {
@@ -59,7 +60,7 @@ export default async function CartaPage({ params }: { params: Promise<{ slug: st
       </div>
       <main className="mx-auto grid max-w-[1000px] gap-10 px-6 pb-20 pt-6 md:grid-cols-[0.4fr_0.6fr]">
         <div className="mx-auto w-full max-w-[280px]">
-          <TarotCard card={card} size="lg" priority className="w-full" />
+          <TarotCard card={card} alt={cardImageAlt(card)} size="lg" priority className="w-full" />
           <dl className="mt-6 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
             <dt className="text-suave">Arcano</dt><dd>{card.arcano === "mayor" ? `Mayor, ${card.numero}` : `Menor, ${card.palo}`}</dd>
             <dt className="text-suave">Elemento</dt><dd>{card.elemento}</dd>
