@@ -19,6 +19,7 @@ const HOJAS: [string, string[]][] = [
   ["dominante", ["nombre", "Nombre", "posicion", "claves"]],
   ...["intensifica", "refuerza", "debilita", "neutral"].map((k) => [`tension.${k}`, ["A", "b", "la", "lb"]] as [string, string[]]),
   ...TIPOS.flatMap((t) => BAL.map((b) => [`respuesta.${t}.${b}`, t === "el_otro" ? ["pregunta", "cartas", "dominante", "rol"] : ["pregunta", "cartas", "dominante"]] as [string, string[]])),
+  ...(["camino.parejo", "camino.continua", "camino.cambio", "relaciones.parejo", "relaciones.a", "relaciones.b"].map((k) => [`respuesta_contraste.${k}`, ["pregunta", "cartas_a", "cartas_b", "dominante"]] as [string, string[]])),
   ["respuesta_dominante.yo", []],
   ["respuesta_dominante.otros", []],
   ["tension_estado.trabada", ["A", "b"]],
@@ -41,6 +42,17 @@ describe("plantillas de T-094", () => {
   }
   it("toda respuesta retoma la pregunta", () => {
     for (const t of TIPOS) for (const b of BAL) for (const s of get(`respuesta.${t}.${b}`) as string[]) expect(s, `${t}.${b}`).toContain("{pregunta}");
+  });
+  it("respuesta_contraste retoma la pregunta, nombra los dos lados y no ordena", () => {
+    for (const k of ["camino", "relaciones"]) {
+      for (const [w, vs] of Object.entries(get(`respuesta_contraste.${k}`) as Record<string, string[]>)) {
+        for (const s of vs) {
+          for (const m of ["{pregunta}", "{cartas_a}", "{cartas_b}", "{dominante}"]) expect(s, `${k}.${w}`).toContain(m);
+          expect(s, `${k}.${w}`).not.toMatch(/\b(ten[eé]s que|deb[eé]s|deber[ií]as|hay que)\b/i);
+          expect(s.trimStart().startsWith("{dominante}"), `${k}.${w}`).toBe(false);
+        }
+      }
+    }
   });
   it("respuesta.cuando nunca promete fechas", () => {
     for (const b of BAL) for (const s of get(`respuesta.cuando.${b}`) as string[]) expect(s).not.toMatch(/\b(d[ií]as?|semanas?|mes(es)?|años?|pronto)\b/i);

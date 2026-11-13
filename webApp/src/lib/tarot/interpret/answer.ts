@@ -1,7 +1,7 @@
 // Respuesta reflexiva a la pregunta (spec T-094 §6): muestra fuerzas, no sentencia.
 import templates from "../data/templates.json";
 import { nombrar } from "../prose";
-import type { PlacedCard, ReadingFacts } from "../reading";
+import type { Contrast, PlacedCard, ReadingFacts } from "../reading";
 import type { QuestionType } from "../question";
 import type { Lens } from "./lenses";
 import { fill, joinY, pick } from "./text";
@@ -19,7 +19,21 @@ const LENTES: Record<QuestionType, Lens[] | "todas"> = {
 
 const byN = (a: PlacedCard, b: PlacedCard) => a.position.n - b.position.n;
 
+// Qué grupos compara el contraste de cada tirada (reading.ts, contrastOf), en el orden en que se nombran.
+const LADOS: Record<Contrast["kind"], [string, string]> = { camino: ["si-continua", "si-cambia"], relaciones: ["a", "b"] };
+
+// «¿Qué hago?» en una tirada con dos caminos o dos personas: la respuesta compara los lados, no lee un camino solo.
+export function contrastSides(facts: ReadingFacts): [PlacedCard[], PlacedCard[]] | null {
+  if (facts.questionType !== "que_hacer" || !facts.contrast) return null;
+  const side = (k: string) => [...(facts.groups.find((g) => g.clave === k)?.placed ?? [])].sort(byN);
+  const [a, b] = LADOS[facts.contrast.kind];
+  const sides: [PlacedCard[], PlacedCard[]] = [side(a), side(b)];
+  return sides[0].length && sides[1].length ? sides : null;
+}
+
 export function answerCards(facts: ReadingFacts): PlacedCard[] {
+  const sides = contrastSides(facts);
+  if (sides) return [...sides[0], ...sides[1]].sort(byN);
   const ordered = [...facts.placed].sort(byN);
   const want = LENTES[facts.questionType];
   if (want === "todas") return ordered;
@@ -64,11 +78,21 @@ export function namedCards(facts: ReadingFacts): PlacedCard[] {
   return (others.length ? others : [facts.dominant]).slice(0, MAX_NAMED);
 }
 
+function contrastAnswer(facts: ReadingFacts, sides: [PlacedCard[], PlacedCard[]], pregunta: string, rng: () => number): string {
+  const c = facts.contrast!;
+  const variants = (templates.respuesta_contraste[c.kind] as Record<string, string[]>)[c.winner]!;
+  const nombres = (cs: PlacedCard[]) => {
+    const sin = cs.filter((p) => p.position.n !== facts.dominant.position.n);
+    return joinY((sin.length ? sin : cs).map((p) => nombrar(p.card)));
+  };
+  return fill(pick(rng, variants), { pregunta, cartas_a: nombres(sides[0]), cartas_b: nombres(sides[1]), dominante: nombrar(facts.dominant.card) });
+}
+
 export function buildAnswer(facts: ReadingFacts, rng: () => number): string | null {
   if (!facts.question) return null;
-  const balance = balanceFor(facts);
   const pregunta = facts.question.replace(/^¿\s*/, "").replace(/\s*\?$/, "");
-  const base = fill(pick(rng, templates.respuesta[facts.questionType][balance]), {
+  const sides = contrastSides(facts);
+  const base = sides ? contrastAnswer(facts, sides, pregunta, rng) : fill(pick(rng, templates.respuesta[facts.questionType][balanceFor(facts)]), {
     pregunta,
     cartas: joinY(namedCards(facts).map((p) => nombrar(p.card))),
     dominante: nombrar(facts.dominant.card),
