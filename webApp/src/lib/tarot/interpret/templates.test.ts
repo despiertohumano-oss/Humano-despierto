@@ -18,7 +18,13 @@ const HOJAS: [string, string[]][] = [
   ["facetas", ["cartas"]],
   ["dominante", ["nombre", "Nombre", "posicion", "claves"]],
   ...["intensifica", "refuerza", "debilita", "neutral"].map((k) => [`tension.${k}`, ["A", "b", "la", "lb"]] as [string, string[]]),
-  ...TIPOS.flatMap((t) => BAL.map((b) => [`respuesta.${t}.${b}`, ["pregunta", "cartas", "dominante"]] as [string, string[]])),
+  ...TIPOS.flatMap((t) => BAL.map((b) => [`respuesta.${t}.${b}`, t === "el_otro" ? ["pregunta", "cartas", "dominante", "rol"] : ["pregunta", "cartas", "dominante"]] as [string, string[]])),
+  ["respuesta_dominante.yo", []],
+  ["respuesta_dominante.otros", []],
+  ["tension_estado.trabada", ["A", "b"]],
+  ["tension_estado.en_proceso", ["A", "b"]],
+  ["consejo", ["consejo"]],
+  ["grupo", ["claves"]],
   ["resolucion", ["nombre", "Nombre", "posicion", "texto", "texto_min"]],
 ];
 

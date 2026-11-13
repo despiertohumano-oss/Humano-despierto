@@ -12,7 +12,7 @@ export default function ReadingView({ facts, text }: { facts: ReadingFacts; text
       <SpreadLayout positions={positions} forma={facts.spread.forma} render={(_p, i) => <TarotCard card={facts.placed[i]!.card} reversed={facts.placed[i]!.reversed} size={facts.placed.length > 3 ? "sm" : "md"} priority={i === 0} />} />
       <section className="mx-auto max-w-[68ch] space-y-5 text-lg leading-relaxed text-tinta">
         <p>{text.apertura}</p>
-        <p>{text.ideaLineal}</p>
+        {text.ideaLineal && <p>{text.ideaLineal}</p>}
         {text.panorama && <p className="text-suave">{text.panorama}</p>}
       </section>
       {text.dominante && (

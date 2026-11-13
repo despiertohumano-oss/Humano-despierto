@@ -17,10 +17,10 @@ export type QuestionType = "si_no" | "cuando" | "que_hacer" | "el_otro" | "como_
 // Orden de prioridad: la primera que coincide gana (spec T-094 §6.1).
 const TIPOS: [Exclude<QuestionType, "general">, RegExp][] = [
   ["cuando", /\b(cu[aá]ndo|cu[aá]nto falta|cu[aá]nto tiempo|qu[eé] fecha)/iu],
-  ["el_otro", /\b(qu[eé] siente|qu[eé] piensa|piensa en m[ií]|me quiere|me ama|me extra[nñ]a|qu[eé] le pasa|siente algo|est[aá] enamorad)/iu],
-  ["que_hacer", /\b(qu[eé] (hago|puedo hacer|debo|deber[ií]a|me conviene)|deber[ií]a|debo|me conviene|conviene|c[oó]mo hago|qu[eé] camino)/iu],
-  ["como_sale", /\b(c[oó]mo (me va|va a|le va|ir[aá]|saldr[aá]|sigue|termina|viene)|qu[eé] va a pasar|qu[eé] pasar[aá])/iu],
-  ["si_no", /^¿?\s*(va|van|voy|vuelve|volver[aá]|consigo|conseguir[eé]|me|lo|la|le|es|est[aá]|hay|tengo|tendr[eé]|puedo|podr[eé]|sale|saldr[aá]|ser[aá]|habr[aá]|quiere|se)\b/iu],
+  ["el_otro", /\b(qu[eé] siente|qu[eé] piensa|piensa en m[ií]|me quiere|me ama|me extra[nñ]a|qu[eé] le pasa|siente algo|est[aá] enamorad|le gusto|le intereso|qu[eé] onda con (?:[eé]l|ella))/iu],
+  ["que_hacer", /\b(qu[eé] (hago|puedo hacer|debo|deber[ií]a|me conviene)|deber[ií]a|debo|me conviene|conviene|c[oó]mo hago|qu[eé] camino|sigo o (?:lo |la )?dejo|me quedo o me voy)/iu],
+  ["como_sale", /\b((?:me|nos|le) va a ir|c[oó]mo (me va|va a|le va|ir[aá]|saldr[aá]|sigue|termina|viene)|qu[eé] va a pasar|qu[eé] pasar[aá])/iu],
+  ["si_no", /^¿?\s*(va|van|voy|vuelve|volver[aá]|consigo|conseguir[eé]|me|lo|la|le|es|est[aá]|hay|tengo|tendr[eé]|puedo|podr[eé]|sale|saldr[aá]|ser[aá]|habr[aá]|quiere|se|regresa|regresar[aá])\b/iu],
 ];
 
 export function classifyQuestion(q: string | null): QuestionType {

@@ -120,12 +120,15 @@
   "consejo": [
     "Consejo de la tirada: {consejo}",
     "Para llevarte: {consejo}",
-    "Si te quedás con una sola cosa: {consejo}"
+    "Si te quedás con una sola cosa: {consejo}",
+    "Como consejo de la tirada, {consejo}",
+    "Una pauta para llevarte, {consejo}",
+    "Para tener presente, {consejo}"
   ],
   "grupo": [
-    "{grupo}: aparecen {claves}.",
-    "En {grupo} se juntan {claves}.",
-    "{grupo} reúne {claves}."
+    "Aparecen {claves}.",
+    "Acá se juntan {claves}.",
+    "Se reúnen {claves}."
   ],
   "contraste_relaciones": {
     "parejo": [
@@ -352,18 +355,18 @@
     },
     "el_otro": {
       "favorable": [
-        "Sobre «{pregunta}»: las cartas no leen la mente de nadie; leen el vínculo desde tu lado. Con {cartas} en juego, lo que aparece entre ustedes tiene energía a favor, y la carta que más pesa, {dominante}, muestra qué estás poniendo vos en esto.",
+        "Sobre «{pregunta}»: las cartas no leen la mente de nadie; leen el vínculo desde tu lado. Con {cartas} en juego, lo que aparece entre ustedes tiene energía a favor, y la carta que más pesa, {dominante}, {rol}.",
         "Sobre «{pregunta}», la tirada mira el vínculo desde quien pregunta, no por dentro de la otra persona. En {cartas} se ve un lazo con fuerza; la carta que más pesa, {dominante}, señala lo que hoy lo sostiene.",
         "«{pregunta}»: lo que se ve es la relación tal como la vivís vos. Con {dominante} en el centro y {cartas} a favor, hay algo vivo entre ustedes que vale cuidar."
       ],
       "abierta": [
-        "Sobre «{pregunta}»: las cartas no entran en la cabeza de la otra persona; muestran el vínculo desde tu lado. Con {cartas} en juego, ese lazo todavía se está definiendo, y la carta que más pesa, {dominante}, señala qué mirar en vos mientras tanto.",
-        "Sobre «{pregunta}», la tirada lee la relación desde quien pregunta. En {cartas} se ve un vínculo en movimiento, sin forma cerrada; la carta que más pesa, {dominante}, indica qué parte depende de vos.",
+        "Sobre «{pregunta}»: las cartas no entran en la cabeza de la otra persona; muestran el vínculo desde tu lado. Con {cartas} en juego, ese lazo todavía se está definiendo, y la carta que más pesa, {dominante}, {rol}.",
+        "Sobre «{pregunta}», la tirada lee la relación desde quien pregunta. En {cartas} se ve un vínculo en movimiento, sin forma cerrada; la carta que más pesa, {dominante}, {rol}.",
         "«{pregunta}»: lo que aparece es tu lado del vínculo, no el sentir de la otra persona. Con {dominante} en el centro y {cartas} acomodándose, hay preguntas que solo una conversación puede responder."
       ],
       "desfavorable": [
         "Sobre «{pregunta}»: las cartas no leen lo que siente la otra persona; leen el vínculo desde tu lado. Con {cartas} en juego, ese lazo hoy aparece con trabas, y la carta que más pesa, {dominante}, muestra dónde duele o dónde se frena.",
-        "Sobre «{pregunta}», la tirada mira la relación desde quien pregunta. En {cartas} se ve tensión en el vínculo; la carta que más pesa, {dominante}, señala qué te está pidiendo atención a vos.",
+        "Sobre «{pregunta}», la tirada mira la relación desde quien pregunta. En {cartas} se ve tensión en el vínculo; la carta que más pesa, {dominante}, {rol}.",
         "«{pregunta}»: lo que se ve es tu experiencia del vínculo, no la mente de la otra persona. Con {dominante} en el centro y frenos en {cartas}, quizás la pregunta más útil sea qué necesitás vos."
       ]
     },
@@ -410,7 +413,7 @@
     "Como cierre de la lectura, la tirada muestra {nombre}. {texto}",
     "Para cerrar, volvé a «{posicion}»: ahí está la orientación que deja la tirada.",
     "Si buscás hacia dónde ir con todo esto, releé «{posicion}», que ya lo dice.",
-    "Lo que dijo «{posicion}» queda como cierre de la lectura, con {nombre} como última palabra."
+    "Lo que dijo «{posicion}» queda como cierre de la lectura, y {nombre} acompaña ese cierre."
   ],
   "estado": {
     "pleno": [
@@ -431,6 +434,30 @@
       "Lo que hay alrededor juega en contra, y con {nombre} asoma el costado más difícil. {texto}",
       "Con estas vecinas, la energía en {nombre} no fluye y aparece su costado más trabado. {texto} Reconocerlo ya empieza a aflojar el nudo.",
       "Entre tanta tensión, {nombre} muestra lo que pasa cuando esta energía se bloquea. {texto}"
+    ]
+  },
+  "tension_estado": {
+    "trabada": [
+      "{A} llega con su energía trabada, así que esta tensión se vive con más peso.",
+      "Además, en {b} la energía está trabada: antes de resolver este cruce, hay algo ahí que destrabar.",
+      "Ojo con {b}: su fuerza está bloqueada, y eso vuelve este cruce más lento de resolver."
+    ],
+    "en_proceso": [
+      "{A} todavía se está formando, así que esta tensión no está definida.",
+      "Además, en {b} la energía está en proceso: nada de esto está cerrado.",
+      "Con {b} todavía en movimiento, esta tensión puede cambiar de signo."
+    ]
+  },
+  "respuesta_dominante": {
+    "yo": [
+      "muestra qué estás poniendo vos en esto",
+      "señala qué parte depende de vos",
+      "marca qué te toca mirar a vos"
+    ],
+    "otros": [
+      "muestra lo que la otra persona trae al vínculo",
+      "señala lo que la otra parte pone en juego entre ustedes",
+      "habla de lo que la otra persona aporta a este lazo"
     ]
   }
 }

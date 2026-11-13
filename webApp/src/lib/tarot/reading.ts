@@ -183,7 +183,7 @@ export function buildReading(reading: Reading, question: string | null = null): 
     yesNo: spread.slug === "si-o-no" ? yesNoVerdict(placed.map((p) => ({ card: p.card, reversed: p.reversed }))) : null,
     groups,
     contrast,
-    patterns: patternsOf(placed),
+    patterns: patternsOf(placed, groups.length > 0),
     dominant: dominantOf(placed),
     tensions: tensionsOf(placed, contrast !== null),
   };

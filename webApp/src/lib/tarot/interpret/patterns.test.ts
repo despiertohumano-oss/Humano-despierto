@@ -17,6 +17,12 @@ describe("patternsOf", () => {
     expect(patternsOf(leer("cruz-simple", ["diez-de-bastos", "ocho-de-copas", "seis-de-oros", "cuatro-de-espadas", "dos-de-copas"]).placed).progression).toBe("retrocede");
     expect(patternsOf(leer("cruz-simple", ["tres-de-bastos", "ocho-de-copas", "dos-de-oros", "nueve-de-espadas", "cuatro-de-copas"]).placed).progression).toBeNull();
   });
+  it("progresión: no se calcula en tiradas con grupos (las posiciones alternan)", () => {
+    const r = leer("relaciones", ["as-de-bastos", "dos-de-copas", "tres-de-oros", "cuatro-de-espadas", "cinco-de-bastos", "seis-de-copas"]);
+    expect(r.groups.length).toBeGreaterThan(0);
+    expect(r.patterns.progression).toBeNull();
+    expect(patternsOf(r.placed).progression).toBe("avanza");
+  });
   it("figuras: personas en otros/sosten/cruce, facetas en yo/sombra", () => {
     // cruz-celta: 1 nucleo, 2 cruce, 3 meta, 4 raiz, 5 sosten, 6 transito, 7 yo, 8 otros, 9 sombra, 10 consejo
     const r = leer("cruz-celta", ["as-de-bastos", "rey-de-copas", "dos-de-oros", "tres-de-espadas", "reina-de-oros", "seis-de-bastos", "sota-de-copas", "caballero-de-espadas", "rey-de-bastos", "diez-de-oros"]);

@@ -41,6 +41,7 @@ const forCard = (variants: string[], p: PlacedCard): string[] => (articulo(p.car
 
 function ideaLineal(facts: ReadingFacts, rng: () => number): string {
   const all = [...facts.placed].sort(byN);
+  if (all.length < 2) return "";
   const o = all.length > 6 ? [...all.slice(0, 5), all.at(-1)!] : all;
   const clave = (p: PlacedCard) => p.keywords[0]!;
   const paso = deckOf(rng, templates.idea_paso);
@@ -81,7 +82,9 @@ function tensiones(facts: ReadingFacts, rng: () => number): string[] {
   const c = facts.contrast;
   if (c) out.push(c.kind === "relaciones" ? pick(rng, templates.contraste_relaciones[c.winner]) : pick(rng, templates.contraste_camino[c.winner]));
   for (const t of facts.tensions) {
-    out.push(fill(pick(rng, templates.tension[t.dignity]), { A: cap(nom(t.a)), b: nom(t.b), la: LENS_LABEL[t.a.position.lente], lb: LENS_LABEL[t.b.position.lente] }));
+    const base = fill(pick(rng, templates.tension[t.dignity]), { A: cap(nom(t.a)), b: nom(t.b), la: LENS_LABEL[t.a.position.lente], lb: LENS_LABEL[t.b.position.lente] });
+    const marcada = (["trabada", "en_proceso"] as const).flatMap((e) => [t.a, t.b].filter((p) => p.estado === e).map((p) => [e, p] as const))[0];
+    out.push(marcada ? `${base} ${fill(pick(rng, templates.tension_estado[marcada[0]]), { A: cap(nom(marcada[1])), b: nom(marcada[1]) })}` : base);
   }
   return out;
 }
@@ -117,6 +120,12 @@ function sintesis(facts: ReadingFacts, rng: () => number): string {
   return parts.join(" ");
 }
 
+function consejo(d: PlacedCard, rng: () => number): string {
+  const conDosPuntos = d.card.consejo.includes(":");
+  const options = conDosPuntos ? templates.consejo.filter((v) => !v.split("{consejo}")[0]!.trimEnd().endsWith(":")) : templates.consejo;
+  return fill(pick(rng, options), { consejo: lowerFirst(d.card.consejo) });
+}
+
 export function renderReading(facts: ReadingFacts, seed: number): ReadingText {
   const rng = rngFrom(seed);
   const apertura = facts.question ? fill(pick(rng, templates.apertura_pregunta), { pregunta: facts.question }) : pick(rng, templates.apertura);
@@ -142,7 +151,7 @@ export function renderReading(facts: ReadingFacts, seed: number): ReadingText {
     tensiones: tensiones(facts, rng),
     respuesta: buildAnswer(facts, rng),
     sintesis: sintesis(facts, rng),
-    consejo: resolucionCard(facts).card.id === d.card.id ? "" : fill(pick(rng, templates.consejo), { consejo: lowerFirst(d.card.consejo) }),
+    consejo: resolucionCard(facts).card.id === d.card.id ? "" : consejo(d, rng),
     espejo: fill(pick(rng, templates.reflexion), { pregunta: pick(rng, d.card.reflexion) }),
   };
 }

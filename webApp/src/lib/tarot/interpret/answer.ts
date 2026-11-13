@@ -72,7 +72,8 @@ export function buildAnswer(facts: ReadingFacts, rng: () => number): string | nu
     pregunta,
     cartas: joinY(namedCards(facts).map((p) => nombrar(p.card))),
     dominante: nombrar(facts.dominant.card),
+    rol: pick(rng, templates.respuesta_dominante[facts.dominant.position.lente === "otros" ? "otros" : "yo"]),
   });
   const dominio = facts.domain ? facts.dominant.card[facts.domain] : "";
-  return typeof dominio === "string" && dominio.trim() ? `${base} ${dominio.trim()}` : base;
+  return facts.domain && typeof dominio === "string" && dominio.trim() ? `${base} ${fill(pick(rng, templates.posicion_dominio[facts.domain]), { texto: dominio.trim() })}` : base;
 }

@@ -7,6 +7,8 @@ import { lensText } from "./lens-texts";
 import { LENSES } from "./lenses";
 import { renderReading } from "./narrative";
 import templates from "../data/templates.json";
+import { balanceFor } from "./answer";
+import { rngFrom } from "./text";
 
 const idx = (slug: string) => CARDS.find((c) => c.id === slug)!.indice;
 const celta: Reading = { spread: "cruz-celta", cards: ["as-de-bastos", "la-torre", "tres-de-oros", "cuatro-de-espadas", "cinco-de-bastos", "seis-de-copas", "siete-de-oros", "ocho-de-espadas", "nueve-de-bastos", "diez-de-copas"].map((s) => ({ indice: idx(s), reversed: false })) };
@@ -40,7 +42,7 @@ describe("narrativa", () => {
   });
   it("exhaustivo: 20 cartas × cada posición de cada tirada × orientación × 6 tipos de pregunta, sin marcadores ni vacíos", () => {
     const preguntas = [null, "¿Vuelve?", "¿Cuándo?", "¿Qué hago?", "¿Qué siente?", "¿Cómo me va a ir?"];
-    const muestra = CARDS.filter((_, i) => i % 4 === 0).slice(0, 20);
+    const muestra = [...CARDS.filter((_, i) => i % 4 === 0).slice(0, 20), CARDS.find((c) => c.id === "los-enamorados")!];
     for (const s of SPREADS) for (const count of s.cartas) for (const card of muestra) for (const rev of s.allowReversed ? [false, true] : [false]) {
       for (let pos = 0; pos < count; pos++) {
         const otras = CARDS.filter((c) => c.indice !== card.indice).slice(pos, pos + count - 1).map((c) => ({ indice: c.indice, reversed: false }));
@@ -167,4 +169,100 @@ describe("narrativa: casos heredados", () => {
       }
     }
   });
+});
+
+describe("narrativa: revisión final", () => {
+  const rel = (slugs: string[], q: string | null) => buildReading({ spread: "relaciones", cards: slugs.map((s) => ({ indice: idx(s), reversed: false })) }, q);
+  const SEIS = ["as-de-bastos", "dos-de-copas", "tres-de-oros", "cuatro-de-espadas", "cinco-de-bastos", "seis-de-copas"];
+
+  it("tensiones: una carta trabada suma una cláusula de estado; todo pleno, ninguna", () => {
+    const f = buildReading(celta);
+    for (const p of f.placed) p.estado = "pleno";
+    const base = renderReading(f, 5).tensiones;
+    f.tensions[0]!.b.estado = "trabada";
+    const t = renderReading(f, 5).tensiones;
+    expect(t[0]!.length).toBeGreaterThan(base[0]!.length);
+    expect(templates.tension_estado.trabada.some((v) => t[0]!.includes(v.split("{")[0]!.trim()))).toBe(true);
+    f.tensions[0]!.b.estado = "en_proceso";
+    f.tensions[0]!.a.estado = "pleno";
+    expect(renderReading(f, 5).tensiones[0]!.length).toBeGreaterThan(base[0]!.length);
+    for (const s of base) expect(s).not.toMatch(/trabada|en proceso|bloquead/);
+  });
+  it("tensiones: prefiere trabada sobre en_proceso", () => {
+    const f = buildReading(celta);
+    for (const p of f.placed) p.estado = "pleno";
+    f.tensions[0]!.a.estado = "en_proceso";
+    f.tensions[0]!.b.estado = "trabada";
+    const plenoA = renderReading(f, 9).tensiones[0]!;
+    const trab = templates.tension_estado.trabada.map((v) => v.replace(/\{\w+\}/g, "").trim().split(/\s+/).slice(0, 2).join(" "));
+    expect(trab.some((x) => plenoA.includes(x))).toBe(true);
+  });
+  it("respuesta el_otro con la dominante en «otros» habla de la otra persona, no de «vos»", () => {
+    const f = rel(["as-de-bastos", "la-torre", ...SEIS.slice(2)], "¿Qué siente por mí?");
+    expect(f.dominant.position.lente).toBe("otros");
+    let otra = 0;
+    for (let s = 1; s <= 40; s++) {
+      const a = renderReading(f, s).respuesta!;
+      expect(a, `seed ${s}`).not.toMatch(/poniendo vos|mirar en vos|depende de vos|atención a vos|marca qué te toca/);
+      if (templates.respuesta_dominante.otros.some((c) => a.includes(c))) otra++;
+    }
+    expect(otra).toBeGreaterThan(5);
+  });
+  it("respuesta el_otro con la dominante en «yo» sigue hablando de vos", () => {
+    const f = rel(["la-torre", ...SEIS.slice(1)], "¿Qué siente por mí?");
+    expect(f.dominant.position.lente).toBe("yo");
+    let vos = 0;
+    for (let s = 1; s <= 40; s++) {
+      const a = renderReading(f, s).respuesta!;
+      expect(templates.respuesta_dominante.otros.some((c) => a.includes(c))).toBe(false);
+      if (templates.respuesta_dominante.yo.some((c) => a.includes(c))) vos++;
+    }
+    expect(vos).toBeGreaterThan(5);
+  });
+  it("consejo: sin doble «:» cuando la carta ya trae uno (la Estrella)", () => {
+    const f = buildReading({ spread: "cruz-celta", cards: ["as-de-bastos", "la-estrella", ...["tres-de-oros", "cuatro-de-espadas", "cinco-de-bastos", "seis-de-copas", "siete-de-oros", "ocho-de-espadas", "nueve-de-bastos", "diez-de-copas"]].map((s) => ({ indice: idx(s), reversed: false })) });
+    expect(f.dominant.card.id).toBe("la-estrella");
+    expect(f.dominant.card.consejo).toContain(":");
+    for (let s = 1; s <= 60; s++) {
+      const c = renderReading(f, s).consejo;
+      expect(c.length).toBeGreaterThan(0);
+      expect((c.match(/:/g) ?? []).length, c).toBe(1);
+    }
+  });
+  it("la frase de dominio de la respuesta va envuelta, no pegada", () => {
+    const f = buildReading(celta, "¿Qué pasará con mi trabajo?");
+    expect(f.domain).toBe("trabajo");
+    const dominio = (f.dominant.card.trabajo as string).trim();
+    for (let s = 1; s <= 20; s++) {
+      const a = renderReading(f, s).respuesta!;
+      expect(a).toContain(dominio);
+      expect(a).toMatch(/(En lo laboral|Para el trabajo|En tu ocupación): /);
+    }
+  });
+  it("resolución: ninguna variante suena a veredicto («última palabra»)", () => {
+    for (const v of templates.resolucion) expect(v).not.toMatch(/última palabra/);
+  });
+  it("una sola carta: sin idea lineal", () => {
+    expect(renderReading(buildReading({ spread: "carta-del-dia", cards: [{ indice: 3, reversed: false }] }), 2).ideaLineal).toBe("");
+  });
+  it("el bloque de grupo no repite su propio título", () => {
+    const f = rel(SEIS, null);
+    for (const g of renderReading(f, 4).grupos) expect(g.texto).not.toContain(g.titulo);
+  });
+  it("§9: el balance de la respuesta no depende del orden de las cartas", () => {
+    const N = 3000;
+    const dist = (rev: boolean) => {
+      const r = rngFrom(20261112);
+      const c = { favorable: 0, abierta: 0, desfavorable: 0 };
+      for (let i = 0; i < N; i++) {
+        const pool = CARDS.map((x) => [r(), x] as const).sort((a, b) => a[0] - b[0]).slice(0, 10).map(([, x]) => ({ indice: x.indice, reversed: r() < 0.3 }));
+        const cards = rev ? [...pool].reverse() : pool;
+        c[balanceFor(buildReading({ spread: "cruz-celta", cards }, "¿Cuándo se resuelve?"))]++;
+      }
+      return c;
+    };
+    const a = dist(false);
+    const b = dist(true);
+    for (const k of ["favorable", "abierta", "desfavorable"] as const) expect(Math.abs(a[k] - b[k]) / N, k).toBeLessThan(0.03);
+  }, 60_000);
 });

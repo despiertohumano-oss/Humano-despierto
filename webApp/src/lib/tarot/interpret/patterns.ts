@@ -12,7 +12,7 @@ const byN = (a: PlacedCard, b: PlacedCard) => a.position.n - b.position.n;
 const isCourt = (p: PlacedCard) => p.card.arcano === "menor" && p.card.numero >= 11;
 const numbered = (p: PlacedCard) => p.card.arcano === "menor" && p.card.numero <= 10;
 
-export function patternsOf(placed: PlacedCard[]): Patterns {
+export function patternsOf(placed: PlacedCard[], hasGroups = false): Patterns {
   const ordered = [...placed].sort(byN);
   const byNum = new Map<number, PlacedCard[]>();
   for (const p of ordered.filter(numbered)) byNum.set(p.card.numero, [...(byNum.get(p.card.numero) ?? []), p]);
@@ -20,7 +20,7 @@ export function patternsOf(placed: PlacedCard[]): Patterns {
 
   const nums = ordered.filter(numbered).map((p) => p.card.numero);
   let progression: Patterns["progression"] = null;
-  if (nums.length >= 3) {
+  if (nums.length >= 3 && !hasGroups) {
     const steps = nums.length - 1;
     let up = 0;
     let down = 0;
