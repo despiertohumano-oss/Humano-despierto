@@ -16,7 +16,10 @@ const DENIED = { ok: false, remaining: 0, retryAfter: 60 };
 // Una "base" mínima: mail_log con attempts reales para ver si un tope de envío gasta intentos.
 type Slot = { id: string; attempts: number; sentAt: string | null; reclaimable: boolean; lastError?: string | null };
 
-function fakeDb(n: number, opts: { status?: string; noEmail?: string[] } = {}) {
+function fakeDb(
+  n: number,
+  opts: { status?: string; noEmail?: string[]; authGone?: string[]; authFail?: string[]; profileFail?: string[] } = {},
+) {
   const slots = new Map<string, Slot>();
   const released: string[] = [];
   const db = {
@@ -36,7 +39,10 @@ function fakeDb(n: number, opts: { status?: string; noEmail?: string[] } = {}) {
           const [from, to] = f.__range as [number, number];
           return { data: Array.from({ length: n }, (_, i) => ({ user_id: `u-${i}` })).slice(from, to + 1), error: null };
         }
-        if (table === "profiles") return { data: { id: f.id, full_name: `Alumna ${String(f.id)}` }, error: null };
+        if (table === "profiles")
+          return opts.profileFail?.includes(f.id as string)
+            ? { data: null, error: { message: "upstream request timeout", code: "57014" } }
+            : { data: { id: f.id, full_name: `Alumna ${String(f.id)}` }, error: null };
         if (table === "mail_log") {
           // Con `.is("sent_at", null)` es la consulta del retry (pendientes vencidos); sin él, la
           // lectura de todas las filas del anuncio.
@@ -100,10 +106,11 @@ function fakeDb(n: number, opts: { status?: string; noEmail?: string[] } = {}) {
     },
     auth: {
       admin: {
-        getUserById: async (id: string) => ({
-          data: { user: opts.noEmail?.includes(id) ? null : { email: `${id}@humano.test` } },
-          error: null,
-        }),
+        getUserById: async (id: string) => {
+          if (opts.authFail?.includes(id)) return { data: { user: null }, error: { message: "fetch failed", status: 503 } };
+          if (opts.authGone?.includes(id)) return { data: { user: null }, error: { message: "User not found", status: 404 } };
+          return { data: { user: opts.noEmail?.includes(id) ? null : { email: `${id}@humano.test` } }, error: null };
+        },
       },
     },
   };
@@ -293,5 +300,62 @@ describe("N-2 · turnos huérfanos de anuncio", () => {
     __setTransportForTests({ send: async () => {} });
     await notifyAnnouncementPublished({ announcementId: ANUNCIO });
     expect(db.slots.get("u-0")).toMatchObject({ attempts: 1, sentAt: null });
+  });
+});
+
+// B-3 (QA T-098 ronda 2): una falla transitoria de GoTrue o de PostgREST no es «sin mail». El turno
+// queda pendiente para la próxima corrida; solo se retira cuando la falta de dirección es un hecho.
+describe("B-3 · falla transitoria al resolver la dirección", () => {
+  beforeEach(() => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "info").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    mocks.limit.mockReset().mockResolvedValue(OK);
+  });
+  afterEach(() => {
+    __setTransportForTests(null);
+    vi.restoreAllMocks();
+  });
+
+  const pending = (id: string): Slot => ({ id, attempts: 1, sentAt: null, reclaimable: true });
+
+  it("con authError (GoTrue caído) el turno NO se retira y la próxima corrida lo manda", async () => {
+    const db = fakeDb(2, { authFail: ["u-1"] });
+    db.slots.set("u-1", pending("claim-u-1"));
+    mocks.db = db;
+    const send = vi.fn(async () => {});
+    __setTransportForTests({ send });
+
+    await retryPendingAnnouncementMail();
+    expect(db.slots.get("u-1")).toMatchObject({ attempts: 1, sentAt: null });
+    expect(db.slots.get("u-1")?.lastError).toBeUndefined();
+
+    // GoTrue vuelve: la corrida siguiente lo encuentra (sigue pendiente) y lo manda.
+    const healthy = fakeDb(2);
+    for (const [k, v] of db.slots) healthy.slots.set(k, v);
+    mocks.db = healthy;
+    await retryPendingAnnouncementMail();
+    expect(healthy.slots.get("u-1")?.sentAt).not.toBeNull();
+  });
+
+  it("con profileError (PostgREST caído) el turno NO se retira", async () => {
+    const db = fakeDb(2, { profileFail: ["u-1"] });
+    db.slots.set("u-1", pending("claim-u-1"));
+    mocks.db = db;
+    __setTransportForTests({ send: async () => {} });
+
+    await retryPendingAnnouncementMail();
+    expect(db.slots.get("u-1")).toMatchObject({ attempts: 1, sentAt: null });
+    expect(db.slots.get("u-1")?.lastError).toBeUndefined();
+  });
+
+  it("una cuenta que GoTrue confirma inexistente (404) sí se retira como unresolved", async () => {
+    const db = fakeDb(2, { authGone: ["u-1"] });
+    db.slots.set("u-1", pending("claim-u-1"));
+    mocks.db = db;
+    __setTransportForTests({ send: async () => {} });
+
+    await retryPendingAnnouncementMail();
+    expect(db.slots.get("u-1")).toMatchObject({ attempts: 3, lastError: "permanent:000/unresolved" });
   });
 });

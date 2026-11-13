@@ -28,6 +28,13 @@ import { ANNOUNCEMENT_AFTER_BUDGET_MS, MAIL_RUN_BUDGET_MS, canStartMail } from "
 // propia registrándose): esta capa no vuelve a autorizar nada, solo notifica.
 
 
+type RecipientLookup =
+  | { kind: "found"; id: string; email: string; name: string }
+  /** Confirmado: la cuenta no existe (404 de GoTrue), no tiene mail o no tiene perfil. */
+  | { kind: "missing" }
+  /** GoTrue o PostgREST fallaron: no se sabe; reintentar más tarde (B-3, QA T-098). */
+  | { kind: "error" };
+
 /**
  * Devuelve tambien el `id` CANONICO -- el que resolvio la base, no el string que vino en el
  * request. Es la misma razon por la que `getCourseInfo` devuelve el suyo: cualquier scope de
@@ -36,9 +43,7 @@ import { ANNOUNCEMENT_AFTER_BUDGET_MS, MAIL_RUN_BUDGET_MS, canStartMail } from "
  * scope. `auth-js` valida el uuid con una regex insensible a mayusculas, asi que las
  * permutaciones de caja llegan enteras hasta aca.
  */
-async function getUserEmail(
-  userId: string,
-): Promise<{ id: string; email: string; name: string } | null> {
+async function lookupRecipient(userId: string): Promise<RecipientLookup> {
   const db = createServiceRoleClient();
 
   const [{ data: authData, error: authError }, { data: profile, error: profileError }] =
@@ -47,16 +52,34 @@ async function getUserEmail(
       db.from("profiles").select("id, full_name").eq("id", userId).maybeSingle(),
     ]);
 
-  if (authError || !authData?.user?.email) {
-    log.error("mail_recipient_email_unresolved", { user_id: userId, message: authError?.message ?? "sin email" });
-    return null;
+  if (authError) {
+    const status = (authError as { status?: number }).status;
+    log.error("mail_recipient_email_unresolved", { user_id: userId, message: authError.message, status });
+    return status === 404 ? { kind: "missing" } : { kind: "error" };
   }
-  if (profileError || !profile) {
-    log.error("mail_recipient_profile_unresolved", { user_id: userId, message: profileError?.message });
-    return null;
+  if (profileError) {
+    log.error("mail_recipient_profile_unresolved", { user_id: userId, message: profileError.message });
+    return { kind: "error" };
+  }
+  if (!authData?.user?.email) {
+    log.error("mail_recipient_email_unresolved", { user_id: userId, message: "sin email" });
+    return { kind: "missing" };
+  }
+  if (!profile) {
+    log.error("mail_recipient_profile_unresolved", { user_id: userId, message: "sin perfil" });
+    return { kind: "missing" };
   }
 
-  return { id: profile.id, email: authData.user.email, name: profile.full_name || "—" };
+  return { kind: "found", id: profile.id, email: authData.user.email, name: profile.full_name || "—" };
+}
+
+/** Para los transaccionales: `null` en los dos casos (faltante o falla), como siempre. Ninguno de
+ *  ellos reclama turno antes de resolver, así que una falla no gasta nada. */
+async function getUserEmail(
+  userId: string,
+): Promise<{ id: string; email: string; name: string } | null> {
+  const r = await lookupRecipient(userId);
+  return r.kind === "found" ? { id: r.id, email: r.email, name: r.name } : null;
 }
 
 export type MailType =
@@ -519,7 +542,7 @@ async function listActiveEnrollmentUserIds(courseId: string): Promise<{ user_id:
   }
 }
 
-type AnnouncementDelivery = "sent" | "failed" | "not_claimed" | "unresolved" | "deferred";
+type AnnouncementDelivery = "sent" | "failed" | "not_claimed" | "unresolved" | "lookup_failed" | "deferred";
 
 interface AnnouncementLog {
   /** Confirmado o con los 3 intentos gastados: no hay que volver a intentarlo. */
@@ -636,11 +659,14 @@ export async function notifyAnnouncementPublished(input: { announcementId: strin
           return "deferred";
         }
         // Resolver antes de reclamar (orden de notifyWelcome): sin dirección no se gasta el turno.
-        const student = await getUserEmail(userId);
-        if (!student) {
+        const student = await lookupRecipient(userId);
+        // B-3: solo la falta CONFIRMADA de dirección retira el turno; una falla de GoTrue o de
+        // PostgREST lo deja pendiente para la próxima corrida.
+        if (student.kind === "missing") {
           unresolved.push(userId);
           return "unresolved";
         }
+        if (student.kind === "error") return "lookup_failed";
         const claim = await claimOrReclaimMailSlot(student.id, "course_announcement", announcement.id);
         if (!claim) return "not_claimed";
         const { subject, html, text } = renderCourseAnnouncementMail({
