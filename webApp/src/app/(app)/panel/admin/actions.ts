@@ -7,7 +7,7 @@ import { notifyEnrollmentActivated, notifyEnrollmentRejected } from "@/lib/serve
 import { hasLocator } from "@/lib/validation/locator.mjs";
 import { ENROLLMENT_COPY, NO_ROWS, REASON_MAX, translateEnrollmentError } from "@/lib/enrollment/messages";
 import { getFounderId, requireAdmin } from "@/lib/server/admin";
-import { getAdminSupabaseClient } from "@/lib/server/supabase-admin";
+import { createServiceRoleClient } from "@/lib/supabase/service";
 import { deleteErrorEvent } from "@/lib/server/error-events";
 import { resolveGrantTarget } from "@/lib/server/enrollment-grant";
 import { normalizeEmail } from "@/lib/admin/email";
@@ -39,7 +39,7 @@ export const updateUserRoleAction = withRateLimit(
       return { error: "Datos inválidos.", success: null };
     }
 
-    const db = getAdminSupabaseClient();
+    const db = createServiceRoleClient();
 
     const { data: target, error: targetError } = await db
       .from("profiles")
@@ -109,7 +109,7 @@ async function setEnrollment(
     return { error: "Datos inválidos.", success: null };
   }
 
-  const db = getAdminSupabaseClient();
+  const db = createServiceRoleClient();
 
   const { error } = await db
     .from("enrollments")
@@ -171,7 +171,7 @@ export const setCourseStatusAction = withRateLimit(
       return { error: "Datos inválidos.", success: null };
     }
 
-    const db = getAdminSupabaseClient();
+    const db = createServiceRoleClient();
 
     const { error } = await db
       .from("courses")
@@ -217,7 +217,7 @@ export const approveEnrollmentRequestAction = withRateLimit(
     const id = enrollmentIdSchema.safeParse(formData.get("enrollmentId"));
     if (!id.success) return { error: ENROLLMENT_COPY.invalidData, success: null };
 
-    const db = getAdminSupabaseClient();
+    const db = createServiceRoleClient();
     const now = new Date().toISOString();
     const { data, error } = await db
       .from("enrollments")
@@ -260,7 +260,7 @@ export const rejectEnrollmentRequestAction = withRateLimit(
     }
     const decidedReason = reason.data === "" ? null : reason.data;
 
-    const db = getAdminSupabaseClient();
+    const db = createServiceRoleClient();
     const { data, error } = await db
       .from("enrollments")
       .update({ status: "rejected", decided_at: new Date().toISOString(), decided_reason: decidedReason })
@@ -318,7 +318,7 @@ export const hideReviewAction = withRateLimit(
       return { error: "El motivo va de 1 a 1000 caracteres.", success: null };
     }
 
-    const { data, error } = await getAdminSupabaseClient().rpc("moderate_hide_review", {
+    const { data, error } = await createServiceRoleClient().rpc("moderate_hide_review", {
       p_review_id: reviewId,
       p_admin_id: admin.id,
       p_reason: reason,
@@ -346,7 +346,7 @@ export const unhideReviewAction = withRateLimit(
     const admin = await requireAdmin();
     if (!moderationIdSchema.safeParse(reviewId).success) return { error: "Reseña inválida.", success: null };
 
-    const { data, error } = await getAdminSupabaseClient().rpc("moderate_unhide_review", {
+    const { data, error } = await createServiceRoleClient().rpc("moderate_unhide_review", {
       p_review_id: reviewId,
       p_admin_id: admin.id,
     });
@@ -372,7 +372,7 @@ export const dismissReportAction = withRateLimit(
     const admin = await requireAdmin();
     if (!moderationIdSchema.safeParse(reportId).success) return { error: "Reporte inválido.", success: null };
 
-    const { data, error } = await getAdminSupabaseClient().rpc("moderate_dismiss_report", {
+    const { data, error } = await createServiceRoleClient().rpc("moderate_dismiss_report", {
       p_report_id: reportId,
       p_admin_id: admin.id,
     });
@@ -468,7 +468,7 @@ export const setFounderAction = withRateLimit(
     // otra admin acaba de marcar. Lectura y desmarca no son atómicas; la ventana es de milisegundos.
     if (clear && (await getFounderId()) !== userId) return { error: FOUNDER_ERRORS["23505"], success: null };
 
-    const { error } = await getAdminSupabaseClient().rpc("admin_set_founder", { p_profile_id: clear ? null : userId });
+    const { error } = await createServiceRoleClient().rpc("admin_set_founder", { p_profile_id: clear ? null : userId });
     if (error) {
       log.error("founder_set_failed", { pg_code: error.code });
       return { error: FOUNDER_ERRORS[error.code ?? ""] ?? "No se pudo actualizar la creadora.", success: null };

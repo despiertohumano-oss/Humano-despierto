@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { sendMail, getAdminSupabaseClient } = vi.hoisted(() => ({
+const { sendMail, createServiceRoleClient } = vi.hoisted(() => ({
   sendMail: vi.fn(),
-  getAdminSupabaseClient: vi.fn(),
+  createServiceRoleClient: vi.fn(),
 }));
 vi.mock("@/lib/server/mail/send", () => ({ sendMail }));
-vi.mock("@/lib/server/supabase-admin", () => ({ getAdminSupabaseClient }));
+vi.mock("@/lib/supabase/service", () => ({ createServiceRoleClient }));
 vi.mock("@/lib/server/site-url", () => ({ getSiteUrl: () => "http://localhost:3000" }));
 
 import { notifyEnrollmentRejected } from "./notify";
@@ -34,7 +34,7 @@ function fakeDb(claimRows: unknown[]) {
     },
     rpc,
   };
-  getAdminSupabaseClient.mockReturnValue(db);
+  createServiceRoleClient.mockReturnValue(db);
   return { rpc };
 }
 

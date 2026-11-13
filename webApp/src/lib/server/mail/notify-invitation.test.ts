@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({ sendMail: vi.fn() }));
 vi.mock("@/lib/server/mail/send", () => ({ sendMail: mocks.sendMail }));
-vi.mock("@/lib/server/supabase-admin", () => ({ getAdminSupabaseClient: vi.fn() }));
+vi.mock("@/lib/supabase/service", () => ({ createServiceRoleClient: vi.fn() }));
 vi.mock("@/lib/server/site-url", () => ({ getSiteUrl: () => "http://localhost:3000" }));
 
 import { notifyTeacherInvitation } from "./notify";

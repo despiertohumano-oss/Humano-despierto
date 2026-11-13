@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const { getAdminSupabaseClient } = vi.hoisted(() => ({ getAdminSupabaseClient: vi.fn() }));
-vi.mock("@/lib/server/supabase-admin", () => ({ getAdminSupabaseClient }));
+const { createServiceRoleClient } = vi.hoisted(() => ({ createServiceRoleClient: vi.fn() }));
+vi.mock("@/lib/supabase/service", () => ({ createServiceRoleClient }));
 vi.mock("@/lib/server/site-url", () => ({ getSiteUrl: () => "http://localhost:3000" }));
 
 import { __setTransportForTests } from "./send";
@@ -59,7 +59,7 @@ function fakeDb() {
       throw new Error(`tabla inesperada: ${table}`);
     },
   };
-  getAdminSupabaseClient.mockReturnValue(db);
+  createServiceRoleClient.mockReturnValue(db);
   return { updates };
 }
 

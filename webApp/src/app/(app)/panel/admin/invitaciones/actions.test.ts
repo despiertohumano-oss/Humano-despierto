@@ -12,7 +12,7 @@ const mocks = vi.hoisted(() => ({
   revalidatePath: vi.fn(),
 }));
 vi.mock("@/lib/server/auth", () => ({ getCurrentUser: mocks.getCurrentUser }));
-vi.mock("@/lib/server/supabase-admin", () => ({ getAdminSupabaseClient: vi.fn() }));
+vi.mock("@/lib/supabase/service", () => ({ createServiceRoleClient: vi.fn() }));
 vi.mock("@/lib/server/invitations", () => ({
   inviteTeacher: mocks.inviteTeacher,
   reissueInvitation: mocks.reissueInvitation,

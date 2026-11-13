@@ -1,5 +1,5 @@
 import "server-only";
-import { getAdminSupabaseClient } from "@/lib/server/supabase-admin";
+import { createServiceRoleClient } from "@/lib/supabase/service";
 import { reportStatus, type ReportStatus } from "@/lib/reviews/report-status";
 
 // Lecturas con service_role. Quien llama verificó antes: `requireAdmin()` para las dos primeras,
@@ -72,7 +72,7 @@ function toReview(r: ReviewRow): ModerationReview {
 }
 
 export async function listPendingReports(): Promise<PendingReport[]> {
-  const { data, error } = await getAdminSupabaseClient()
+  const { data, error } = await createServiceRoleClient()
     .from("course_review_reports")
     .select(
       `id, reason, created_at,
@@ -103,7 +103,7 @@ export async function listPendingReports(): Promise<PendingReport[]> {
 }
 
 export async function listRecentReviews(limit = 50): Promise<ModerationReview[]> {
-  const { data, error } = await getAdminSupabaseClient()
+  const { data, error } = await createServiceRoleClient()
     .from("course_reviews")
     .select(REVIEW_COLUMNS)
     .order("updated_at", { ascending: false })
@@ -115,7 +115,7 @@ export async function listRecentReviews(limit = 50): Promise<ModerationReview[]>
 // Solo lo que la guía puede saber (ADR-012 flujo 4): cuándo, en qué curso y cómo terminó. Ni
 // `resolved_by` ni `hidden_reason` salen de esta función.
 export async function listOwnReviewReports(reporterId: string): Promise<OwnReport[]> {
-  const { data, error } = await getAdminSupabaseClient()
+  const { data, error } = await createServiceRoleClient()
     .from("course_review_reports")
     .select("id, created_at, resolution, review:course_reviews(course:courses(title))")
     .eq("reporter_id", reporterId)

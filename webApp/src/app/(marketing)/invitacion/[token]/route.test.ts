@@ -5,7 +5,7 @@ const mocks = vi.hoisted(() => ({
   subject: vi.fn(),
 }));
 vi.mock("@/lib/supabase/server", () => ({ createClient: async () => ({ auth: {} }) }));
-vi.mock("@/lib/server/supabase-admin", () => ({ getAdminSupabaseClient: vi.fn() }));
+vi.mock("@/lib/supabase/service", () => ({ createServiceRoleClient: vi.fn() }));
 vi.mock("@/lib/server/invitations", () => ({ acceptInvitation: vi.fn() }));
 vi.mock("@/lib/server/invitation-visit", () => ({ resolveInvitationVisit: mocks.resolveInvitationVisit }));
 vi.mock("@/lib/server/rate-limit-subject", () => ({ currentRateLimitSubject: mocks.subject }));
