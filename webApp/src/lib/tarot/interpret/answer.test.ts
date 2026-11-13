@@ -22,13 +22,22 @@ describe("respuesta reflexiva", () => {
     const r = buildReading({ spread: "carta-del-dia", cards: [{ indice: 0, reversed: false }] }, "¿Qué siente por mí?");
     expect(answerCards(r).map((p) => p.position.lente)).toEqual(["consejo"]);
   });
-  it("balance por carta: sí no trabada a favor; no o trabada en contra", () => {
-    const c = (si_no: string, estado: string) => ({ card: { si_no }, estado }) as never;
+  it("balance: suma lo que cada carta se aparta del promedio del mazo y exige margen", () => {
+    const c = (si_no: string, estado: string, reversed = false) => ({ card: { si_no }, estado, reversed }) as never;
     expect(balanceOf([c("sí", "pleno"), c("sí", "pleno"), c("no", "pleno")])).toBe("favorable");
-    expect(balanceOf([c("sí", "trabada"), c("no", "pleno"), c("sí", "pleno")])).toBe("desfavorable");
+    // Antes «desfavorable» por 2 a 1; ahora -1 + 0,27 no supera el margen de 0,5·√3.
+    expect(balanceOf([c("sí", "trabada"), c("no", "pleno"), c("sí", "pleno")])).toBe("abierta");
+    expect(balanceOf([c("sí", "trabada"), c("no", "pleno"), c("depende", "pleno")])).toBe("desfavorable");
     expect(balanceOf([c("sí", "pleno"), c("no", "pleno")])).toBe("abierta");
     expect(balanceOf([c("depende", "pleno"), c("depende", "pleno")])).toBe("abierta");
-    expect(balanceOf([c("sí", "en_proceso"), c("sí", "en_proceso"), c("sí", "pleno")])).toBe("abierta");
+    expect(balanceOf([c("sí", "en_proceso", true), c("sí", "en_proceso", true), c("sí", "pleno")])).toBe("abierta");
+    // Una invertida baja un escalón: «sí» al revés ya no suma (compárese con la primera línea).
+    expect(balanceOf([c("sí", "en_proceso", true), c("sí", "pleno"), c("no", "pleno")])).toBe("abierta");
+    expect(balanceOf([c("sí", "pleno"), c("sí", "pleno"), c("depende", "pleno")])).toBe("favorable");
+    // Una sola carta lee su propio signo, como antes.
+    expect(balanceOf([c("sí", "pleno")])).toBe("favorable");
+    expect(balanceOf([c("depende", "pleno")])).toBe("abierta");
+    expect(balanceOf([c("no", "pleno")])).toBe("desfavorable");
   });
   it("si-o-no: la respuesta sigue el veredicto, no el estado", () => {
     const r = buildReading({ spread: "si-o-no", cards: [["tres-de-espadas", false], ["la-luna", true], ["diez-de-espadas", false]].map(([s, rev]) => ({ indice: idx(s as string), reversed: rev as boolean })) }, "¿Vuelve conmigo?");

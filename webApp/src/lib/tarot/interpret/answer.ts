@@ -3,6 +3,7 @@ import templates from "../data/templates.json";
 import { nombrar } from "../prose";
 import type { Contrast, PlacedCard, ReadingFacts } from "../reading";
 import type { QuestionType } from "../question";
+import { cardVerdict, type Verdict } from "../yes-no";
 import type { Lens } from "./lenses";
 import { fill, joinY, pick } from "./text";
 
@@ -45,17 +46,27 @@ export function answerCards(facts: ReadingFacts): PlacedCard[] {
   return consejo.length ? consejo : [ordered.at(-1)!];
 }
 
+const POLARIDAD: Record<Verdict, number> = { "sí": 1, depende: 0, no: -1 };
+
+// Una carta suma +1, 0 o -1: la trabada resta; la invertida baja un escalón, como en el sí/no.
+export function cardValue(c: Pick<PlacedCard, "card" | "estado" | "reversed">): number {
+  return c.estado === "trabada" ? -1 : POLARIDAD[cardVerdict(c.card, c.reversed)];
+}
+
+// Lo que vale en promedio una carta al azar: el mazo trae 49 «sí», 12 «depende» y 17 «no», un tercio sale
+// invertida y una de cada cinco queda trabada por sus vecinas. Sin restarlo, cualquier tirada grande «favorece».
+// balance.test.ts lo vuelve a medir.
+export const VALOR_BASE = -0.09;
+// Margen en desvíos (σ ≈ 1 por carta): por debajo de 0,5·√n la diferencia es ruido del mazo y la respuesta queda abierta.
+export const MARGEN = 0.5;
+
 export function balanceOf(cards: PlacedCard[]): Balance {
   const E = cards.filter((c) => c.estado === "en_proceso").length;
   if (E > cards.length - E) return "abierta";
-  let favor = 0;
-  let contra = 0;
-  for (const c of cards) {
-    if (c.card.si_no === "no" || c.estado === "trabada") contra++;
-    else if (c.card.si_no === "sí") favor++;
-  }
-  if (favor > contra) return "favorable";
-  if (contra > favor) return "desfavorable";
+  const desvio = cards.reduce((s, c) => s + cardValue(c) - VALOR_BASE, 0);
+  const umbral = MARGEN * Math.sqrt(cards.length);
+  if (desvio > umbral) return "favorable";
+  if (desvio < -umbral) return "desfavorable";
   return "abierta";
 }
 
