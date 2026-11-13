@@ -226,50 +226,50 @@
     "Te dejo esta pregunta: {pregunta}"
   ],
   "idea_inicio": [
-    "{A} abre la historia con {clave}.",
-    "{A} pone el punto de partida: {clave}.",
-    "{A} es donde empieza todo, con {clave}.",
-    "{A} marca el comienzo, y el comienzo es {clave}."
+    "{A}, al comienzo: {clave}.",
+    "{A} como punto de partida: {clave}.",
+    "{A} en el arranque de la historia, con una idea: «{clave}».",
+    "{A}, para empezar: {clave}."
   ],
   "idea_paso": [
-    "Después entra {a} y suma {clave}.",
-    "Sobre eso se apoya {a}, que trae {clave}.",
-    "Le sigue {a}, con {clave}.",
-    "En el camino aparece {a}: {clave}.",
-    "Con {a}, la historia gira hacia {clave}.",
-    "Más adelante, {a} agrega {clave}.",
-    "Entonces llega {a} y el tono pasa a ser {clave}.",
-    "Y en ese tramo {a} pone {clave}."
+    "Después, con {a}, otro matiz: {clave}.",
+    "Sobre esa base, {a}: {clave}.",
+    "En el camino, con {a}, se suma «{clave}».",
+    "Con {a}, la historia gira: {clave}.",
+    "Más adelante, con {a}, aparece «{clave}».",
+    "Entonces, con {a}, el tono cambia: {clave}.",
+    "En ese tramo, con {a}, se agrega «{clave}».",
+    "Luego, {a}: {clave}."
   ],
   "idea_fin": [
+    "Y al final, {a}: {clave}.",
     "Todo desemboca en {a}: {clave}.",
-    "Al final, {a} cierra el recorrido con {clave}.",
-    "Y la historia llega a {clave}, con {a} como cierre.",
-    "El último paso lo da {a}, con {clave}."
+    "El recorrido cierra con {a}: {clave}.",
+    "Como último paso, {a}: {clave}."
   ],
   "posicion_lente": [
     "En «{posicion}», {nombre} {texto_min}",
-    "En «{posicion}» aparece {nombre}. {texto}",
+    "En «{posicion}», la tirada muestra {nombre}. {texto}",
     "{Nombre}, como «{posicion}», {texto_min}",
-    "Para «{posicion}» salió {nombre}. {texto}",
-    "{Nombre} ocupa «{posicion}». {texto}"
+    "Para «{posicion}», la carta es {nombre}. {texto}",
+    "En «{posicion}», la carta que sale es {nombre}. {texto}"
   ],
   "estado_nuevo": {
     "pleno": [
-      "Acá {nombre} se expresa con toda su fuerza. {texto}",
-      "Las cartas vecinas no le restan nada: {nombre} puede desplegarse. {texto}",
+      "Con {nombre}, acá la energía se expresa con toda su fuerza. {texto}",
+      "Las cartas vecinas no le restan nada a esta energía: con {nombre} hay espacio para desplegarse. {texto}",
       "Con {nombre} en su mejor versión, esto es lo que hay a mano. {texto}"
     ],
     "en_proceso": [
-      "Acá {nombre} aparece con menos fuerza: el tema es el mismo, pero todavía está en camino. Hacia esto apunta, aunque no termine de llegar. {texto}",
-      "Que {nombre} salga al revés no cambia su sentido: su energía es la misma, solo que más baja o todavía gestándose. Lo que se está formando es esto. {texto}",
+      "Acá, con {nombre}, la energía aparece con menos fuerza: el tema es el mismo, pero todavía está en camino. Hacia esto apunta, aunque no termine de llegar. {texto}",
+      "Con {nombre} al revés, el sentido no cambia: la energía es la misma, solo que más baja o todavía gestándose. Lo que se está formando es esto. {texto}",
       "{texto} Acá eso todavía no se concreta del todo: con {nombre} el proceso está en marcha y le falta un poco para mostrarse entero.",
-      "Lo que trae {nombre} sigue presente, en voz baja o a medio camino. Cuando termine de madurar, se ve así. {texto}"
+      "La energía en {nombre} sigue presente, en voz baja o a medio camino. Cuando termine de madurar, se ve así. {texto}"
     ],
     "trabada": [
-      "Acá las cartas vecinas le restan fuerza y {nombre} no termina de desplegarse. Así se nota cuando se traba. {texto}",
-      "Lo que tiene alrededor le juega en contra, y {nombre} se queda en su costado más difícil. {texto}",
-      "Con lo que tiene al lado, {nombre} no fluye; aparece su costado más trabado. {texto} Verlo es el primer paso para destrabarlo."
+      "Acá las cartas vecinas le restan fuerza a esta energía, y con {nombre} cuesta desplegarla. Así se nota cuando se traba. {texto}",
+      "Lo que hay alrededor juega en contra, y con {nombre} asoma el costado más difícil. {texto}",
+      "Con estas vecinas, la energía en {nombre} no fluye y aparece su costado más trabado. {texto} Reconocerlo ya empieza a aflojar el nudo."
     ]
   },
   "patron_numero": {
@@ -339,141 +339,141 @@
   "gente": [
     "Con {cartas}, hay gente involucrada: personas concretas que influyen en esto y que vale tener en cuenta.",
     "En {cartas} se asoman otras personas. No estás sola ni solo en esto: hay quienes acompañan, empujan o complican.",
-    "Las figuras de {cartas} hablan de personas: el asunto no se juega solo por dentro, también en los vínculos que lo rodean."
+    "Con {cartas} en juego, el asunto no pasa solo por dentro: también por los vínculos que lo rodean."
   ],
   "facetas": [
-    "En {cartas} no hace falta buscar a otra persona: hablan de facetas tuyas, maneras de ser que hoy están en juego.",
-    "Con {cartas}, la figura es un espejo: muestra una forma tuya de actuar o de sentir en este momento.",
-    "Las figuras de {cartas} se pueden leer como partes tuyas: recursos y actitudes que ya tenés, aunque no siempre los uses."
+    "En {cartas} no hace falta buscar a otra persona: lo que aparece son facetas tuyas, maneras de ser que hoy están en juego.",
+    "Con {cartas} en juego, lo que se ve es un espejo: una forma tuya de actuar o de sentir en este momento.",
+    "En {cartas} se pueden leer partes tuyas: recursos y actitudes que ya tenés, aunque no siempre los uses."
   ],
   "dominante": [
-    "{Nombre} marca el tono de toda la tirada. Desde «{posicion}», es la carta que más pesa. {texto}",
+    "La carta que marca el tono de toda la tirada es {nombre}. Desde «{posicion}», es la que más pesa. {texto}",
     "Si hay una carta que ordena las demás, es {nombre}, en «{posicion}». {texto}",
-    "{Nombre} es el eje de todo: aparece en «{posicion}» y las demás cartas se ordenan con ella. {texto}",
+    "El eje de todo es {nombre}, en «{posicion}»; las demás cartas se ordenan a su alrededor. {texto}",
     "La carta con más peso es {nombre}. Ocupa «{posicion}» y desde ahí tiñe el resto. {texto}"
   ],
   "tension": {
     "intensifica": [
       "{A}, en {la}, y {b}, en {lb}, hablan el mismo idioma: lo que trae una carta, la otra lo amplifica.",
-      "{A} y {b} comparten energía: entre {la} y {lb} no hay freno, y juntas suben el volumen.",
+      "{A} y {b} comparten energía: entre {la} y {lb} no hay freno, y el volumen sube entre las dos.",
       "{A} y {b} empujan en la misma dirección. Lo que pasa en {la} se repite, más fuerte, en {lb}."
     ],
     "refuerza": [
       "{A}, en {la}, y {b}, en {lb}, se dan pie: son energías que se llevan bien y se apoyan.",
-      "{A} y {b} se alimentan una a la otra: entre {la} y {lb} hay buena química.",
-      "{A} aporta algo en {la} que encuentra eco en {b}, en {lb}. Ahí hay un apoyo para usar."
+      "{A} y {b} se alimentan mutuamente: entre {la} y {lb} hay buena química.",
+      "{A}, en {la}, y {b}, en {lb}, se hacen eco. Ahí hay un apoyo para usar."
     ],
     "debilita": [
-      "{A}, en {la}, y {b}, en {lb}, tiran para lados distintos: lo que una enciende, la otra lo enfría. Ahí está la tensión.",
+      "{A}, en {la}, y {b}, en {lb}, tiran para lados distintos: lo que una carta enciende, la otra lo enfría. Ahí está la tensión.",
       "{A} y {b} chocan entre {la} y {lb}: no se anulan, pero se frenan. Vale mirar cuál de las dos querés que pese más.",
       "{A} y {b} se contradicen. Lo que se mueve en {la} encuentra resistencia en {lb}, y esa fricción también dice algo."
     ],
     "neutral": [
-      "{A}, en {la}, y {b}, en {lb}, se cruzan sin pelear: cada una sigue su propio ritmo.",
-      "{A} y {b} conviven sin choque ni empuje entre {la} y {lb}; la relación entre las dos depende de vos.",
+      "{A}, en {la}, y {b}, en {lb}, se cruzan sin pelear: cada carta sigue su propio ritmo.",
+      "{A} y {b} conviven sin choque ni empuje entre {la} y {lb}; la relación entre las dos cartas depende de vos.",
       "{A} y {b} no se refuerzan ni se frenan. Lo que pasa en {la} y lo que pasa en {lb} corren en paralelo."
     ]
   },
   "respuesta": {
     "si_no": {
       "favorable": [
-        "Sobre «{pregunta}»: las fuerzas en juego se inclinan a favor. Con {cartas} en la tirada, el camino aparece más abierto que cerrado, y {dominante} le da el tono. No es una sentencia: es lo que hoy pesa más.",
+        "Sobre «{pregunta}»: las fuerzas en juego se inclinan a favor. Con {cartas} en la tirada, el camino aparece más abierto que cerrado, y la carta central, {dominante}, le da el tono. No es una sentencia: es lo que hoy pesa más.",
         "Sobre «{pregunta}», la tirada acompaña. En {cartas} se ve energía disponible para que eso se dé, con {dominante} en el centro. Lo que hagas con esa energía sigue siendo tuyo.",
         "«{pregunta}»: lo que aparece empuja hacia el sí. Con {dominante} marcando el rumbo y {cartas} en juego, hay terreno firme; falta tu paso."
       ],
       "abierta": [
-        "Sobre «{pregunta}»: la cuestión sigue abierta. Con {cartas} en juego hay fuerzas que empujan y otras que todavía se están formando, y {dominante} muestra dónde está el punto de equilibrio. Lo que elijas inclina la balanza.",
-        "Sobre «{pregunta}», las cartas no cierran la respuesta. En {cartas} se ve que esto todavía se está moviendo; {dominante} señala qué mirar para que se defina.",
+        "Sobre «{pregunta}»: la cuestión sigue abierta. Con {cartas} en juego hay fuerzas que empujan y otras que todavía se están formando, y la carta central, {dominante}, muestra dónde está el punto de equilibrio. Lo que elijas inclina la balanza.",
+        "Sobre «{pregunta}», las cartas no cierran la respuesta. En {cartas} se ve que esto todavía se está moviendo; la carta central, {dominante}, señala qué mirar para que se defina.",
         "«{pregunta}»: ni un sí ni un no rotundos. Con {dominante} en el centro y {cartas} alrededor, la respuesta depende más de lo que hagas que de lo que esperes."
       ],
       "desfavorable": [
-        "Sobre «{pregunta}»: hoy las fuerzas en juego no acompañan del todo. Con {cartas} en la tirada aparecen frenos, y {dominante} muestra dónde está la traba. No es un final: es una invitación a revisar el camino.",
-        "Sobre «{pregunta}», la tirada pide prudencia. En {cartas} se ve que, así como está planteado, esto cuesta; {dominante} señala qué habría que mover.",
+        "Sobre «{pregunta}»: hoy las fuerzas en juego no acompañan del todo. Con {cartas} en la tirada aparecen frenos, y la carta central, {dominante}, muestra dónde está la traba. No es un final: es una invitación a revisar el camino.",
+        "Sobre «{pregunta}», la tirada pide prudencia. En {cartas} se ve que, así como está planteado, esto cuesta; la carta central, {dominante}, señala qué habría que mover.",
         "«{pregunta}»: lo que aparece se inclina más al no, al menos por este camino. Con {dominante} en el centro y {cartas} en juego, conviene mirar qué está trabando antes de insistir."
       ]
     },
     "cuando": {
       "favorable": [
-        "Sobre «{pregunta}»: las cartas no dan fechas, pero muestran ritmo. Con {cartas} en juego, buena parte de las energías ya está en movimiento, y {dominante} indica que el proceso avanza. Lo que falta depende más de seguir que de esperar.",
+        "Sobre «{pregunta}»: las cartas no dan fechas, pero muestran ritmo. Con {cartas} en juego, buena parte de las energías ya está en movimiento, y la carta central, {dominante}, indica que el proceso avanza. Lo que falta depende más de seguir que de esperar.",
         "Sobre «{pregunta}», la tirada habla de un proceso que ya está andando. En {cartas} se ve fuerza, con {dominante} a la cabeza: lo necesario está bastante maduro.",
         "«{pregunta}»: no hay un calendario en las cartas, pero sí señales de que esto fluye. Con {dominante} marcando el paso y {cartas} a favor, el momento se está armando."
       ],
       "abierta": [
-        "Sobre «{pregunta}»: las cartas no marcan fechas, y acá muestran algo todavía en proceso. Con {cartas} en juego, varias energías están en camino, sin terminar de llegar; {dominante} señala qué tiene que madurar primero.",
-        "Sobre «{pregunta}», la tirada habla de algo que se está gestando. En {cartas} se ven fuerzas a medio camino; {dominante} indica dónde poner atención mientras se acomodan.",
+        "Sobre «{pregunta}»: las cartas no marcan fechas, y acá muestran algo todavía en proceso. Con {cartas} en juego, varias energías están en camino, sin terminar de llegar; la carta central, {dominante}, señala qué tiene que madurar primero.",
+        "Sobre «{pregunta}», la tirada habla de algo que se está gestando. En {cartas} se ven fuerzas a medio camino; la carta central, {dominante}, indica dónde poner atención mientras se acomodan.",
         "«{pregunta}»: no hay plazo en las cartas, y esta tirada lo deja abierto. Con {dominante} en el centro y {cartas} todavía acomodándose, el ritmo lo va marcando el proceso."
       ],
       "desfavorable": [
-        "Sobre «{pregunta}»: las cartas no dan fechas, y acá muestran que hay cosas trabadas antes de que eso pueda darse. Con {cartas} en juego, {dominante} señala qué habría que destrabar primero.",
-        "Sobre «{pregunta}», la tirada no muestra un proceso fluido todavía. En {cartas} se ve un proceso frenado; {dominante} indica dónde está el nudo. Cuando ese nudo se afloje, el resto puede moverse.",
+        "Sobre «{pregunta}»: las cartas no dan fechas, y acá muestran que hay cosas trabadas antes de que eso pueda darse. Con {cartas} en juego, la carta central, {dominante}, señala qué habría que destrabar primero.",
+        "Sobre «{pregunta}», la tirada no muestra un proceso fluido todavía. En {cartas} se ve un proceso frenado; la carta central, {dominante}, indica dónde está el nudo. Cuando ese nudo se afloje, el resto puede moverse.",
         "«{pregunta}»: más que un cuándo, las cartas muestran un qué. Con {dominante} en el centro y frenos en {cartas}, lo que define el ritmo es lo que hoy está detenido."
       ]
     },
     "que_hacer": {
       "favorable": [
-        "Sobre «{pregunta}»: tenés recursos para moverte. Con {cartas} en juego, lo que está a tu alcance pesa más que lo que falta, y {dominante} sugiere por dónde empezar. La decisión es tuya; las cartas solo iluminan opciones.",
-        "Sobre «{pregunta}», la tirada muestra apoyos. En {cartas} se ve que contás con lo necesario; {dominante} indica una actitud que puede servirte.",
+        "Sobre «{pregunta}»: tenés recursos para moverte. Con {cartas} en juego, lo que está a tu alcance pesa más que lo que falta, y la carta central, {dominante}, sugiere por dónde empezar. La decisión es tuya; las cartas solo iluminan opciones.",
+        "Sobre «{pregunta}», la tirada muestra apoyos. En {cartas} se ve que contás con lo necesario; la carta central, {dominante}, indica una actitud que puede servirte.",
         "«{pregunta}»: el terreno acompaña. Con {dominante} como guía y {cartas} a favor, se trata de animarte a usar lo que ya tenés."
       ],
       "abierta": [
-        "Sobre «{pregunta}»: no hay un único camino marcado. Con {cartas} en juego hay apoyos y también cosas que todavía se están acomodando; {dominante} te propone algo para mirar antes de decidir.",
-        "Sobre «{pregunta}», la tirada muestra opciones abiertas. En {cartas} nada empuja hacia un lado solo; {dominante} sugiere qué tener en cuenta para elegir.",
+        "Sobre «{pregunta}»: no hay un único camino marcado. Con {cartas} en juego hay apoyos y también cosas que todavía se están acomodando; la carta central, {dominante}, te propone algo para mirar antes de decidir.",
+        "Sobre «{pregunta}», la tirada muestra opciones abiertas. En {cartas} nada empuja hacia un lado solo; la carta central, {dominante}, sugiere qué tener en cuenta para elegir.",
         "«{pregunta}»: las cartas devuelven la pregunta. Con {dominante} en el centro y {cartas} alrededor, lo que hagas puede inclinar esto para un lado o para el otro."
       ],
       "desfavorable": [
-        "Sobre «{pregunta}»: antes de actuar conviene mirar qué está trabando. Con {cartas} en juego aparecen resistencias, y {dominante} señala cuál pesa más. A veces lo que hay que hacer es primero ordenar.",
-        "Sobre «{pregunta}», la tirada pide pausa antes que empuje. En {cartas} se ven cosas frenadas; {dominante} indica por dónde empezar a destrabarlas.",
+        "Sobre «{pregunta}»: antes de actuar conviene mirar qué está trabando. Con {cartas} en juego aparecen resistencias, y la carta central, {dominante}, señala cuál pesa más. A veces lo que hay que hacer es primero ordenar.",
+        "Sobre «{pregunta}», la tirada pide pausa antes que empuje. En {cartas} se ven cosas frenadas; la carta central, {dominante}, indica por dónde empezar a destrabarlas.",
         "«{pregunta}»: forzar no parece el camino. Con {dominante} en el centro y frenos en {cartas}, lo más útil puede ser revisar desde dónde estás eligiendo."
       ]
     },
     "el_otro": {
       "favorable": [
-        "Sobre «{pregunta}»: las cartas no leen la mente de nadie; leen el vínculo desde tu lado. Con {cartas} en juego, lo que aparece entre ustedes tiene energía a favor, y {dominante} muestra qué estás poniendo vos en esto.",
-        "Sobre «{pregunta}», la tirada mira el vínculo desde quien pregunta, no por dentro de la otra persona. En {cartas} se ve un lazo con fuerza; {dominante} señala lo que hoy lo sostiene.",
+        "Sobre «{pregunta}»: las cartas no leen la mente de nadie; leen el vínculo desde tu lado. Con {cartas} en juego, lo que aparece entre ustedes tiene energía a favor, y la carta central, {dominante}, muestra qué estás poniendo vos en esto.",
+        "Sobre «{pregunta}», la tirada mira el vínculo desde quien pregunta, no por dentro de la otra persona. En {cartas} se ve un lazo con fuerza; la carta central, {dominante}, señala lo que hoy lo sostiene.",
         "«{pregunta}»: lo que se ve es la relación tal como la vivís vos. Con {dominante} en el centro y {cartas} a favor, hay algo vivo entre ustedes que vale cuidar."
       ],
       "abierta": [
-        "Sobre «{pregunta}»: las cartas no entran en la cabeza de la otra persona; muestran el vínculo desde tu lado. Con {cartas} en juego, ese lazo todavía se está definiendo, y {dominante} señala qué mirar en vos mientras tanto.",
-        "Sobre «{pregunta}», la tirada lee la relación desde quien pregunta. En {cartas} se ve un vínculo en movimiento, sin forma cerrada; {dominante} indica qué parte depende de vos.",
-        "«{pregunta}»: lo que aparece es tu lado del vínculo, no el sentir del otro. Con {dominante} en el centro y {cartas} acomodándose, hay preguntas que solo una conversación puede responder."
+        "Sobre «{pregunta}»: las cartas no entran en la cabeza de la otra persona; muestran el vínculo desde tu lado. Con {cartas} en juego, ese lazo todavía se está definiendo, y la carta central, {dominante}, señala qué mirar en vos mientras tanto.",
+        "Sobre «{pregunta}», la tirada lee la relación desde quien pregunta. En {cartas} se ve un vínculo en movimiento, sin forma cerrada; la carta central, {dominante}, indica qué parte depende de vos.",
+        "«{pregunta}»: lo que aparece es tu lado del vínculo, no el sentir de la otra persona. Con {dominante} en el centro y {cartas} acomodándose, hay preguntas que solo una conversación puede responder."
       ],
       "desfavorable": [
-        "Sobre «{pregunta}»: las cartas no leen lo que siente la otra persona; leen el vínculo desde tu lado. Con {cartas} en juego, ese lazo hoy aparece con trabas, y {dominante} muestra dónde duele o dónde se frena.",
-        "Sobre «{pregunta}», la tirada mira la relación desde quien pregunta. En {cartas} se ve tensión en el vínculo; {dominante} señala qué te está pidiendo atención a vos.",
-        "«{pregunta}»: lo que se ve es tu experiencia del vínculo, no la mente del otro. Con {dominante} en el centro y frenos en {cartas}, quizás la pregunta más útil sea qué necesitás vos."
+        "Sobre «{pregunta}»: las cartas no leen lo que siente la otra persona; leen el vínculo desde tu lado. Con {cartas} en juego, ese lazo hoy aparece con trabas, y la carta central, {dominante}, muestra dónde duele o dónde se frena.",
+        "Sobre «{pregunta}», la tirada mira la relación desde quien pregunta. En {cartas} se ve tensión en el vínculo; la carta central, {dominante}, señala qué te está pidiendo atención a vos.",
+        "«{pregunta}»: lo que se ve es tu experiencia del vínculo, no la mente de la otra persona. Con {dominante} en el centro y frenos en {cartas}, quizás la pregunta más útil sea qué necesitás vos."
       ]
     },
     "como_sale": {
       "favorable": [
-        "Sobre «{pregunta}»: si las energías siguen como están, el rumbo es bueno. Con {cartas} en juego, lo que se ve tiende a abrirse, y {dominante} muestra el tono del camino. Es una posibilidad, no un destino.",
-        "Sobre «{pregunta}», la tirada dibuja un recorrido que acompaña. En {cartas} se ven fuerzas a favor; {dominante} indica qué conviene sostener para que siga así.",
+        "Sobre «{pregunta}»: si las energías siguen como están, el rumbo es bueno. Con {cartas} en juego, lo que se ve tiende a abrirse, y la carta central, {dominante}, muestra el tono del camino. Es una posibilidad, no un destino.",
+        "Sobre «{pregunta}», la tirada dibuja un recorrido que acompaña. En {cartas} se ven fuerzas a favor; la carta central, {dominante}, indica qué conviene sostener para que siga así.",
         "«{pregunta}»: lo que aparece se encamina bien. Con {dominante} marcando el rumbo y {cartas} a favor, el resultado depende en buena parte de seguir en esta línea."
       ],
       "abierta": [
-        "Sobre «{pregunta}»: el desenlace todavía no está escrito. Con {cartas} en juego hay fuerzas que empujan y otras que se están formando; {dominante} señala lo que puede inclinar el resultado.",
-        "Sobre «{pregunta}», la tirada muestra un camino que se puede abrir para distintos lados. En {cartas} se ve un proceso en marcha; {dominante} indica dónde tenés margen.",
+        "Sobre «{pregunta}»: el desenlace todavía no está escrito. Con {cartas} en juego hay fuerzas que empujan y otras que se están formando; la carta central, {dominante}, señala lo que puede inclinar el resultado.",
+        "Sobre «{pregunta}», la tirada muestra un camino que se puede abrir para distintos lados. En {cartas} se ve un proceso en marcha; la carta central, {dominante}, indica dónde tenés margen.",
         "«{pregunta}»: la cuestión sigue abierta. Con {dominante} en el centro y {cartas} alrededor, cómo salga depende de lo que hagas con lo que ya ves."
       ],
       "desfavorable": [
-        "Sobre «{pregunta}»: si las energías siguen como están, el camino se complica. Con {cartas} en juego aparecen frenos, y {dominante} muestra dónde. Saberlo ahora es justamente lo que permite cambiar el rumbo.",
-        "Sobre «{pregunta}», la tirada advierte trabas en el recorrido. En {cartas} se ve resistencia; {dominante} señala qué habría que mover para que esto no quede así.",
+        "Sobre «{pregunta}»: si las energías siguen como están, el camino se complica. Con {cartas} en juego aparecen frenos, y la carta central, {dominante}, muestra dónde. Saberlo ahora es justamente lo que permite cambiar el rumbo.",
+        "Sobre «{pregunta}», la tirada advierte trabas en el recorrido. En {cartas} se ve resistencia; la carta central, {dominante}, señala qué habría que mover para que esto no quede así.",
         "«{pregunta}»: por este camino cuesta. Con {dominante} en el centro y frenos en {cartas}, el resultado no está cerrado, pero pide revisar cómo lo estás encarando."
       ]
     },
     "general": {
       "favorable": [
-        "Sobre «{pregunta}»: la tirada acompaña. Con {cartas} en juego, las fuerzas disponibles pesan más que los frenos, y {dominante} muestra el centro de todo. Usalo como espejo para decidir.",
-        "Sobre «{pregunta}», lo que aparece es mayormente a favor. En {cartas} se ve energía viva; {dominante} señala dónde está lo importante.",
+        "Sobre «{pregunta}»: la tirada acompaña. Con {cartas} en juego, las fuerzas disponibles pesan más que los frenos, y la carta central, {dominante}, muestra el centro de todo. Usalo como espejo para decidir.",
+        "Sobre «{pregunta}», lo que aparece es mayormente a favor. En {cartas} se ve energía viva; la carta central, {dominante}, señala dónde está lo importante.",
         "«{pregunta}»: las cartas devuelven una imagen luminosa. Con {dominante} en el centro y {cartas} acompañando, hay mucho con qué trabajar."
       ],
       "abierta": [
-        "Sobre «{pregunta}»: la cuestión sigue abierta. Con {cartas} en juego hay luces y cosas todavía en proceso, y {dominante} marca el centro. Lo que hagas con esto cuenta.",
-        "Sobre «{pregunta}», la tirada muestra un cuadro en movimiento. En {cartas} todavía nada se cierra; {dominante} señala qué mirar primero.",
+        "Sobre «{pregunta}»: la cuestión sigue abierta. Con {cartas} en juego hay luces y cosas todavía en proceso, y la carta central, {dominante}, marca el centro. Lo que hagas con esto cuenta.",
+        "Sobre «{pregunta}», la tirada muestra un cuadro en movimiento. En {cartas} todavía nada se cierra; la carta central, {dominante}, señala qué mirar primero.",
         "«{pregunta}»: no hay una sola lectura. Con {dominante} en el centro y {cartas} alrededor, la imagen se termina de armar con tu propia mirada."
       ],
       "desfavorable": [
-        "Sobre «{pregunta}»: la tirada muestra más trabas que fluidez. Con {cartas} en juego, {dominante} señala dónde está el nudo. Verlo es el primer paso para que deje de pesar.",
-        "Sobre «{pregunta}», lo que aparece pide atención. En {cartas} se ven frenos; {dominante} indica por dónde empezar a mirar.",
+        "Sobre «{pregunta}»: la tirada muestra más trabas que fluidez. Con {cartas} en juego, la carta central, {dominante}, señala dónde está el nudo. Verlo es el primer paso para que deje de pesar.",
+        "Sobre «{pregunta}», lo que aparece pide atención. En {cartas} se ven frenos; la carta central, {dominante}, indica por dónde empezar a mirar.",
         "«{pregunta}»: hoy el panorama cuesta. Con {dominante} en el centro y frenos en {cartas}, no es un final: es información para cuidarte y elegir mejor."
       ]
     }
@@ -481,7 +481,7 @@
   "resolucion": [
     "Para cerrar, {nombre} {texto_min}",
     "La tirada termina con {nombre}. {texto}",
-    "{Nombre} tiene la última palabra. {texto}",
+    "{Nombre}, para cerrar la lectura, {texto_min}",
     "Si buscás hacia dónde ir con todo esto, {nombre} {texto_min}"
   ]
 }
