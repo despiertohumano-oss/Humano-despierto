@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import AuthShell from "@/components/molecules/AuthShell";
 import { RECOVER_PATH } from "@/lib/auth/paths";
+import { InvitedAccountNotice } from "@/components/molecules/InvitedAccountNotice";
 import NuevaClaveForm from "./NuevaClaveForm";
 
 export const metadata: Metadata = {
@@ -32,6 +33,7 @@ export default async function NuevaClavePage({
       accent={invitacion ? "clave" : "nueva"}
       lead={invitacion ? "Ya sos docente de Humano Despierto. Con esta clave y tu mail vas a entrar las próximas veces." : "La vas a usar desde tu próximo ingreso."}
     >
+      {invitacion && user.email && <InvitedAccountNotice email={user.email} className="mb-6" />}
       <NuevaClaveForm />
     </AuthShell>
   );

@@ -15,6 +15,7 @@ import { insertWithUniqueSlug, slugFromTitle } from "@/lib/teacher/slug";
 import type { TeacherActionState } from "@/lib/teacher/action-state";
 import { withRateLimit } from "@/lib/server/rate-limit";
 import { limitedState } from "@/lib/rate-limit/core";
+import { actionError } from "@/lib/server/action-error";
 
 function readPostForm(formData: FormData) {
   return diarioPostFormSchema.safeParse({
@@ -79,11 +80,11 @@ export const createPostAction = withRateLimit(
 
       if (error) {
         if (error.code === "23514" || error.code === "42501") return BODY_LOCATOR;
-        return { error: `No se pudo crear el post: ${error.message}`, success: null };
+        return { error: actionError(error, "No se pudo crear el post."), success: null };
       }
       newPostId = data.id;
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo crear el post.", success: null };
+      return { error: actionError(err, "No se pudo crear el post."), success: null };
     }
 
     revalidatePath("/panel/docente/diario");
@@ -116,12 +117,12 @@ export const updatePostAction = withRateLimit(
 
       if (error) {
         if (error.code === "23514" || error.code === "42501") return BODY_LOCATOR;
-        return { error: `No se pudo guardar: ${error.message}`, success: null };
+        return { error: actionError(error, "No se pudo guardar."), success: null };
       }
       const link = await syncRelatedCourses(postId, v.relatedCourseIds);
       if (link.error) return RELATED_ERROR;
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo guardar el post.", success: null };
+      return { error: actionError(err, "No se pudo guardar el post."), success: null };
     }
 
     revalidatePath(`/panel/docente/diario/${postId}`);
@@ -148,13 +149,13 @@ export const deletePostAction = withRateLimit(
       const supabase = await createClient();
       const { data: current } = await supabase.from("diario_posts").select("cover_path").eq("id", postId).maybeSingle();
       const { error } = await supabase.from("diario_posts").delete().eq("id", postId);
-      if (error) return { error: `No se pudo borrar el post: ${error.message}`, success: null };
+      if (error) return { error: actionError(error, "No se pudo borrar el post."), success: null };
       if (current?.cover_path) {
         const { error: removeError } = await createServiceRoleClient().storage.from(UPLOADS_BUCKET).remove([current.cover_path]);
         if (removeError) log.error("diario_cover_orphan", { reason: "post_deleted", path: current.cover_path, message: removeError.message });
       }
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo borrar el post.", success: null };
+      return { error: actionError(err, "No se pudo borrar el post."), success: null };
     }
 
     revalidatePath("/panel/docente/diario");
@@ -183,9 +184,9 @@ export const setPostPublishedAction = withRateLimit(
       await assertOwnsPost(postId, teacher.id);
       const service = createServiceRoleClient();
       const { error } = await service.from("diario_posts").update({ status: nextStatus }).eq("id", postId);
-      if (error) return { error: `No se pudo actualizar el post: ${error.message}`, success: null };
+      if (error) return { error: actionError(error, "No se pudo actualizar el post."), success: null };
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo actualizar el post.", success: null };
+      return { error: actionError(err, "No se pudo actualizar el post."), success: null };
     }
 
     revalidatePath(`/panel/docente/diario/${postId}`);
@@ -243,7 +244,7 @@ export const uploadPostCoverAction = withRateLimit(
         if (removeError) log.error("diario_cover_orphan", { reason: "replaced", path: current.cover_path, message: removeError.message });
       }
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo subir la portada.", success: null };
+      return { error: actionError(err, "No se pudo subir la portada."), success: null };
     }
 
     revalidatePostCover(postId);
@@ -276,7 +277,7 @@ export const removePostCoverAction = withRateLimit(
       const { error: removeError } = await createServiceRoleClient().storage.from(UPLOADS_BUCKET).remove([current.cover_path]);
       if (removeError) log.error("diario_cover_orphan", { reason: "removed", path: current.cover_path, message: removeError.message });
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo quitar la portada.", success: null };
+      return { error: actionError(err, "No se pudo quitar la portada."), success: null };
     }
 
     revalidatePostCover(postId);

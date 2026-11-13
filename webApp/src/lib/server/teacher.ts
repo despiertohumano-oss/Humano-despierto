@@ -4,6 +4,7 @@ import { createServiceRoleClient } from "@/lib/supabase/service";
 import { getCurrentUser } from "@/lib/server/auth";
 import type { AuthUser } from "@/lib/stores/useAuthStore";
 import { MODALITY_COLUMNS, toModality, type CourseModality, type ModalityRow } from "@/lib/catalog/modality";
+import { UserFacingError } from "@/lib/server/action-error";
 
 /**
  * Puerta única de lectura/escritura del panel docente (T-005). Mismo patrón que
@@ -15,7 +16,7 @@ import { MODALITY_COLUMNS, toModality, type CourseModality, type ModalityRow } f
 export async function requireTeacher(): Promise<AuthUser> {
   const user = await getCurrentUser();
   if (!user || user.role !== "teacher") {
-    throw new Error("No autorizado: se requiere rol docente.");
+    throw new UserFacingError("No autorizado: se requiere rol docente.");
   }
   return user;
 }
@@ -253,7 +254,7 @@ export async function assertOwnsCourse(courseId: string, teacherId: string): Pro
     throw new Error(`No se pudo verificar la titularidad del curso: ${error.message}`);
   }
   if (!data) {
-    throw new Error("No autorizado: ese curso no te pertenece.");
+    throw new UserFacingError("No autorizado: ese curso no te pertenece.");
   }
 }
 

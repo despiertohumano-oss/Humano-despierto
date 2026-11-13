@@ -18,6 +18,7 @@ import { insertWithUniqueSlug, slugFromTitle } from "@/lib/teacher/slug";
 import { log } from "@/lib/server/log";
 import { withRateLimit } from "@/lib/server/rate-limit";
 import { limitedState } from "@/lib/rate-limit/core";
+import { actionError } from "@/lib/server/action-error";
 
 function invalid(error: Parameters<typeof firstIssue>[0]): TeacherActionState {
   const { field, message } = firstIssue(error);
@@ -116,11 +117,11 @@ export const createCourseAction = withRateLimit(
           return { error: "Alguno de los campos públicos del curso contiene el identificador de un video o de un archivo de una lección. Ese dato es de contenido pago y no puede aparecer en la ficha, que se lee sin inscripción.", success: null };
         }
 
-        return { error: `No se pudo crear el curso: ${error.message}`, success: null };
+        return { error: actionError(error, "No se pudo crear el curso."), success: null };
       }
       newCourseId = data.id;
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo crear el curso.", success: null };
+      return { error: actionError(err, "No se pudo crear el curso."), success: null };
     }
 
     revalidatePath("/panel/docente");
@@ -176,10 +177,10 @@ export const updateCourseAction = withRateLimit(
           return { error: "Alguno de los campos públicos del curso contiene el identificador de un video o de un archivo de una lección. Ese dato es de contenido pago y no puede aparecer en la ficha, que se lee sin inscripción.", success: null };
         }
 
-        return { error: `No se pudo guardar: ${error.message}`, success: null };
+        return { error: actionError(error, "No se pudo guardar."), success: null };
       }
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo guardar el curso.", success: null };
+      return { error: actionError(err, "No se pudo guardar el curso."), success: null };
     }
 
     revalidatePath(`/panel/docente/cursos/${courseId}`);
@@ -211,7 +212,7 @@ export const deleteCourseAction = withRateLimit(
       const { error } = await supabase.from("courses").delete().eq("id", courseId);
       if (error) {
         return {
-          error: `No se pudo borrar el curso (¿está publicado?): ${error.message}`,
+          error: actionError(error, "No se pudo borrar el curso (¿está publicado?)."),
           success: null,
         };
       }
@@ -224,7 +225,7 @@ export const deleteCourseAction = withRateLimit(
         if (removeError) log.error("cover_storage_orphan", { reason: "course_deleted", path: current.cover_path, message: removeError.message });
       }
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo borrar el curso.", success: null };
+      return { error: actionError(err, "No se pudo borrar el curso."), success: null };
     }
 
     revalidatePath("/panel/docente");
@@ -259,7 +260,7 @@ export const setCoursePublishedAction = withRateLimit(
           .from("lessons")
           .select("id", { count: "exact", head: true })
           .eq("course_id", courseId);
-        if (error) return { error: `No se pudo validar el curso: ${error.message}`, success: null };
+        if (error) return { error: actionError(error, "No se pudo validar el curso."), success: null };
         if (!count) {
           return {
             error: "No se puede publicar: el curso necesita al menos un módulo con una lección.",
@@ -274,10 +275,10 @@ export const setCoursePublishedAction = withRateLimit(
         .update({ status: nextStatus })
         .eq("id", courseId);
       if (updateError) {
-        return { error: `No se pudo actualizar el estado: ${updateError.message}`, success: null };
+        return { error: actionError(updateError, "No se pudo actualizar el estado."), success: null };
       }
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo actualizar el curso.", success: null };
+      return { error: actionError(err, "No se pudo actualizar el curso."), success: null };
     }
 
     revalidatePath(`/panel/docente/cursos/${courseId}`);

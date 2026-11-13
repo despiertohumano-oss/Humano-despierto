@@ -459,5 +459,41 @@
       "señala lo que la otra parte pone en juego entre ustedes",
       "habla de lo que la otra persona aporta a este lazo"
     ]
+  },
+  "respuesta_contraste": {
+    "camino": {
+      "parejo": [
+        "Sobre «{pregunta}»: la tirada pone dos caminos lado a lado. Si seguís igual aparecen {cartas_a}; si introducís un cambio, {cartas_b}. Ninguno de los dos se lleva todo: pesan parecido, y la carta que más pesa, {dominante}, sugiere qué mirar antes de elegir. La decisión es más tuya que de las cartas.",
+        "Sobre «{pregunta}», las cartas comparan dos opciones. En seguir como estás se ven {cartas_a}, y en cambiar, {cartas_b}: los dos caminos tienen luces y sombras en la misma medida. Con {dominante} como guía, mirá cuál te representa más.",
+        "«{pregunta}»: seguir igual trae {cartas_a}; cambiar trae {cartas_b}. Ninguno aparece claramente más liviano, así que lo que inclina la balanza es lo que vos elijas, con {dominante} marcando qué tener en cuenta."
+      ],
+      "continua": [
+        "Sobre «{pregunta}»: la tirada pone dos caminos lado a lado. Si seguís igual aparecen {cartas_a}; si introducís un cambio, {cartas_b}. Por ahora el camino actual fluye más que el cambio, y la carta que más pesa, {dominante}, sugiere qué mirar antes de elegir. La decisión es tuya.",
+        "Sobre «{pregunta}», las cartas comparan dos opciones. En seguir como estás se ven {cartas_a}, y en cambiar, {cartas_b}: quedarte donde estás aparece más sereno que moverte. Con {dominante} como guía, vale revisar qué te pide cada camino.",
+        "«{pregunta}»: seguir igual trae {cartas_a}; cambiar trae {cartas_b}. El camino actual muestra más a favor que el cambio, por ahora; {dominante} señala desde dónde sostenerlo, si es lo que elegís."
+      ],
+      "cambio": [
+        "Sobre «{pregunta}»: la tirada pone dos caminos lado a lado. Si seguís igual aparecen {cartas_a}; si introducís un cambio, {cartas_b}. Por ahora el cambio fluye más que el camino actual, y la carta que más pesa, {dominante}, sugiere qué mirar antes de moverte. La decisión es tuya.",
+        "Sobre «{pregunta}», las cartas comparan dos opciones. En seguir como estás se ven {cartas_a}, y en cambiar, {cartas_b}: moverte se ve más liviano que quedarte. Con {dominante} como guía, vale revisar qué te pide cada camino.",
+        "«{pregunta}»: seguir igual trae {cartas_a}; cambiar trae {cartas_b}. El cambio aparece con más a favor que el camino actual; {dominante} señala desde dónde darlo, si es lo que elegís."
+      ]
+    },
+    "relaciones": {
+      "parejo": [
+        "Sobre «{pregunta}»: la tirada pone los dos lados del vínculo en la balanza. Del lado de la persona A aparecen {cartas_a}; del lado de la persona B, {cartas_b}. Lo que cada una trae pesa parecido, y la carta que más pesa, {dominante}, sugiere qué mirar antes de decidir.",
+        "Sobre «{pregunta}», las cartas comparan lo que trae cada lado. En la persona A se ven {cartas_a}, y en la persona B, {cartas_b}: hay paridad, ninguna lleva sola el vínculo. Con {dominante} como guía, lo que hagas puede pensarse de a dos.",
+        "«{pregunta}»: la persona A trae {cartas_a}; la persona B, {cartas_b}. Los dos lados pesan parecido, así que lo que inclina esto es lo que elijan, con {dominante} marcando qué tener en cuenta."
+      ],
+      "a": [
+        "Sobre «{pregunta}»: la tirada pone los dos lados del vínculo en la balanza. Del lado de la persona A aparecen {cartas_a}; del lado de la persona B, {cartas_b}. A llega más entera y B está todavía en proceso; la carta que más pesa, {dominante}, sugiere qué mirar antes de decidir.",
+        "Sobre «{pregunta}», las cartas comparan lo que trae cada lado. En la persona A se ven {cartas_a}, y en la persona B, {cartas_b}: del lado de A las cartas fluyen más, del lado de B hay cosas que se están acomodando. Con {dominante} como guía, vale revisar qué ritmo puede sostener cada una.",
+        "«{pregunta}»: la persona A trae {cartas_a}; la persona B, {cartas_b}. A trae más soltura y B necesita su tiempo; {dominante} señala qué tener en cuenta para no apurar lo que todavía se acomoda."
+      ],
+      "b": [
+        "Sobre «{pregunta}»: la tirada pone los dos lados del vínculo en la balanza. Del lado de la persona A aparecen {cartas_a}; del lado de la persona B, {cartas_b}. B llega más entera y A está todavía en proceso; la carta que más pesa, {dominante}, sugiere qué mirar antes de decidir.",
+        "Sobre «{pregunta}», las cartas comparan lo que trae cada lado. En la persona A se ven {cartas_a}, y en la persona B, {cartas_b}: del lado de B las cartas fluyen más, del lado de A hay cosas que se están acomodando. Con {dominante} como guía, vale revisar qué ritmo puede sostener cada una.",
+        "«{pregunta}»: la persona A trae {cartas_a}; la persona B, {cartas_b}. B trae más soltura y A necesita su tiempo; {dominante} señala qué tener en cuenta para no apurar lo que todavía se acomoda."
+      ]
+    }
   }
 }

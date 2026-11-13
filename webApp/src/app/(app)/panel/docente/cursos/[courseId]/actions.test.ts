@@ -15,11 +15,13 @@ vi.mock("next/server", () => ({ connection: vi.fn(async () => {}) }));
 vi.mock("@/lib/supabase/server", () => ({ createClient }));
 vi.mock("@/lib/supabase/service", () => ({ createServiceRoleClient }));
 vi.mock("@/lib/server/teacher", () => ({ requireTeacher, assertOwnsCourse }));
-vi.mock("@/lib/server/youtube", () => ({ resolveYoutubeVideo: vi.fn() }));
+const { resolveYoutubeVideo } = vi.hoisted(() => ({ resolveYoutubeVideo: vi.fn() }));
+vi.mock("@/lib/server/youtube", () => ({ resolveYoutubeVideo }));
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("next/navigation", () => ({ redirect: vi.fn() }));
 
-import { createLessonAction, removeCourseCoverAction, updateLessonAction, uploadCourseCoverAction } from "./actions";
+import { attachLessonVideoAction, createLessonAction, removeCourseCoverAction, updateLessonAction, uploadCourseCoverAction } from "./actions";
+import { UserFacingError } from "@/lib/server/action-error";
 import { MAX_COVER_BYTES } from "@/lib/validation/image";
 import { __resetRateLimiterForTests } from "@/lib/server/rate-limit";
 
@@ -100,7 +102,7 @@ describe("uploadCourseCoverAction", () => {
   it("curso ajeno: assertOwnsCourse corta antes de subir", async () => {
     const { client } = sessionClient();
     createClient.mockResolvedValue(client);
-    assertOwnsCourse.mockRejectedValue(new Error("No autorizado: ese curso no te pertenece."));
+    assertOwnsCourse.mockRejectedValue(new UserFacingError("No autorizado: ese curso no te pertenece."));
     const r = await uploadCourseCoverAction(INITIAL, form(PNG));
     expect(r.error).toMatch(/no te pertenece/);
     expect(assertOwnsCourse).toHaveBeenCalledWith(COURSE, TEACHER.id);
@@ -165,7 +167,7 @@ describe("removeCourseCoverAction", () => {
   it("curso ajeno: no toca nada", async () => {
     const { client, remove, update } = sessionClient({ current: OLD });
     createClient.mockResolvedValue(client);
-    assertOwnsCourse.mockRejectedValue(new Error("No autorizado: ese curso no te pertenece."));
+    assertOwnsCourse.mockRejectedValue(new UserFacingError("No autorizado: ese curso no te pertenece."));
     const r = await removeCourseCoverAction(INITIAL, form(null));
     expect(r.error).toMatch(/no te pertenece/);
     expect(update).not.toHaveBeenCalled();
@@ -222,5 +224,55 @@ describe("createLessonAction · error por campo (DT1)", () => {
     const r = await createLessonAction(INITIAL, newLessonForm({}));
     expect(r.error).toBeTruthy();
     expect(r.field).toBeUndefined();
+  });
+});
+
+describe("attachLessonVideoAction · D-120: el mensaje del motor no llega a la docente", () => {
+  const LESSON = "50000000-0000-4000-8000-00000000000a";
+  function videoForm() {
+    const fd = new FormData();
+    fd.set("courseId", COURSE);
+    fd.set("lessonId", LESSON);
+    fd.set("url", "https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+    return fd;
+  }
+  function withUpdateError(updateError: unknown) {
+    createClient.mockReset().mockResolvedValue({
+      from: () => ({ select: () => ({ eq: () => ({ eq: () => ({ maybeSingle: async () => ({ data: { id: LESSON }, error: null }) }) }) }) }),
+    });
+    createServiceRoleClient.mockReset().mockReturnValue({
+      from: () => ({ update: () => ({ eq: () => ({ eq: async () => ({ error: updateError }) }) }) }),
+    });
+  }
+  beforeEach(() => {
+    requireTeacher.mockReset().mockResolvedValue(TEACHER);
+    assertOwnsCourse.mockReset().mockResolvedValue(undefined);
+    resolveYoutubeVideo.mockReset().mockResolvedValue({ ok: true, videoId: "dQw4w9WgXcQ", durationSeconds: 212 });
+  });
+
+  it("el barrido de 0038 rechaza: dice qué pasó y qué hacer, sin nombrar la tabla", async () => {
+    withUpdateError({ code: "42501", message: "el localizador de lessons.video_id ya aparece en texto publico de lesson_notes" });
+    const r = await attachLessonVideoAction(INITIAL, videoForm());
+    expect(r.error).toMatch(/ya aparece citado en un texto de la escuela/);
+    expect(r.error).toMatch(/administración/);
+    expect(r.error).not.toMatch(/lesson_notes|video_id|publico/);
+  });
+
+  it("cualquier otro error del motor vuelve neutro", async () => {
+    withUpdateError({ code: "XX000", message: 'relation "lessons" violates constraint lessons_secret_check' });
+    const r = await attachLessonVideoAction(INITIAL, videoForm());
+    expect(r.error).toBe("No se pudo guardar el video.");
+  });
+
+  it("un fallo inesperado de verificación no filtra su texto", async () => {
+    assertOwnsCourse.mockRejectedValue(new Error("No se pudo verificar la titularidad del curso: permission denied for table courses"));
+    const r = await attachLessonVideoAction(INITIAL, videoForm());
+    expect(r.error).toBe("No se pudo cargar el video.");
+  });
+
+  it("el rechazo por titularidad sí llega con su texto", async () => {
+    assertOwnsCourse.mockRejectedValue(new UserFacingError("No autorizado: ese curso no te pertenece."));
+    const r = await attachLessonVideoAction(INITIAL, videoForm());
+    expect(r.error).toBe("No autorizado: ese curso no te pertenece.");
   });
 });

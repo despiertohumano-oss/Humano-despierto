@@ -79,9 +79,9 @@ describe("resolveInvitationVisit", () => {
       return { d, calls };
     }
 
-    it("sin sesión previa: entra con la cuenta invitada y acepta", async () => {
+    it("sin sesión previa: entra con la cuenta invitada, acepta y aterriza marcado para mostrar la cuenta (NB-1)", async () => {
       const { d, calls } = sinSesion();
-      await expect(resolveInvitationVisit(TOKEN, d, ACCESO)).resolves.toBe("/panel/docente");
+      await expect(resolveInvitationVisit(TOKEN, d, ACCESO)).resolves.toBe("/panel/docente?invitacion=1");
       expect(d.signInWithAccess).toHaveBeenCalledWith(ACCESO);
       expect(calls).toEqual(["userId", "access", "userId", "accept", "refresh", "roleOf"]);
     });

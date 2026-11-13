@@ -610,3 +610,120 @@ export async function notifyTeacherInvitation(input: {
     return false;
   }
 }
+
+// D-128 (T-097) · los transaccionales topados por hora también se re-disparan. `deliverClaimedMail`
+// ya les devolvía el intento (`release_rate_limited_mail_slot`), pero nada los volvía a mandar.
+type TransactionalMailType = Exclude<MailType, "course_announcement">;
+const TRANSACTIONAL_MAIL_TYPES: readonly TransactionalMailType[] = [
+  "welcome",
+  "enrollment_granted",
+  "teacher_new_student",
+  "course_completed",
+  "enrollment_rejected",
+];
+const RETRY_TRANSACTIONAL_PER_RUN = 50;
+// Una bienvenida o un «te aprobaron» de hace una semana confunde más de lo que informa: lo que
+// quedó pendiente más de 3 días no se retoma (el anuncio no tiene corte, sigue vigente).
+const TRANSACTIONAL_MAX_AGE_MS = 3 * 24 * 60 * 60_000;
+
+interface PendingTransactional {
+  recipient_user_id: string;
+  mail_type: TransactionalMailType;
+  scope_key: string;
+}
+
+async function enrollmentStatus(studentId: string, courseId: string): Promise<{ status: string; decided_reason: string | null } | null> {
+  const { data, error } = await createServiceRoleClient()
+    .from("enrollments")
+    .select("status, decided_reason")
+    .eq("user_id", studentId)
+    .eq("course_id", courseId)
+    .maybeSingle();
+  if (error) throw new Error(`no se pudo leer la inscripción: ${error.message}`);
+  return data;
+}
+
+/** Vuelve a correr el aviso con los datos de HOY: si el evento ya no vale (inscripción revocada,
+ *  rechazo revertido, certificado de otra), no se manda. Las funciones notify* reclaman el turno,
+ *  así que lo confirmado o vivo se salta solo. `done` evita correr dos veces la misma activación
+ *  (mail a la alumna y aviso a la docente salen de la misma llamada). */
+async function redispatchTransactional(row: PendingTransactional, done: Set<string>): Promise<void> {
+  const { recipient_user_id: recipient, mail_type: type, scope_key: scope } = row;
+  if (type === "welcome") return notifyWelcome({ userId: recipient });
+
+  if (type === "enrollment_granted" || type === "teacher_new_student") {
+    const [courseId, studentId] = type === "enrollment_granted" ? [scope, recipient] : scope.split(":");
+    if (!courseId || !studentId) return;
+    const key = `activated:${studentId}:${courseId}`;
+    if (done.has(key)) return;
+    done.add(key);
+    if ((await enrollmentStatus(studentId, courseId))?.status !== "active") return;
+    return notifyEnrollmentActivated({ studentId, courseId });
+  }
+
+  if (type === "enrollment_rejected") {
+    const e = await enrollmentStatus(recipient, scope);
+    if (e?.status !== "rejected") return;
+    return notifyEnrollmentRejected({ studentId: recipient, courseId: scope, reason: e.decided_reason });
+  }
+
+  const db = createServiceRoleClient();
+  const { data: cert, error } = await db
+    .from("certificates")
+    .select("user_id, course_id, course_title")
+    .eq("code", scope)
+    .maybeSingle();
+  if (error) throw new Error(`no se pudo leer el certificado: ${error.message}`);
+  if (!cert || cert.user_id !== recipient) return;
+  const { data: course } = cert.course_id
+    ? await db.from("courses").select("slug").eq("id", cert.course_id).maybeSingle()
+    : { data: null };
+  return notifyCourseCompleted({
+    userId: recipient,
+    courseTitle: cert.course_title,
+    courseSlug: course?.slug ?? null,
+    certificateCode: scope,
+  });
+}
+
+/** D-128 · como `retryPendingAnnouncementMail`, para inscripción, bienvenida, certificado y
+ *  rechazo. Mismo criterio de pendiente (sin confirmar, con intentos, turno vencido); nunca lanza. */
+export async function retryPendingTransactionalMail(): Promise<{ transactional: number }> {
+  try {
+    const now = Date.now();
+    const { data, error } = await createServiceRoleClient()
+      .from("mail_log")
+      .select("recipient_user_id, mail_type, scope_key")
+      .in("mail_type", TRANSACTIONAL_MAIL_TYPES)
+      .is("sent_at", null)
+      .lt("attempts", 3)
+      .lt("claimed_at", new Date(now - 10 * 60_000).toISOString())
+      .gt("created_at", new Date(now - TRANSACTIONAL_MAX_AGE_MS).toISOString())
+      .order("claimed_at")
+      .limit(RETRY_TRANSACTIONAL_PER_RUN);
+    if (error) {
+      log.error("mail_retry_query_failed", { message: error.message, scope: "transactional" });
+      return { transactional: 0 };
+    }
+    const rows = (data ?? []) as PendingTransactional[];
+    const done = new Set<string>();
+    for (const row of rows) {
+      try {
+        await redispatchTransactional(row, done);
+      } catch (err) {
+        log.error("mail_retry_transactional_failed", { mail_type: row.mail_type, err });
+      }
+    }
+    return { transactional: rows.length };
+  } catch (err) {
+    log.error("mail_retry_failed", { err, scope: "transactional" });
+    return { transactional: 0 };
+  }
+}
+
+/** Lo que corre `/api/mail/retry`: anuncios y transaccionales, cada uno con su propio tope. */
+export async function retryPendingMail(): Promise<{ announcements: number; transactional: number }> {
+  const announcements = await retryPendingAnnouncementMail();
+  const transactional = await retryPendingTransactionalMail();
+  return { ...announcements, ...transactional };
+}

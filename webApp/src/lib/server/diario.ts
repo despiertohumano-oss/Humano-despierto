@@ -4,6 +4,7 @@ import { getPublicSupabaseClient } from "@/lib/server/supabase-public";
 import { createServiceRoleClient } from "@/lib/supabase/service";
 import { signPublicUploadUrls, signUploadUrl } from "@/lib/server/uploads";
 import { diarioCategoryLabel, type DiarioCategoryKey } from "@/lib/taxonomy/diario";
+import { UserFacingError } from "@/lib/server/action-error";
 
 // T-022 · Diario — reemplaza el mock `blog.ts`. Lectura pública (sin sesión, `getPublicSupabaseClient`)
 // y lectura/escritura del panel docente (cliente de sesión, RLS `diario_posts_*`, migración 0018)
@@ -227,7 +228,7 @@ export async function assertOwnsPost(postId: string, teacherId: string): Promise
     .maybeSingle();
 
   if (error) throw new Error(`No se pudo verificar la titularidad del post: ${error.message}`);
-  if (!data) throw new Error("No autorizado: ese post no te pertenece.");
+  if (!data) throw new UserFacingError("No autorizado: ese post no te pertenece.");
 }
 
 /**
