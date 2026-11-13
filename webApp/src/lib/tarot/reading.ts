@@ -1,13 +1,16 @@
 import combosRaw from "./data/combos.json";
 import { baseElement, cardByIndex, type Card, type Suit } from "./cards";
 import type { Reading } from "./codec";
+import { classifyQuestion, type QuestionType } from "./question";
 import { dignityBetween, type Dignity } from "./dignities";
+import { dominantOf, patternsOf, type Patterns } from "./interpret/patterns";
+import { estadoOf, neighborEffect, type Estado } from "./interpret/dignity";
+import { tensionsOf, type Tension } from "./interpret/tensions";
 import { positionsFor, spreadBySlug, type Position, type Spread } from "./spreads";
 import { yesNoVerdict, type Verdict } from "./yes-no";
 
 export type Domain = "amor" | "trabajo" | "dinero" | "salud";
-export type Mode = "equilibrio" | "desequilibrio";
-export type PlacedCard = { position: Position; card: Card; reversed: boolean; meaning: string; keywords: string[]; domainText: string | null; mode: Mode };
+export type PlacedCard = { position: Position; card: Card; reversed: boolean; meaning: string; keywords: string[]; domainText: string | null; estado: Estado; reinforced: number };
 export type Group = { clave: string; nombre: string; placed: PlacedCard[] };
 export type Contrast = { kind: "relaciones"; winner: "parejo" | "a" | "b" } | { kind: "camino"; winner: "parejo" | "continua" | "cambio" };
 export type Link = { from: PlacedCard; to: PlacedCard; dignity: Dignity };
@@ -27,6 +30,7 @@ export type Combo = { a: string; b: string; texto: string };
 export type ReadingFacts = {
   spread: Spread;
   question: string | null;
+  questionType: QuestionType;
   domain: Domain | null;
   placed: PlacedCard[];
   links: Link[];
@@ -36,6 +40,9 @@ export type ReadingFacts = {
   yesNo: { verdict: Verdict; votes: Verdict[]; tiebreak: boolean } | null;
   groups: Group[];
   contrast: Contrast | null;
+  patterns: Patterns;
+  dominant: PlacedCard;
+  tensions: Tension[];
 };
 
 const COMBOS: Combo[] = combosRaw;
@@ -57,7 +64,7 @@ export function classifyDomain(question: string | null): Domain | null {
   return null;
 }
 
-function place(position: Position, indice: number, reversed: boolean, domain: Domain | null): Omit<PlacedCard, "mode"> {
+function place(position: Position, indice: number, reversed: boolean, domain: Domain | null): Omit<PlacedCard, "estado" | "reinforced"> {
   const card = cardByIndex(indice);
   if (!card) throw new Error(`índice de carta inválido: ${indice}`);
   return {
@@ -74,7 +81,7 @@ function groupsOf(spread: Spread, placed: PlacedCard[]): Group[] {
   return spread.grupos.map((g) => ({ ...g, placed: placed.filter((p) => p.position.grupo === g.clave) }));
 }
 
-const fluye = (g: Group | undefined) => (g ? g.placed.filter((p) => p.mode === "equilibrio").length : 0);
+const fluye = (g: Group | undefined) => (g ? g.placed.filter((p) => p.estado === "pleno").length : 0);
 
 function contrastOf(spread: Spread, groups: Group[]): Contrast | null {
   const by = (k: string) => groups.find((g) => g.clave === k);
@@ -138,6 +145,7 @@ export function buildReading(reading: Reading, question: string | null = null): 
   const raw = reading.cards.map((c, i) => place(positions[i]!, c.indice, c.reversed, domain));
   const grouped = spread.grupos.length > 0;
   const prev = new Map<number, number>();
+  const next = new Map<number, number>();
   const chains = new Map<string, number[]>();
   raw.forEach((p, i) => {
     const key = grouped ? (p.position.grupo ?? "") : "";
@@ -145,18 +153,27 @@ export function buildReading(reading: Reading, question: string | null = null): 
   });
   for (const idx of chains.values()) {
     idx.sort((x, y) => raw[x]!.position.n - raw[y]!.position.n);
-    for (let k = 1; k < idx.length; k++) prev.set(idx[k]!, idx[k - 1]!);
+    for (let k = 1; k < idx.length; k++) {
+      prev.set(idx[k]!, idx[k - 1]!);
+      next.set(idx[k - 1]!, idx[k]!);
+    }
   }
   const dignityAt = (i: number) => dignityBetween(baseElement(raw[prev.get(i)!]!.card), baseElement(raw[i]!.card));
-  const placed: PlacedCard[] = raw.map((p, i) => ({
-    ...p,
-    mode: p.reversed || (prev.has(i) && dignityAt(i) === "debilita") ? "desequilibrio" : "equilibrio",
-  }));
+  const placed: PlacedCard[] = raw.map((p, i) => {
+    const eff = neighborEffect(
+      baseElement(p.card),
+      prev.has(i) ? baseElement(raw[prev.get(i)!]!.card) : null,
+      next.has(i) ? baseElement(raw[next.get(i)!]!.card) : null,
+    );
+    return { ...p, estado: estadoOf(p.reversed, eff.weakened), reinforced: eff.reinforced };
+  });
   const links: Link[] = placed.flatMap((to, i) => (prev.has(i) ? [{ from: placed[prev.get(i)!]!, to, dignity: dignityAt(i) }] : []));
   const groups = groupsOf(spread, placed);
+  const contrast = contrastOf(spread, groups);
   return {
     spread,
     question,
+    questionType: classifyQuestion(question),
     domain,
     placed,
     links,
@@ -165,6 +182,9 @@ export function buildReading(reading: Reading, question: string | null = null): 
     quintessence: spread.slug === "cruz-celta" ? quintessence(placed) : null,
     yesNo: spread.slug === "si-o-no" ? yesNoVerdict(placed.map((p) => ({ card: p.card, reversed: p.reversed }))) : null,
     groups,
-    contrast: contrastOf(spread, groups),
+    contrast,
+    patterns: patternsOf(placed, groups.length > 0),
+    dominant: dominantOf(placed),
+    tensions: tensionsOf(placed, contrast !== null),
   };
 }

@@ -6,7 +6,7 @@ import SaveReadingButton from "@/components/tarot/SaveReadingButton";
 import ReadingView from "@/components/tarot/ReadingView";
 import { createClient } from "@/lib/supabase/server";
 import { decodeReading, encodeReading, readingSeed } from "@/lib/tarot/codec";
-import { renderReading } from "@/lib/tarot/prose";
+import { renderReading } from "@/lib/tarot/interpret/narrative";
 import { sanitizeQuestion } from "@/lib/tarot/question";
 import { buildReading } from "@/lib/tarot/reading";
 

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import ReadingView from "@/components/tarot/ReadingView";
 import { getSavedReading } from "@/lib/server/tarot";
 import { readingSeed } from "@/lib/tarot/codec";
-import { renderReading } from "@/lib/tarot/prose";
+import { renderReading } from "@/lib/tarot/interpret/narrative";
 import { buildReading } from "@/lib/tarot/reading";
 
 export const metadata: Metadata = { title: "Tirada guardada", robots: { index: false, follow: false } };

@@ -1,0 +1,79 @@
+// Respuesta reflexiva a la pregunta (spec T-094 §6): muestra fuerzas, no sentencia.
+import templates from "../data/templates.json";
+import { nombrar } from "../prose";
+import type { PlacedCard, ReadingFacts } from "../reading";
+import type { QuestionType } from "../question";
+import type { Lens } from "./lenses";
+import { fill, joinY, pick } from "./text";
+
+export type Balance = "favorable" | "abierta" | "desfavorable";
+
+const LENTES: Record<QuestionType, Lens[] | "todas"> = {
+  si_no: ["nucleo", "cruce", "transito", "consejo"],
+  cuando: "todas",
+  que_hacer: ["yo", "consejo", "sosten"],
+  el_otro: ["otros", "yo"],
+  como_sale: ["nucleo", "transito", "consejo"],
+  general: ["nucleo", "consejo"],
+};
+
+const byN = (a: PlacedCard, b: PlacedCard) => a.position.n - b.position.n;
+
+export function answerCards(facts: ReadingFacts): PlacedCard[] {
+  const ordered = [...facts.placed].sort(byN);
+  const want = LENTES[facts.questionType];
+  if (want === "todas") return ordered;
+  const hit = ordered.filter((p) => want.includes(p.position.lente));
+  if (hit.length) return hit;
+  const nucleo = ordered.filter((p) => p.position.lente === "nucleo");
+  if (nucleo.length) return nucleo;
+  const consejo = ordered.filter((p) => p.position.lente === "consejo");
+  return consejo.length ? consejo : [ordered.at(-1)!];
+}
+
+export function balanceOf(cards: PlacedCard[]): Balance {
+  const E = cards.filter((c) => c.estado === "en_proceso").length;
+  if (E > cards.length - E) return "abierta";
+  let favor = 0;
+  let contra = 0;
+  for (const c of cards) {
+    if (c.card.si_no === "no" || c.estado === "trabada") contra++;
+    else if (c.card.si_no === "sí") favor++;
+  }
+  if (favor > contra) return "favorable";
+  if (contra > favor) return "desfavorable";
+  return "abierta";
+}
+
+export function balanceFor(facts: ReadingFacts): Balance {
+  if (facts.yesNo) return facts.yesNo.verdict === "sí" ? "favorable" : facts.yesNo.verdict === "no" ? "desfavorable" : "abierta";
+  return balanceOf(answerCards(facts));
+}
+
+const MAX_NAMED = 3;
+
+export function namedCards(facts: ReadingFacts): PlacedCard[] {
+  const all = answerCards(facts);
+  let pool = all;
+  if (facts.questionType === "cuando") {
+    const ep = all.filter((p) => p.estado === "en_proceso");
+    const key = all.filter((p) => p.position.lente === "nucleo" || p.position.lente === "consejo");
+    pool = ep.length ? ep : key.length ? key : [all.at(-1)!];
+  }
+  const others = pool.filter((p) => p.position.n !== facts.dominant.position.n);
+  return (others.length ? others : [facts.dominant]).slice(0, MAX_NAMED);
+}
+
+export function buildAnswer(facts: ReadingFacts, rng: () => number): string | null {
+  if (!facts.question) return null;
+  const balance = balanceFor(facts);
+  const pregunta = facts.question.replace(/^¿\s*/, "").replace(/\s*\?$/, "");
+  const base = fill(pick(rng, templates.respuesta[facts.questionType][balance]), {
+    pregunta,
+    cartas: joinY(namedCards(facts).map((p) => nombrar(p.card))),
+    dominante: nombrar(facts.dominant.card),
+    rol: pick(rng, templates.respuesta_dominante[facts.dominant.position.lente === "otros" ? "otros" : "yo"]),
+  });
+  const dominio = facts.domain ? facts.dominant.card[facts.domain] : "";
+  return facts.domain && typeof dominio === "string" && dominio.trim() ? `${base} ${fill(pick(rng, templates.posicion_dominio[facts.domain]), { texto: dominio.trim() })}` : base;
+}

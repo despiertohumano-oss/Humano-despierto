@@ -20,3 +20,9 @@ reescritos, hay estos puntos concretos:
 
 Detalles de redacción que se pueden pulir en su lectura: Tres de Bastos, Cuatro de Oros, Reina de Copas,
 y algunas palabras clave invertidas sueltas («desconfianza», «desaliento», «habladurías», «imprevistos»).
+
+## Lecturas por lente (T-094)
+
+1. Revisar los textos de `lenses.json` (las lecturas por lente de cada carta): ¿suenan a su método y a su voz?
+2. En «Consulta de una situación», ¿qué significa «Primera pregunta»? Hoy se lee como la pregunta con la que se abre la consulta; confirmar o corregir.
+3. ¿Usamos lenguaje neutro para quien consulta? Algunos textos usan el masculino genérico («afortunado», «merecedor»).

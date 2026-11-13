@@ -1,5 +1,6 @@
 import { z } from "@/lib/validation/zod";
 import raw from "./data/spreads.json";
+import { LENSES } from "./interpret/lenses";
 
 export const SPREAD_SLUGS = ["carta-del-dia", "si-o-no", "cruz-simple", "consulta-situacion", "cruz-celta", "pregunta-situacion", "karma", "relaciones", "astrologica", "pasado-presente-futuro"] as const;
 export type SpreadSlug = (typeof SPREAD_SLUGS)[number];
@@ -13,6 +14,7 @@ const positionSchema = z.object({
   rotada: z.boolean(),
   grupo: z.string().min(1).nullable(),
   casa: z.number().int().min(1).max(12).nullable(),
+  lente: z.enum(LENSES),
 });
 
 const spreadSchema = z.object({
