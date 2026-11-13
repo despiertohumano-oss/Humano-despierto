@@ -41,17 +41,29 @@ export function balanceOf(cards: PlacedCard[]): Balance {
   return "abierta";
 }
 
+const MAX_NAMED = 3;
+
+export function namedCards(facts: ReadingFacts): PlacedCard[] {
+  const all = answerCards(facts);
+  let pool = all;
+  if (facts.questionType === "cuando") {
+    const ep = all.filter((p) => p.estado === "en_proceso");
+    const key = all.filter((p) => p.position.lente === "nucleo" || p.position.lente === "consejo");
+    pool = ep.length ? ep : key.length ? key : [all.at(-1)!];
+  }
+  const others = pool.filter((p) => p.position.n !== facts.dominant.position.n);
+  return (others.length ? others : [facts.dominant]).slice(0, MAX_NAMED);
+}
+
 export function buildAnswer(facts: ReadingFacts, rng: () => number): string | null {
   if (!facts.question) return null;
-  const cards = answerCards(facts);
-  const balance = balanceOf(cards);
+  const balance = balanceOf(answerCards(facts));
   const pregunta = facts.question.replace(/^¿\s*/, "").replace(/\s*\?$/, "");
-  const others = cards.filter((p) => p !== facts.dominant);
   const base = fill(pick(rng, templates.respuesta[facts.questionType][balance]), {
     pregunta,
-    cartas: joinY((others.length ? others : cards).map((p) => nombrar(p.card))),
+    cartas: joinY(namedCards(facts).map((p) => nombrar(p.card))),
     dominante: nombrar(facts.dominant.card),
   });
-  const dominio = facts.domain ? ` ${facts.dominant.card[facts.domain]}` : "";
-  return base + dominio;
+  const dominio = facts.domain ? facts.dominant.card[facts.domain] : "";
+  return typeof dominio === "string" && dominio.trim() ? `${base} ${dominio.trim()}` : base;
 }

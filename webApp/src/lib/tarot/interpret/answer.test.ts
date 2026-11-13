@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { CARDS } from "../cards";
 import { buildReading } from "../reading";
-import { answerCards, balanceOf, buildAnswer } from "./answer";
+import { answerCards, balanceOf, buildAnswer, namedCards } from "./answer";
 import { rngFrom } from "./text";
 
 const idx = (slug: string) => CARDS.find((c) => c.id === slug)!.indice;
@@ -43,5 +43,30 @@ describe("respuesta reflexiva", () => {
     }
     const dia = buildReading({ spread: "carta-del-dia", cards: [{ indice: 0, reversed: false }] }, "¿Qué hago?");
     expect(buildAnswer(dia, rngFrom(1))).toContain("el Loco");
+  });
+  it("«cuando» nombra solo las cartas en proceso (máx. 3)", () => {
+    const r = celta("¿Cuándo se resuelve?", [true, false, false, true, false, false, true, false, false, true]);
+    const ep = r.placed.filter((p) => p.estado === "en_proceso");
+    expect(ep.length).toBeGreaterThan(0);
+    const names = namedCards(r);
+    expect(names.length).toBeLessThanOrEqual(3);
+    for (const p of names) expect(p.estado === "en_proceso" || p.position.n === r.dominant.position.n).toBe(true);
+  });
+  it("«cuando» sin cartas en proceso nombra núcleo o consejo", () => {
+    const r = celta("¿Cuándo se resuelve?");
+    const flat = { ...r, placed: r.placed.map((p) => ({ ...p, estado: "pleno" as const })) };
+    const names = namedCards(flat);
+    expect(names.length).toBeGreaterThan(0);
+    for (const p of names) expect(["nucleo", "consejo"]).toContain(p.position.lente);
+  });
+  it("si_no y que_hacer nombran como mucho 3 cartas", () => {
+    for (const q of ["¿Vuelve conmigo?", "¿Qué hago con esto?"]) {
+      const r = celta(q);
+      expect(namedCards(r).length).toBeLessThanOrEqual(3);
+    }
+    const many = celta("¿Vuelve conmigo?");
+    const wide = { ...many, placed: many.placed.map((p) => ({ ...p, position: { ...p.position, lente: "nucleo" as const } })) };
+    expect(answerCards(wide).length).toBe(10);
+    expect(namedCards(wide).length).toBe(3);
   });
 });
