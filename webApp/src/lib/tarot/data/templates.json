@@ -183,10 +183,10 @@
     "en el medio {a} con «{clave}»"
   ],
   "idea_fin": [
-    "y por último {a}, con «{clave}»",
+    "y cierra con {a}, con «{clave}»",
     "y al final {a}, que deja «{clave}»",
-    "hasta llegar a {a}, con «{clave}»",
-    "y todo termina en {a}, con «{clave}»"
+    "y el recorrido termina con {a} y «{clave}»",
+    "y todo se asienta en {a}, con «{clave}»"
   ],
   "posicion_lente": [
     "En «{posicion}», {nombre} {texto_min}",
@@ -271,10 +271,10 @@
     "En {cartas} se pueden leer partes tuyas: recursos y actitudes que ya tenés, aunque no siempre los uses."
   ],
   "dominante": [
-    "La carta que marca el tono de toda la tirada: {nombre}, desde «{posicion}». {texto}",
-    "Si hay una carta que ordena las demás, está en «{posicion}»: {nombre}. {texto}",
-    "El eje de todo está en «{posicion}», con {nombre}; las demás cartas se ordenan a su alrededor. {texto}",
-    "La carta con más peso ocupa «{posicion}»: {nombre}, que desde ahí tiñe el resto. {texto}"
+    "La carta que marca el tono de toda la tirada: {nombre}, desde «{posicion}». Sus palabras clave: {claves}.",
+    "Si hay una carta que ordena las demás, está en «{posicion}»: {nombre}, con {claves} como ejes.",
+    "El eje de todo está en «{posicion}», con {nombre}; las demás cartas se ordenan a su alrededor. Lo que pesa: {claves}.",
+    "La carta con más peso ocupa «{posicion}»: {nombre}, que desde ahí tiñe el resto con {claves}."
   ],
   "tension": {
     "intensifica": [
@@ -410,15 +410,15 @@
     "Como cierre de la lectura, la tirada muestra {nombre}. {texto}",
     "Para cerrar, volvé a «{posicion}»: ahí está la orientación que deja la tirada.",
     "Si buscás hacia dónde ir con todo esto, releé «{posicion}», que ya lo dice.",
-    "La tirada cierra donde empezó el consejo: en «{posicion}», con {nombre}."
+    "Lo que dijo «{posicion}» queda como cierre de la lectura, con {nombre} como última palabra."
   ],
   "estado": {
     "pleno": [
-      "Acá la energía se expresa con toda su fuerza. {texto}",
-      "El balance de sus vecinas no la frena: hay espacio para desplegarse. {texto}",
+      "Acá su energía se expresa de lleno. {texto}",
+      "En esta tirada su fuerza llega entera, en balance con lo que la rodea. {texto}",
       "En su mejor versión, esto es lo que hay a mano. {texto}",
-      "Esta energía llega sin obstáculos fuertes alrededor. {texto}",
-      "Acá se muestra entera, sin que nada la apague. {texto}"
+      "El conjunto no le quita fuerza: acá se muestra con claridad. {texto}",
+      "Su energía se despliega con soltura en este lugar. {texto}"
     ],
     "en_proceso": [
       "Acá la energía aparece con menos fuerza: el tema es el mismo, pero todavía está en camino. {texto}",

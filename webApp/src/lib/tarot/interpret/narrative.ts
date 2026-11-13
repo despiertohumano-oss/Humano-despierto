@@ -102,7 +102,7 @@ function sintesis(facts: ReadingFacts, rng: () => number): string {
   for (const c of facts.combos) {
     const pa = facts.placed.find((p) => p.card.id === c.a)!;
     const pb = facts.placed.find((p) => p.card.id === c.b)!;
-    parts.push(fill(pick(rng, templates.combo), { texto: c.texto, a: nom(pa), b: nom(pb) }));
+    parts.push(fill(pick(rng, templates.combo), { texto: lowerFirst(c.texto), a: nom(pa), b: nom(pb) }));
   }
   if (facts.quintessence) {
     parts.push(fill(pick(rng, templates.quintaesencia), { nombre: nombrar(facts.quintessence), palabras: facts.quintessence.palabras_clave_derecha.slice(0, 3).join(", ") }));
@@ -117,11 +117,6 @@ function sintesis(facts: ReadingFacts, rng: () => number): string {
   return parts.join(" ");
 }
 
-const firstSentence = (s: string) => {
-  const i = s.indexOf(". ");
-  return i === -1 ? s : s.slice(0, i + 1);
-};
-
 export function renderReading(facts: ReadingFacts, seed: number): ReadingText {
   const rng = rngFrom(seed);
   const apertura = facts.question ? fill(pick(rng, templates.apertura_pregunta), { pregunta: facts.question }) : pick(rng, templates.apertura);
@@ -135,7 +130,7 @@ export function renderReading(facts: ReadingFacts, seed: number): ReadingText {
   const pan = panorama(facts, rng);
   const dominante =
     facts.placed.length > 1
-      ? { titulo: cap(nom(d)), texto: fill(pick(rng, templates.dominante), { nombre: nom(d), Nombre: cap(nom(d)), posicion: d.position.nombre, texto: firstSentence(d.meaning) }) }
+      ? { titulo: cap(nom(d)), texto: fill(pick(rng, templates.dominante), { nombre: nom(d), Nombre: cap(nom(d)), posicion: d.position.nombre, claves: joinY(d.keywords.slice(0, 3).map((k) => `«${k}»`)) }) }
       : null;
   return {
     apertura,
@@ -147,7 +142,7 @@ export function renderReading(facts: ReadingFacts, seed: number): ReadingText {
     tensiones: tensiones(facts, rng),
     respuesta: buildAnswer(facts, rng),
     sintesis: sintesis(facts, rng),
-    consejo: fill(pick(rng, templates.consejo), { consejo: lowerFirst(resolucionCard(facts).card.consejo) }),
+    consejo: resolucionCard(facts).card.id === d.card.id ? "" : fill(pick(rng, templates.consejo), { consejo: lowerFirst(d.card.consejo) }),
     espejo: fill(pick(rng, templates.reflexion), { pregunta: pick(rng, d.card.reflexion) }),
   };
 }

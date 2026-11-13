@@ -25,7 +25,7 @@ describe("narrativa", () => {
     expect(t.dominante!.titulo).toMatch(/Torre/);
     expect(cardByIndex(idx("la-torre"))!.reflexion.some((q) => t.espejo.includes(q))).toBe(true);
   });
-  it("idea lineal nombra todas las cartas en orden", () => {
+  it("idea lineal nombra las cartas en orden (las 5 primeras y la última)", () => {
     const t = renderReading(buildReading(celta), 3);
     expect(t.ideaLineal.toLowerCase().indexOf("torre")).toBeGreaterThan(t.ideaLineal.toLowerCase().indexOf("as de bastos"));
   });
@@ -48,7 +48,7 @@ describe("narrativa", () => {
         for (const q of preguntas) {
           const t = renderReading(buildReading({ spread: s.slug, cards }, q), pos + count);
           const all = [t.apertura, t.ideaLineal, t.panorama ?? "", (t.dominante?.texto ?? ""), ...t.posiciones.map((p) => p.texto), ...t.grupos.map((g) => g.texto), ...t.tensiones, t.respuesta ?? "", t.sintesis, t.consejo, t.espejo].join(" ");
-          expect(all, `${s.slug} ${card.id} ${q}`).not.toMatch(/[{}]|undefined|\bnull\b|\[object/);
+          expect(all, `${s.slug} ${card.id} ${q}`).not.toMatch(/[{}]|undefined|\bnull\b|\[object|(?<!\p{L})(a|de) el(?!\p{L})/iu);
           for (const p of t.posiciones) expect(p.texto.length).toBeGreaterThan(40);
         }
       }
@@ -101,6 +101,28 @@ describe("narrativa: sin contradicciones ni repeticiones", () => {
         expect(todas.split(frag).length - 1, `${key}: ${frag}`).toBeLessThanOrEqual(Math.ceil(n / vs.length));
       }
     }
+  });
+});
+
+describe("narrativa: ronda 2", () => {
+  it("ninguna variante de idea_* rompe con carta masculina («a el», «de el»)", () => {
+    const fake = (n: string) => n;
+    for (const v of [...templates.idea_inicio, ...templates.idea_paso, ...templates.idea_fin]) {
+      const out = v.replace("{A}", fake("el Emperador")).replace("{a}", fake("el As de Bastos")).replace("{clave}", "x");
+      expect(out, v).not.toMatch(/(?<!\p{L})(a|de) el(?!\p{L})/iu);
+    }
+  });
+  it("consejo: usa el de la dominante si no es la carta de resolución; vacío si es la misma", () => {
+    const f = buildReading(celta);
+    const t = renderReading(f, 3);
+    const res = [...f.placed].sort((a, b) => a.position.n - b.position.n).find((p) => p.position.lente === "consejo") ?? f.placed.at(-1)!;
+    expect(res.card.id).not.toBe(f.dominant.card.id);
+    expect(t.consejo).toContain(f.dominant.card.consejo.charAt(0).toLowerCase() + f.dominant.card.consejo.slice(1));
+    const uno = renderReading(buildReading({ spread: "carta-del-dia", cards: [{ indice: 0, reversed: false }] }), 3);
+    expect(uno.consejo).toBe("");
+  });
+  it("estado pleno no afirma ausencia de obstáculos", () => {
+    for (const v of templates.estado.pleno) expect(v).not.toMatch(/sin (que )?nada|sin obst|no le restan/i);
   });
 });
 

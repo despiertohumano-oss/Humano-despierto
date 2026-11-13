@@ -61,7 +61,7 @@ export default function ReadingView({ facts, text }: { facts: ReadingFacts; text
             <p className="mt-2 text-tinta">{text.sintesis}</p>
           </div>
         )}
-        <p className="font-semibold text-miel-800">{text.consejo}</p>
+        {text.consejo && <p className="font-semibold text-miel-800">{text.consejo}</p>}
         <p className="text-tinta">{text.espejo}</p>
       </section>
       <div className="mx-auto max-w-[68ch]"><EthicsNote /></div>
