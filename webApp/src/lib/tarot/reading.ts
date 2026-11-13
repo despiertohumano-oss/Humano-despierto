@@ -1,6 +1,7 @@
 import combosRaw from "./data/combos.json";
 import { baseElement, cardByIndex, type Card, type Suit } from "./cards";
 import type { Reading } from "./codec";
+import { classifyQuestion, type QuestionType } from "./question";
 import { dignityBetween, type Dignity } from "./dignities";
 import { dominantOf, patternsOf, type Patterns } from "./interpret/patterns";
 import { estadoOf, neighborEffect, type Estado } from "./interpret/dignity";
@@ -29,6 +30,7 @@ export type Combo = { a: string; b: string; texto: string };
 export type ReadingFacts = {
   spread: Spread;
   question: string | null;
+  questionType: QuestionType;
   domain: Domain | null;
   placed: PlacedCard[];
   links: Link[];
@@ -171,6 +173,7 @@ export function buildReading(reading: Reading, question: string | null = null): 
   return {
     spread,
     question,
+    questionType: classifyQuestion(question),
     domain,
     placed,
     links,
