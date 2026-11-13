@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import FichaLayout from "@/components/carta-natal/FichaLayout";
-import { SITE_OG_IMAGE } from "@/lib/og/site";
+import { fichaTitle, houseDescription, pageOpenGraph } from "@/lib/seo/meta";
 import { HOUSE_KEYS, TEMPLATES, type HouseKey } from "@/lib/astro/prose";
 
 const isHouse = (n: string): n is HouseKey => (HOUSE_KEYS as readonly string[]).includes(n);
@@ -15,10 +15,10 @@ export async function generateMetadata({ params }: { params: Promise<{ n: string
   const { n } = await params;
   if (!isHouse(n)) return { title: "Casa no encontrada" };
   const e = TEMPLATES.casas[n];
-  const title = `${e.nombre} en la carta natal: significado`;
-  const description = `${e.nombre}: ${e.palabras_clave.join(", ")}.`;
+  const title = fichaTitle(e.nombre);
+  const description = houseDescription(e.nombre, e.palabras_clave);
   const url = `/carta-natal/casas/${n}`;
-  return { title, description, alternates: { canonical: url }, openGraph: { title, description, url, type: "article", images: [SITE_OG_IMAGE] } };
+  return { title, description, alternates: { canonical: url }, openGraph: pageOpenGraph({ title, description, url, type: "article" }) };
 }
 
 export default async function CasaPage({ params }: { params: Promise<{ n: string }> }) {

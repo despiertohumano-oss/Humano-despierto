@@ -17,6 +17,7 @@ import ReviewsSection from "@/components/reviews/ReviewsSection";
 import { COURSE_FAQ } from "@/content/landing";
 import { brandImageForDiscipline } from "@/content/brand-images";
 import ModalityBlock from "@/components/course/ModalityBlock";
+import { SITE_LOCALE, SITE_NAME } from "@/lib/seo/meta";
 import { visibleDescription } from "@/lib/catalog/description";
 import { firstPreviewLesson } from "@/lib/catalog/free-class";
 import { enrollmentPanelCopy } from "@/lib/enrollment/panel-copy";
@@ -50,7 +51,7 @@ export async function generateMetadata(
     title: fullTitle,
     description,
     alternates: { canonical: `/cursos/${slug}` },
-    openGraph: { title: fullTitle, description, url: `/cursos/${slug}`, type: "website" },
+    openGraph: { title: fullTitle, description, url: `/cursos/${slug}`, type: "website", siteName: SITE_NAME, locale: SITE_LOCALE },
   };
 }
 

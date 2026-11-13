@@ -3,7 +3,7 @@ import Link from "next/link";
 import ChartForm from "@/components/carta-natal/ChartForm";
 import ChartResult from "@/components/carta-natal/ChartResult";
 import { ButtonLink } from "@/components/atoms/Button";
-import { SITE_OG_IMAGE } from "@/lib/og/site";
+import { pageOpenGraph } from "@/lib/seo/meta";
 import { getCurrentUser } from "@/lib/server/auth";
 import { editInitialFromSaved, getMainNatalChart, getNatalChart, viewFromSaved, type SavedChart } from "@/lib/server/natal-chart";
 import { z } from "@/lib/validation/zod";
@@ -11,10 +11,10 @@ import { HOUSE_KEYS } from "@/lib/astro/prose";
 import { BODY_IDS, BODY_NAMES, SIGNS, SIGN_IDS, bodySlug } from "@/lib/astro/zodiac";
 
 export const metadata: Metadata = {
-  title: "Carta natal gratis: calculá tu carta astral",
+  title: "Carta natal gratis: calculá tu carta",
   description: "Calculá tu carta natal con Sol, Luna, Ascendente, casas Placidus o de signo entero, Quirón, Lilith y nodos, y leé una interpretación escrita por la escuela.",
   alternates: { canonical: "/carta-natal" },
-  openGraph: { title: "Carta natal gratis", description: "Tu carta natal con rueda, tablas e interpretación.", url: "/carta-natal", type: "website", images: [SITE_OG_IMAGE] },
+  openGraph: pageOpenGraph({ title: "Carta natal gratis", description: "Tu carta natal con rueda, tablas e interpretación.", url: "/carta-natal" }),
 };
 
 function Indice({ titulo, links }: { titulo: string; links: { href: string; label: string }[] }) {

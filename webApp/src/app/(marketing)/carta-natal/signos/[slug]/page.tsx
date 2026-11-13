@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import FichaLayout from "@/components/carta-natal/FichaLayout";
 import { astroIcon } from "@/components/atoms/Icon";
-import { SITE_OG_IMAGE } from "@/lib/og/site";
+import { fichaTitle, pageOpenGraph, signDescription } from "@/lib/seo/meta";
 import { TEMPLATES } from "@/lib/astro/prose";
 import { BODY_NAMES, SIGNS, SIGN_IDS, isSignId } from "@/lib/astro/zodiac";
 
@@ -14,10 +14,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   if (!isSignId(slug)) return { title: "Signo no encontrado" };
   const e = TEMPLATES.signos[slug];
-  const title = `${e.nombre} en la carta natal: significado`;
-  const description = `${e.nombre}: ${e.palabras_clave.join(", ")}. Signo de ${SIGNS[slug].elemento}, ${SIGNS[slug].modalidad}.`;
+  const title = fichaTitle(e.nombre);
+  const description = signDescription(e.nombre, e.palabras_clave, SIGNS[slug].elemento, SIGNS[slug].modalidad);
   const url = `/carta-natal/signos/${slug}`;
-  return { title, description, alternates: { canonical: url }, openGraph: { title, description, url, type: "article", images: [SITE_OG_IMAGE] } };
+  return { title, description, alternates: { canonical: url }, openGraph: pageOpenGraph({ title, description, url, type: "article" }) };
 }
 
 export default async function SignoPage({ params }: { params: Promise<{ slug: string }> }) {

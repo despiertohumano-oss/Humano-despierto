@@ -135,6 +135,7 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
                                     invitation, refreshes the session claim
 /invitacion/invalida                Neutral "invalid or expired" page
 /api/csp-report                     POST only: logs csp_violation (no query strings), 20/min per IP
+/llms.txt                           Text guide of the citable sections (T-099); no DB, rate-limit exempt
 /opengraph-image                    Brand OG image (PNG 1200x630, vendored Cinzel, no network)
 /cursos/[slug]/opengraph-image-<h>  Course OG image: cover (jpg/png) or generative card; 404 if not
                                     published. Next adds the -<hash> suffix under a dynamic segment
@@ -441,6 +442,11 @@ visual reference: `design_handoff_humano_humano/reference/brote/b4-brote2.html`.
   `src` carries a `motion-reduce:` variant that cancels it.
 - `design_handoff_humano_humano/reference/design-system/` is **historical**. Read the Brote reference
   for spec — do not paste its HTML.
+
+**SEO metadata** (T-099): `src/lib/seo/meta.ts` holds titles, descriptions and `pageOpenGraph` (a segment's own
+`openGraph` replaces the root's whole, so siteName/locale `es_AR` ride in that helper). Descriptions <= 160 (>= 70 for
+natal-chart sheets), titles <= 60 counting the template suffix; `meta.test.ts` walks all 78 cards and 37 sheets. `/`, `/cursos`,
+`/guias`, `/diario` carry a clean canonical. Card OG images use `public/tarot/rws/*` with the sizes in `lib/tarot/image-sizes.ts`.
 
 ## Coding standards
 - TypeScript strict everywhere.

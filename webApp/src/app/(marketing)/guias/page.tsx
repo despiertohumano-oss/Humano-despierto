@@ -3,11 +3,14 @@ import FounderCard from "@/components/molecules/FounderCard";
 import GuiaCard from "@/components/molecules/GuiaCard";
 import PageIntro from "@/components/layout/PageIntro";
 import { DOCENTES } from "@/content/site-copy";
+import { pageOpenGraph } from "@/lib/seo/meta";
 import { getGuiasDirectory, signTeacherAvatars } from "@/lib/server/guias";
 
 export const metadata: Metadata = {
   title: DOCENTES.metaTitle,
   description: DOCENTES.metaDescription,
+  alternates: { canonical: "/guias" },
+  openGraph: pageOpenGraph({ title: DOCENTES.metaTitle, description: DOCENTES.metaDescription, url: "/guias" }),
 };
 
 export default async function GuiasPage() {
