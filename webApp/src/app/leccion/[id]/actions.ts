@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ensureCertificate } from "@/lib/server/certificates";
 import { closingHref } from "@/lib/player/navigation";
 import { notifyCourseCompleted } from "@/lib/server/mail/notify";
+import { mailAfterResponse } from "@/lib/server/mail/after-mail";
 import { revalidatePath } from "next/cache";
 import { answerSchema, idSchema, moderationSchema, questionSchema } from "@/lib/lesson-qa/validation";
 import type { QaActionState } from "@/lib/lesson-qa/action-state";
@@ -60,7 +61,7 @@ function progressOk(row: { seconds_watched: number; completed: boolean; complete
  * chequea si ya existía certificado ANTES de pedirlo — `ensureCertificate` es idempotente
  * (T-018: devuelve el código exista o no la fila), así que sin este chequeo previo se mandaría
  * el mail en cada guardado de progreso posterior de cualquier lección ya completa del curso.
- * Nunca bloquea ni puede tirar: cualquier falla queda en el log, el progreso ya se guardó arriba.
+ * Nunca puede tirar: cualquier falla queda en el log, el progreso ya se guardó arriba.
  */
 async function maybeNotifyCourseCompleted(
   userId: string,
@@ -88,12 +89,16 @@ async function maybeNotifyCourseCompleted(
       .eq("id", courseId)
       .maybeSingle();
 
-    await notifyCourseCompleted({
-      userId,
-      courseTitle: course?.title ?? "tu curso",
-      courseSlug: course?.slug ?? null,
-      certificateCode: code,
-    });
+    // Certificado y datos en el request (rápidos, y el chequeo previo es el que deduplica); sólo el
+    // envío sale después de responder (G-02): la alumna no espera al SMTP para ver el cierre.
+    mailAfterResponse("mail_course_completed_failed", () =>
+      notifyCourseCompleted({
+        userId,
+        courseTitle: course?.title ?? "tu curso",
+        courseSlug: course?.slug ?? null,
+        certificateCode: code,
+      }),
+    );
   } catch (err) {
     log.error("mail_course_completed_failed", { err });
   }

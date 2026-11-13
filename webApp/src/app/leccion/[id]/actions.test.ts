@@ -9,8 +9,12 @@ vi.mock("@/lib/supabase/server", () => ({ createClient }));
 vi.mock("next/cache", () => ({ revalidatePath }));
 vi.mock("@/lib/server/certificates", () => ({ ensureCertificate: vi.fn() }));
 vi.mock("@/lib/server/mail/notify", () => ({ notifyCourseCompleted: vi.fn() }));
+// G-02 (T-098): el mail de curso completado sale en after(); acá se acumula hasta que el test lo corre.
+const { afterQueue } = vi.hoisted(() => ({ afterQueue: [] as (() => unknown)[] }));
+vi.mock("next/server", () => ({ after: (cb: () => unknown) => void afterQueue.push(cb) }));
 
 import { ensureCertificate } from "@/lib/server/certificates";
+import { notifyCourseCompleted } from "@/lib/server/mail/notify";
 import {
   askQuestion,
   deleteLessonNote,
@@ -238,6 +242,44 @@ describe("saveLessonProgress (G-04)", () => {
     });
     createClient.mockResolvedValue({ auth: { getUser: async () => ({ data: { user: USER } }) }, from: () => builder });
     await expect(saveLessonProgress("l-1", 30)).resolves.toEqual({ ok: false, error: "No se pudo guardar tu avance." });
+  });
+
+  it("al completar el curso responde sin esperar el mail; el certificado se emite en el request (G-02)", async () => {
+    afterQueue.length = 0;
+    vi.mocked(notifyCourseCompleted).mockReset().mockImplementation(() => new Promise<void>(() => {}));
+    vi.mocked(ensureCertificate).mockReset().mockResolvedValue("COD-9");
+    const progress: Record<string, unknown> = {};
+    Object.assign(progress, {
+      update: () => progress,
+      eq: () => progress,
+      select: () => progress,
+      maybeSingle: async () => ({
+        data: { seconds_watched: 100, completed: true, completed_at: "2026-11-13T00:00:00Z", course_id: "c" },
+        error: null,
+      }),
+    });
+    const lookup = (data: unknown) => {
+      const b: Record<string, unknown> = {};
+      Object.assign(b, { select: () => b, eq: () => b, maybeSingle: async () => ({ data, error: null }) });
+      return b;
+    };
+    createClient.mockResolvedValue({
+      auth: { getUser: async () => ({ data: { user: USER } }) },
+      from: (t: string) =>
+        t === "lesson_progress" ? progress : t === "certificates" ? lookup(null) : lookup({ title: "Tarot", slug: "tarot" }),
+    });
+
+    await expect(saveLessonProgress("l-1", 100)).resolves.toMatchObject({ ok: true, completed: true });
+    expect(ensureCertificate).toHaveBeenCalledWith("c");
+    expect(notifyCourseCompleted).not.toHaveBeenCalled();
+    expect(afterQueue).toHaveLength(1);
+    void afterQueue[0]();
+    expect(notifyCourseCompleted).toHaveBeenCalledWith({
+      userId: "u-1",
+      courseTitle: "Tarot",
+      courseSlug: "tarot",
+      certificateCode: "COD-9",
+    });
   });
 
   it("devuelve lo que calculó el guard, con ok: true", async () => {
