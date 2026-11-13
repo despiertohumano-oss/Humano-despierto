@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import TarotCard from "@/components/tarot/TarotCard";
+import { pageOpenGraph } from "@/lib/seo/meta";
 import { CARDS, type Suit } from "@/lib/tarot/cards";
 
+const DESC = "Arcanos mayores y menores del tarot Rider-Waite: significado al derecho e invertida, amor, trabajo, dinero y salud, y sus correspondencias.";
+
 export const metadata: Metadata = {
-  title: "Las 78 cartas del tarot Rider-Waite y su significado",
-  description: "Arcanos mayores y menores del tarot Rider-Waite: significado al derecho e invertida, amor, trabajo, dinero y salud, y sus correspondencias.",
+  title: "Las 78 cartas del tarot y su significado",
+  description: DESC,
   alternates: { canonical: "/tarot/cartas" },
+  openGraph: pageOpenGraph({ title: "Las 78 cartas del tarot Rider-Waite y su significado", description: DESC, url: "/tarot/cartas" }),
 };
 
 const GROUPS: { id: string; titulo: string; filtro: (c: (typeof CARDS)[number]) => boolean }[] = [

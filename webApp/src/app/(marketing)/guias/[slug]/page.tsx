@@ -6,7 +6,7 @@ import Icon, { astroIcon } from "@/components/atoms/Icon";
 import TeacherPortrait from "@/components/atoms/TeacherPortrait";
 import { formationYear } from "@/lib/ui/formation-year";
 import SectionHeading from "@/components/atoms/SectionHeading";
-import { SITE_OG_IMAGE } from "@/lib/og/site";
+import { pageOpenGraph } from "@/lib/seo/meta";
 import { DOCENTES } from "@/content/site-copy";
 import { getTeacherBySlug } from "@/lib/server/guias";
 import { SIGNS } from "@/lib/astro/zodiac";
@@ -24,7 +24,7 @@ export async function generateMetadata(
     description,
     alternates: { canonical: `/guias/${slug}` },
     // Un openGraph propio reemplaza entero el de la raiz, imagen incluida: va explicita.
-    openGraph: { title: teacher.fullName, description, url: `/guias/${slug}`, type: "profile", images: [SITE_OG_IMAGE] },
+    openGraph: pageOpenGraph({ title: teacher.fullName, description, url: `/guias/${slug}`, type: "profile" }),
   };
 }
 

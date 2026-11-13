@@ -12,7 +12,7 @@ import { toModality } from "@/lib/catalog/modality";
 const curso = (slug: string, disciplineKey: string, discipline: string): PublishedCourseSummary => ({
   id: slug, slug, title: `Curso ${slug}`, titleEm: null, subtitle: null, desc: null,
   discipline, disciplineKey, level: "Inicial", priceCents: 100, currency: "ARS", moonGlyph: null,
-  featured: false, teacherName: "Sol", totalDurationSeconds: 0, publishedAt: null, coverPath: null, hasPreview: false,
+  featured: false, teacherName: "Sol", totalDurationSeconds: 0, publishedAt: null, updatedAt: "2026-01-01T00:00:00Z", coverPath: null, hasPreview: false,
   modality: toModality({}),
 });
 

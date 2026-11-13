@@ -74,7 +74,7 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 
 | Area | State |
 |------|-------|
-| `webApp/src` | **~27.1k LOC** (non-test). 47 routes (`page.tsx`), 163 non-test files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`, with the reading interpreted by lenses, tensions and a reflective answer in `src/lib/tarot/interpret/` (T-094); 78 card scans in `public/tarot/rws/`; the owner's 9 brand images in `public/brand/` (WebP, `CREDITS.md`). Tarot text comes from the owner's course material in `docs/TAROT/fuente/` (originals outside git). Natal-chart engine (pure, no DB) in `src/lib/astro/` on `astronomy-engine` (MIT, ADR-017; credits in `src/lib/astro/CREDITS.md`). Tests: Vitest (1533 unit tests in 185 files, next to the file) + Playwright (`e2e/`), T-039. |
+| `webApp/src` | **~27.1k LOC** (non-test). 47 routes (`page.tsx`), 163 non-test files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`, with the reading interpreted by lenses, tensions and a reflective answer in `src/lib/tarot/interpret/` (T-094); 78 card scans in `public/tarot/rws/`; the owner's 9 brand images in `public/brand/` (WebP, `CREDITS.md`). Tarot text comes from the owner's course material in `docs/TAROT/fuente/` (originals outside git). Natal-chart engine (pure, no DB) in `src/lib/astro/` on `astronomy-engine` (MIT, ADR-017; credits in `src/lib/astro/CREDITS.md`). Tests: Vitest (1580 unit tests in 188 files, next to the file) + Playwright (`e2e/`), T-039. |
 | `webApp/supabase` | **Schema live.** 53 migrations (last `0081`; `0032` applies before `0031` by timestamp, independent), 27 tables (`tarot_readings`, ADR-016; `places`, `natal_charts`, T-024; `diario_post_courses`, B3; `error_events`, 0078), RLS + per-column grants + guard triggers, 1001 mutation tests (PGlite). Private Storage bucket `uploads`: `avatars/` (T-042), `covers/` (T-047) and `diario/` (B3), uploads only via service_role; its policies are only tested over HTTP by b1. Fixtures `@test.local` (admin, docente, alumna) in `seed.fixtures.sql`, content seed in `seed.sql`, demo data in `demo.sql`: all **local only**, never run in the cloud (see `webApp/supabase/README.md`). |
 | `mobileApp/` | **Empty directory.** No Expo scaffold. **Out of scope for Phase 2.** |
 | `packages/tokens` | 763 LOC of the old Cosmos palette (marked historical in its README, D-66) — **consumed by nobody**: `webApp` does not import it (it uses its own `src/styles/tokens.css`) and `mobileApp` does not exist. Kept for when mobile returns. |
@@ -133,6 +133,7 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
                                     invitation, refreshes the session claim
 /invitacion/invalida                Neutral "invalid or expired" page
 /api/csp-report                     POST only: logs csp_violation (no query strings), 20/min per IP
+/llms.txt                           Text guide of the citable sections (T-099); no DB, rate-limit exempt
 /opengraph-image                    Brand OG image (PNG 1200x630, vendored Cinzel, no network)
 /cursos/[slug]/opengraph-image-<h>  Course OG image: cover (jpg/png) or generative card; 404 if not
                                     published. Next adds the -<hash> suffix under a dynamic segment
@@ -419,6 +420,11 @@ visual reference: `design_handoff_humano_humano/reference/brote/b4-brote2.html`.
   `src` carries a `motion-reduce:` variant that cancels it.
 - `design_handoff_humano_humano/reference/design-system/` is **historical**. Read the Brote reference
   for spec — do not paste its HTML.
+
+**SEO metadata** (T-099): `src/lib/seo/meta.ts` holds titles, descriptions and `pageOpenGraph` (a segment's own
+`openGraph` replaces the root's whole, so siteName/locale `es_AR` ride in that helper). Descriptions <= 160 (>= 70 for
+natal-chart sheets), titles <= 60 counting the template suffix; `meta.test.ts` walks all 78 cards and 37 sheets. `/`, `/cursos`,
+`/guias`, `/diario` carry a clean canonical. Card OG images use `public/tarot/rws/*` with the sizes in `lib/tarot/image-sizes.ts`.
 
 ## Coding standards
 - TypeScript strict everywhere.

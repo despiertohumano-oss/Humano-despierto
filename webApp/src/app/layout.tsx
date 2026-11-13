@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import AuthProvider from "@/components/providers/AuthProvider";
+import { SITE_DEFAULT_DESCRIPTION, SITE_DEFAULT_TITLE, SITE_LOCALE, SITE_NAME, TITLE_SUFFIX } from "@/lib/seo/meta";
 import { getSiteUrl } from "@/lib/server/site-url";
 import { jakarta } from "@/styles/fonts";
 import "@/styles/globals.css";
@@ -13,10 +14,11 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
-    default: "Humano Despierto — Escuela Holística",
-    template: "%s — Humano Despierto",
+    default: SITE_DEFAULT_TITLE,
+    template: `%s${TITLE_SUFFIX}`,
   },
-  description: "Un espacio de aprendizaje y transformación que integra astrología, tarot, constelaciones familiares, magia y herramientas para el autoconocimiento.",
+  description: SITE_DEFAULT_DESCRIPTION,
+  openGraph: { siteName: SITE_NAME, locale: SITE_LOCALE, type: "website" },
 };
 
 export default async function RootLayout({

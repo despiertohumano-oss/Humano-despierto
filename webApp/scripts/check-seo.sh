@@ -27,6 +27,15 @@ for p in / /cursos /diario /guias /entrar /tarot /tarot/cartas /tarot/cartas/el-
   fi
 done
 
+echo "== canonical limpio en los listados (T-099) =="
+for p in "/" "/cursos?disciplina=tarot" "/guias" "/diario?categoria=x"; do
+  c=$(curl -s "$BASE$p" | grep -o '<link rel="canonical" href="[^"]*"' | head -1)
+  case "$c" in
+    *\?*|"") echo "  FALLA  $p — canonical ausente o con query: '$c'"; fail=1 ;;
+    *) echo "  ok     $p — $c" ;;
+  esac
+done
+
 echo "== las dinamicas no descartan su param =="
 # Dos slugs distintos de la misma ruta tienen que dar titles distintos. Un title compartido
 # significa que el `params` se esta ignorando y todo slug sirve el mismo contenido.

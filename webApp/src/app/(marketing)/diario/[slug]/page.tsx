@@ -4,6 +4,7 @@ import Link from "next/link";
 import Icon from "@/components/atoms/Icon";
 import SignedImage from "@/components/atoms/SignedImage";
 import { SITE_OG_IMAGE } from "@/lib/og/site";
+import { SITE_LOCALE, SITE_NAME } from "@/lib/seo/meta";
 import { getPostBySlug, signDiarioCovers } from "@/lib/server/diario";
 import { formatCertificateDate } from "@/lib/utils/format";
 
@@ -31,6 +32,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       url: `/diario/${slug}`,
       type: "article",
+      siteName: SITE_NAME,
+      locale: SITE_LOCALE,
       publishedTime: post.publishedAt,
       // Un openGraph propio reemplaza entero el de la raiz, imagen incluida: va explicita.
       images: [SITE_OG_IMAGE],
