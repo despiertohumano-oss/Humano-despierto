@@ -6,9 +6,8 @@ import type { PlayerNote } from "@/lib/server/lesson-player";
 
 const byTime = (a: PlayerNote, b: PlayerNote) => a.atSeconds - b.atSeconds;
 
-function messageOf(error: unknown, fallback: string): string {
-  return error instanceof Error ? error.message : fallback;
-}
+/** Lo que devuelve una acción del player (G-04): el error ya viene en castellano. */
+type OpResult = { ok: true } | { ok: false; error: string };
 
 export interface LessonNotes {
   notes: PlayerNote[];
@@ -26,14 +25,16 @@ export function useLessonNotes(lessonId: string, initial: PlayerNote[]): LessonN
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<LessonNotes["error"]>(null);
 
-  async function run(scope: string, fallback: string, op: () => Promise<void>): Promise<boolean> {
+  async function run(scope: string, fallback: string, op: () => Promise<OpResult>): Promise<boolean> {
     setBusy(true);
     setError(null);
     try {
-      await op();
-      return true;
-    } catch (e) {
-      setError({ scope, message: messageOf(e, fallback) });
+      const result = await op();
+      if (!result.ok) setError({ scope, message: result.error });
+      return result.ok;
+    } catch {
+      // Sólo llega acá un corte de red o del servidor: su mensaje no está escrito para la alumna.
+      setError({ scope, message: fallback });
       return false;
     } finally {
       setBusy(false);
@@ -46,18 +47,21 @@ export function useLessonNotes(lessonId: string, initial: PlayerNote[]): LessonN
     error,
     add: (atSeconds, body) =>
       run("add", "No se pudo guardar la nota.", async () => {
-        const note = await saveLessonNote(lessonId, atSeconds, body);
-        setNotes((prev) => [...prev, note].sort(byTime));
+        const result = await saveLessonNote(lessonId, atSeconds, body);
+        if (result.ok) setNotes((prev) => [...prev, result.note].sort(byTime));
+        return result;
       }),
     edit: (id, body) =>
       run(id, "No se pudo editar la nota.", async () => {
-        const note = await updateLessonNote(id, body);
-        setNotes((prev) => prev.map((n) => (n.id === id ? note : n)).sort(byTime));
+        const result = await updateLessonNote(id, body);
+        if (result.ok) setNotes((prev) => prev.map((n) => (n.id === id ? result.note : n)).sort(byTime));
+        return result;
       }),
     remove: (id) =>
       run(id, "No se pudo borrar la nota.", async () => {
-        await deleteLessonNote(id);
-        setNotes((prev) => prev.filter((n) => n.id !== id));
+        const result = await deleteLessonNote(id);
+        if (result.ok) setNotes((prev) => prev.filter((n) => n.id !== id));
+        return result;
       }),
   };
 }

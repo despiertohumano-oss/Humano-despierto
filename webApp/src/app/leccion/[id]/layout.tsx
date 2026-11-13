@@ -1,5 +1,7 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getLessonPlayerData } from "@/lib/server/lesson-player";
+import { getCurrentUser } from "@/lib/server/auth";
+import { safeNext } from "@/lib/auth/safe-next";
 import { isUuid } from "@/lib/validation/image";
 
 interface LayoutProps {
@@ -29,7 +31,10 @@ interface LayoutProps {
 export default async function LeccionLayout({ children, params }: LayoutProps) {
   const { id } = await params;
   // Un id que no es UUID reventaba en Postgres (500); acá se corta antes de consultar.
-  if (!isUuid(id) || !(await getLessonPlayerData(id))) notFound();
-
-  return <>{children}</>;
+  if (!isUuid(id)) notFound();
+  if (await getLessonPlayerData(id)) return <>{children}</>;
+  // G-06 (T-098): sin sesión, el login con vuelta a la lección. No revela nada: toda lección
+  // (exista o no) responde igual. Con sesión y sin acceso sigue el 404.
+  if (!(await getCurrentUser())) redirect(`/entrar?next=${encodeURIComponent(safeNext(`/leccion/${id}`))}`);
+  notFound();
 }

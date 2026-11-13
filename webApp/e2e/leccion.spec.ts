@@ -8,6 +8,13 @@ test("inscripta: una leccion no-preview muestra el iframe de YouTube", async ({ 
   await expect(page.locator("iframe")).toHaveAttribute("src", /youtube\.com/);
 });
 
+test("sin sesión: la leccion lleva al login con vuelta a ella (G-06)", async ({ browser, page }) => {
+  const href = await nonPreviewLessonHref(browser);
+  await page.goto(href);
+  await expect(page).toHaveURL(`/entrar?next=${encodeURIComponent(href)}`);
+  await expect(page.locator("iframe")).toHaveCount(0);
+});
+
 test("no inscripta: la misma leccion responde 404 y no hay iframe (R-8)", async ({ browser, page }) => {
   const href = await nonPreviewLessonHref(browser);
   await login(page, DELFINA);

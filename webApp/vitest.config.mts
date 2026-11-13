@@ -11,8 +11,10 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["src/lib/**/*.test.ts", "src/content/**/*.test.ts", "src/app/**/*actions.test.ts", "src/app/**/route.test.ts", "src/app/**/layout.test.ts", "src/app/**/page.test.tsx", "src/app/sitemap.test.ts", "src/proxy.test.ts", "src/app/page.test.ts", "src/components/**/*.test.tsx"],
+    include: ["src/**/*.test.{ts,tsx}"],
     exclude: ["e2e/**", "node_modules/**", ".next/**"],
+    // T-098 ronda 1 (B-1): limpia las variables del sitio antes de cada archivo; `npm run test:netlify-env` lo prueba.
+    setupFiles: ["./src/test/hermetic-env.ts"],
     passWithNoTests: false,
     reporters: ["default"],
     // T-050: el limitador por defecto es Postgres; en unidad no hay base. Solo acá se elige memoria.

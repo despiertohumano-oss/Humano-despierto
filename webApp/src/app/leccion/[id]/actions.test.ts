@@ -9,14 +9,19 @@ vi.mock("@/lib/supabase/server", () => ({ createClient }));
 vi.mock("next/cache", () => ({ revalidatePath }));
 vi.mock("@/lib/server/certificates", () => ({ ensureCertificate: vi.fn() }));
 vi.mock("@/lib/server/mail/notify", () => ({ notifyCourseCompleted: vi.fn() }));
+// G-02 (T-098): el mail de curso completado sale en after(); acá se acumula hasta que el test lo corre.
+const { afterQueue } = vi.hoisted(() => ({ afterQueue: [] as (() => unknown)[] }));
+vi.mock("next/server", () => ({ after: (cb: () => unknown) => void afterQueue.push(cb) }));
 
 import { ensureCertificate } from "@/lib/server/certificates";
+import { notifyCourseCompleted } from "@/lib/server/mail/notify";
 import {
   askQuestion,
   deleteLessonNote,
   moderateQuestion,
   resolveClosingHref,
   saveLessonNote,
+  saveLessonProgress,
   updateLessonNote,
   voteQuestion,
 } from "./actions";
@@ -76,7 +81,7 @@ function fakeSession(opts: { user: { id: string } | null; rows: unknown[]; error
 describe("saveLessonNote con tope (T-050)", () => {
   beforeEach(() => createClient.mockReset());
 
-  it("pasado el tope lanza el mensaje humano sin escribir", async () => {
+  it("pasado el tope devuelve el mensaje humano sin lanzar y sin escribir (G-04)", async () => {
     vi.useFakeTimers({ now: new Date("2026-10-22T12:05:00Z"), toFake: ["Date"] });
     const insert = vi.fn(() => ({
       select: () => ({
@@ -90,11 +95,50 @@ describe("saveLessonNote con tope (T-050)", () => {
           ? { select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: { course_id: "c" }, error: null }) }) }) }
           : { insert },
     });
-    for (let i = 0; i < 60; i++) await expect(saveLessonNote("l-1", 1, "x")).resolves.toMatchObject({ id: "n" });
+    for (let i = 0; i < 60; i++) await expect(saveLessonNote("l-1", 1, "x")).resolves.toMatchObject({ ok: true, note: { id: "n" } });
     expect(insert).toHaveBeenCalledTimes(60);
-    await expect(saveLessonNote("l-1", 1, "x")).rejects.toThrow("Demasiados intentos. Esperá 5 minutos y volvé a probar.");
+    await expect(saveLessonNote("l-1", 1, "x")).resolves.toEqual({
+      ok: false,
+      error: "Demasiados intentos. Esperá 5 minutos y volvé a probar.",
+    });
     expect(insert).toHaveBeenCalledTimes(60);
     vi.useRealTimers();
+  });
+});
+
+describe("saveLessonNote (G-04, G-11)", () => {
+  beforeEach(() => createClient.mockReset());
+
+  it("más de 4000 caracteres se rechaza en castellano sin tocar la base", async () => {
+    await expect(saveLessonNote("l-1", 1, "a".repeat(4001))).resolves.toEqual({
+      ok: false,
+      error: "La nota puede tener hasta 4.000 caracteres.",
+    });
+    expect(createClient).not.toHaveBeenCalled();
+  });
+
+  it("sin sesión devuelve el aviso de sesión cerrada, no lanza", async () => {
+    const { from } = fakeSession({ user: null, rows: [] });
+    const r = await saveLessonNote("l-1", 1, "hola");
+    expect(r).toEqual({ ok: false, error: expect.stringMatching(/sesión se cerró/) });
+    expect(from).not.toHaveBeenCalled();
+  });
+
+  it("un error del motor no viaja crudo: mensaje genérico y log", async () => {
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    createClient.mockResolvedValue({
+      auth: { getUser: async () => ({ data: { user: USER } }) },
+      from: (t: string) =>
+        t === "lessons"
+          ? { select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: { course_id: "c" }, error: null }) }) }) }
+          : {
+              insert: () => ({
+                select: () => ({ single: async () => ({ data: null, error: { code: "23514", message: "lesson_notes_body_max_length" } }) }),
+              }),
+            },
+    });
+    const r = await saveLessonNote("l-1", 1, "hola");
+    expect(r).toEqual({ ok: false, error: "No se pudo guardar la nota." });
   });
 });
 
@@ -102,13 +146,18 @@ describe("updateLessonNote", () => {
   beforeEach(() => createClient.mockReset());
 
   it("una nota vacia no toca la base", async () => {
-    await expect(updateLessonNote("n1", "   ")).rejects.toThrow(/vacía/);
+    await expect(updateLessonNote("n1", "   ")).resolves.toEqual({ ok: false, error: "La nota no puede estar vacía." });
     expect(createClient).not.toHaveBeenCalled();
   });
 
-  it("sin sesion rechaza y no consulta ninguna tabla", async () => {
+  it("más de 4000 caracteres no toca la base (G-11)", async () => {
+    await expect(updateLessonNote("n1", "a".repeat(4001))).resolves.toMatchObject({ ok: false, error: expect.stringMatching(/4\.000/) });
+    expect(createClient).not.toHaveBeenCalled();
+  });
+
+  it("sin sesion devuelve el aviso y no consulta ninguna tabla", async () => {
     const { from } = fakeSession({ user: null, rows: [] });
-    await expect(updateLessonNote("n1", "hola")).rejects.toThrow(/No autenticado/);
+    await expect(updateLessonNote("n1", "hola")).resolves.toMatchObject({ ok: false, error: expect.stringMatching(/sesión se cerró/) });
     expect(from).not.toHaveBeenCalled();
   });
 
@@ -117,33 +166,33 @@ describe("updateLessonNote", () => {
       user: USER,
       rows: [{ id: "n1", at_seconds: 42, body: "nuevo", created_at: "2026-10-21T00:00:00Z" }],
     });
-    const note = await updateLessonNote("n1", "  nuevo  ");
+    const r = await updateLessonNote("n1", "  nuevo  ");
     expect(calls.op).toBe("update");
     expect(calls.payload).toEqual({ body: "nuevo" });
     expect(calls.eq).toEqual([
       ["id", "n1"],
       ["user_id", "u-1"],
     ]);
-    expect(note).toEqual({ id: "n1", atSeconds: 42, body: "nuevo", createdAt: "2026-10-21T00:00:00Z" });
+    expect(r).toEqual({ ok: true, note: { id: "n1", atSeconds: 42, body: "nuevo", createdAt: "2026-10-21T00:00:00Z" } });
   });
 
   it("si la RLS filtra la fila (nota ajena, 0 filas) falla en vez de simular exito", async () => {
     fakeSession({ user: USER, rows: [] });
-    await expect(updateLessonNote("ajena", "hola")).rejects.toThrow(/No se encontró la nota/);
+    await expect(updateLessonNote("ajena", "hola")).resolves.toEqual({ ok: false, error: "No se encontró la nota." });
   });
 });
 
 describe("deleteLessonNote", () => {
   beforeEach(() => createClient.mockReset());
 
-  it("sin sesion rechaza", async () => {
+  it("sin sesion devuelve el aviso, no lanza", async () => {
     fakeSession({ user: null, rows: [] });
-    await expect(deleteLessonNote("n1")).rejects.toThrow(/No autenticado/);
+    await expect(deleteLessonNote("n1")).resolves.toMatchObject({ ok: false, error: expect.stringMatching(/sesión se cerró/) });
   });
 
   it("borra filtrando por id y user_id", async () => {
     const { calls } = fakeSession({ user: USER, rows: [{ id: "n1" }] });
-    await deleteLessonNote("n1");
+    await expect(deleteLessonNote("n1")).resolves.toEqual({ ok: true });
     expect(calls.op).toBe("delete");
     expect(calls.eq).toEqual([
       ["id", "n1"],
@@ -153,7 +202,104 @@ describe("deleteLessonNote", () => {
 
   it("0 filas (nota ajena o ya borrada) falla", async () => {
     fakeSession({ user: USER, rows: [] });
-    await expect(deleteLessonNote("ajena")).rejects.toThrow(/No se encontró la nota/);
+    await expect(deleteLessonNote("ajena")).resolves.toEqual({ ok: false, error: "No se encontró la nota." });
+  });
+});
+
+describe("saveLessonProgress (G-04)", () => {
+  beforeEach(() => createClient.mockReset());
+
+  it("sin sesión devuelve el aviso y no consulta tablas", async () => {
+    const { from } = fakeSession({ user: null, rows: [] });
+    await expect(saveLessonProgress("l-1", 30)).resolves.toMatchObject({ ok: false, error: expect.stringMatching(/sesión se cerró/) });
+    expect(from).not.toHaveBeenCalled();
+  });
+
+  it("segundos inválidos se rechazan sin crear el cliente", async () => {
+    await expect(saveLessonProgress("l-1", -1)).resolves.toMatchObject({ ok: false });
+    expect(createClient).not.toHaveBeenCalled();
+  });
+
+  it("pasado el tope devuelve el mensaje del límite en vez de lanzar", async () => {
+    vi.useFakeTimers({ now: new Date("2026-10-22T12:00:10Z"), toFake: ["Date"] });
+    fakeSession({ user: null, rows: [] });
+    for (let i = 0; i < 30; i++) await saveLessonProgress("l-1", 1);
+    await expect(saveLessonProgress("l-1", 1)).resolves.toEqual({
+      ok: false,
+      error: expect.stringMatching(/^Demasiados intentos/),
+    });
+    vi.useRealTimers();
+  });
+
+  it("un error del motor no lanza: mensaje genérico en castellano", async () => {
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    const builder: Record<string, unknown> = {};
+    Object.assign(builder, {
+      update: () => builder,
+      eq: () => builder,
+      select: () => builder,
+      maybeSingle: async () => ({ data: null, error: { code: "57014", message: "canceling statement" } }),
+    });
+    createClient.mockResolvedValue({ auth: { getUser: async () => ({ data: { user: USER } }) }, from: () => builder });
+    await expect(saveLessonProgress("l-1", 30)).resolves.toEqual({ ok: false, error: "No se pudo guardar tu avance." });
+  });
+
+  it("al completar el curso responde sin esperar el mail; el certificado se emite en el request (G-02)", async () => {
+    afterQueue.length = 0;
+    vi.mocked(notifyCourseCompleted).mockReset().mockImplementation(() => new Promise<void>(() => {}));
+    vi.mocked(ensureCertificate).mockReset().mockResolvedValue("COD-9");
+    const progress: Record<string, unknown> = {};
+    Object.assign(progress, {
+      update: () => progress,
+      eq: () => progress,
+      select: () => progress,
+      maybeSingle: async () => ({
+        data: { seconds_watched: 100, completed: true, completed_at: "2026-11-13T00:00:00Z", course_id: "c" },
+        error: null,
+      }),
+    });
+    const lookup = (data: unknown) => {
+      const b: Record<string, unknown> = {};
+      Object.assign(b, { select: () => b, eq: () => b, maybeSingle: async () => ({ data, error: null }) });
+      return b;
+    };
+    createClient.mockResolvedValue({
+      auth: { getUser: async () => ({ data: { user: USER } }) },
+      from: (t: string) =>
+        t === "lesson_progress" ? progress : t === "certificates" ? lookup(null) : lookup({ title: "Tarot", slug: "tarot" }),
+    });
+
+    await expect(saveLessonProgress("l-1", 100)).resolves.toMatchObject({ ok: true, completed: true });
+    expect(ensureCertificate).toHaveBeenCalledWith("c");
+    expect(notifyCourseCompleted).not.toHaveBeenCalled();
+    expect(afterQueue).toHaveLength(1);
+    void afterQueue[0]();
+    expect(notifyCourseCompleted).toHaveBeenCalledWith({
+      userId: "u-1",
+      courseTitle: "Tarot",
+      courseSlug: "tarot",
+      certificateCode: "COD-9",
+    });
+  });
+
+  it("devuelve lo que calculó el guard, con ok: true", async () => {
+    const builder: Record<string, unknown> = {};
+    Object.assign(builder, {
+      update: () => builder,
+      eq: () => builder,
+      select: () => builder,
+      maybeSingle: async () => ({
+        data: { seconds_watched: 30, completed: false, completed_at: null, course_id: "c" },
+        error: null,
+      }),
+    });
+    createClient.mockResolvedValue({ auth: { getUser: async () => ({ data: { user: USER } }) }, from: () => builder });
+    await expect(saveLessonProgress("l-1", 30)).resolves.toEqual({
+      ok: true,
+      secondsWatched: 30,
+      completed: false,
+      completedAt: null,
+    });
   });
 });
 

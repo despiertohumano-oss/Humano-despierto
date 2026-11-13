@@ -10,6 +10,7 @@ import { readRate, writeRate } from "@/lib/player/prefs";
 import { anonymousClosingHref } from "@/lib/player/navigation";
 import { useYouTubePlayer } from "@/components/player/useYouTubePlayer";
 import { useLessonProgress } from "@/components/player/useLessonProgress";
+import ProgressSaveNotice from "@/components/player/ProgressSaveNotice";
 import { useLessonNotes } from "@/components/player/useLessonNotes";
 import { useAutoplayPref } from "@/components/player/useAutoplayPref";
 import { formatClock } from "@/components/player/formatClock";
@@ -133,6 +134,7 @@ export default function LessonPlayer({ data, startSeconds = null }: Props) {
           <Icon name="arrow-left" />
           <span className="truncate">{data.courseTitle}</span>
         </a>
+        <ProgressSaveNotice error={progress.saveError} />
         {completed && (
           <span className="inline-flex flex-none items-center gap-1.5 rounded-pill bg-salvia-100 px-3 py-1 text-xs font-semibold text-exito">
             <Icon name="check" className="h-3.5 w-3.5" />

@@ -20,6 +20,12 @@ vi.mock("@/lib/supabase/service", () => ({ createServiceRoleClient }));
 vi.mock("@/lib/server/mail/notify", () => ({ notifyEnrollmentActivated, notifyEnrollmentRejected }));
 vi.mock("next/cache", () => ({ revalidatePath, revalidateTag }));
 vi.mock("@/lib/server/enrollment-grant", () => ({ resolveGrantTarget }));
+// G-02 (T-098): el mail sale en after(); acá se acumula y cada test decide cuándo correrlo.
+const { afterQueue } = vi.hoisted(() => ({ afterQueue: [] as (() => unknown)[] }));
+vi.mock("next/server", () => ({ after: (cb: () => unknown) => void afterQueue.push(cb) }));
+async function flushAfter(): Promise<void> {
+  for (const cb of afterQueue.splice(0)) await cb();
+}
 
 import {
   approveEnrollmentRequestAction,
@@ -60,6 +66,9 @@ function dbReturning(result: unknown) {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  afterQueue.length = 0;
+  notifyEnrollmentActivated.mockReset();
+  notifyEnrollmentRejected.mockReset();
   getCurrentUser.mockResolvedValue(ADMIN);
 });
 
@@ -83,6 +92,7 @@ describe("approveEnrollmentRequestAction", () => {
     expect(argsOf(calls, "update")?.[0]).toMatchObject({ status: "active", granted_by: ADMIN.id, decided_reason: null });
     expect(argsOf(calls, "eq")).toEqual(["id", ENROLLMENT]);
     expect(argsOf(calls, "in")).toEqual(["status", ["requested", "rejected"]]);
+    await flushAfter();
     expect(notifyEnrollmentActivated).toHaveBeenCalledTimes(1);
     expect(notifyEnrollmentActivated).toHaveBeenCalledWith({ studentId: STUDENT, courseId: COURSE });
   });
@@ -91,7 +101,41 @@ describe("approveEnrollmentRequestAction", () => {
     dbReturning({ data: [], error: null });
     const r = await approveEnrollmentRequestAction(INICIAL, form({ enrollmentId: ENROLLMENT }));
     expect(r.error).toBe("Esta solicitud ya fue resuelta. Recargá el panel para ver su estado.");
+    await flushAfter();
     expect(notifyEnrollmentActivated).not.toHaveBeenCalled();
+  });
+});
+
+describe("G-02 · el mail de inscripción no se espera dentro del request", () => {
+  const never = () => new Promise<void>(() => {});
+
+  it("aprobar responde aunque el SMTP no conteste, y el mail queda para after()", async () => {
+    notifyEnrollmentActivated.mockImplementationOnce(never);
+    dbReturning({ data: [{ user_id: STUDENT, course_id: COURSE }], error: null });
+    const r = await approveEnrollmentRequestAction(INICIAL, form({ enrollmentId: ENROLLMENT }));
+    expect(r.success).toBe("Inscripción aprobada.");
+    expect(notifyEnrollmentActivated).not.toHaveBeenCalled();
+    expect(afterQueue).toHaveLength(1);
+  });
+
+  it("rechazar responde sin esperar el mail", async () => {
+    notifyEnrollmentRejected.mockImplementationOnce(never);
+    dbReturning({ data: [{ user_id: STUDENT, course_id: COURSE }], error: null });
+    const r = await rejectEnrollmentRequestAction(INICIAL, form({ enrollmentId: ENROLLMENT, reason: "" }));
+    expect(r.success).toBe("Solicitud rechazada.");
+    expect(notifyEnrollmentRejected).not.toHaveBeenCalled();
+    expect(afterQueue).toHaveLength(1);
+  });
+
+  it("otorgar (setEnrollment) responde sin esperar el mail, y un fallo del mail no rompe nada", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    notifyEnrollmentActivated.mockRejectedValueOnce(new Error("smtp"));
+    dbReturning({ data: null, error: null });
+    const r = await setEnrollmentAction(INICIAL, form({ userId: STUDENT, courseId: COURSE, status: "active" }));
+    expect(r.success).toBe("Inscripción activada.");
+    expect(notifyEnrollmentActivated).not.toHaveBeenCalled();
+    await expect(flushAfter()).resolves.toBeUndefined();
+    expect(notifyEnrollmentActivated).toHaveBeenCalledWith({ studentId: STUDENT, courseId: COURSE });
   });
 });
 
@@ -120,6 +164,7 @@ describe("rejectEnrollmentRequestAction", () => {
       ["id", ENROLLMENT],
       ["status", "requested"],
     ]);
+    await flushAfter();
     expect(notifyEnrollmentRejected).toHaveBeenCalledWith({ studentId: STUDENT, courseId: COURSE, reason: "Cupo completo" });
   });
 
@@ -127,6 +172,7 @@ describe("rejectEnrollmentRequestAction", () => {
     const { calls } = dbReturning({ data: [{ user_id: STUDENT, course_id: COURSE }], error: null });
     await rejectEnrollmentRequestAction(INICIAL, form({ enrollmentId: ENROLLMENT, reason: "   " }));
     expect(argsOf(calls, "update")?.[0]).toMatchObject({ decided_reason: null });
+    await flushAfter();
     expect(notifyEnrollmentRejected).toHaveBeenCalledWith({ studentId: STUDENT, courseId: COURSE, reason: null });
   });
 
@@ -134,6 +180,7 @@ describe("rejectEnrollmentRequestAction", () => {
     dbReturning({ data: null, error: { code: "42501", message: "el motivo contiene un localizador de contenido pago" } });
     const r = await rejectEnrollmentRequestAction(INICIAL, form({ enrollmentId: ENROLLMENT, reason: "aQw4w9WgXcQ" }));
     expect(r.error).toMatch(/contenido pago/);
+    await flushAfter();
     expect(notifyEnrollmentRejected).not.toHaveBeenCalled();
   });
 });

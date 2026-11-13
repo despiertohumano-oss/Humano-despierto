@@ -92,7 +92,6 @@ export const createModuleAction = withRateLimit(
     _prevState: TeacherActionState,
     formData: FormData
   ): Promise<TeacherActionState> {
-    const teacher = await requireTeacher();
     const courseId = String(formData.get("courseId") ?? "");
     if (!courseId) return { error: "Falta el curso.", success: null };
 
@@ -103,6 +102,7 @@ export const createModuleAction = withRateLimit(
     if (!parsed.success) return { error: firstIssueMessage(parsed.error), success: null };
 
     try {
+      const teacher = await requireTeacher();
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
 
@@ -139,7 +139,6 @@ export const updateModuleAction = withRateLimit(
     _prevState: TeacherActionState,
     formData: FormData
   ): Promise<TeacherActionState> {
-    const teacher = await requireTeacher();
     const courseId = String(formData.get("courseId") ?? "");
     const moduleId = String(formData.get("moduleId") ?? "");
     if (!courseId || !moduleId) return { error: "Datos inválidos.", success: null };
@@ -151,6 +150,7 @@ export const updateModuleAction = withRateLimit(
     if (!parsed.success) return { error: firstIssueMessage(parsed.error), success: null };
 
     try {
+      const teacher = await requireTeacher();
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
       const { error } = await supabase
@@ -176,12 +176,12 @@ export const deleteModuleAction = withRateLimit(
     _prevState: TeacherActionState,
     formData: FormData
   ): Promise<TeacherActionState> {
-    const teacher = await requireTeacher();
     const courseId = String(formData.get("courseId") ?? "");
     const moduleId = String(formData.get("moduleId") ?? "");
     if (!courseId || !moduleId) return { error: "Datos inválidos.", success: null };
 
     try {
+      const teacher = await requireTeacher();
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
       // Cascada por FK (0001): borra también sus lecciones, capítulos y recursos.
@@ -210,7 +210,6 @@ export const moveModuleAction = withRateLimit(
     _prevState: TeacherActionState,
     formData: FormData
   ): Promise<TeacherActionState> {
-    const teacher = await requireTeacher();
     const courseId = String(formData.get("courseId") ?? "");
     const moduleId = String(formData.get("moduleId") ?? "");
     const direction = String(formData.get("direction") ?? "");
@@ -219,6 +218,7 @@ export const moveModuleAction = withRateLimit(
     }
 
     try {
+      const teacher = await requireTeacher();
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
       const { data: modules, error } = await supabase
@@ -260,7 +260,6 @@ export const createLessonAction = withRateLimit(
     _prevState: TeacherActionState,
     formData: FormData
   ): Promise<TeacherActionState> {
-    const teacher = await requireTeacher();
     const courseId = String(formData.get("courseId") ?? "");
     const moduleId = String(formData.get("moduleId") ?? "");
     if (!courseId || !moduleId) return { error: "Datos inválidos.", success: null };
@@ -276,6 +275,7 @@ export const createLessonAction = withRateLimit(
     }
 
     try {
+      const teacher = await requireTeacher();
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
 
@@ -327,7 +327,6 @@ export const updateLessonAction = withRateLimit(
     _prevState: TeacherActionState,
     formData: FormData
   ): Promise<TeacherActionState> {
-    const teacher = await requireTeacher();
     const courseId = String(formData.get("courseId") ?? "");
     const lessonId = String(formData.get("lessonId") ?? "");
     if (!courseId || !lessonId) return { error: "Datos inválidos.", success: null };
@@ -343,6 +342,7 @@ export const updateLessonAction = withRateLimit(
     }
 
     try {
+      const teacher = await requireTeacher();
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
       const { error } = await supabase
@@ -373,12 +373,12 @@ export const deleteLessonAction = withRateLimit(
     _prevState: TeacherActionState,
     formData: FormData
   ): Promise<TeacherActionState> {
-    const teacher = await requireTeacher();
     const courseId = String(formData.get("courseId") ?? "");
     const lessonId = String(formData.get("lessonId") ?? "");
     if (!courseId || !lessonId) return { error: "Datos inválidos.", success: null };
 
     try {
+      const teacher = await requireTeacher();
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
       const { error } = await supabase.from("lessons").delete().eq("id", lessonId).eq("course_id", courseId);
@@ -399,7 +399,6 @@ export const moveLessonAction = withRateLimit(
     _prevState: TeacherActionState,
     formData: FormData
   ): Promise<TeacherActionState> {
-    const teacher = await requireTeacher();
     const courseId = String(formData.get("courseId") ?? "");
     const moduleId = String(formData.get("moduleId") ?? "");
     const lessonId = String(formData.get("lessonId") ?? "");
@@ -409,6 +408,7 @@ export const moveLessonAction = withRateLimit(
     }
 
     try {
+      const teacher = await requireTeacher();
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
       const { data: lessons, error } = await supabase
@@ -450,7 +450,6 @@ export const attachLessonVideoAction = withRateLimit(
     _prevState: TeacherActionState,
     formData: FormData
   ): Promise<TeacherActionState> {
-    const teacher = await requireTeacher();
     const courseId = String(formData.get("courseId") ?? "");
     const lessonId = String(formData.get("lessonId") ?? "");
     if (!courseId || !lessonId) return { error: "Datos inválidos.", success: null };
@@ -459,6 +458,7 @@ export const attachLessonVideoAction = withRateLimit(
     if (!parsed.success) return { error: firstIssueMessage(parsed.error), success: null };
 
     try {
+      const teacher = await requireTeacher();
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
       const { data: lessonRow, error: lessonError } = await supabase
@@ -517,13 +517,13 @@ export const setLessonPublishedAction = withRateLimit(
     _prevState: TeacherActionState,
     formData: FormData
   ): Promise<TeacherActionState> {
-    const teacher = await requireTeacher();
     const courseId = String(formData.get("courseId") ?? "");
     const lessonId = String(formData.get("lessonId") ?? "");
     const nextPublished = String(formData.get("nextPublished") ?? "") === "true";
     if (!courseId || !lessonId) return { error: "Datos inválidos.", success: null };
 
     try {
+      const teacher = await requireTeacher();
       await assertOwnsCourse(courseId, teacher.id);
       const service = createServiceRoleClient();
       const { error } = await service
@@ -559,7 +559,6 @@ export const createChapterAction = withRateLimit(
     _prevState: TeacherActionState,
     formData: FormData
   ): Promise<TeacherActionState> {
-    const teacher = await requireTeacher();
     const courseId = String(formData.get("courseId") ?? "");
     const lessonId = String(formData.get("lessonId") ?? "");
     if (!courseId || !lessonId) return { error: "Datos inválidos.", success: null };
@@ -573,6 +572,7 @@ export const createChapterAction = withRateLimit(
     if (Number.isNaN(startSeconds)) return { error: "Tiempo de inicio inválido.", success: null };
 
     try {
+      const teacher = await requireTeacher();
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
 
@@ -622,7 +622,6 @@ export const updateChapterAction = withRateLimit(
     _prevState: TeacherActionState,
     formData: FormData
   ): Promise<TeacherActionState> {
-    const teacher = await requireTeacher();
     const courseId = String(formData.get("courseId") ?? "");
     const lessonId = String(formData.get("lessonId") ?? "");
     const chapterId = String(formData.get("chapterId") ?? "");
@@ -637,6 +636,7 @@ export const updateChapterAction = withRateLimit(
     if (Number.isNaN(startSeconds)) return { error: "Tiempo de inicio inválido.", success: null };
 
     try {
+      const teacher = await requireTeacher();
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
       const { error } = await supabase
@@ -662,13 +662,13 @@ export const deleteChapterAction = withRateLimit(
     _prevState: TeacherActionState,
     formData: FormData
   ): Promise<TeacherActionState> {
-    const teacher = await requireTeacher();
     const courseId = String(formData.get("courseId") ?? "");
     const lessonId = String(formData.get("lessonId") ?? "");
     const chapterId = String(formData.get("chapterId") ?? "");
     if (!courseId || !lessonId || !chapterId) return { error: "Datos inválidos.", success: null };
 
     try {
+      const teacher = await requireTeacher();
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
       const { error } = await supabase.from("lesson_chapters").delete().eq("id", chapterId).eq("lesson_id", lessonId);
@@ -691,7 +691,6 @@ export const createResourceAction = withRateLimit(
     _prevState: TeacherActionState,
     formData: FormData
   ): Promise<TeacherActionState> {
-    const teacher = await requireTeacher();
     const courseId = String(formData.get("courseId") ?? "");
     const lessonId = String(formData.get("lessonId") ?? "");
     if (!courseId || !lessonId) return { error: "Datos inválidos.", success: null };
@@ -706,6 +705,7 @@ export const createResourceAction = withRateLimit(
     const v = parsed.data;
 
     try {
+      const teacher = await requireTeacher();
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
 
@@ -766,7 +766,6 @@ export const updateResourceAction = withRateLimit(
     _prevState: TeacherActionState,
     formData: FormData
   ): Promise<TeacherActionState> {
-    const teacher = await requireTeacher();
     const courseId = String(formData.get("courseId") ?? "");
     const lessonId = String(formData.get("lessonId") ?? "");
     const resourceId = String(formData.get("resourceId") ?? "");
@@ -781,6 +780,7 @@ export const updateResourceAction = withRateLimit(
     const v = parsed.data;
 
     try {
+      const teacher = await requireTeacher();
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
       const { error } = await supabase
@@ -806,13 +806,13 @@ export const deleteResourceAction = withRateLimit(
     _prevState: TeacherActionState,
     formData: FormData
   ): Promise<TeacherActionState> {
-    const teacher = await requireTeacher();
     const courseId = String(formData.get("courseId") ?? "");
     const lessonId = String(formData.get("lessonId") ?? "");
     const resourceId = String(formData.get("resourceId") ?? "");
     if (!courseId || !lessonId || !resourceId) return { error: "Datos inválidos.", success: null };
 
     try {
+      const teacher = await requireTeacher();
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
       const { error } = await supabase.from("lesson_resources").delete().eq("id", resourceId).eq("lesson_id", lessonId);
@@ -852,8 +852,8 @@ export const uploadCourseCoverAction = withRateLimit(
     const check = checkCoverBytes(bytes);
     if (!check.ok) return { error: check.error, success: null };
 
-    const teacher = await requireTeacher();
     try {
+      const teacher = await requireTeacher();
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
       const { data: current } = await supabase.from("courses").select("cover_path").eq("id", courseId).single();
@@ -895,8 +895,8 @@ export const removeCourseCoverAction = withRateLimit(
     const courseId = String(formData.get("courseId") ?? "");
     if (!isUuid(courseId)) return { error: "Falta el curso.", success: null };
 
-    const teacher = await requireTeacher();
     try {
+      const teacher = await requireTeacher();
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
       const { data: current } = await supabase.from("courses").select("cover_path").eq("id", courseId).single();
@@ -952,8 +952,8 @@ export const saveAnnouncementDraft = withRateLimit(
     });
     if (!parsed.success) return announcementFail(parsed.error.issues[0]?.message ?? "Revisá el anuncio.");
 
-    const teacher = await requireTeacher();
     try {
+      const teacher = await requireTeacher();
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
       const { error } = announcementId
@@ -983,9 +983,9 @@ export const publishAnnouncement = withRateLimit(
     const announcementId = String(formData.get("announcementId") ?? "");
     if (!validIds(courseId, announcementId)) return announcementFail("Datos inválidos.");
 
-    const teacher = await requireTeacher();
     let publishedId: string;
     try {
+      const teacher = await requireTeacher();
       // R-4: la titularidad se verifica con la SESIÓN; recién después se usa service_role.
       await assertOwnsCourse(courseId, teacher.id);
       const { error, id } = await publicar(createServiceRoleClient(), { id: announcementId, courseId });
@@ -1022,8 +1022,8 @@ export const withdrawAnnouncement = withRateLimit(
     const parsed = reasonSchema.safeParse({ reason: String(formData.get("reason") ?? "") });
     if (!parsed.success) return announcementFail(parsed.error.issues[0]?.message ?? "Retirar exige un motivo.");
 
-    const teacher = await requireTeacher();
     try {
+      const teacher = await requireTeacher();
       const supabase = await createClient();
       const { error } = await retirar(supabase, { id: announcementId, moderatorId: teacher.id, reason: parsed.data.reason });
       if (error) {

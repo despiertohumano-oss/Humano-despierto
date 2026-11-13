@@ -7,6 +7,8 @@ import VideoAttachForm from "@/components/teacher/VideoAttachForm";
 import PublishLessonControl from "@/components/teacher/PublishLessonControl";
 import ChaptersSection from "@/components/teacher/ChaptersSection";
 import ResourcesSection from "@/components/teacher/ResourcesSection";
+import { getStudentProgressCounts } from "@/lib/server/student-impact";
+import { log } from "@/lib/server/log";
 
 interface Props {
   params: Promise<{ courseId: string; lessonId: string }>;
@@ -27,6 +29,13 @@ export default async function TeacherLessonEditorPage({ params }: Props) {
   }
   if (!detail) notFound();
 
+  // G-01: alumnas con avance en esta lección, para el texto del borrado. Sin conteo, el texto avisa.
+  const impact = await getStudentProgressCounts(courseId, teacher.id, []).catch((err) => {
+    log.warn("student_impact_unavailable", { err });
+    return null;
+  });
+  const studentsWithProgress = impact ? (impact.byLesson[lessonId] ?? 0) : null;
+
   return (
     <PanelFrame
       title={detail.lesson.title}
@@ -35,7 +44,12 @@ export default async function TeacherLessonEditorPage({ params }: Props) {
       width="narrow"
     >
       <div className="space-y-8">
-        <PublishLessonControl courseId={courseId} lessonId={lessonId} isPublished={detail.lesson.isPublished} />
+        <PublishLessonControl
+          courseId={courseId}
+          lessonId={lessonId}
+          isPublished={detail.lesson.isPublished}
+          studentsWithProgress={studentsWithProgress}
+        />
 
         <PanelSection id="datos-leccion-titulo" title="Datos de la lección">
           <LessonFieldsForm lesson={detail.lesson} />

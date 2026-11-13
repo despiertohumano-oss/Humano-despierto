@@ -54,6 +54,7 @@ function fakeAdmin(s: Estado) {
       update: () => c,
       eq: (k: string, v: unknown) => ((f[k] = v), c),
       is: (k: string, v: unknown) => ((f[k] = v), c),
+      lt: () => c,
       range: (from: number, to: number) => ((f.__range = [from, to]), c),
       maybeSingle: async () => resolve(f),
       then: (ok: (v: unknown) => unknown, ko: (e: unknown) => unknown) => Promise.resolve(resolve(f)).then(ok, ko),
@@ -80,6 +81,8 @@ function fakeAdmin(s: Estado) {
         });
       if (table === "mail_log")
         return chain((f) => {
+          // Sin `id` es la lectura de lo ya resuelto del anuncio (G-02); con `id`, la confirmación.
+          if (f.id === undefined) return { data: [], error: null };
           s.confirms.push(f.id as string);
           return { error: null, count: 1 };
         });
@@ -170,13 +173,20 @@ describe("notifyAnnouncementPublished", () => {
     expect(s.claims.map((c) => c.userId)).toEqual(["u-0", "u-2"]);
   });
 
-  it("SMTP MUDO (acepta y no contesta): 7 inscriptas terminan en dos vueltas del tope duro, sin colgar", async () => {
+  it("SMTP MUDO (acepta y no contesta): arrancan 5, el tope duro las corta sin colgar y, con el plazo de la función vencido, las 2 restantes quedan para el cron (G-02)", async () => {
     vi.useFakeTimers();
     const s = estado(7);
-    mocks.db = fakeAdmin(s);
-    // El transporte mudo nunca resuelve: un contador que baja al terminar no bajaria nunca. Lo que
-    // se mide es cuantos envios ARRANCARON antes de que venza el primer tope duro: con un pool de
-    // 5 son exactamente 5; las 2 que faltan entran recien cuando la primera vuelta suelta su carril.
+    const released: string[] = [];
+    const db = fakeAdmin(s);
+    const rpc = db.rpc.bind(db);
+    db.rpc = (async (fn: string, a: Record<string, string>) => {
+      if (fn === "release_rate_limited_mail_slot") released.push(a.p_id);
+      return rpc(fn, a as never);
+    }) as typeof db.rpc;
+    mocks.db = db;
+    // El transporte mudo nunca resuelve: se mide cuántos envíos ARRANCARON. Con un pool de 5 son 5;
+    // cuando la primera vuelta suelta su carril (tope duro de 15 s) el plazo del after() (6 s) ya
+    // pasó, así que las otras 2 no arrancan: la primera deja un turno liberado y la otra se salta.
     let iniciados = 0;
     __setTransportForTests({
       send: () => {
@@ -188,13 +198,13 @@ describe("notifyAnnouncementPublished", () => {
     const p = notifyAnnouncementPublished({ announcementId: ANUNCIO }).then(() => (terminado = true));
     await vi.advanceTimersByTimeAsync(14_999);
     expect(iniciados).toBe(5);
-    await vi.advanceTimersByTimeAsync(1);
     expect(terminado).toBe(false);
-    expect(iniciados).toBe(7);
-    await vi.advanceTimersByTimeAsync(15_000);
+    await vi.advanceTimersByTimeAsync(1);
     await p;
     expect(terminado).toBe(true);
-    expect(s.claims).toHaveLength(7);
+    expect(iniciados).toBe(5);
+    expect(s.claims).toHaveLength(6);
+    expect(released).toEqual(["claim-u-5"]);
     expect(s.confirms).toEqual([]);
   });
 

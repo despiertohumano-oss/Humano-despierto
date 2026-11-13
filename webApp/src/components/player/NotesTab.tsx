@@ -7,6 +7,7 @@ import { formatClock } from "@/components/player/formatClock";
 import type { LessonNotes } from "@/components/player/useLessonNotes";
 import type { PlayerNote } from "@/lib/server/lesson-player";
 import { cn } from "@/lib/utils/cn";
+import { NOTE_BODY_MAX } from "@/lib/player/action-result";
 
 function NoteItem({ note, api }: { note: PlayerNote; api: LessonNotes }) {
   const [editing, setEditing] = useState(false);
@@ -28,7 +29,7 @@ function NoteItem({ note, api }: { note: PlayerNote; api: LessonNotes }) {
         <div>
           <FormField id={`${id}-editar`} label="Editar nota" hideLabel error={noteError}>
             {(c) => (
-              <textarea {...c} value={draft} onChange={(e) => setDraft(e.target.value)} rows={3} className={cn(c.className, "resize-y text-sm")} />
+              <textarea {...c} value={draft} onChange={(e) => setDraft(e.target.value)} rows={3} maxLength={NOTE_BODY_MAX} className={cn(c.className, "resize-y text-sm")} />
             )}
           </FormField>
           <div className="mt-2 flex flex-wrap gap-2">
@@ -100,6 +101,7 @@ export default function NotesTab({ isAuthenticated, canTakeNotes, currentTime, a
               onChange={(e) => setDraft(e.target.value)}
               placeholder="Anotá un momento, un símbolo, una sospecha..."
               rows={3}
+              maxLength={NOTE_BODY_MAX}
               className={cn(c.className, "resize-y text-sm")}
             />
           )}
