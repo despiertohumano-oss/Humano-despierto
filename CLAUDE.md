@@ -267,7 +267,9 @@ covered by mutation tests that fail loudly if you regress them.
    token lives only in the mail; the DB keeps its sha256. The mail link also carries a one-time
    GoTrue access (`?acceso=<hashed_token>&tipo=magiclink|signup`, from `auth.admin.generateLink`;
    for a mail without account GoTrue creates it): `/invitacion/[token]` redeems it with
-   `verifyOtp` (replacing any other session in that browser) before accepting, and a `signup`
+   `verifyOtp` only when the browser has no session (T-096 S-02: an open session is never replaced;
+   it goes straight to the accept, which fails for any other account and sends it to «salí
+   primero»), and a `signup`
    account goes to `/entrar/nueva-clave?invitacion=1` to choose its password. When the access
    expired (OTP expiry) the link still works by logging in by hand. The admin lists (`admin_list_*`,
    `admin_user_by_email`) are `service_role`-only SQL functions: the mail lives in `auth.users`.

@@ -117,7 +117,8 @@ test("sin acceso (vencido): el link pide entrar a mano y después acepta", async
   await ctx.close();
 });
 
-test("abierto con otra sesión: el acceso la reemplaza por la cuenta invitada", async ({ page, browser }) => {
+// S-02 (T-096): con otra sesión abierta el acceso no se canjea; antes la reemplazaba en silencio.
+test("abierto con otra sesión: no canjea el acceso, pide salir primero y sigue alumna", async ({ page, browser }) => {
   const email = freshEmail("otrasesion");
   await invite(page, email);
   const link = await invitationLinkFor(page.request, email);
@@ -127,7 +128,16 @@ test("abierto con otra sesión: el acceso la reemplaza por la cuenta invitada", 
   await loginAt(nav, "/entrar", ALUMNA.email, ALUMNA.password);
   await expect(nav).toHaveURL(/\/panel$/);
   await nav.goto(link);
-  await expect(nav).toHaveURL(/\/entrar\/nueva-clave\?invitacion=1$/);
+  await expect(nav).toHaveURL(/\/invitacion\/invalida\?sesion=1$/);
+  await nav.goto("/panel/docente");
+  await expect(nav).toHaveURL(/\/panel$/);
+
+  // El mismo link, en un navegador sin sesión, todavía entra: el acceso no se gastó.
+  const limpio = await browser.newContext();
+  const invitada = await limpio.newPage();
+  await invitada.goto(link);
+  await expect(invitada).toHaveURL(/\/entrar\/nueva-clave\?invitacion=1$/);
+  await limpio.close();
   await ctx.close();
 });
 
