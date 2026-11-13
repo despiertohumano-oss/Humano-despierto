@@ -15,5 +15,8 @@ export async function GET(request: NextRequest) {
     after(() => notifyWelcome({ userId }));
   }
 
-  return NextResponse.redirect(new URL(outcome.destination, request.nextUrl.origin));
+  // Este redirect lleva el Set-Cookie de la sesión nueva: `no-cache` dejaría a un proxy guardarlo.
+  const response = NextResponse.redirect(new URL(outcome.destination, request.nextUrl.origin));
+  response.headers.set("Cache-Control", "private, no-store");
+  return response;
 }
