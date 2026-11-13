@@ -27,6 +27,7 @@ vi.mock("next/navigation", () => ({ redirect: vi.fn() }));
 import { publishAnnouncement, saveAnnouncementDraft, withdrawAnnouncement } from "./actions";
 import { TEACHER_ACTION_INITIAL_STATE } from "@/lib/teacher/action-state";
 import { __resetRateLimiterForTests } from "@/lib/server/rate-limit";
+import { UserFacingError } from "@/lib/server/action-error";
 
 beforeEach(() => {
   __resetRateLimiterForTests();
@@ -118,7 +119,7 @@ describe("saveAnnouncementDraft", () => {
 
 describe("publishAnnouncement", () => {
   it("sin titularidad no se crea el cliente de service_role ni se agenda el mail", async () => {
-    mocks.assertOwnsCourse.mockRejectedValue(new Error("No autorizado: ese curso no te pertenece."));
+    mocks.assertOwnsCourse.mockRejectedValue(new UserFacingError("No autorizado: ese curso no te pertenece."));
     const r = await publishAnnouncement(TEACHER_ACTION_INITIAL_STATE, form({ courseId: COURSE, announcementId: ANN }));
     expect(r.error).toMatch(/No autorizado/);
     expect(mocks.createServiceRoleClient).not.toHaveBeenCalled();
@@ -180,5 +181,24 @@ describe("withdrawAnnouncement", () => {
     expect(r.success).toBe("Anuncio retirado.");
     expect(calls.values).toMatchObject({ deleted_by: TEACHER.id, deleted_reason: "Lo publiqué por error" });
     expect(mocks.createServiceRoleClient).not.toHaveBeenCalled();
+  });
+});
+
+describe("D-120: un fallo del motor no llega crudo a la docente", () => {
+  const RAW = new Error('No se pudo verificar la titularidad del curso: relation "courses" denied');
+
+  it("saveAnnouncementDraft", async () => {
+    mocks.assertOwnsCourse.mockRejectedValue(RAW);
+    const r = await saveAnnouncementDraft(TEACHER_ACTION_INITIAL_STATE, form({ courseId: COURSE, title: "Clase", body: "Texto" }));
+    expect(r.error).toBeTruthy();
+    expect(r.error).not.toMatch(/courses|relation|titularidad/);
+  });
+
+  it("publishAnnouncement", async () => {
+    mocks.assertOwnsCourse.mockRejectedValue(RAW);
+    const r = await publishAnnouncement(TEACHER_ACTION_INITIAL_STATE, form({ courseId: COURSE, announcementId: ANN }));
+    expect(r.error).toBeTruthy();
+    expect(r.error).not.toMatch(/courses|relation|titularidad/);
+    expect(mocks.after).not.toHaveBeenCalled();
   });
 });

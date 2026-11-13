@@ -1,6 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
-import { retryPendingAnnouncementMail } from "@/lib/server/mail/notify";
+import { retryPendingMail } from "@/lib/server/mail/notify";
 
 // Largo: una pasada puede mandar cientos de mails.
 export const maxDuration = 300;
@@ -19,5 +19,5 @@ export async function GET(request: Request) {
   if (!validSecret(request.headers.get("authorization"), secret)) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
-  return NextResponse.json(await retryPendingAnnouncementMail());
+  return NextResponse.json(await retryPendingMail());
 }

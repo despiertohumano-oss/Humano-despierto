@@ -21,6 +21,7 @@ vi.mock("next/navigation", () => ({ redirect: vi.fn() }));
 
 import { createPostAction, removePostCoverAction, updatePostAction, uploadPostCoverAction } from "./actions";
 import { __resetRateLimiterForTests } from "@/lib/server/rate-limit";
+import { UserFacingError } from "@/lib/server/action-error";
 
 const INITIAL = { error: null, success: null };
 
@@ -191,7 +192,7 @@ describe("portada del post (B3)", () => {
   });
 
   it("un post ajeno no sube nada", async () => {
-    assertOwnsPost.mockRejectedValue(new Error("No autorizado: ese post no te pertenece."));
+    assertOwnsPost.mockRejectedValue(new UserFacingError("No autorizado: ese post no te pertenece."));
     const r = await uploadPostCoverAction(INITIAL, coverForm(PNG));
     expect(r.error).toMatch(/No autorizado/);
     expect(uploadAsServer).not.toHaveBeenCalled();
@@ -211,7 +212,7 @@ describe("portada del post (B3)", () => {
   it("quitar portada en un post ajeno no actualiza ni borra nada en Storage", async () => {
     // El post publicado es legible por todos: sin assertOwnsPost el select devolvería la portada ajena.
     const update = session(OLD);
-    assertOwnsPost.mockRejectedValue(new Error("No autorizado: ese post no te pertenece."));
+    assertOwnsPost.mockRejectedValue(new UserFacingError("No autorizado: ese post no te pertenece."));
     const r = await removePostCoverAction(INITIAL, coverForm(null));
     expect(r.error).toMatch(/No autorizado/);
     expect(update).not.toHaveBeenCalled();

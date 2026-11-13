@@ -6,6 +6,7 @@ import { getCurrentUser } from "@/lib/server/auth";
 import { CAMPUS_ACTION_INITIAL_STATE, type CampusActionState } from "@/lib/campus/action-state";
 import { withRateLimit } from "@/lib/server/rate-limit";
 import { limitedState } from "@/lib/rate-limit/core";
+import { actionError, UserFacingError } from "@/lib/server/action-error";
 
 // T-021 · Campus. Los tres Server Actions del hilo (crear, editar, moderar) son deliberadamente
 // finos: la autoridad real de "quién puede escribir/editar/borrar qué" vive en RLS + el guard
@@ -27,7 +28,7 @@ const CHECK_VIOLATION = "23514";
 
 async function requireSession() {
   const user = await getCurrentUser();
-  if (!user) throw new Error("No autorizado: iniciá sesión.");
+  if (!user) throw new UserFacingError("No autorizado: iniciá sesión.");
   return user;
 }
 
@@ -69,7 +70,7 @@ export const createCampusPostAction = withRateLimit(
       if (error.code === CHECK_VIOLATION) {
         return { error: "Ese mensaje no se puede guardar: revisá que no tenga un link (acá no están permitidos).", success: null };
       }
-      return { error: `No se pudo publicar: ${error.message}`, success: null };
+      return { error: actionError(error, "No se pudo publicar."), success: null };
     }
 
     revalidatePath(threadPath(courseSlug));
@@ -104,7 +105,7 @@ export const updateCampusPostAction = withRateLimit(
       if (error.code === CHECK_VIOLATION) {
         return { error: "Ese mensaje no se puede guardar: revisá que no tenga un link (acá no están permitidos).", success: null };
       }
-      return { error: `No se pudo editar: ${error.message}`, success: null };
+      return { error: actionError(error, "No se pudo editar."), success: null };
     }
 
     revalidatePath(threadPath(courseSlug));
@@ -141,7 +142,7 @@ export const moderateCampusPostAction = withRateLimit(
       if (error.code === PRIV_DENIED) {
         return { error: "No tenés permiso para moderar este hilo.", success: null };
       }
-      return { error: `No se pudo borrar: ${error.message}`, success: null };
+      return { error: actionError(error, "No se pudo borrar."), success: null };
     }
 
     revalidatePath(threadPath(courseSlug));

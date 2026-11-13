@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const retry = vi.hoisted(() => vi.fn(async () => ({ announcements: 2 })));
-vi.mock("@/lib/server/mail/notify", () => ({ retryPendingAnnouncementMail: retry }));
+const retry = vi.hoisted(() => vi.fn(async () => ({ announcements: 2, transactional: 3 })));
+vi.mock("@/lib/server/mail/notify", () => ({ retryPendingMail: retry }));
 
 import { GET } from "./route";
 
@@ -28,7 +28,7 @@ describe("GET /api/mail/retry", () => {
   it("con el secreto correcto corre y devuelve el conteo", async () => {
     const res = await GET(req("Bearer s3creto-de-prueba-largo-1234567890"));
     expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({ announcements: 2 });
+    expect(await res.json()).toEqual({ announcements: 2, transactional: 3 });
     expect(retry).toHaveBeenCalledTimes(1);
   });
 });

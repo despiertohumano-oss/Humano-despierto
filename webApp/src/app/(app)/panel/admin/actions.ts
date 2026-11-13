@@ -19,6 +19,7 @@ import type { AppRole } from "@/lib/stores/useAuthStore";
 import { log } from "@/lib/server/log";
 import { withRateLimit } from "@/lib/server/rate-limit";
 import { limitedState } from "@/lib/rate-limit/core";
+import { actionError } from "@/lib/server/action-error";
 
 const ROLES: AppRole[] = ["student", "teacher", "admin"];
 const COURSE_STATUSES = ["draft", "published", "archived"] as const;
@@ -78,7 +79,7 @@ export const updateUserRoleAction = withRateLimit(
       .eq("id", userId);
 
     if (updateError) {
-      return { error: `No se pudo actualizar el rol: ${updateError.message}`, success: null };
+      return { error: actionError(updateError, "No se pudo actualizar el rol."), success: null };
     }
 
     revalidatePath("/panel/admin", "layout");
@@ -129,7 +130,7 @@ async function setEnrollment(
     );
 
   if (error) {
-    return { error: `No se pudo actualizar la inscripción: ${error.message}`, success: null };
+    return { error: actionError(error, "No se pudo actualizar la inscripción."), success: null };
   }
 
   // El mail se dispara DESPUÉS de que la inscripción ya quedó otorgada, y esta llamada nunca
@@ -182,7 +183,7 @@ export const setCourseStatusAction = withRateLimit(
       .eq("id", courseId);
 
     if (error) {
-      return { error: `No se pudo actualizar el curso: ${error.message}`, success: null };
+      return { error: actionError(error, "No se pudo actualizar el curso."), success: null };
     }
 
     revalidatePath("/panel/admin", "layout");

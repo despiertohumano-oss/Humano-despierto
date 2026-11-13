@@ -34,6 +34,7 @@ import { notifyAnnouncementPublished } from "@/lib/server/mail/notify";
 import { log } from "@/lib/server/log";
 import { withRateLimit } from "@/lib/server/rate-limit";
 import { limitedState } from "@/lib/rate-limit/core";
+import { actionError } from "@/lib/server/action-error";
 
 const TEMP_POSITION = 999999;
 
@@ -56,7 +57,23 @@ function traducirErrorDeLocalizador(
   if (error.code === "23514") {
     return "El texto no puede contener links.";
   }
-  return fallback;
+  return actionError(error, fallback);
+}
+
+// 0038 (D-12): al escribir un localizador se barre el texto ya guardado que lee un cliente. El
+// mensaje del motor nombra la tabla donde apareció, que RLS le oculta a la docente (D-120): queda
+// en el log para que la administración lo encuentre, y a ella le llega qué pasó y qué hacer.
+const LOCATOR_ALREADY_PUBLIC = "ya aparece en texto publico";
+function traducirLocalizadorYaPublico(
+  error: { code?: string; message: string },
+  que: "video" | "archivo",
+  fallback: string,
+): string {
+  if (error.code === "42501" && error.message.includes(LOCATOR_ALREADY_PUBLIC)) {
+    log.warn("locator_already_public", { err: error });
+    return `Ese ${que} ya aparece citado en un texto de la escuela (una pregunta, una nota o un mensaje del Círculo) y su identificador no puede quedar a la vista. Escribile a la administración para que lo revise.`;
+  }
+  return traducirErrorDeLocalizador(error, fallback);
 }
 
 function extractDriveFileId(link: string): string | null {
@@ -95,7 +112,7 @@ export const createModuleAction = withRateLimit(
         .eq("course_id", courseId)
         .order("position", { ascending: false })
         .limit(1);
-      if (countError) return { error: `No se pudo calcular el orden: ${countError.message}`, success: null };
+      if (countError) return { error: actionError(countError, "No se pudo calcular el orden."), success: null };
       const nextPos = (existing?.[0]?.position ?? 0) + 1;
 
       const { error: insertError } = await supabase.from("course_modules").insert({
@@ -105,9 +122,9 @@ export const createModuleAction = withRateLimit(
         description: parsed.data.description || null,
       });
       if (insertError)
-        return { error: traducirErrorDeLocalizador(insertError, `No se pudo crear el módulo: ${insertError.message}`), success: null };
+        return { error: traducirErrorDeLocalizador(insertError, "No se pudo crear el módulo."), success: null };
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo crear el módulo.", success: null };
+      return { error: actionError(err, "No se pudo crear el módulo."), success: null };
     }
 
     revalidatePath(`/panel/docente/cursos/${courseId}`);
@@ -142,9 +159,9 @@ export const updateModuleAction = withRateLimit(
         .eq("id", moduleId)
         .eq("course_id", courseId);
       if (error)
-        return { error: traducirErrorDeLocalizador(error, `No se pudo guardar el módulo: ${error.message}`), success: null };
+        return { error: traducirErrorDeLocalizador(error, "No se pudo guardar el módulo."), success: null };
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo guardar el módulo.", success: null };
+      return { error: actionError(err, "No se pudo guardar el módulo."), success: null };
     }
 
     revalidatePath(`/panel/docente/cursos/${courseId}`);
@@ -169,9 +186,9 @@ export const deleteModuleAction = withRateLimit(
       const supabase = await createClient();
       // Cascada por FK (0001): borra también sus lecciones, capítulos y recursos.
       const { error } = await supabase.from("course_modules").delete().eq("id", moduleId).eq("course_id", courseId);
-      if (error) return { error: `No se pudo borrar el módulo: ${error.message}`, success: null };
+      if (error) return { error: actionError(error, "No se pudo borrar el módulo."), success: null };
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo borrar el módulo.", success: null };
+      return { error: actionError(err, "No se pudo borrar el módulo."), success: null };
     }
 
     revalidatePath(`/panel/docente/cursos/${courseId}`);
@@ -226,7 +243,7 @@ export const moveModuleAction = withRateLimit(
       const { error: e3 } = await supabase.from("course_modules").update({ position: b.position }).eq("id", a.id);
       if (e3) throw new Error(e3.message);
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo reordenar.", success: null };
+      return { error: actionError(err, "No se pudo reordenar."), success: null };
     }
 
     revalidatePath(`/panel/docente/cursos/${courseId}`);
@@ -268,7 +285,7 @@ export const createLessonAction = withRateLimit(
         .eq("id", moduleId)
         .eq("course_id", courseId)
         .maybeSingle();
-      if (moduleError) return { error: `No se pudo verificar el módulo: ${moduleError.message}`, success: null };
+      if (moduleError) return { error: actionError(moduleError, "No se pudo verificar el módulo."), success: null };
       if (!moduleRow) return { error: "Ese módulo no pertenece a este curso.", success: null };
 
       const { data: existing, error: countError } = await supabase
@@ -277,7 +294,7 @@ export const createLessonAction = withRateLimit(
         .eq("module_id", moduleId)
         .order("position", { ascending: false })
         .limit(1);
-      if (countError) return { error: `No se pudo calcular el orden: ${countError.message}`, success: null };
+      if (countError) return { error: actionError(countError, "No se pudo calcular el orden."), success: null };
       const nextPos = (existing?.[0]?.position ?? 0) + 1;
 
       // `video_id`, `duration_seconds`, `is_published` NO van acá: no están en el grant de
@@ -293,9 +310,9 @@ export const createLessonAction = withRateLimit(
         is_preview: parsed.data.isPreview,
       });
       if (insertError)
-        return { error: traducirErrorDeLocalizador(insertError, `No se pudo crear la lección: ${insertError.message}`), success: null };
+        return { error: traducirErrorDeLocalizador(insertError, "No se pudo crear la lección."), success: null };
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo crear la lección.", success: null };
+      return { error: actionError(err, "No se pudo crear la lección."), success: null };
     }
 
     revalidatePath(`/panel/docente/cursos/${courseId}`);
@@ -338,9 +355,9 @@ export const updateLessonAction = withRateLimit(
         .eq("id", lessonId)
         .eq("course_id", courseId);
       if (error)
-        return { error: traducirErrorDeLocalizador(error, `No se pudo guardar la lección: ${error.message}`), success: null };
+        return { error: traducirErrorDeLocalizador(error, "No se pudo guardar la lección."), success: null };
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo guardar la lección.", success: null };
+      return { error: actionError(err, "No se pudo guardar la lección."), success: null };
     }
 
     revalidatePath(`/panel/docente/cursos/${courseId}`);
@@ -365,9 +382,9 @@ export const deleteLessonAction = withRateLimit(
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
       const { error } = await supabase.from("lessons").delete().eq("id", lessonId).eq("course_id", courseId);
-      if (error) return { error: `No se pudo borrar la lección: ${error.message}`, success: null };
+      if (error) return { error: actionError(error, "No se pudo borrar la lección."), success: null };
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo borrar la lección.", success: null };
+      return { error: actionError(err, "No se pudo borrar la lección."), success: null };
     }
 
     revalidatePath(`/panel/docente/cursos/${courseId}`);
@@ -416,7 +433,7 @@ export const moveLessonAction = withRateLimit(
       const { error: e3 } = await supabase.from("lessons").update({ position: b.position }).eq("id", a.id);
       if (e3) throw new Error(e3.message);
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo reordenar.", success: null };
+      return { error: actionError(err, "No se pudo reordenar."), success: null };
     }
 
     revalidatePath(`/panel/docente/cursos/${courseId}`);
@@ -450,7 +467,7 @@ export const attachLessonVideoAction = withRateLimit(
         .eq("id", lessonId)
         .eq("course_id", courseId)
         .maybeSingle();
-      if (lessonError) return { error: `No se pudo verificar la lección: ${lessonError.message}`, success: null };
+      if (lessonError) return { error: actionError(lessonError, "No se pudo verificar la lección."), success: null };
       if (!lessonRow) return { error: "Esa lección no pertenece a este curso.", success: null };
 
       // c.4b: los 5 casos (URL inválida, privado/borrado/inexistente, cuota agotada, duración
@@ -470,7 +487,7 @@ export const attachLessonVideoAction = withRateLimit(
         .eq("id", lessonId)
         .eq("course_id", courseId);
       if (updateError) {
-        return { error: `No se pudo guardar el video: ${updateError.message}`, success: null };
+        return { error: traducirLocalizadorYaPublico(updateError, "video", "No se pudo guardar el video."), success: null };
       }
 
       revalidatePath(`/panel/docente/cursos/${courseId}/lecciones/${lessonId}`);
@@ -482,7 +499,7 @@ export const attachLessonVideoAction = withRateLimit(
         success: `Video cargado — duración ${mins}:${String(secs).padStart(2, "0")}.`,
       };
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo cargar el video.", success: null };
+      return { error: actionError(err, "No se pudo cargar el video."), success: null };
     }
   },
   limitedState,
@@ -521,10 +538,10 @@ export const setLessonPublishedAction = withRateLimit(
             success: null,
           };
         }
-        return { error: `No se pudo actualizar la lección: ${error.message}`, success: null };
+        return { error: actionError(error, "No se pudo actualizar la lección."), success: null };
       }
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo actualizar la lección.", success: null };
+      return { error: actionError(err, "No se pudo actualizar la lección."), success: null };
     }
 
     revalidatePath(`/panel/docente/cursos/${courseId}/lecciones/${lessonId}`);
@@ -565,7 +582,7 @@ export const createChapterAction = withRateLimit(
         .eq("id", lessonId)
         .eq("course_id", courseId)
         .maybeSingle();
-      if (lessonError) return { error: `No se pudo verificar la lección: ${lessonError.message}`, success: null };
+      if (lessonError) return { error: actionError(lessonError, "No se pudo verificar la lección."), success: null };
       if (!lessonRow) return { error: "Esa lección no pertenece a este curso.", success: null };
 
       const { data: existing, error: countError } = await supabase
@@ -574,7 +591,7 @@ export const createChapterAction = withRateLimit(
         .eq("lesson_id", lessonId)
         .order("position", { ascending: false })
         .limit(1);
-      if (countError) return { error: `No se pudo calcular el orden: ${countError.message}`, success: null };
+      if (countError) return { error: actionError(countError, "No se pudo calcular el orden."), success: null };
       const nextPos = (existing?.[0]?.position ?? 0) + 1;
 
       // A diferencia de `lesson_resources`, `lesson_chapters` SÍ tiene GRANT INSERT para
@@ -588,9 +605,9 @@ export const createChapterAction = withRateLimit(
         label: parsed.data.label,
       });
       if (insertError)
-        return { error: traducirErrorDeLocalizador(insertError, `No se pudo crear el capítulo: ${insertError.message}`), success: null };
+        return { error: traducirErrorDeLocalizador(insertError, "No se pudo crear el capítulo."), success: null };
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo crear el capítulo.", success: null };
+      return { error: actionError(err, "No se pudo crear el capítulo."), success: null };
     }
 
     revalidatePath(`/panel/docente/cursos/${courseId}/lecciones/${lessonId}`);
@@ -628,9 +645,9 @@ export const updateChapterAction = withRateLimit(
         .eq("id", chapterId)
         .eq("lesson_id", lessonId);
       if (error)
-        return { error: traducirErrorDeLocalizador(error, `No se pudo actualizar el capítulo: ${error.message}`), success: null };
+        return { error: traducirErrorDeLocalizador(error, "No se pudo actualizar el capítulo."), success: null };
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo actualizar el capítulo.", success: null };
+      return { error: actionError(err, "No se pudo actualizar el capítulo."), success: null };
     }
 
     revalidatePath(`/panel/docente/cursos/${courseId}/lecciones/${lessonId}`);
@@ -655,9 +672,9 @@ export const deleteChapterAction = withRateLimit(
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
       const { error } = await supabase.from("lesson_chapters").delete().eq("id", chapterId).eq("lesson_id", lessonId);
-      if (error) return { error: `No se pudo borrar el capítulo: ${error.message}`, success: null };
+      if (error) return { error: actionError(error, "No se pudo borrar el capítulo."), success: null };
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo borrar el capítulo.", success: null };
+      return { error: actionError(err, "No se pudo borrar el capítulo."), success: null };
     }
 
     revalidatePath(`/panel/docente/cursos/${courseId}/lecciones/${lessonId}`);
@@ -698,7 +715,7 @@ export const createResourceAction = withRateLimit(
         .eq("id", lessonId)
         .eq("course_id", courseId)
         .maybeSingle();
-      if (lessonError) return { error: `No se pudo verificar la lección: ${lessonError.message}`, success: null };
+      if (lessonError) return { error: actionError(lessonError, "No se pudo verificar la lección."), success: null };
       if (!lessonRow) return { error: "Esa lección no pertenece a este curso.", success: null };
 
       const { data: existing, error: countError } = await supabase
@@ -707,7 +724,7 @@ export const createResourceAction = withRateLimit(
         .eq("lesson_id", lessonId)
         .order("position", { ascending: false })
         .limit(1);
-      if (countError) return { error: `No se pudo calcular el orden: ${countError.message}`, success: null };
+      if (countError) return { error: actionError(countError, "No se pudo calcular el orden."), success: null };
       const nextPos = (existing?.[0]?.position ?? 0) + 1;
 
       // `lesson_resources` no tiene GRANT INSERT para `authenticated` (0003_privileges.sql,
@@ -726,9 +743,9 @@ export const createResourceAction = withRateLimit(
         size_label: v.sizeLabel || null,
       });
       if (insertError)
-        return { error: traducirErrorDeLocalizador(insertError, `No se pudo crear el recurso: ${insertError.message}`), success: null };
+        return { error: traducirLocalizadorYaPublico(insertError, "archivo", "No se pudo crear el recurso."), success: null };
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo crear el recurso.", success: null };
+      return { error: actionError(err, "No se pudo crear el recurso."), success: null };
     }
 
     revalidatePath(`/panel/docente/cursos/${courseId}/lecciones/${lessonId}`);
@@ -772,9 +789,9 @@ export const updateResourceAction = withRateLimit(
         .eq("id", resourceId)
         .eq("lesson_id", lessonId);
       if (error)
-        return { error: traducirErrorDeLocalizador(error, `No se pudo actualizar el recurso: ${error.message}`), success: null };
+        return { error: traducirErrorDeLocalizador(error, "No se pudo actualizar el recurso."), success: null };
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo actualizar el recurso.", success: null };
+      return { error: actionError(err, "No se pudo actualizar el recurso."), success: null };
     }
 
     revalidatePath(`/panel/docente/cursos/${courseId}/lecciones/${lessonId}`);
@@ -799,9 +816,9 @@ export const deleteResourceAction = withRateLimit(
       await assertOwnsCourse(courseId, teacher.id);
       const supabase = await createClient();
       const { error } = await supabase.from("lesson_resources").delete().eq("id", resourceId).eq("lesson_id", lessonId);
-      if (error) return { error: `No se pudo borrar el recurso: ${error.message}`, success: null };
+      if (error) return { error: actionError(error, "No se pudo borrar el recurso."), success: null };
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo borrar el recurso.", success: null };
+      return { error: actionError(err, "No se pudo borrar el recurso."), success: null };
     }
 
     revalidatePath(`/panel/docente/cursos/${courseId}/lecciones/${lessonId}`);
@@ -860,7 +877,7 @@ export const uploadCourseCoverAction = withRateLimit(
         if (removeError) log.error("cover_storage_orphan", { reason: "replaced", path: current.cover_path, message: removeError.message });
       }
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo subir la portada.", success: null };
+      return { error: actionError(err, "No se pudo subir la portada."), success: null };
     }
 
     revalidateCover(courseId);
@@ -892,7 +909,7 @@ export const removeCourseCoverAction = withRateLimit(
       const { error: removeError } = await supabase.storage.from(UPLOADS_BUCKET).remove([current.cover_path]);
       if (removeError) log.error("cover_storage_orphan", { reason: "removed", path: current.cover_path, message: removeError.message });
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "No se pudo quitar la portada.", success: null };
+      return { error: actionError(err, "No se pudo quitar la portada."), success: null };
     }
 
     revalidateCover(courseId);
@@ -947,7 +964,7 @@ export const saveAnnouncementDraft = withRateLimit(
         return announcementFail(traducirErrorAnuncio(error, GENERIC_ANNOUNCEMENT_ERROR));
       }
     } catch (err) {
-      return announcementFail(err instanceof Error ? err.message : GENERIC_ANNOUNCEMENT_ERROR);
+      return announcementFail(actionError(err, GENERIC_ANNOUNCEMENT_ERROR));
     }
 
     revalidateAnnouncements(courseId);
@@ -978,7 +995,7 @@ export const publishAnnouncement = withRateLimit(
       }
       publishedId = id;
     } catch (err) {
-      return announcementFail(err instanceof Error ? err.message : GENERIC_ANNOUNCEMENT_ERROR);
+      return announcementFail(actionError(err, GENERIC_ANNOUNCEMENT_ERROR));
     }
 
     // `after` y no `await`: contra un SMTP mudo cada envío cuesta hasta 15 s y el botón no espera
@@ -1014,7 +1031,7 @@ export const withdrawAnnouncement = withRateLimit(
         return announcementFail(traducirErrorAnuncio(error, "No se pudo retirar el anuncio."));
       }
     } catch (err) {
-      return announcementFail(err instanceof Error ? err.message : "No se pudo retirar el anuncio.");
+      return announcementFail(actionError(err, "No se pudo retirar el anuncio."));
     }
 
     revalidateAnnouncements(courseId);
