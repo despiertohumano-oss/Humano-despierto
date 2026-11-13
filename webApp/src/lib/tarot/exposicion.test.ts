@@ -5,6 +5,7 @@ import { CARDS } from "./cards";
 import suits from "./data/suits.json";
 import spreads from "./data/spreads.json";
 import templates from "./data/templates.json";
+import lenses from "./data/lenses.json";
 
 // D2: el método de la dueña alimenta la lectura pero no se nombra. Este test cita los términos a propósito.
 const METODO = /m[aá]scara de la esencia|\bdesequilibrio:|\bequilibrio:|\bpreguntarse\b|waite no cita/i;
@@ -20,7 +21,7 @@ const OPUESTOS: [RegExp, RegExp][] = [
 
 describe("no exposición del método (D2)", () => {
   it("ningún texto de datos lo nombra", () => {
-    const blob = JSON.stringify([CARDS, suits, spreads, templates]);
+    const blob = JSON.stringify([CARDS, suits, spreads, templates, lenses]);
     expect(blob.match(METODO)).toBeNull();
   });
 
