@@ -19,7 +19,7 @@ const HOJAS: [string, string[]][] = [
   ["dominante", ["nombre", "Nombre", "posicion", "texto"]],
   ...["intensifica", "refuerza", "debilita", "neutral"].map((k) => [`tension.${k}`, ["A", "b", "la", "lb"]] as [string, string[]]),
   ...TIPOS.flatMap((t) => BAL.map((b) => [`respuesta.${t}.${b}`, ["pregunta", "cartas", "dominante"]] as [string, string[]])),
-  ["resolucion", ["nombre", "Nombre", "texto", "texto_min"]],
+  ["resolucion", ["nombre", "Nombre", "posicion", "texto", "texto_min"]],
 ];
 
 const get = (path: string) => path.split(".").reduce<unknown>((n, k) => (n as Record<string, unknown>)?.[k], T);

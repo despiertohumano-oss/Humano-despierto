@@ -15,11 +15,13 @@ export default function ReadingView({ facts, text }: { facts: ReadingFacts; text
         <p>{text.ideaLineal}</p>
         {text.panorama && <p className="text-suave">{text.panorama}</p>}
       </section>
-      <section className="mx-auto max-w-[68ch] rounded-lg bg-papel p-6 shadow-card">
-        <p className="text-sm font-semibold text-miel-800">La carta que más pesa</p>
-        <h2 className="mt-1 text-xl font-bold text-bosque">{text.dominante.titulo}</h2>
-        <p className="mt-2 text-tinta">{text.dominante.texto}</p>
-      </section>
+      {text.dominante && (
+        <section className="mx-auto max-w-[68ch] rounded-lg bg-papel p-6 shadow-card">
+          <p className="text-sm font-semibold text-miel-800">La carta que más pesa</p>
+          <h2 className="mt-1 text-xl font-bold text-bosque">{text.dominante.titulo}</h2>
+          <p className="mt-2 text-tinta">{text.dominante.texto}</p>
+        </section>
+      )}
       <section className="mx-auto max-w-[68ch] space-y-8">
         {text.posiciones.map((p, i) => (
           <article key={p.titulo} className="grid gap-4 sm:grid-cols-[auto_1fr]">
@@ -53,10 +55,12 @@ export default function ReadingView({ facts, text }: { facts: ReadingFacts; text
             <p className="mt-2 text-tinta">{text.respuesta}</p>
           </div>
         )}
-        <div>
-          <h2 className="text-xl font-bold text-bosque">Síntesis</h2>
-          <p className="mt-2 text-tinta">{text.sintesis}</p>
-        </div>
+        {text.sintesis && (
+          <div>
+            <h2 className="text-xl font-bold text-bosque">Síntesis</h2>
+            <p className="mt-2 text-tinta">{text.sintesis}</p>
+          </div>
+        )}
         <p className="font-semibold text-miel-800">{text.consejo}</p>
         <p className="text-tinta">{text.espejo}</p>
       </section>

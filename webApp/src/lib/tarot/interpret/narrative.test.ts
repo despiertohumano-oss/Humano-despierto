@@ -22,7 +22,7 @@ describe("narrativa", () => {
   });
   it("la dominante es la Torre (mayor en cruce) y el espejo sale de sus preguntas", () => {
     const t = renderReading(buildReading(celta), 3);
-    expect(t.dominante.titulo).toMatch(/Torre/);
+    expect(t.dominante!.titulo).toMatch(/Torre/);
     expect(cardByIndex(idx("la-torre"))!.reflexion.some((q) => t.espejo.includes(q))).toBe(true);
   });
   it("idea lineal nombra todas las cartas en orden", () => {
@@ -47,13 +47,61 @@ describe("narrativa", () => {
         const cards = [...otras.slice(0, pos), { indice: card.indice, reversed: rev }, ...otras.slice(pos)];
         for (const q of preguntas) {
           const t = renderReading(buildReading({ spread: s.slug, cards }, q), pos + count);
-          const all = [t.apertura, t.ideaLineal, t.panorama ?? "", t.dominante.texto, ...t.posiciones.map((p) => p.texto), ...t.grupos.map((g) => g.texto), ...t.tensiones, t.respuesta ?? "", t.sintesis, t.consejo, t.espejo].join(" ");
+          const all = [t.apertura, t.ideaLineal, t.panorama ?? "", (t.dominante?.texto ?? ""), ...t.posiciones.map((p) => p.texto), ...t.grupos.map((g) => g.texto), ...t.tensiones, t.respuesta ?? "", t.sintesis, t.consejo, t.espejo].join(" ");
           expect(all, `${s.slug} ${card.id} ${q}`).not.toMatch(/[{}]|undefined|\bnull\b|\[object/);
           for (const p of t.posiciones) expect(p.texto.length).toBeGreaterThan(40);
         }
       }
     }
   }, 60_000);
+});
+
+describe("narrativa: sin contradicciones ni repeticiones", () => {
+  const reviewer: Reading = { spread: "si-o-no", cards: [["tres-de-espadas", false], ["la-luna", true], ["diez-de-espadas", false]].map(([s, rev]) => ({ indice: idx(s as string), reversed: rev as boolean })) };
+  it("sí/no: la respuesta es la del veredicto (desfavorable)", () => {
+    const f = buildReading(reviewer, "¿Vuelve conmigo?");
+    expect(f.yesNo!.verdict).toBe("no");
+    const matches = (o: string, a: string) => new RegExp("^" + o.split(/\{\w+\}/).map((x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join(".+") + "").test(a);
+    const resp = renderReading(f, 1).respuesta!;
+    expect(templates.respuesta[f.questionType].desfavorable.some((o) => matches(o, resp))).toBe(true);
+    expect([...templates.respuesta[f.questionType].favorable, ...templates.respuesta[f.questionType].abierta].some((o) => matches(o, resp))).toBe(false);
+  });
+  it("la idea lineal es una sola oración", () => {
+    for (let s = 0; s < 20; s++) {
+      const t = renderReading(buildReading(celta), s);
+      expect(t.ideaLineal.match(/\.(?=\s|$)/g)).toHaveLength(1);
+      expect(t.ideaLineal.length).toBeLessThanOrEqual(520);
+    }
+  });
+  it("una carta sola: sin dominante ni resolución", () => {
+    const f = buildReading({ spread: "carta-del-dia", cards: [{ indice: 0, reversed: false }] });
+    const t = renderReading(f, 3);
+    expect(t.dominante).toBeNull();
+    expect(t.sintesis).not.toMatch(/cerrar/i);
+  });
+  it("el texto de la lente de consejo no se pega dos veces", () => {
+    for (let s = 0; s < 20; s++) {
+      const f = buildReading(celta);
+      const t = renderReading(f, s);
+      const r = [...f.placed].sort((a, b) => a.position.n - b.position.n).find((p) => p.position.lente === "consejo") ?? f.placed.at(-1)!;
+      const lt = lensText(r.card, "consejo");
+      const all = [...t.posiciones.map((p) => p.texto), t.sintesis].join(" ");
+      expect(all.split(lt).length - 1 + all.split(lt.charAt(0).toLowerCase() + lt.slice(1)).length - 1).toBeLessThanOrEqual(1);
+    }
+  });
+  it("dentro de una lectura no se repite la misma frase de estado", () => {
+    const f = buildReading(celta);
+    const t = renderReading(f, 5);
+    const todas = t.posiciones.map((p) => p.texto).join(" ");
+    for (const [key, vs] of Object.entries(templates.estado)) {
+      const n = f.placed.filter((p) => p.estado === key).length;
+      for (const v of vs) {
+        const frag = v.split("{")[0]!.trim() || v.split("}")[1]!.trim();
+        if (frag.length < 15) continue;
+        expect(todas.split(frag).length - 1, `${key}: ${frag}`).toBeLessThanOrEqual(Math.ceil(n / vs.length));
+      }
+    }
+  });
 });
 
 describe("narrativa: casos heredados", () => {

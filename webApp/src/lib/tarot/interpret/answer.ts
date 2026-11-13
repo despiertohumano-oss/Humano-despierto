@@ -32,13 +32,22 @@ export function answerCards(facts: ReadingFacts): PlacedCard[] {
 }
 
 export function balanceOf(cards: PlacedCard[]): Balance {
-  const P = cards.filter((c) => c.estado === "pleno").length;
-  const T = cards.filter((c) => c.estado === "trabada").length;
   const E = cards.filter((c) => c.estado === "en_proceso").length;
-  if (E > P + T) return "abierta";
-  if (P > T) return "favorable";
-  if (T > P) return "desfavorable";
+  if (E > cards.length - E) return "abierta";
+  let favor = 0;
+  let contra = 0;
+  for (const c of cards) {
+    if (c.card.si_no === "no" || c.estado === "trabada") contra++;
+    else if (c.card.si_no === "sí") favor++;
+  }
+  if (favor > contra) return "favorable";
+  if (contra > favor) return "desfavorable";
   return "abierta";
+}
+
+export function balanceFor(facts: ReadingFacts): Balance {
+  if (facts.yesNo) return facts.yesNo.verdict === "sí" ? "favorable" : facts.yesNo.verdict === "no" ? "desfavorable" : "abierta";
+  return balanceOf(answerCards(facts));
 }
 
 const MAX_NAMED = 3;
@@ -57,7 +66,7 @@ export function namedCards(facts: ReadingFacts): PlacedCard[] {
 
 export function buildAnswer(facts: ReadingFacts, rng: () => number): string | null {
   if (!facts.question) return null;
-  const balance = balanceOf(answerCards(facts));
+  const balance = balanceFor(facts);
   const pregunta = facts.question.replace(/^¿\s*/, "").replace(/\s*\?$/, "");
   const base = fill(pick(rng, templates.respuesta[facts.questionType][balance]), {
     pregunta,

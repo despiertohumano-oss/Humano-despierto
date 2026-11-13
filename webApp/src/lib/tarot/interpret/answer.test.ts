@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { CARDS } from "../cards";
 import { buildReading } from "../reading";
-import { answerCards, balanceOf, buildAnswer, namedCards } from "./answer";
+import { answerCards, balanceFor, balanceOf, buildAnswer, namedCards } from "./answer";
 import { rngFrom } from "./text";
+import templates from "../data/templates.json";
 
 const idx = (slug: string) => CARDS.find((c) => c.id === slug)!.indice;
 const celta = (q: string | null, rev: boolean[] = []) =>
@@ -21,12 +22,19 @@ describe("respuesta reflexiva", () => {
     const r = buildReading({ spread: "carta-del-dia", cards: [{ indice: 0, reversed: false }] }, "¿Qué siente por mí?");
     expect(answerCards(r).map((p) => p.position.lente)).toEqual(["consejo"]);
   });
-  it("balance: favorable, desfavorable o abierta", () => {
-    const P = { estado: "pleno" } as never, T = { estado: "trabada" } as never, E = { estado: "en_proceso" } as never;
-    expect(balanceOf([P, P, T])).toBe("favorable");
-    expect(balanceOf([T, T, P])).toBe("desfavorable");
-    expect(balanceOf([P, T])).toBe("abierta");
-    expect(balanceOf([E, E, P])).toBe("abierta");
+  it("balance por carta: sí no trabada a favor; no o trabada en contra", () => {
+    const c = (si_no: string, estado: string) => ({ card: { si_no }, estado }) as never;
+    expect(balanceOf([c("sí", "pleno"), c("sí", "pleno"), c("no", "pleno")])).toBe("favorable");
+    expect(balanceOf([c("sí", "trabada"), c("no", "pleno"), c("sí", "pleno")])).toBe("desfavorable");
+    expect(balanceOf([c("sí", "pleno"), c("no", "pleno")])).toBe("abierta");
+    expect(balanceOf([c("depende", "pleno"), c("depende", "pleno")])).toBe("abierta");
+    expect(balanceOf([c("sí", "en_proceso"), c("sí", "en_proceso"), c("sí", "pleno")])).toBe("abierta");
+  });
+  it("si-o-no: la respuesta sigue el veredicto, no el estado", () => {
+    const r = buildReading({ spread: "si-o-no", cards: [["tres-de-espadas", false], ["la-luna", true], ["diez-de-espadas", false]].map(([s, rev]) => ({ indice: idx(s as string), reversed: rev as boolean })) }, "¿Vuelve conmigo?");
+    expect(r.yesNo!.verdict).toBe("no");
+    expect(balanceFor(r)).toBe("desfavorable");
+    for (let s = 1; s <= 10; s++) expect(templates.respuesta[r.questionType].desfavorable).toContain(buildAnswerTemplateOf(r, s));
   });
   it("retoma la pregunta literal y es determinista", () => {
     const r = celta("¿Vuelve conmigo?");
@@ -70,3 +78,10 @@ describe("respuesta reflexiva", () => {
     expect(namedCards(wide).length).toBe(3);
   });
 });
+
+function buildAnswerTemplateOf(r: ReturnType<typeof buildReading>, seed: number): string {
+  const opts = templates.respuesta[r.questionType].desfavorable;
+  const a = buildAnswer(r, rngFrom(seed))!;
+  const re = (o: string) => new RegExp("^" + o.split(/\{\w+\}/).map((x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join(".+") );
+  return opts.find((o) => re(o).test(a)) ?? "";
+}
