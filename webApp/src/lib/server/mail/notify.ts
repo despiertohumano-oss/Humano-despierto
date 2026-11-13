@@ -521,12 +521,19 @@ async function listActiveEnrollmentUserIds(courseId: string): Promise<{ user_id:
 
 type AnnouncementDelivery = "sent" | "failed" | "not_claimed" | "unresolved" | "deferred";
 
-/** Inscriptas que ya no hay que intentar para este anuncio: confirmado o con los 3 intentos gastados.
- *  Sin esto, cada corrida con plazo volvería a resolver la dirección de quien ya lo recibió y un
- *  anuncio grande no avanzaría nunca. */
-async function listSettledAnnouncementRecipients(announcementId: string): Promise<Set<string>> {
+interface AnnouncementLog {
+  /** Confirmado o con los 3 intentos gastados: no hay que volver a intentarlo. */
+  settled: Set<string>;
+  /** Sin confirmar y con intentos: lo que el retry vuelve a encontrar. */
+  pending: Set<string>;
+}
+
+/** Estado de `mail_log` para un anuncio. `settled` evita que cada corrida con plazo vuelva a
+ *  resolver la dirección de quien ya lo recibió (un anuncio grande no avanzaría nunca); `pending`
+ *  permite retirar los turnos huérfanos (N-2). */
+async function readAnnouncementLog(announcementId: string): Promise<AnnouncementLog> {
   const db = createServiceRoleClient();
-  const settled = new Set<string>();
+  const out: AnnouncementLog = { settled: new Set(), pending: new Set() };
   for (let from = 0; ; from += ENROLLMENT_PAGE) {
     const { data, error } = await db
       .from("mail_log")
@@ -538,10 +545,33 @@ async function listSettledAnnouncementRecipients(announcementId: string): Promis
     if (error) throw new Error(`no se pudo leer mail_log del anuncio: ${error.message}`);
     const rows = (data ?? []) as { recipient_user_id?: string; sent_at?: string | null; attempts?: number }[];
     for (const r of rows) {
-      if (r.recipient_user_id && (r.sent_at || (r.attempts ?? 0) >= 3)) settled.add(r.recipient_user_id);
+      if (!r.recipient_user_id) continue;
+      if (r.sent_at || (r.attempts ?? 0) >= 3) out.settled.add(r.recipient_user_id);
+      else out.pending.add(r.recipient_user_id);
     }
-    if (rows.length < ENROLLMENT_PAGE) return settled;
+    if (rows.length < ENROLLMENT_PAGE) return out;
   }
+}
+
+type OrphanCause = "not_recipient" | "unresolved" | "not_published";
+
+/**
+ * N-2 (QA T-098): un turno pendiente que nadie va a volver a reclamar se retira con su causa
+ * (`attempts = 3`, `last_error` con el formato de 0036). Sin esto el retry, que toma 2 anuncios por
+ * corrida ordenados por `claimed_at`, volvía siempre al mismo anuncio huérfano y los demás no se
+ * reintentaban nunca. Sin `recipients` retira todos los pendientes del anuncio (anuncio retirado).
+ */
+async function retireAnnouncementSlots(announcementId: string, cause: OrphanCause, recipients?: string[]): Promise<void> {
+  if (recipients && recipients.length === 0) return;
+  let q = createServiceRoleClient()
+    .from("mail_log")
+    .update({ attempts: 3, last_error: `permanent:000/${cause}` })
+    .eq("mail_type", "course_announcement")
+    .eq("scope_key", announcementId);
+  if (recipients) q = q.in("recipient_user_id", recipients);
+  const { error } = await q.is("sent_at", null).lt("attempts", 3);
+  if (error) log.error("mail_slot_retire_failed", { mail_type: "course_announcement", error: error.message });
+  else log.warn("mail_announcement_orphans_retired", { announcement_id: announcementId, cause, count: recipients?.length ?? null });
 }
 
 /** Deja UN turno pendiente y sin intento gastado (mismo RPC que el tope de envío): con eso la
@@ -571,21 +601,24 @@ export async function notifyAnnouncementPublished(input: { announcementId: strin
       .select("id, course_id, author_id, title, body, status, deleted_at")
       .eq("id", input.announcementId)
       .maybeSingle();
-    if (error || !announcement) {
-      log.error("mail_announcement_unresolved", { announcement_id: input.announcementId, message: error?.message ?? "no existe" });
+    if (error) {
+      log.error("mail_announcement_unresolved", { announcement_id: input.announcementId, message: error.message });
       return;
     }
-    // Un retiro entre el click y este `after` no manda nada.
-    if (announcement.status !== "published" || announcement.deleted_at) return;
+    // Un retiro entre el click y este `after` no manda nada, y sus turnos pendientes se retiran.
+    if (!announcement || announcement.status !== "published" || announcement.deleted_at) {
+      if (!announcement) log.error("mail_announcement_unresolved", { announcement_id: input.announcementId, message: "no existe" });
+      await retireAnnouncementSlots(announcement?.id ?? input.announcementId, "not_published");
+      return;
+    }
 
     const course = await getCourseInfo(announcement.course_id);
     if (!course) return;
 
-    const settled = await listSettledAnnouncementRecipients(announcement.id);
-    const recipients = buildAnnouncementRecipients(
-      await listActiveEnrollmentUserIds(course.id),
-      announcement.author_id,
-    ).filter((userId) => !settled.has(userId));
+    const mailLog = await readAnnouncementLog(announcement.id);
+    const everyone = buildAnnouncementRecipients(await listActiveEnrollmentUserIds(course.id), announcement.author_id);
+    const recipients = everyone.filter((userId) => !mailLog.settled.has(userId));
+    const unresolved: string[] = [];
     const courseUrl = `${getSiteUrl()}/cursos/${course.slug}`;
 
     let marked = false;
@@ -604,7 +637,10 @@ export async function notifyAnnouncementPublished(input: { announcementId: strin
         }
         // Resolver antes de reclamar (orden de notifyWelcome): sin dirección no se gasta el turno.
         const student = await getUserEmail(userId);
-        if (!student) return "unresolved";
+        if (!student) {
+          unresolved.push(userId);
+          return "unresolved";
+        }
         const claim = await claimOrReclaimMailSlot(student.id, "course_announcement", announcement.id);
         if (!claim) return "not_claimed";
         const { subject, html, text } = renderCourseAnnouncementMail({
@@ -626,6 +662,11 @@ export async function notifyAnnouncementPublished(input: { announcementId: strin
       tally[key] = (tally[key] ?? 0) + 1;
     }
     log.info("mail_announcement_sent", { announcement_id: announcement.id, recipients: recipients.length, tally });
+
+    // N-2: turnos pendientes de quien ya no es destinataria (baja, autora) o no tiene dirección.
+    const current = new Set(everyone);
+    await retireAnnouncementSlots(announcement.id, "not_recipient", [...mailLog.pending].filter((u) => !current.has(u)));
+    await retireAnnouncementSlots(announcement.id, "unresolved", unresolved.filter((u) => mailLog.pending.has(u)));
   } catch (err) {
     log.error("mail_announcement_published_failed", { err });
   }

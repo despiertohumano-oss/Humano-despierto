@@ -54,6 +54,7 @@ function fakeAdmin(s: Estado) {
       update: () => c,
       eq: (k: string, v: unknown) => ((f[k] = v), c),
       is: (k: string, v: unknown) => ((f[k] = v), c),
+      lt: () => c,
       range: (from: number, to: number) => ((f.__range = [from, to]), c),
       maybeSingle: async () => resolve(f),
       then: (ok: (v: unknown) => unknown, ko: (e: unknown) => unknown) => Promise.resolve(resolve(f)).then(ok, ko),

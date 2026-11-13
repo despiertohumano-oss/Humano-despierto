@@ -14,8 +14,10 @@ const OK = { ok: true, remaining: 1, retryAfter: 0 };
 const DENIED = { ok: false, remaining: 0, retryAfter: 60 };
 
 // Una "base" mínima: mail_log con attempts reales para ver si un tope de envío gasta intentos.
-function fakeDb(n: number) {
-  const slots = new Map<string, { id: string; attempts: number; sentAt: string | null; reclaimable: boolean }>();
+type Slot = { id: string; attempts: number; sentAt: string | null; reclaimable: boolean; lastError?: string | null };
+
+function fakeDb(n: number, opts: { status?: string; noEmail?: string[] } = {}) {
+  const slots = new Map<string, Slot>();
   const released: string[] = [];
   const db = {
     slots,
@@ -24,7 +26,10 @@ function fakeDb(n: number) {
       const f: Record<string, unknown> = {};
       const res = () => {
         if (table === "course_announcements")
-          return { data: { id: ANUNCIO, course_id: "c1", author_id: "autora", title: "t", body: "b", status: "published", deleted_at: null }, error: null };
+          return {
+            data: { id: ANUNCIO, course_id: "c1", author_id: "autora", title: "t", body: "b", status: opts.status ?? "published", deleted_at: null },
+            error: null,
+          };
         if (table === "courses")
           return { data: { id: "c1", title: "Tarot", slug: "tarot", teacher_id: "autora", teacher: { full_name: "Sol" } }, error: null };
         if (table === "enrollments") {
@@ -33,13 +38,21 @@ function fakeDb(n: number) {
         }
         if (table === "profiles") return { data: { id: f.id, full_name: `Alumna ${String(f.id)}` }, error: null };
         if (table === "mail_log") {
-          const pend = [...slots.entries()].filter(([, s]) => !s.sentAt && s.attempts < 3 && s.reclaimable);
-          return { data: pend.map(() => ({ scope_key: ANUNCIO })), error: null };
+          // Con `.is("sent_at", null)` es la consulta del retry (pendientes vencidos); sin él, la
+          // lectura de todas las filas del anuncio.
+          const all = [...slots.entries()];
+          const rows = f.sent_at === null ? all.filter(([, s]) => !s.sentAt && s.attempts < 3 && s.reclaimable) : all;
+          return {
+            data: rows.map(([recipient, s]) => ({ scope_key: ANUNCIO, recipient_user_id: recipient, sent_at: s.sentAt, attempts: s.attempts })),
+            error: null,
+          };
         }
         throw new Error(`tabla inesperada: ${table}`);
       };
       const c: Record<string, unknown> = {
-        select: () => c, order: () => c, limit: () => c, update: () => c,
+        select: () => c, order: () => c, limit: () => c,
+        update: (payload: Record<string, unknown>) => ((f.__update = payload), c),
+        in: (k: string, v: unknown) => ((f[`in:${k}`] = v), c),
         eq: (k: string, v: unknown) => ((f[k] = v), c),
         is: (k: string, v: unknown) => ((f[k] = v), c),
         lt: (k: string, v: unknown) => ((f[k] = v), c),
@@ -50,6 +63,17 @@ function fakeDb(n: number) {
             const s = [...slots.values()].find((x) => x.id === f.id);
             if (s) s.sentAt = "now";
             return Promise.resolve({ error: null, count: 1 }).then(ok, ko);
+          }
+          if (table === "mail_log" && f.__update) {
+            const upd = f.__update as { attempts?: number; last_error?: string };
+            const targets = (f["in:recipient_user_id"] as string[] | undefined) ?? [...slots.keys()];
+            for (const r of targets) {
+              const s = slots.get(r);
+              if (!s || s.sentAt) continue;
+              if (upd.attempts !== undefined) s.attempts = upd.attempts;
+              if (upd.last_error !== undefined) s.lastError = upd.last_error;
+            }
+            return Promise.resolve({ error: null }).then(ok, ko);
           }
           return Promise.resolve(res()).then(ok, ko);
         },
@@ -74,7 +98,14 @@ function fakeDb(n: number) {
       }
       return { data: [{ id: `claim-${key}`, claimed_at: "2026-10-27T10:00:00Z" }], error: null };
     },
-    auth: { admin: { getUserById: async (id: string) => ({ data: { user: { email: `${id}@humano.test` } }, error: null }) } },
+    auth: {
+      admin: {
+        getUserById: async (id: string) => ({
+          data: { user: opts.noEmail?.includes(id) ? null : { email: `${id}@humano.test` } },
+          error: null,
+        }),
+      },
+    },
   };
   return db;
 }
@@ -204,5 +235,63 @@ describe("G-02 · anuncio con plazo", () => {
     mocks.limit.mockResolvedValue(OK);
     await expect(retryPendingMail({ budgetMs: 0 })).resolves.toEqual({ announcements: 0, transactional: 0 });
     expect(send).not.toHaveBeenCalled();
+  });
+});
+
+// N-2 (QA T-098): el retry toma 2 anuncios por corrida, ordenados por claimed_at. Un turno pendiente
+// que nadie vuelve a reclamar (la alumna se dio de baja, no tiene mail, o el anuncio se retiró)
+// ocupaba un cupo para siempre. Al pasar por su anuncio se retira con causa y deja de bloquear.
+describe("N-2 · turnos huérfanos de anuncio", () => {
+  beforeEach(() => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "info").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    mocks.limit.mockReset().mockResolvedValue(OK);
+  });
+  afterEach(() => {
+    __setTransportForTests(null);
+    vi.restoreAllMocks();
+  });
+
+  const orphan = (): Slot => ({ id: "claim-gone", attempts: 0, sentAt: null, reclaimable: true });
+
+  it("una ex inscripta con turno pendiente se retira y el anuncio deja de ocupar el cupo", async () => {
+    const db = fakeDb(2);
+    db.slots.set("gone", orphan());
+    mocks.db = db;
+    __setTransportForTests({ send: async () => {} });
+
+    await expect(retryPendingAnnouncementMail()).resolves.toEqual({ announcements: 1 });
+    expect(db.slots.get("gone")).toMatchObject({ attempts: 3, lastError: "permanent:000/not_recipient", sentAt: null });
+    await expect(retryPendingAnnouncementMail()).resolves.toEqual({ announcements: 0 });
+  });
+
+  it("una inscripta sin mail resoluble con turno pendiente también se retira", async () => {
+    const db = fakeDb(2, { noEmail: ["u-1"] });
+    db.slots.set("u-1", { ...orphan(), id: "claim-u-1" });
+    mocks.db = db;
+    __setTransportForTests({ send: async () => {} });
+
+    await retryPendingAnnouncementMail();
+    expect(db.slots.get("u-1")).toMatchObject({ attempts: 3, lastError: "permanent:000/unresolved" });
+    await expect(retryPendingAnnouncementMail()).resolves.toEqual({ announcements: 0 });
+  });
+
+  it("un anuncio retirado retira sus turnos pendientes", async () => {
+    const db = fakeDb(2, { status: "withdrawn" });
+    db.slots.set("u-0", { ...orphan(), id: "claim-u-0" });
+    mocks.db = db;
+    await retryPendingAnnouncementMail();
+    expect(db.slots.get("u-0")).toMatchObject({ attempts: 3, lastError: "permanent:000/not_published" });
+    await expect(retryPendingAnnouncementMail()).resolves.toEqual({ announcements: 0 });
+  });
+
+  it("un turno vivo de otra corrida (inscripta vigente) no se toca", async () => {
+    const db = fakeDb(1);
+    db.slots.set("u-0", { id: "claim-u-0", attempts: 1, sentAt: null, reclaimable: false });
+    mocks.db = db;
+    __setTransportForTests({ send: async () => {} });
+    await notifyAnnouncementPublished({ announcementId: ANUNCIO });
+    expect(db.slots.get("u-0")).toMatchObject({ attempts: 1, sentAt: null });
   });
 });
