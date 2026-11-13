@@ -12,7 +12,8 @@
     "lint": "eslint",
     "test:unit": "vitest run",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:netlify-env": "bash scripts/test-netlify-env.sh"
   },
   "dependencies": {
     "@internationalized/date": "^3.12.4",

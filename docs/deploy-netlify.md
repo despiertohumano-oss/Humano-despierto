@@ -8,7 +8,13 @@ T-091. Netlify + Supabase Cloud, URL `*.netlify.app`, sin dominio propio. El mai
 2. No toques los campos de build: los fija `netlify.toml` en la raíz (`base = "webApp"`,
    `npm test && npm run build`, `publish = ".next"`, Node 22). Desde T-098 (G-03) el build corre
    los tests unitarios (Vitest, ~25 s) antes de `next build`: un test rojo corta el deploy y
-   producción sigue en la versión anterior. La suite PGlite de `webApp/supabase` no corre acá. Netlify instala solo el adaptador
+   producción sigue en la versión anterior. La suite PGlite de `webApp/supabase` no corre acá.
+   La suite corre con las variables del sitio cargadas (scope Builds: `SITE_URL` de producción,
+   `NETLIFY`, `CONTEXT`, `URL`, las de mail y los secretos). Es hermética: `src/test/hermetic-env.ts`
+   (`setupFiles` de Vitest) borra esas variables antes de cada archivo de test. Para comprobarlo
+   antes de un release, desde `webApp/`: `npm run test:netlify-env` (corre `npm test` con ese
+   entorno y valores falsos). Una variable nueva en la tabla de §2 tiene que sumarse a
+   `hermetic-env.ts` y a `scripts/test-netlify-env.sh`; `hermetic-env.test.ts` falla si falta. Netlify instala solo el adaptador
    `@netlify/plugin-nextjs` (OpenNext v5) al detectar Next.
 3. Antes del primer deploy cargá las variables (sección 2). Las `NEXT_PUBLIC_*` y `SITE_URL` se
    **hornean en el build**: si cambian, hay que redeployar (Deploys > Trigger deploy > Clear cache
