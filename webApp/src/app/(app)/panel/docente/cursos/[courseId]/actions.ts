@@ -964,7 +964,7 @@ export const saveAnnouncementDraft = withRateLimit(
         return announcementFail(traducirErrorAnuncio(error, GENERIC_ANNOUNCEMENT_ERROR));
       }
     } catch (err) {
-      return announcementFail(err instanceof Error ? err.message : GENERIC_ANNOUNCEMENT_ERROR);
+      return announcementFail(actionError(err, GENERIC_ANNOUNCEMENT_ERROR));
     }
 
     revalidateAnnouncements(courseId);
@@ -995,7 +995,7 @@ export const publishAnnouncement = withRateLimit(
       }
       publishedId = id;
     } catch (err) {
-      return announcementFail(err instanceof Error ? err.message : GENERIC_ANNOUNCEMENT_ERROR);
+      return announcementFail(actionError(err, GENERIC_ANNOUNCEMENT_ERROR));
     }
 
     // `after` y no `await`: contra un SMTP mudo cada envío cuesta hasta 15 s y el botón no espera
