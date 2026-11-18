@@ -80,3 +80,19 @@ Tras la primera revisión de QA se reescribieron estas frases. Se anota la idea 
 - **Tono persecutorio**: Neptuno y Plutón en casa 12 y Saturno en Piscis hablan de la desconfianza y lo no dicho como algo que la persona puede observar en sí, no de otros que actúan en su contra.
 - **Pregunta**: ¿querés que la casa 6 vuelva a hablar de salud y del cuidado del cuerpo, como hace el material, con el tono que vos elijas? Hoy queda fuera por la regla de no hablar de salud.
 - **Datos corregidos**: Plutón pasa unos veinticuatro años en Piscis, unos dieciséis en Capricornio y unos trece en Sagitario (antes decía veinte, quince y doce). Urano en casa 9 ya no menciona los riesgos en viajes.
+
+## Aspectos de Plutón
+
+- Los nueve textos de `data/aspectos/pluton.json` (Plutón con Sol, Luna, Mercurio, Venus, Marte, Júpiter, Saturno, Urano y Neptuno) se escribieron de cero desde la idea psicológica de cada sección de «Plutón en aspecto a los planetas». Conviene que los revises todos.
+- Pregunta: el material no distingue casi entre conjunción, aspectos armónicos y tensos (salvo Saturno y Urano). Las frases por familia se escribieron desde la tradición general: ¿querés matizarlas con tu manera de leerlas?
+- Pregunta: ¿te parece bien tratar Plutón con Urano y con Neptuno como rasgo de generación y no como algo personal? Así se presentaron, con fechas aproximadas (conjunción Urano y Plutón a mediados de los sesenta; conjunción Neptuno y Plutón hacia 1892; sextil Neptuno y Plutón desde mediados del siglo veinte).
+- Pregunta: el quincuncio aparece en el material (un caso de Luna y Plutón) pero la carta solo calcula los cinco aspectos mayores. ¿Lo sumamos algún día?
+- Se dejó afuera: vidas pasadas, karma, reencarnación y la evolución del alma como explicación de cada aspecto.
+- Se dejó afuera: la madre, el padre o los padres como causa (padres dominantes, figura materna que hiere, conflicto de voluntades con el padre).
+- Se dejó afuera: el caso del cliente de Luna y Plutón (separación de los padres, orfanato, rechazo).
+- Se dejó afuera: sexualidad explícita (necesidades sexuales de Luna y de Marte con Plutón, tabúes sexuales, masturbación, orgasmo como descarga).
+- Se dejó afuera: violencia, crueldad, medios criminales, ataques emocionales y estallidos violentos.
+- Se dejó afuera: ideas suicidas, deseos de muerte y la mirada como reflejo del ojo y la retina.
+- Se dejó afuera: el destino como algo fijado, la fama o la insignificancia social como resultado y la próxima encarnación.
+- Se dejó afuera: el fenómeno punk y el budismo como ejemplos de Urano y Neptuno con Plutón, y la relación directa con el Creador u Origen de Neptuno con Plutón.
+- Se dejó afuera: la jerga del material (el nativo, campo vibratorio, campo áurico, octava inferior, Maya).

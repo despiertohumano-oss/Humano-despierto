@@ -13,7 +13,7 @@ import venus from "./data/posiciones/venus.json";
 import { HOUSE_KEYS, PLANET_IDS, SIGN_IDS, type HouseKey, type PlanetId, type SignId } from "./zodiac";
 
 // Sin comillas ni apóstrofos: las vistas comparan el texto contra HTML escapado.
-const limpio = (min: number, max: number) =>
+export const limpio = (min: number, max: number) =>
   z.string().min(min).max(max).refine((s) => !/["']/.test(s), "sin comillas ni apóstrofos");
 
 const entrada = z.object({ texto: limpio(280, 700), luz: limpio(90, 260), sombra: limpio(90, 260) });

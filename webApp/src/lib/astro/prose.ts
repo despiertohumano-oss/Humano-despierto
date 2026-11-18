@@ -2,6 +2,7 @@ import { z } from "@/lib/validation/zod";
 import raw from "./data/templates.json";
 import type { AspectId } from "./aspects";
 import type { BodyPosition, ChartFacts } from "./chart";
+import { ASPECTOS_PLUTON, type AspectosPluton, textoDePluton } from "./aspectos-pluton";
 import { POSICIONES, type Posiciones, type Tono, isPlanetId, tonoDe } from "./posiciones";
 import {
   BODY_IDS, BODY_NAMES, HOUSE_KEYS, SIGNS, SIGN_IDS, type BodyId, type HouseKey, type PlanetId, type Modality, formatDegree, pointName,
@@ -137,8 +138,8 @@ function balanceText(f: ChartFacts): string {
   ].join(" ");
 }
 
-// `posiciones` se inyecta para que los tests no dependan del contenido real.
-export function renderChart(f: ChartFacts, posiciones: Posiciones = POSICIONES): ChartText {
+// `posiciones` y `aspectosPluton` se inyectan para que los tests no dependan del contenido real.
+export function renderChart(f: ChartFacts, posiciones: Posiciones = POSICIONES, aspectosPluton: AspectosPluton = ASPECTOS_PLUTON): ChartText {
   const byId = new Map(f.bodies.map((b) => [b.id, b]));
   const sol = byId.get("sol")!;
   const luna = byId.get("luna")!;
@@ -163,7 +164,7 @@ export function renderChart(f: ChartFacts, posiciones: Posiciones = POSICIONES):
 
   const aspectos = f.aspects.slice(0, 8).map((a) => ({
     titulo: `${pointName(a.a)} en ${TEMPLATES.aspectos[a.type].nombre} con ${pointName(a.b)}`,
-    texto: fill(TEMPLATES.aspectos[a.type].frase, { a: pointName(a.a), b: pointName(a.b) }),
+    texto: textoDePluton(a, aspectosPluton) ?? fill(TEMPLATES.aspectos[a.type].frase, { a: pointName(a.a), b: pointName(a.b) }),
     porQue: `orbe de ${a.orb.toFixed(1).replace(".", ",")}°, ${a.applying ? "aplicativo (se está formando)" : "separativo (se está disipando)"}`,
   }));
 

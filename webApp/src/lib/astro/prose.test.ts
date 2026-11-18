@@ -2,8 +2,9 @@ import { describe, expect, it } from "vitest";
 import { type ChartFacts, computeChart } from "./chart";
 import type { Aspect } from "./aspects";
 import type { Posiciones } from "./posiciones";
+import type { AspectosPluton } from "./aspectos-pluton";
 import { AVISO_MARCO, AVISO_SIN_HORA, HOUSE_KEYS, type HouseKey, TEMPLATES, renderChart } from "./prose";
-import { BODY_IDS, SIGNS, SIGN_IDS } from "./zodiac";
+import { BODY_IDS, SIGNS, SIGN_IDS, type PointId, pointName } from "./zodiac";
 
 const todos = (): string[] => [
   ...Object.values(TEMPLATES.cuerpos), ...Object.values(TEMPLATES.signos),
@@ -188,5 +189,61 @@ describe("textos por posición", () => {
     const empate = marte(conMarte([asp("marte", "venus", "trigono"), asp("marte", "sol", "cuadratura")]), datos()).caras!;
     expect(empate.tono).toBe("ambas");
     expect(empate.motivo).toMatch(/^Las dos caras pesan igual: con otros planetas tiene 1 aspecto fluido/);
+  });
+});
+
+describe("aspectos de Plutón (T-102)", () => {
+  const base = computeChart({ utc: new Date("1990-06-15T12:00:00Z"), lat: -34.60372, lon: -58.38159, houseSystem: "placidus", hasTime: true });
+  const par = (t: string) => ({ texto: `${t}T`.repeat(150), conjuncion: `${t}C`.repeat(50), fluido: `${t}F`.repeat(50), tenso: `${t}X`.repeat(50) });
+  const datos: AspectosPluton = { luna: par("l"), saturno: par("s"), neptuno: par("n") };
+  const asp = (a: PointId, b: PointId, type: Aspect["type"]): Aspect => ({ a, b, type, orb: 2.34, applying: false });
+  const aspectos = (lista: Aspect[], d: AspectosPluton = datos) => renderChart({ ...base, aspects: lista }, undefined, d).aspectos;
+  const generica = (a: Aspect) => TEMPLATES.aspectos[a.type].frase.replace("{a}", pointName(a.a)).replace("{b}", pointName(a.b));
+
+  it.each([
+    ["conjuncion", "conjuncion"],
+    ["trigono", "fluido"],
+    ["sextil", "fluido"],
+    ["cuadratura", "tenso"],
+    ["oposicion", "tenso"],
+  ] as const)("Plutón en %s con un planeta: texto del par más la frase de la familia %s", (tipo, familia) => {
+    const comoA = aspectos([asp("pluton", "luna", tipo)])[0]!;
+    const comoB = aspectos([asp("luna", "pluton", tipo)])[0]!;
+    const esperado = `${par("l").texto} ${par("l")[familia]}`;
+    expect(comoA.texto).toBe(esperado);
+    expect(comoB.texto).toBe(esperado);
+    expect(comoA.texto).not.toContain(generica(asp("pluton", "luna", tipo)));
+  });
+
+  it("cada par usa su propio texto", () => {
+    const [s, n] = aspectos([asp("saturno", "pluton", "cuadratura"), asp("pluton", "neptuno", "sextil")]);
+    expect(s!.texto).toBe(`${par("s").texto} ${par("s").tenso}`);
+    expect(n!.texto).toBe(`${par("n").texto} ${par("n").fluido}`);
+  });
+
+  it.each(["asc", "mc", "quiron", "nodo_norte", "lilith_media"] as const)("Plutón con %s: la frase genérica", (otro) => {
+    const conTodo: AspectosPluton = { ...datos, [otro]: par("z") } as AspectosPluton;
+    for (const a of [asp("pluton", otro, "trigono"), asp(otro, "pluton", "oposicion")]) {
+      expect(aspectos([a], conTodo)[0]!.texto).toBe(generica(a));
+    }
+  });
+
+  it("un aspecto sin Plutón lleva la frase genérica", () => {
+    const a = asp("luna", "saturno", "cuadratura");
+    expect(aspectos([a])[0]!.texto).toBe(generica(a));
+  });
+
+  it("un par sin datos cae a la frase genérica", () => {
+    const a = asp("pluton", "venus", "conjuncion");
+    expect(aspectos([a])[0]!.texto).toBe(generica(a));
+  });
+
+  it("título y motivo no cambian", () => {
+    const lista = [asp("pluton", "luna", "trigono"), asp("saturno", "pluton", "oposicion"), asp("sol", "luna", "sextil")];
+    const con = aspectos(lista);
+    const sin = aspectos(lista, {});
+    expect(con.map(({ titulo, porQue }) => ({ titulo, porQue }))).toEqual(sin.map(({ titulo, porQue }) => ({ titulo, porQue })));
+    expect(con[0]!.titulo).toBe("Plutón en trígono con Luna");
+    expect(con[0]!.porQue).toBe("orbe de 2,3°, separativo (se está disipando)");
   });
 });
