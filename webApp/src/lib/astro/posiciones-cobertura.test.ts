@@ -2,54 +2,13 @@ import { describe, expect, it } from "vitest";
 import { POSICIONES } from "./posiciones";
 import { HOUSE_KEYS } from "./prose";
 import { PLANET_IDS, SIGN_IDS } from "./zodiac";
-
-// Reglas 3 y 4 del plan T-101: reflexión sin predicción y sin la jerga del material original.
-// \b no entiende letras acentuadas: donde el término las rodea se usan lookarounds explícitos.
-const PROHIBIDOS = new RegExp(
-  [
-    /enfermedad|enferm[oa]\b|\bsalud\b|\bmuerte|\bmorir\b|\baccident|viudez|\bmatrimonio|\bdivorcio|(?<!\p{L})herencias?(?!\p{L})|(?<!\p{L})c[aá]rcel|\bvicios?\b|\bkarma|vidas? pasadas?|\bvas a\b|\bnativ[oa]s?\b|\bafligid|\baspectad|mal[eé]fic|\bviril|\bla mujer\b/u
-      .source,
-    // QA de T-101 (intento 1): viudez, herencias, finales, encierro, vicios, karma, matrimonio, mudanzas, juego, ruina.
-    /(?<!\p{L})viud|(?<!\p{L})hered|(?<!\p{L})fallec|(?<!\p{L})prisi[oó]n|(?<!\p{L})adicci|(?<!\p{L})alcoh[oó]l|(?<!\p{L})reencarn/u.source,
-    /(?<!\p{L})cas(?:arse|arte|amientos?)(?!\p{L})|(?<!\p{L})bodas?(?!\p{L})|(?<!\p{L})c[oó]nyuges?(?!\p{L})|(?<!\p{L})k[aá]rmic/u.source,
-    /(?<!\p{L})mudanzas?(?!\p{L})|(?<!\p{L})apuestas?(?!\p{L})|(?<!\p{L})ruinas?(?!\p{L})/u.source,
-    // Predicción en futuro.
-    /(?<!\p{L})(?:tendr[aá]s|ser[aá]s|te esperan?)(?!\p{L})/u.source,
-  ].join("|"),
-  "iu",
-);
-
-// La carta une luz de signo + luz de casa (y lo mismo la sombra) en un solo párrafo: ninguna oración de casa
-// puede arrancar igual que una de signo del mismo planeta («Cuando fluye, … Cuando fluye, …»).
-function arranques(texto: string, palabras = 2): string[] {
-  return texto
-    .split(/(?<=[.!?])\s+/)
-    .map((o) =>
-      o
-        .normalize("NFD")
-        .replace(/\p{M}/gu, "")
-        .toLowerCase()
-        .match(/\p{L}+/gu)
-        ?.slice(0, palabras)
-        .join(" "),
-    )
-    .filter((a): a is string => !!a);
-}
+import { PROHIBIDOS, arranques, oraciones } from "@/test/guardas-astro";
 
 const MULETILLA = /muchas personas con esta posici[oó]n/iu;
 const TOPE_MULETILLA = 3;
 
 const FORMULAS_DE_SIGNO = /puede costarte|vale la pena|cuando fluye|en su mejor/iu;
 const TOPE_APERTURA = 4;
-
-function oraciones(texto: string): string[] {
-  return texto
-    .split(/(?<=[.!?])\s+/)
-    .map((o) =>
-      (o.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().match(/\p{L}+/gu) ?? []).join(" "),
-    )
-    .filter((o) => o.length > 0);
-}
 
 const entradas = PLANET_IDS.flatMap((p) => [
   ...SIGN_IDS.map((s) => ({ id: `${p}/signo/${s}`, e: POSICIONES[p].en_signo[s] })),
@@ -76,6 +35,8 @@ describe("cobertura de posiciones (T-101)", () => {
     expect(new Set(todos).size).toBe(todos.length);
   });
 
+  // La carta une luz de signo + luz de casa (y lo mismo la sombra) en un solo párrafo: ninguna oración de casa
+  // puede arrancar igual que una de signo del mismo planeta («Cuando fluye, … Cuando fluye, …»).
   it("luz y sombra de casa no repiten los arranques de oración de signo del mismo planeta", () => {
     const choques = PLANET_IDS.flatMap((p) =>
       (["luz", "sombra"] as const).flatMap((campo) => {
