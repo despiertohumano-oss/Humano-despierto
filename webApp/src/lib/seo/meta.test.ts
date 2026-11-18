@@ -127,8 +127,15 @@ describe("T-103 · páginas de posición", () => {
       const id = `${r.planeta}/${r.clave}`;
       expect(d.length, id).toBeGreaterThanOrEqual(DESCRIPTION_MIN);
       expect(d.length, id).toBeLessThanOrEqual(DESCRIPTION_MAX);
-      expect(r.entrada.texto.startsWith(d.replace(/\.$/, "")), id).toBe(true);
+      expect(r.entrada.texto.startsWith(d.replace(/[….]$/, "")), id).toBe(true);
+      expect(d, id).not.toMatch(/\s(y|o|de|que|no|la|el|en|con|un|una|a)[.…]$/i);
+      expect(d, id).toMatch(/[.!?…]$/);
     }
+  });
+
+  it("la descripción de marte/tauro ya no se corta en una palabra suelta", () => {
+    const d = posicionDescription(resolverPosicion("marte", "tauro")!.entrada.texto);
+    expect(d).not.toMatch(/ y no\.$/);
   });
 
   it("los 240 títulos entran en 60 con el sufijo y nombran la posición", () => {

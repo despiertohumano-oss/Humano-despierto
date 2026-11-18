@@ -191,12 +191,16 @@ describe("T-103 · página de posición", () => {
     expect(html).toMatch(/<h2[^>]*>Sombra<\/h2>/);
     for (const href of ["/carta-natal/planetas/marte", "/carta-natal/signos/tauro", "/carta-natal"]) expect(html).toContain(`href="${href}"`);
     expect(html).toContain(AVISO_MARCO);
+    expect(html).toContain("Ver la ficha de Marte");
+    expect(html).not.toMatch(/Marte\s*: /);
   });
 
   it("planeta en casa y luminar con artículo", async () => {
     const casa = await render("marte", "casa-7");
     expect(casa).toMatch(/<h1[^>]*>.*Marte en la casa 7<\/h1>/);
     expect(casa).toContain('href="/carta-natal/casas/7"');
+    expect(casa).toContain("Ver la ficha de la casa 7");
+    expect(casa).not.toMatch(/Casa 7\s*: /);
     expect(casa).toContain(esc(POSICIONES.marte.en_casa["7"]!.texto));
     expect(await render("sol", "leo")).toMatch(/<h1[^>]*>.*El Sol en Leo<\/h1>/);
     expect(await render("luna", "casa-4")).toMatch(/<h1[^>]*>.*La Luna en la casa 4<\/h1>/);

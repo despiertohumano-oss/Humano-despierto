@@ -16,7 +16,7 @@ export default function PosicionLayout({ posicion }: { posicion: PosicionRef }) 
   const { prev, next } = vecinosDe(posicion);
   const fichaPunto = tipo === "signo"
     ? { href: `/carta-natal/signos/${clave}`, nombre: SIGNS[clave].nombre, frase: TEMPLATES.signos[clave].frase }
-    : { href: `/carta-natal/casas/${clave}`, nombre: TEMPLATES.casas[clave].nombre, frase: TEMPLATES.casas[clave].frase };
+    : { href: `/carta-natal/casas/${clave}`, nombre: `la casa ${clave}`, frase: TEMPLATES.casas[clave].frase };
   const contexto = [
     { href: `/carta-natal/planetas/${bodySlug(planeta)}`, nombre: BODY_NAMES[planeta], frase: TEMPLATES.cuerpos[planeta].frase },
     fichaPunto,
@@ -48,9 +48,8 @@ export default function PosicionLayout({ posicion }: { posicion: PosicionRef }) 
           <ul className="mt-5 max-w-[65ch] space-y-2 text-suave">
             {contexto.map((c) => (
               <li key={c.href}>
-                <Link href={c.href} className="font-semibold text-miel-800 hover:underline">{c.nombre}</Link>
-                {": "}
-                {c.frase}
+                {c.frase}{" "}
+                <Link href={c.href} className="font-semibold text-miel-800 hover:underline">Ver la ficha de {c.nombre}</Link>
               </li>
             ))}
           </ul>
