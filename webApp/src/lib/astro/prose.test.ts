@@ -82,12 +82,18 @@ describe("renderChart", () => {
     expect(r.porQue).toMatch(/^Cáncer tiene como regente tradicional a la Luna, que está a \d+°\d\d′ de \S+, casa \d+$/);
   });
 
-  it("el párrafo de un cuerpo es cuerpo + signo + casa, en ese orden", () => {
-    const t = renderChart(conHora);
-    const sol = conHora.bodies[0]!;
-    expect(t.cuerpos[0]!.texto).toBe(
-      `${TEMPLATES.cuerpos.sol.frase} ${TEMPLATES.signos[sol.sign].frase} ${TEMPLATES.casas[String(sol.house) as HouseKey].frase}`,
-    );
+  it("el párrafo genérico es cuerpo + signo + casa, en ese orden (punto sin material y hueco)", () => {
+    const vacias = Object.fromEntries(BODY_IDS.slice(0, 10).map((p) => [p, { en_signo: {}, en_casa: {} }])) as Posiciones;
+    const esperado = (id: (typeof BODY_IDS)[number]) => {
+      const b = conHora.bodies.find((x) => x.id === id)!;
+      return `${TEMPLATES.cuerpos[id].frase} ${TEMPLATES.signos[b.sign].frase} ${TEMPLATES.casas[String(b.house) as HouseKey].frase}`;
+    };
+    // Quirón no tiene material: la composición genérica vale con cualquier contenido.
+    const quiron = renderChart(conHora).cuerpos.find((c) => c.titulo.startsWith("Quirón"))!;
+    expect(quiron.texto).toBe(esperado("quiron"));
+    // Un planeta con hueco cae a lo mismo.
+    const t = renderChart(conHora, vacias);
+    expect(t.cuerpos[0]!.texto).toBe(esperado("sol"));
   });
 
   it("sin hora: sin Ascendente ni regente, sin casas y con el aviso de la spec", () => {

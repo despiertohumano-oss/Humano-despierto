@@ -1,1 +1,126 @@
-{ "en_signo": {}, "en_casa": {} }
+{
+  "en_signo": {
+    "aries": {
+      "texto": "Mercurio en Aries piensa rápido y habla más rápido todavía. Tu mente se enciende con la discusión, disfruta del ingenio de la réplica y capta las ideas al vuelo. Muchas personas con esta posición son muy directas para decir lo que piensan y se apasionan defendiendo sus argumentos, a veces con algo de exageración. Cuando el impulso se combina con estudio, la mente se vuelve ágil, amplia y capaz de tomar las riendas de una situación.",
+      "luz": "Cuando fluye, tu palabra es valiente y clara: resolvés con agilidad, decís lo que otros callan y aportás frescura a cualquier debate.",
+      "sombra": "Puede costarte pensar dos veces antes de responder. Vale la pena observar si la discusión a veces es más ganas de ganar que de entender."
+    },
+    "tauro": {
+      "texto": "Con Mercurio en Tauro, tu pensamiento avanza despacio y con firmeza. Te tomás tiempo para llegar a una conclusión, y una vez que la tenés, cuesta mucho moverte de ahí. Muchas personas con esta posición son de pocas palabras, confiables para guardar un secreto y muy buenas para aconsejar, porque su juicio está bien fundado. Suelen tener buen gusto para los libros, las canciones y las obras de arte, y aprenden mejor con experiencias concretas.",
+      "luz": "En su mejor versión, tu opinión es sensata y digna de confianza: pensás con los pies en la tierra y tus consejos tienen peso.",
+      "sombra": "Puede costarte revisar una idea aunque aparezcan datos nuevos. Vale la pena observar si la reserva a veces es una forma de no exponerte."
+    },
+    "geminis": {
+      "texto": "Mercurio en Géminis está en su propio signo, y eso se nota en una mente ágil, curiosa y cambiante. Las cosas nuevas te atraen enseguida, y te gusta investigar, preguntar y moverte de un lugar a otro para conocer. Muchas personas con esta posición tienen un juicio perspicaz, capaz de ver el fondo de una cuestión cuando no se deja llevar por prejuicios, y se destacan en el intercambio, la negociación, la enseñanza o la escritura.",
+      "luz": "Cuando fluye, tu mente es brillante y versátil: aprendés rápido, negociás con gracia y unís datos que a otros se les escapan.",
+      "sombra": "Puede costarte profundizar antes de saltar a lo siguiente. Vale la pena observar si las ideas previas a veces nublan tu agudeza."
+    },
+    "cancer": {
+      "texto": "Con Mercurio en Cáncer, tu pensamiento está teñido de emoción y de memoria. Recordás con nitidez lo vivido y tenés una gran capacidad para adaptarte a lugares, personas y formas de pensar distintas. Muchas personas con esta posición aprenden mejor en un clima de confianza y cuidan mucho la imagen que los demás tienen de ellas, por lo que eligen sus palabras con delicadeza.",
+      "luz": "En su mejor versión, comunicás con empatía: tu memoria guarda historias valiosas y sabés decir las cosas de un modo que el otro pueda recibirlas.",
+      "sombra": "Puede costarte sostener tu opinión cuando no coincide con la del grupo. Vale la pena observar cuánto pesa en tus palabras el deseo de caer bien."
+    },
+    "leo": {
+      "texto": "Mercurio en Leo piensa en grande: tu mente se orienta hacia ideales elevados y desprecia las medias tintas. Hablás con convicción, a veces con un tono fuerte o tajante, pero detrás hay un corazón generoso. Muchas personas con esta posición tienen gran capacidad para organizar, dirigir equipos y comunicar una visión, y disfrutan de enseñar, de jugar y de compartir tiempo con chicas y chicos.",
+      "luz": "Cuando fluye, tu palabra entusiasma y ordena: sabés liderar con claridad, sostenés tus ideas con perseverancia y comunicás con calidez.",
+      "sombra": "Puede costarte escuchar con humildad o aceptar que te corrijan. Vale la pena observar cuándo la seguridad al hablar tapa una idea que todavía no maduró."
+    },
+    "virgo": {
+      "texto": "Mercurio en Virgo es una de sus posiciones más fuertes: la tradición lo considera en su mejor momento en este signo. Tu mente suele ser clara, lógica y precisa, con facilidad para los idiomas y una destreza manual poco común. Muchas personas con esta posición piensan antes de actuar, llegan a conclusiones prácticas y discretas, y tienen un ojo entrenado para encontrar lo que se puede mejorar en cualquier sistema.",
+      "luz": "En su mejor versión, tu inteligencia es útil y fina: analizás sin perderte, explicás con precisión y resolvés problemas con habilidad.",
+      "sombra": "Puede costarte no fijarte en cada falla o aceptar lo imperfecto. Vale la pena observar si la crítica constante te aleja de las personas que querés ayudar."
+    },
+    "libra": {
+      "texto": "Con Mercurio en Libra, tu mente busca el equilibrio: antes de opinar, solés escuchar las distintas partes y pesar los argumentos. Tenés una forma de expresarte armoniosa y elegante, con sensibilidad para el arte, la música y la palabra dicha en público. Muchas personas con esta posición son excelentes mediadoras, y piensan mejor en diálogo con alguien que en soledad.",
+      "luz": "Cuando fluye, tu palabra pacifica y convence: hablás con gracia, encontrás acuerdos justos y das a cada voz su lugar.",
+      "sombra": "Puede costarte tomar partido cuando hace falta. Vale la pena observar si tu búsqueda de equilibrio a veces posterga decisiones necesarias o las deja en manos de otros."
+    },
+    "escorpio": {
+      "texto": "Mercurio en Escorpio da una mente sagaz, investigadora y difícil de engañar. Tu ingenio es agudo y tu lengua puede ser afilada cuando algo te molesta. Muchas personas con esta posición tienen el coraje de enfrentar problemas que a otros los asustan, una gran habilidad para ir al fondo de cualquier asunto y una atracción fuerte por lo oculto, lo psicológico y los misterios.",
+      "luz": "En su mejor versión, tu mente es un bisturí al servicio de la verdad: investigás a fondo, resolvés lo complejo y decís lo esencial.",
+      "sombra": "Puede costarte no usar el sarcasmo como escudo o abrirte a ideas opuestas. Vale la pena observar si el escepticismo te protege o te encierra."
+    },
+    "sagitario": {
+      "texto": "Con Mercurio en Sagitario, tu mente busca respuestas amplias: te interesan la filosofía, la espiritualidad, las leyes y las costumbres de otros pueblos. Defendés tu libertad de pensar y de decir, y dejás de lado las convenciones cuando te limitan, sin perder un sentido ético firme. Muchas personas con esta posición aprenden viajando, observando paisajes y culturas, y ganan el respeto de su comunidad por la nobleza de sus ideas.",
+      "luz": "Cuando fluye, pensás con altura y generosidad: enseñás con entusiasmo, unís saberes diversos y das a cada conversación un sentido más amplio.",
+      "sombra": "Puede costarte prestar atención a los detalles o reconocer que una creencia propia no es la única verdad. Vale la pena observar si a veces argumentás para tener razón."
+    },
+    "capricornio": {
+      "texto": "Mercurio en Capricornio da una mente crítica, penetrante y estratégica. Pensás con calma, medís las consecuencias y tenés una capacidad notable para guardar información reservada. Muchas personas con esta posición son muy persistentes con sus proyectos, prácticas en lo cotidiano y prudentes para planificar, y sienten atracción tanto por la ciencia como por los saberes ocultos, siempre con los pies en la tierra.",
+      "luz": "En su mejor versión, tu pensamiento es estructurado y confiable: planificás con visión, sostenés lo que empezás y aconsejás con realismo.",
+      "sombra": "Puede costarte confiar en las intenciones ajenas o dejar espacio a lo imprevisto. Vale la pena observar cuándo la desconfianza endurece tu palabra."
+    },
+    "acuario": {
+      "texto": "Con Mercurio en Acuario, tu mente piensa por fuera del molde: amás la libertad de pensamiento y te cuesta aceptar ideas solo porque siempre fueron así. Muchas personas con esta posición tienen un estilo propio, ideas sociales adelantadas a su época y gusto por la ciencia, la tecnología, las matemáticas o la astrología. Suelen rodearse de amistades con inquietudes intelectuales y disfrutan de debates que abren futuro.",
+      "luz": "Cuando fluye, tu originalidad es un aporte: proponés soluciones innovadoras, pensás en el bien común y abrís conversaciones que otros no se animan a iniciar.",
+      "sombra": "Puede costarte tolerar a quienes piensan de forma más tradicional. Vale la pena observar si la búsqueda de independencia te vuelve distante o tajante con tus amistades."
+    },
+    "piscis": {
+      "texto": "Mercurio en Piscis piensa en imágenes más que en razonamientos. Tu mente funciona por asociación e imaginación, y muchas veces llegás a una conclusión acertada sin poder explicar bien cómo. Muchas personas con esta posición tienen una disposición amable y una gran sensibilidad para captar climas, y su forma de comunicar es poética, sugerente y llena de matices. La lógica lineal puede costar, pero la comprensión profunda aparece igual.",
+      "luz": "En su mejor versión, tu pensamiento es inspirado: tus intuiciones aciertan, tu palabra conmueve y sabés expresar lo que no tiene nombre.",
+      "sombra": "Puede costarte poner límites entre lo que imaginás y lo que pasa, o salir de pensamientos tristes. Vale la pena observar qué te ayuda a volver a tierra."
+    }
+  },
+  "en_casa": {
+    "1": {
+      "texto": "En la casa 1, tu mente está en primer plano: lo que pensás se nota en cómo te movés, hablás y reaccionás. Muchas personas con esta posición son muy despiertas, inquietas y comunicativas, y transmiten una juventud mental que no se apaga con los años. El signo de tu Ascendente le da su estilo: puede ser más impulsivo, más reflexivo o más intuitivo, pero siempre con una curiosidad visible.",
+      "luz": "Tu presencia es ágil y comunicativa: conversás con facilidad, respondés rápido y causás una impresión vivaz e inteligente.",
+      "sombra": "También puede costarte quedarte en calma o no hablar de más. Conviene mirar si el movimiento constante te impide registrar lo que sentís."
+    },
+    "2": {
+      "texto": "En la casa 2, tu mente se pone al servicio de tus recursos: pensar, escribir, comunicar o intermediar pueden ser formas de generar valor. Muchas personas con esta posición encuentran en el trabajo intelectual, comercial o de enlace una vía para sostenerse, y suelen tener ideas prácticas para administrar. Lo que sabés y lo que podés explicar forma parte de lo que te da seguridad.",
+      "luz": "Valorás tu inteligencia como un recurso real: sabés ofrecer tus ideas, negociar con criterio y convertir el conocimiento en algo útil.",
+      "sombra": "En lo material, puede costarte no medir tu valor solo por lo que producís. Conviene mirar si la ansiedad por los números te quita disfrute de lo que hacés."
+    },
+    "3": {
+      "texto": "En la casa 3, Mercurio está en un terreno muy afín: la comunicación, el aprendizaje y el entorno cercano son tu territorio natural. Muchas personas con esta posición tienen facilidad de palabra, inclinación al estudio y a la investigación, y disfrutan de los viajes cortos y del intercambio cotidiano. Los vínculos con hermanos, primos, vecinos o compañeros de estudio suelen ser importantes en tu forma de pensar.",
+      "luz": "Tu mente puede ser serena y optimista: aprendés con gusto, te expresás con fluidez y mantenés vínculos cercanos llenos de conversación.",
+      "sombra": "Al comunicar, puede costarte no caer en el pesimismo cuando algo no sale como pensabas. Conviene mirar qué pendientes con tu entorno cercano siguen sin hablarse."
+    },
+    "4": {
+      "texto": "En la casa 4, tu mente vuelve una y otra vez a las raíces, la familia y el hogar. Muchas personas con esta posición viven cambios frecuentes de casa o sienten inquietud cuando pasan mucho tiempo en el mismo lugar. Al mismo tiempo, pueden convertir el hogar en un espacio de trabajo intelectual, con libros, escritura o proyectos que se hacen desde casa. Las conversaciones familiares dejan una marca profunda en tu manera de pensar.",
+      "luz": "Tu casa puede ser un lugar de ideas: estudiás, escribís o enseñás desde ahí, y la memoria familiar se vuelve un tesoro de historias.",
+      "sombra": "Puertas adentro, puede costarte encontrar quietud o sentir que tenés un lugar fijo. Conviene mirar qué palabras no dichas en tu familia siguen dando vueltas."
+    },
+    "5": {
+      "texto": "En la casa 5, tu mente se enciende con la creatividad, el juego, la educación y el romance. Muchas personas con esta posición disfrutan de enseñar, escribir, organizar actividades recreativas o compartir con chicos, y tienen un humor ingenioso que hace divertida cualquier conversación. En el amor, la palabra y la seducción intelectual ocupan un lugar central.",
+      "luz": "Tu ingenio es creativo y alegre: enseñás jugando, escribís con gracia y conquistás con tu conversación.",
+      "sombra": "En lo creativo, puede costarte sostener el interés cuando lo nuevo pierde brillo. Conviene mirar si la ligereza a veces evita compromisos que te importan."
+    },
+    "6": {
+      "texto": "En la casa 6, tu mente trabaja sin descanso en las tareas diarias, la organización y los detalles. Muchas personas con esta posición son muy eficientes y ambiciosas en su trabajo, y tienen interés por la alimentación, los hábitos y todo lo que ayuda a vivir mejor. La mente activa es una gran herramienta, pero necesita pausas: el exceso de preocupación tiende a quitarte bienestar.",
+      "luz": "Tu inteligencia práctica mejora todo lo que toca: ordenás procesos, resolvés problemas del día a día y ayudás con eficacia.",
+      "sombra": "En el trabajo, puede costarte desconectar o no cargar con lo que les pasa a otros. Conviene mirar si la autoexigencia te deja sin descanso."
+    },
+    "7": {
+      "texto": "En la casa 7, tu mente se activa en el diálogo con otros: pareja, socios, clientes o el público en general. Muchas personas con esta posición piensan mejor cuando conversan, se destacan en la oratoria o en la negociación, y encuentran su lugar en círculos donde se intercambian ideas. Los vínculos de a dos suelen tener mucha palabra, para bien y para mal, y la calidad del diálogo define cómo se sienten.",
+      "luz": "Sabés escuchar y responder: negociás con inteligencia, construís alianzas basadas en el diálogo y te desenvolvés bien ante un público.",
+      "sombra": "En los vínculos, puede costarte no convertir las diferencias en discusiones interminables. Conviene mirar si las críticas ajenas pesan más de lo que deberían en tus decisiones."
+    },
+    "8": {
+      "texto": "En la casa 8, tu mente se interesa por lo que está debajo de la superficie: la psicología, los misterios y los temas que otros evitan. Muchas personas con esta posición tienen habilidad para gestionar recursos compartidos, negociar acuerdos complejos o trabajar en proyectos intelectuales junto a otra persona. Hablar de lo íntimo puede costar, pero cuando lo hacés, llegás muy hondo.",
+      "luz": "Tu mente investiga a fondo: comprendés procesos de cambio, ayudás a ordenar lo compartido y no le temés a las conversaciones difíciles.",
+      "sombra": "En lo compartido, puede costarte no obsesionarte con lo que no sabés o con lo que otros manejan. Conviene mirar qué acuerdos vale la pena dejar claros y por escrito."
+    },
+    "9": {
+      "texto": "En la casa 9, tu mente busca respuestas grandes: la filosofía, las leyes, la ciencia, la espiritualidad y otras culturas te atraen como un imán. Muchas personas con esta posición viajan lejos para aprender, escriben o enseñan sobre lo que estudian, y cambian de punto de vista varias veces a lo largo de la vida, siempre con buenas razones. Es una mente flexible que crece al ampliar el mapa.",
+      "luz": "Tu pensamiento es amplio y estudioso: comunicás ideas profundas con claridad y tu curiosidad te lleva a lugares que enriquecen a otros.",
+      "sombra": "En tu búsqueda, puede costarte concentrarte en un solo camino el tiempo suficiente para profundizarlo. Conviene mirar cuándo cambiar de idea es crecimiento y cuándo dispersión."
+    },
+    "10": {
+      "texto": "En la casa 10, tu mente se proyecta en la vocación y en la vida pública. Muchas personas con esta posición tienen recursos para adaptarse a cualquier circunstancia profesional, varios intereses laborales a la vez y talento para hablar en público, escribir o difundir ideas. Tu reputación suele construirse a partir de lo que comunicás y de la inteligencia que mostrás en tu tarea.",
+      "luz": "Tu palabra es tu carta de presentación: comunicás con solvencia, te adaptás a los cambios y tu trabajo se reconoce por su claridad.",
+      "sombra": "En lo público, puede costarte elegir una sola dirección profesional. Conviene mirar si la versatilidad a veces te deja en segundo plano por no animarte a liderar."
+    },
+    "11": {
+      "texto": "En la casa 11, tu mente se nutre de las amistades y de los grupos con intereses intelectuales. Muchas personas con esta posición se rodean de gente curiosa, creativa o vinculada al conocimiento, y tienen una gran fluidez para conversar sobre proyectos y sueños compartidos. Es una posición que agudiza el ingenio, aunque las amistades pueden ir y venir según los intereses del momento.",
+      "luz": "Podés ser quien conecta ideas y personas en un grupo: proponés, debatís con agudeza y ponés palabras a los objetivos comunes.",
+      "sombra": "En los grupos, puede costarte sostener amistades más allá del interés compartido o evitar la mirada crítica. Conviene mirar qué vínculos te nutren de verdad."
+    },
+    "12": {
+      "texto": "En la casa 12, tu mente trabaja en silencio y hacia adentro. Muchas personas con esta posición tienen facilidad para investigar misterios, examinar detalles mínimos que otros pasan por alto y adentrarse en temas ocultos, simbólicos o espirituales. A menudo pensás más de lo que decís, y tu intuición se alimenta de lo que percibís sin palabras.",
+      "luz": "Tu mente es investigadora y profunda: descubrís lo escondido, resolvés enigmas y expresás lo invisible con sensibilidad.",
+      "sombra": "En lo íntimo, puede costarte compartir lo que pensás o sacar a la luz preocupaciones que guardás. Conviene mirar qué ideas dan vueltas sin salida y buscar con quién hablarlas."
+    }
+  }
+}

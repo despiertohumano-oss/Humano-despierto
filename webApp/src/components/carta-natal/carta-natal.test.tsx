@@ -140,7 +140,13 @@ describe("luz y sombra en el resultado", () => {
   });
 
   it("los puntos sin material no muestran rótulos", () => {
-    const sinNada = renderToStaticMarkup(<ChartResult view={{ facts: conHora, text: renderChart(conHora), placeLabel: "BA", zoneLabel: "UTC−3" }} />);
+    // Solo Marte tiene material: Quirón, nodo y Lilith (sin material nunca) y los planetas con hueco no rotulan.
+    const text = renderChart(conHora, datos);
+    const out = renderToStaticMarkup(<ChartResult view={{ facts: conHora, text, placeLabel: "BA", zoneLabel: "UTC−3" }} />);
+    expect(out.split("Luz:").length - 1).toBe(1);
+    expect(out.split("Sombra:").length - 1).toBe(1);
+    const vacias = Object.fromEntries(Object.keys(datos).map((p) => [p, { en_signo: {}, en_casa: {} }])) as Posiciones;
+    const sinNada = renderToStaticMarkup(<ChartResult view={{ facts: conHora, text: renderChart(conHora, vacias), placeLabel: "BA", zoneLabel: "UTC−3" }} />);
     expect(sinNada).not.toContain("Luz:");
   });
 });

@@ -4,8 +4,9 @@ import { HOUSE_KEYS } from "./prose";
 import { PLANET_IDS, SIGN_IDS } from "./zodiac";
 
 // Reglas 3 y 4 del plan T-101: reflexión sin predicción y sin la jerga del material original.
+// \b no entiende letras acentuadas: donde el término las rodea se usan lookarounds explícitos.
 const PROHIBIDOS =
-  /enfermedad|enferm[oa]|\bsalud\b|muerte|\bmorir\b|accident|viudez|matrimonio|divorcio|herencia|c[aá]rcel|\bvicios?\b|karma|vidas? pasadas?|\bvas a\b|\bnativ[oa]s?\b|afligid|aspectad|mal[eé]fic|\bviril|\bla mujer\b/i;
+  /enfermedad|enferm[oa]\b|\bsalud\b|\bmuerte|\bmorir\b|\baccident|viudez|\bmatrimonio|\bdivorcio|(?<!\p{L})herencias?(?!\p{L})|(?<!\p{L})c[aá]rcel|\bvicios?\b|\bkarma|vidas? pasadas?|\bvas a\b|\bnativ[oa]s?\b|\bafligid|\baspectad|mal[eé]fic|\bviril|\bla mujer\b/iu;
 
 const entradas = PLANET_IDS.flatMap((p) => [
   ...SIGN_IDS.map((s) => ({ id: `${p}/signo/${s}`, e: POSICIONES[p].en_signo[s] })),
@@ -30,5 +31,12 @@ describe("cobertura de posiciones (T-101)", () => {
     const todos = entradas.flatMap(({ e }) => (e ? [e.texto, e.luz, e.sombra] : []));
     expect(todos.length).toBe(720);
     expect(new Set(todos).size).toBe(todos.length);
+  });
+
+  it("el filtro respeta los límites de palabra", () => {
+    expect(PROHIBIDOS.test("una coherencia interna")).toBe(false);
+    expect(PROHIBIDOS.test("la herencia familiar")).toBe(true);
+    expect(PROHIBIDOS.test("las herencias del linaje")).toBe(true);
+    expect(PROHIBIDOS.test("la cárcel de la rutina")).toBe(true);
   });
 });

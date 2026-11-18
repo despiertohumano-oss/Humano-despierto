@@ -1,1 +1,126 @@
-{ "en_signo": {}, "en_casa": {} }
+{
+  "en_signo": {
+    "aries": {
+      "texto": "Con Marte en Aries, el planeta está en su propio signo y su energía se expresa sin filtros. Tu forma de actuar tiende a ser directa, entusiasta e impaciente con lo que te frena: cuanto más difícil parece un desafío, más te estimula. Muchas personas con esta posición tienen mucha vitalidad, gusto por el deporte y el movimiento, y una capacidad notable para empezar cosas y encontrar soluciones con audacia y recursos propios.",
+      "luz": "Cuando fluye, tu energía es pionera: te animás a lo que otras personas no, abrís caminos y ponés el mismo entusiasmo en el trabajo que en el disfrute.",
+      "sombra": "Puede costarte esperar, medir el riesgo o bajar el tono cuando algo te enoja. Vale la pena observar cuándo el impulso se adelanta a lo que de verdad querés."
+    },
+    "tauro": {
+      "texto": "Con Marte en Tauro, la energía se vuelve constancia. No actuás de golpe: cuando decidís algo, avanzás paso a paso con una determinación difícil de torcer y no te detenés ante los obstáculos. La tradición considera que Marte está aquí en exilio, porque su impulso se vuelve más lento y terrenal. Muchas personas con esta posición tienen una gran capacidad para generar recursos y una fortaleza interna que las sostiene en los procesos largos.",
+      "luz": "En su mejor cara, tu fuerza es paciente y persistente: construís con solidez, sostenés el esfuerzo y compartís con generosidad lo que lográs.",
+      "sombra": "Puede costarte cambiar de rumbo cuando alguien te contradice, o soltar un enojo. Vale la pena observar si la terquedad te impide escuchar razones."
+    },
+    "geminis": {
+      "texto": "Con Marte en Géminis, la acción pasa por la mente y la palabra. Pensás rápido, vas al punto y te gusta medir tu ingenio con el de otras personas en una buena discusión. Muchas personas con esta posición tienen facilidad para aprender, para resolver problemas prácticos y para trabajar con la escritura, el debate o las tareas que piden habilidad manual. La franqueza puede ser una de tus marcas: decís lo que pensás.",
+      "luz": "Cuando fluye, tu mente es ágil y aguda: argumentás con claridad, encontrás soluciones ingeniosas y das a tus ideas la energía para concretarse.",
+      "sombra": "Puede costarte decidir entre tantas opciones o cuidar el filo de tus palabras. Vale la pena observar cuándo la ironía hiere más de lo que querés."
+    },
+    "cancer": {
+      "texto": "Con Marte en Cáncer, la energía se pone al servicio de lo propio: tu casa, tu gente, tu sensación de seguridad. La tradición ubica a Marte en caída en este signo, porque su impulso directo se mezcla con la emoción y la necesidad de protegerse. Muchas personas con esta posición son muy trabajadoras, administran bien lo que tienen y defienden con fuerza a quienes quieren. También pueden sentir inquietud y ganas de cambiar de rumbo con frecuencia.",
+      "luz": "En su mejor cara, tu fuerza protege: defendés tu hogar y tus afectos con coraje, sabés cuidar recursos y actuás por quienes te importan.",
+      "sombra": "Vale la pena observar cómo expresás el enojo en la intimidad y si querés tener la última palabra en casa. Puede costarte decir de frente lo que te molesta."
+    },
+    "leo": {
+      "texto": "Con Marte en Leo, la acción tiene corazón y orgullo. Tu energía tiende a ser entusiasta, valiente y generosa, y solés poner la misma pasión en lo que hacés por obligación y en lo que hacés por placer. Muchas personas con esta posición tienen un fuerte sentido del honor y de la responsabilidad, y se destacan en tareas de confianza o de liderazgo. Decís lo que pensás con claridad y defendés tus convicciones con fuerza, lo que a veces despierta admiración y otras, resistencia.",
+      "luz": "Cuando fluye, tu valentía inspira: liderás con calidez, defendés lo justo y ponés el alma en lo que hacés y en lo que querés.",
+      "sombra": "Puede costarte retroceder cuando tu orgullo está en juego, o medir los riesgos por el gusto de la hazaña. Vale la pena mirar cuánto necesitás ganar."
+    },
+    "virgo": {
+      "texto": "Con Marte en Virgo, la energía se vuelve precisión. Tenés una mente capaz de tomar una idea y trabajarla hasta que funcione, y te sentís bien cuando aplicás tu esfuerzo de manera práctica y útil. La tradición asocia esta posición con la investigación, el trabajo técnico y las tareas de cuidado y de servicio. Muchas personas con esta posición son eficientes y perspicaces, y se destacan por la calidad de lo que hacen.",
+      "luz": "En su mejor cara, tu fuerza es metódica y certera: analizás, mejorás procesos y convertís el trabajo diario en algo bien hecho y útil para otras personas.",
+      "sombra": "Puede costarte no preocuparte de más o aceptar que otras personas trabajen a su ritmo. Vale la pena observar cuándo la crítica se vuelve tu forma de descargar tensión."
+    },
+    "libra": {
+      "texto": "Con Marte en Libra, la energía busca el encuentro con el otro. Tu manera de actuar tiende a pasar por los vínculos: te movés mejor en equipo, en pareja o defendiendo una causa justa. La tradición considera que Marte está aquí en exilio, porque su impulso directo tiene que negociar con la búsqueda de armonía de Libra. Muchas personas con esta posición tienen un entusiasmo genuino por el arte y la belleza, y una habilidad natural para argumentar a favor de otras.",
+      "luz": "Cuando fluye, luchás por la equidad: sabés defender a quien no tiene voz, actuar con diplomacia y poner tu energía en acuerdos que benefician a todas las partes.",
+      "sombra": "Puede costarte expresar el enojo de forma directa o decidir sin consultar. Vale la pena observar si tu deseo de agradar te lleva a jugar con los afectos."
+    },
+    "escorpio": {
+      "texto": "Con Marte en Escorpio, el planeta está en uno de sus signos tradicionales y su fuerza se vuelve profunda y concentrada. Tu energía tiende a ser intensa, resistente y difícil de doblegar: cuando te proponés algo, superás obstáculos con una voluntad enorme. Muchas personas con esta posición tienen una mente aguda e investigadora y un trato que al principio puede parecer áspero, hasta que se las conoce. Se mueven bien en situaciones que exigen temple.",
+      "luz": "En su mejor cara, tu fuerza transforma: tenés coraje en la crisis, llegás al fondo de las cosas y sostenés tu propósito con una lealtad inquebrantable.",
+      "sombra": "Vale la pena observar cuándo la intensidad se vuelve rencor, deseo de control o palabras que cortan. Puede costarte soltar una ofensa."
+    },
+    "sagitario": {
+      "texto": "Con Marte en Sagitario, la energía se pone al servicio de ideas y causas. Te entusiasma discutir sobre filosofía, justicia o creencias, y solés actuar con franqueza y con ganas de crecer. Muchas personas con esta posición disfrutan de los viajes, los deportes y la vida al aire libre, y acumulan experiencias que después comparten con gracia en cualquier reunión. La palabra puede ser tu herramienta más afilada.",
+      "luz": "Cuando fluye, tu energía contagia optimismo: defendés tus ideales, enseñás con entusiasmo y te lanzás a la aventura con fe en lo que viene.",
+      "sombra": "Puede costarte respetar las ideas que no coinciden con las tuyas, o frenar antes de exagerar. Vale la pena observar cuándo tu convicción se vuelve sermón."
+    },
+    "capricornio": {
+      "texto": "Con Marte en Capricornio, el planeta está exaltado: su impulso encuentra estructura. Tu energía tiende a ser ambiciosa, disciplinada y perseverante, y sabés avanzar con paciencia hacia metas de largo plazo. Muchas personas con esta posición se ganan el respeto por su capacidad de asumir responsabilidades grandes y de llevar adelante proyectos complejos. Cuanto más amplio es el desafío, más parece que se ordenan tus fuerzas.",
+      "luz": "En su mejor cara, tu fuerza es estratégica y confiable: organizás, sostenés el esfuerzo y conducís a otras personas con autoridad y criterio.",
+      "sombra": "Vale la pena observar si cargás más peso del que podés sostener, o si la ambición te endurece. Puede costarte pedir ayuda o mostrar cansancio."
+    },
+    "acuario": {
+      "texto": "Con Marte en Acuario, la energía se vuelve ingenio. Tu forma de actuar suele ser original, intuitiva e independiente, y te mueve el deseo de hacer las cosas de un modo nuevo. Muchas personas con esta posición tienen habilidad para la tecnología y lo innovador, y ponen su empuje al servicio de proyectos colectivos o causas sociales. Tu capacidad de trabajo, sumada a la amistad con personas afines, puede ayudarte a concretar lo que esperás.",
+      "luz": "Cuando fluye, tu energía renueva: proponés soluciones inesperadas, defendés la libertad y movilizás grupos detrás de una idea que mejora la vida común.",
+      "sombra": "Puede costarte aceptar que otras personas te marquen el rumbo. Vale la pena observar si tu rebeldía se vuelve brusquedad cuando no te dan el lugar que esperás."
+    },
+    "piscis": {
+      "texto": "Con Marte en Piscis, la acción se mueve por debajo de la superficie. Tu energía tiende a actuar en silencio, a rendir mejor en espacios reservados y a guiarse más por la intuición que por la confrontación directa. La tradición asocia esta posición con tareas de investigación, de cuidado o de servicio que no necesitan exposición. Muchas personas con esta posición sienten su fuerza ligada a lo emocional y a los ideales, y necesitan un propósito para encenderse.",
+      "luz": "En su mejor cara, tu fuerza es compasiva y sutil: actuás por otras personas, sabés moverte en lo invisible y ponés energía en lo que tiene sentido para el alma.",
+      "sombra": "Puede costarte enfrentar un conflicto de frente, y entonces el enojo busca salidas indirectas. Vale la pena observar qué ocultás y de qué te escapás."
+    }
+  },
+  "en_casa": {
+    "1": {
+      "texto": "En la casa 1, la energía forma parte de tu manera de presentarte. Solés transmitir decisión, coraje y confianza en vos, y encarás la vida con un espíritu emprendedor y práctico que no ahorra esfuerzos. La tradición asocia esta posición con mucha vitalidad y resistencia. Muchas personas con esta posición se muestran como alguien que va al frente, que toma la iniciativa y que no espera que las cosas pasen solas.",
+      "luz": "Cuando fluye, tu presencia irradia energía: te animás, liderás con el ejemplo y tu entusiasmo empuja a las personas a ponerse en marcha.",
+      "sombra": "Puede costarte frenar a tiempo o tomar precauciones cuando ya arrancaste. Vale la pena observar si la impulsividad y la terquedad te hacen ir más rápido de lo prudente."
+    },
+    "2": {
+      "texto": "En la casa 2, la energía se pone en tus recursos y en lo que valorás. Solés trabajar con intensidad para generar lo que necesitás, y la generosidad con lo propio suele ser parte de tu forma de ser. La tradición asocia esta posición con tareas que requieren fuerza, herramientas o técnica, y con una gran capacidad de recuperarte: aun después de un tropiezo, volvés a construir. El desafío está en cómo administrás lo que tenés.",
+      "luz": "En su mejor cara, tu energía produce: tenés iniciativa para generar recursos, coraje para defender lo que valés y capacidad de volver a empezar.",
+      "sombra": "Vale la pena observar si gastás o arriesgás de manera impulsiva, o si medís tu valor por lo que lográs acumular. Puede costarte la prudencia."
+    },
+    "3": {
+      "texto": "En la casa 3, la energía se vuelca en la mente y la comunicación. Pensás con rapidez, respondés con agudeza y disfrutás de una buena polémica. La tradición asocia esta posición con una inteligencia inventiva, llena de recursos y con iniciativa para construir. Muchas personas con esta posición viven el aprendizaje como un desafío y tienen vínculos intensos, a veces chispeantes, con hermanos, vecinos y su entorno cotidiano.",
+      "luz": "Cuando fluye, tu palabra es valiente y clara: defendés tus ideas con brío, aprendés rápido y tenés ingenio para resolver lo cotidiano.",
+      "sombra": "Puede costarte no discutir por todo o moderar la crítica hacia quienes te rodean. Vale la pena observar cuándo la necesidad de tener razón tensa tus vínculos cercanos."
+    },
+    "4": {
+      "texto": "En la casa 4, la energía se pone en el hogar y las raíces. Podés trabajar con mucho empuje para armar tu nido y asegurarte un lugar propio y estable. La tradición asocia esta posición con una gran fortaleza de fondo, que se sostiene a lo largo de los años. También sugiere que la vida familiar puede ser un escenario intenso, y que a veces tomar distancia del lugar de origen ayuda a encontrar tu propio ritmo.",
+      "luz": "En su mejor cara, tu fuerza construye un hogar sólido: defendés a los tuyos, ponés energía en tu espacio y tenés una reserva interior que no se agota fácil.",
+      "sombra": "Vale la pena observar si las discusiones familiares o los enojos guardados se vuelven el clima de tu casa. Puede costarte soltar viejas disputas."
+    },
+    "5": {
+      "texto": "En la casa 5, la energía se expresa en el amor, el juego y la creación. Solés vivir tus afectos con ardor y franqueza, y disfrutás del deporte, la competencia y todo lo que te permite mostrar tu vitalidad. La tradición asocia esta posición con la capacidad de conducir y entusiasmar a otras personas, por ejemplo en la enseñanza o en la guía de grupos jóvenes. Te sale mejor dirigir que acatar.",
+      "luz": "Cuando fluye, tu creatividad tiene fuego: amás con pasión, jugás para ganar con alegría y contagiás tu entusiasmo a quienes acompañás.",
+      "sombra": "Puede costarte la constancia en los afectos o resistirte a una apuesta arriesgada. Vale la pena observar si buscás en la conquista o en el riesgo una prueba de tu valor."
+    },
+    "6": {
+      "texto": "En la casa 6, la energía se pone en el trabajo diario. Solés trabajar rápido y con empuje, y te destacás cuando podés aplicar tu fuerza dentro de una estructura que te da un marco. La tradición asocia esta posición con mucha vitalidad y capacidad de recuperación. Muchas personas con esta posición necesitan un ritmo activo y se frustran ante la lentitud o la falta de eficiencia de los demás.",
+      "luz": "En su mejor cara, tu fuerza rinde: resolvés con eficacia, enfrentás tareas pesadas sin quejarte y te recuperás rápido de los momentos de agotamiento.",
+      "sombra": "Vale la pena observar cómo te llevás con colegas y superiores cuando algo no sale como querés. Puede costarte bajar el ritmo antes de quemarte."
+    },
+    "7": {
+      "texto": "En la casa 7, la energía se juega en el vínculo con el otro. Solés atraer personas de carácter fuerte, activas y decididas, y tus relaciones tienden a ser intensas y estimulantes. La tradición asocia esta posición con vínculos donde se comparte el poder y donde cada parte tiene que aprender a no imponerse. Muchas personas con esta posición encuentran en sus relaciones, y también en sus rivales, un espejo de su propia fuerza.",
+      "luz": "Cuando fluye, tus vínculos te desafían a crecer: formás alianzas dinámicas, sabés negociar con firmeza y defendés con valentía a quien elegís.",
+      "sombra": "Puede costarte no convertir la relación en una competencia. Vale la pena observar si buscás en el otro la fuerza que te cuesta reconocer en vos."
+    },
+    "8": {
+      "texto": "En la casa 8, la energía se mueve en lo profundo. Esta casa habla de intimidad, de recursos compartidos y de los procesos que nos transforman. Con Marte aquí, el deseo y la voluntad pueden ser muy intensos, y solés enfrentar las crisis con valentía. La tradición también vincula esta posición con lo que se gestiona junto a otras personas, como sociedades o acuerdos, donde tu energía puede ser un motor o un punto de fricción.",
+      "luz": "En su mejor cara, tenés coraje para mirar lo oculto: atravesás las crisis, te regenerás y ponés tu energía en transformaciones de fondo.",
+      "sombra": "Vale la pena observar si los acuerdos compartidos se vuelven terreno de disputa o de lucha de poder. Puede costarte confiar sin querer controlar."
+    },
+    "9": {
+      "texto": "En la casa 9, la energía se pone al servicio de tus ideales. Tenés una visión amplia y progresista de la vida, y podés defender con entusiasmo las causas que te convencen. La tradición asocia esta posición con una mente clara y con la habilidad de transmitir tus puntos de vista, como quien difunde algo en lo que cree. Muchas personas con esta posición se nutren al salir de su lugar de origen y conocer otras tierras.",
+      "luz": "Cuando fluye, luchás por lo que da sentido: tus convicciones movilizan, aprendés en movimiento y abrís caminos hacia nuevos horizontes.",
+      "sombra": "Puede costarte aceptar que otras personas piensen distinto. Vale la pena observar cuándo tu fervor se vuelve fanatismo o ganas de imponer tus creencias."
+    },
+    "10": {
+      "texto": "En la casa 10, la energía se dirige a la vocación y al lugar que ocupás en el mundo. Solés tener una ambición clara y una reserva de empuje que te permite avanzar pese a los obstáculos. La tradición la considera una de las ubicaciones más favorables para la realización personal, con capacidad ejecutiva y aptitud para conducir. Muchas personas con esta posición se destacan en tareas de técnica, de precisión o de mando.",
+      "luz": "En su mejor cara, tu fuerza conduce: tomás decisiones, asumís responsabilidades y llegás lejos con un esfuerzo que otras personas respetan.",
+      "sombra": "Vale la pena observar si avanzás pasando por encima de los derechos de los demás. Puede costarte moderar el autoritarismo cuando querés llegar rápido."
+    },
+    "11": {
+      "texto": "En la casa 11, la energía se pone en los grupos y los proyectos colectivos. Podés tomar con naturalidad un lugar de liderazgo entre tus amistades, y solés rodearte de personas activas y entusiastas. La tradición asocia esta posición con mucho empuje para alcanzar tus esperanzas y aspiraciones. Muchas personas con esta posición sienten que su fuerza crece cuando la comparten con otras en torno a un ideal común.",
+      "luz": "Cuando fluye, movilizás a los demás: organizás, encendés a tu grupo de amistades y luchás con entusiasmo por los sueños compartidos.",
+      "sombra": "Puede costarte no tomar como personal cada diferencia con tus amistades. Vale la pena observar si la ambición te lleva a exigir de más a tu grupo."
+    },
+    "12": {
+      "texto": "En la casa 12, la energía se mueve tras bambalinas. Solés actuar con mayor comodidad en espacios reservados, en tareas de investigación, de cuidado o de servicio que no requieren exposición. La tradición señala que aquí el impulso de Marte puede quedar oculto incluso para vos, y que conviene conocerlo para que no se exprese de manera indirecta. Muchas personas con esta posición encuentran su fuerza en el trabajo interior y espiritual.",
+      "luz": "En su mejor cara, tu fuerza es silenciosa y compasiva: trabajás por otras personas sin necesitar aplauso y tenés valor para enfrentar tus propios fantasmas.",
+      "sombra": "Vale la pena observar el enojo que no expresás y cómo vuelve en forma de cansancio o de conflictos ocultos. Puede costarte reconocer tu propia rabia."
+    }
+  }
+}

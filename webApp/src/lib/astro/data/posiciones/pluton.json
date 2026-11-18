@@ -1,1 +1,126 @@
-{ "en_signo": {}, "en_casa": {} }
+{
+  "en_signo": {
+    "aries": {
+      "texto": "Plutón puede pasar más de veinte años en un signo, así que su posición habla sobre todo de una generación. Plutón en Aries describe a quienes nacieron con un impulso colectivo de empezar de cero, de afirmar la voluntad y de abrir caminos con fuerza pionera. En vos puede aparecer como una energía de renovación muy directa: cuando algo se estanca, sentís la necesidad de romper y volver a empezar. El desafío es transformar sin arrasar.",
+      "luz": "Cuando fluye, tu fuerza de renovación es enorme: te animás a lo nuevo y tenés el coraje de recomenzar cuantas veces haga falta.",
+      "sombra": "Puede costarte frenar a tiempo. Vale la pena observar si la voluntad de imponerte o la impaciencia destruyen algo que podía transformarse con más cuidado."
+    },
+    "tauro": {
+      "texto": "Con Plutón en Tauro, tu generación, porque el planeta tarda décadas en recorrer el signo, vive una transformación profunda en la relación con la tierra, los recursos y lo que se considera valioso. En vos puede expresarse como una tenacidad enorme, un apego intenso a lo propio y una gran capacidad para regenerar lo que parecía agotado. El desafío es soltar lo que ya no sirve, aunque cueste, para que algo nuevo pueda crecer.",
+      "luz": "Cuando fluye, tenés una resistencia admirable: sabés reconstruir desde lo concreto y transformar recursos en algo fértil.",
+      "sombra": "Puede costarte desprenderte de lo que te da seguridad. Vale la pena observar la posesividad y el miedo a perder, sobre todo cuando la vida pide cambiar."
+    },
+    "geminis": {
+      "texto": "Plutón en Géminis, que ocupa el signo durante unas tres décadas, marca a una generación que transforma la manera de pensar, informarse y comunicarse. En vos puede aparecer como una mente penetrante e insaciable, que quiere entender el fondo de las cosas y no se conforma con respuestas superficiales. Las palabras pueden tener mucho poder en tu vida. El desafío es usar esa agudeza para comprender y no para dominar una conversación.",
+      "luz": "Cuando fluye, tu mente investiga con hondura: hacés preguntas que transforman y tu palabra puede abrirle los ojos a otras personas.",
+      "sombra": "Puede costarte soltar una discusión. Vale la pena observar si usás la información o la palabra como forma de control, y qué temés que pase si no tenés la última palabra."
+    },
+    "cancer": {
+      "texto": "Con Plutón en Cáncer, tu generación, que lo comparte durante unos veinticinco años, vive transformaciones profundas en torno a la familia, el hogar y la pertenencia. En vos puede expresarse como una intensidad emocional muy grande, una lealtad feroz con los tuyos y la necesidad de proteger lo que amás. Muchas personas con esta posición atraviesan cambios fuertes en sus raíces. El desafío es cuidar sin controlar y transformar lo recibido.",
+      "luz": "Cuando fluye, tenés una enorme capacidad de regenerar tus raíces: protegés con fuerza y ayudás a tu familia a transformarse.",
+      "sombra": "Puede costarte soltar a quienes querés. Vale la pena observar si el miedo a perder el lugar de pertenencia se vuelve control sobre las personas cercanas."
+    },
+    "leo": {
+      "texto": "Plutón en Leo, que permanece unos veinte años en el signo, describe a una generación que transforma la expresión personal, la creatividad y la manera de ocupar un lugar visible. En vos puede aparecer como una voluntad creativa intensa, un magnetismo personal notable y una necesidad profunda de reconocimiento. Muchas personas con esta posición sienten que tienen algo único para dar. El desafío es que el deseo de brillar no se convierta en deseo de dominar.",
+      "luz": "Cuando fluye, tu creatividad transforma: tenés magnetismo, coraje para mostrarte y la capacidad de inspirar a otros a expresarse.",
+      "sombra": "Puede costarte compartir el centro. Vale la pena observar si el orgullo o la necesidad de control aparecen cuando sentís que tu lugar está en disputa."
+    },
+    "virgo": {
+      "texto": "Con Plutón en Virgo, tu generación, que vive esta posición durante unos quince años, transforma la manera de trabajar, de cuidar y de entender lo cotidiano. En vos puede expresarse como una capacidad muy aguda de análisis, una exigencia profunda con lo que hacés y un deseo de mejorar lo que no funciona hasta la raíz. Muchas personas con esta posición encuentran poder en el detalle y en el servicio. El desafío es que la crítica no se vuelva obsesión.",
+      "luz": "Cuando fluye, transformás desde lo concreto: detectás lo que falla, lo depurás con paciencia y hacés que las cosas funcionen mejor.",
+      "sombra": "Puede costarte aceptar lo imperfecto. Vale la pena observar si la autocrítica o la necesidad de control sobre los detalles te quitan paz."
+    },
+    "libra": {
+      "texto": "Plutón en Libra, presente unos doce años en el signo, marca a una generación que transforma la manera de vincularse, de pactar y de entender la justicia. En vos puede aparecer como una gran intensidad en las relaciones, un sentido profundo de lo justo y una capacidad para ver lo que se juega por debajo de cada acuerdo. Muchas personas con esta posición viven sus vínculos como espacios de cambio profundo. El desafío es buscar equilibrio sin manipular la balanza.",
+      "luz": "Cuando fluye, tus vínculos te transforman y transformás a otros: sabés negociar con honestidad y defender lo justo con firmeza.",
+      "sombra": "Puede costarte decir lo que pensás sin calcular el efecto. Vale la pena observar las luchas de poder sutiles en pareja o en sociedades, y qué se esconde detrás de la armonía."
+    },
+    "escorpio": {
+      "texto": "Con Plutón en Escorpio, el planeta está en su propio signo y tu generación, que lo comparte durante unos doce años, tiene una relación intensa con lo oculto, el deseo, el poder y los procesos de crisis y renacimiento. En vos puede expresarse como una profundidad emocional enorme, una intuición penetrante y una capacidad notable para atravesar momentos difíciles y salir con más fuerza. El desafío es no temerle a tu propia intensidad.",
+      "luz": "Cuando fluye, tenés el poder de regenerarte: te animás a lo profundo y ayudás a otros a transformar lo que parecía imposible.",
+      "sombra": "Puede costarte confiar y soltar el control. Vale la pena observar los celos, el rencor o la tendencia al todo o nada cuando algo te toca muy hondo."
+    },
+    "sagitario": {
+      "texto": "Plutón en Sagitario, que recorre el signo durante unos doce años, describe a una generación que transforma las creencias, la educación y la forma de ver el mundo, muy marcada por el contacto entre culturas. En vos puede aparecer como una búsqueda apasionada de verdad, la necesidad de cuestionar dogmas y una fe que se renueva a través de la experiencia. El desafío es que la convicción no se vuelva una verdad única para los demás.",
+      "luz": "Cuando fluye, tu búsqueda de sentido es profunda: cuestionás lo recibido, explorás sin miedo y tus convicciones nacen de la experiencia.",
+      "sombra": "Puede costarte aceptar otras miradas. Vale la pena observar el fanatismo o la necesidad de convencer, y qué se mueve en vos cuando alguien no comparte tus ideas."
+    },
+    "capricornio": {
+      "texto": "Con Plutón en Capricornio, tu generación, que vive esta posición durante unos quince años, nace en un tiempo de transformación profunda de las estructuras, las instituciones y la autoridad. En vos puede expresarse como una ambición seria, una gran resistencia ante la adversidad y la capacidad de reconstruir desde los cimientos lo que no funciona. El desafío es usar el poder para construir y no solo para sostener lo que ya existe.",
+      "luz": "Cuando fluye, tenés una fuerza estratégica enorme: sabés derribar lo que no sirve y construir algo sólido en su lugar.",
+      "sombra": "Puede costarte soltar el control o mostrarte vulnerable. Vale la pena observar la rigidez y la relación con la autoridad, la propia y la ajena."
+    },
+    "acuario": {
+      "texto": "Plutón en Acuario, que transita el signo durante unos veinte años, marca a una generación que transforma la vida colectiva, la tecnología y la manera de entender la libertad y la comunidad. En vos puede aparecer como una fuerza intensa para cambiar lo social, una mente que anticipa futuros posibles y un compromiso profundo con los grupos a los que pertenecés. El desafío es que el ideal colectivo no borre a cada persona.",
+      "luz": "Cuando fluye, tu fuerza está al servicio de lo común: impulsás cambios profundos en grupos y comunidades con visión de futuro.",
+      "sombra": "Puede costarte equilibrar el ideal con la cercanía. Vale la pena observar si la rebeldía o el deseo de cambiarlo todo se vuelven intolerancia con quien piensa distinto."
+    },
+    "piscis": {
+      "texto": "Con Plutón en Piscis, tu generación, que comparte esta posición durante unos veinte años, vive una transformación profunda de lo espiritual, lo colectivo y lo invisible. En vos puede expresarse como una sensibilidad enorme, una compasión que llega hondo y la capacidad de disolver viejas formas para que nazca algo más amplio. El desafío es atravesar lo profundo sin perderte en él, cuidando tus límites y tu centro.",
+      "luz": "Cuando fluye, tu sensibilidad transforma: acompañás procesos de cambio con compasión e intuición y abrís espacios de encuentro.",
+      "sombra": "Puede costarte distinguir lo que es tuyo de lo que absorbés. Vale la pena observar la tendencia a la evasión cuando el mundo pesa, y buscar formas de hacer pie."
+    }
+  },
+  "en_casa": {
+    "1": {
+      "texto": "En la casa 1, Plutón se nota en tu presencia: intensa, magnética y con una fuerza interior que a veces mostrás contenida. Podés sentir por dentro una voluntad enorme y emociones muy hondas, aunque hacia afuera te veas en calma. Muchas personas con esta posición atraviesan varias transformaciones profundas a lo largo de la vida y renacen de cada una con más fuerza. El trabajo interior pasa por canalizar esa energía de forma creativa.",
+      "luz": "Cuando fluye, tu fuerza es transformadora: das lo mejor en los momentos críticos, liderás con carisma y sabés renacer después de cada prueba.",
+      "sombra": "Puede costarte compartir el control o soltar el enojo. Vale la pena observar el rencor, los celos o el deseo de dominar, y preguntarte qué necesitás proteger."
+    },
+    "2": {
+      "texto": "En la casa 2, Plutón toca los recursos, el dinero y el valor propio. Podés tener una ambición fuerte en lo material y una gran capacidad para generar recursos con constancia y estrategia. Muchas personas con esta posición sienten que lo material es un terreno de transformación personal, donde replantean qué es lo verdaderamente valioso. El trabajo interior pasa por transformar la relación con lo que tenés, para que no defina tu poder ni tu valor.",
+      "luz": "Cuando fluye, tenés una voluntad de hierro para construir: transformás lo poco en mucho y sabés regenerar tus recursos después de una pérdida.",
+      "sombra": "Puede costarte ponerle medida al deseo de tener. Vale la pena observar si la ambición o el miedo a la escasez te llevan a pasar por encima de tus propios valores."
+    },
+    "3": {
+      "texto": "En la casa 3, Plutón toca la mente, la comunicación y el entorno cercano. Podés tener una mente aguda y penetrante, apasionada por investigar los misterios y entender qué mueve a las personas. Muchas personas con esta posición viven vínculos muy intensos con hermanos o personas cercanas, a veces profundos y a veces con rupturas. Tu forma de pensar puede transformarse mucho a lo largo de la vida. El desafío es usar la palabra para comprender, no para vencer.",
+      "luz": "Cuando fluye, tenés una mente investigadora brillante: llegás al fondo de lo que estudiás y tus palabras pueden transformar a quien escucha.",
+      "sombra": "Puede costarte retirarte de una discusión. Vale la pena observar si tu palabra se vuelve más filosa cuando sentís que te atacan, y qué herida protege."
+    },
+    "4": {
+      "texto": "En la casa 4, Plutón toca el hogar, la familia y las raíces. Podés haber vivido en tu familia de origen una figura muy intensa, protectora hasta el control, o climas cargados que marcaron tu historia. Muchas personas con esta posición sienten la necesidad de investigar su pasado familiar y sacar a la luz lo que estaba oculto. El trabajo interior pasa por transformar lo recibido y reconstruir el hogar sobre bases nuevas.",
+      "luz": "Cuando fluye, sabés renovar tus raíces: revisás tu historia con valentía y creás un hogar donde lo profundo puede decirse.",
+      "sombra": "Puede costarte sentir paz en lo familiar. Vale la pena observar las luchas de poder en tu casa y los secretos que todavía pesan, para soltarlos con cuidado."
+    },
+    "5": {
+      "texto": "En la casa 5, Plutón toca el amor, la creatividad y lo que nace de vos. Podés vivir los romances con una intensidad enorme, con experiencias amorosas que transforman. Muchas personas con esta posición tienen un magnetismo especial y una necesidad profunda de sentirse únicas en el amor. La creatividad puede ser una vía de regeneración muy potente. El desafío es amar y crear sin querer controlar lo que amás.",
+      "luz": "Cuando fluye, amás y creás con una profundidad poco común: tu creatividad te renueva y tus vínculos te despiertan a algo más grande.",
+      "sombra": "Puede costarte no intentar controlar a quienes querés. Vale la pena observar las luchas de poder en el amor o en la crianza, y el miedo a perder un lugar especial."
+    },
+    "6": {
+      "texto": "En la casa 6, Plutón toca el trabajo diario, los hábitos y el servicio. Podés tener una capacidad de trabajo intensa, con voluntad de hierro y gran interés por investigar lo oculto o acompañar procesos de transformación, como en la psicología o el trabajo terapéutico. Muchas personas con esta posición se transforman a través de lo cotidiano. El desafío es no llevar tu energía siempre al límite y cuidar los vínculos con quienes trabajás.",
+      "luz": "Cuando fluye, tu trabajo transforma: tenés una resistencia notable y la capacidad de ir al fondo de los problemas para resolverlos.",
+      "sombra": "Puede costarte la relación con jefes o equipos. Vale la pena observar las luchas de poder en lo laboral y si te exigís más de lo que tu energía puede dar."
+    },
+    "7": {
+      "texto": "En la casa 7, Plutón toca los vínculos de pareja, las sociedades y los acuerdos. Podés sentir una atracción intensa por personas magnéticas y de carácter fuerte, y vivir relaciones que te transforman profundamente. Muchas personas con esta posición atraviesan en los vínculos luchas de poder que, miradas con conciencia, se vuelven grandes maestras. El desafío es elegir la intimidad sin entregar tu poder ni querer quedarte con el de la otra persona.",
+      "luz": "Cuando fluye, tus vínculos son profundos y transformadores: te comprometés con intensidad y sabés defender lo justo con firmeza.",
+      "sombra": "Puede costarte confiar sin controlar. Vale la pena observar los celos, la posesividad y los conflictos con socios o rivales, y qué parte de esa intensidad es tuya."
+    },
+    "8": {
+      "texto": "En la casa 8, Plutón está en su terreno natural y su fuerza transformadora se siente con intensidad. Podés tener un interés profundo por los misterios de la vida, lo oculto y lo que hay detrás de lo visible, y una gran capacidad para atravesar crisis y volver a empezar. Muchas personas con esta posición se dedican a investigar a fondo, en la ciencia, la psicología o lo esotérico. El trabajo interior pasa por vivir la intensidad sin miedo a lo que termina.",
+      "luz": "Cuando fluye, sabés renacer: donde otros abandonan, vos encontrás fuerza para recomenzar, y tu mirada llega a lo más hondo.",
+      "sombra": "Puede costarte soltar el control en la intimidad. Vale la pena observar la tendencia a los extremos y la atracción por lo que te consume más de lo que te nutre."
+    },
+    "9": {
+      "texto": "En la casa 9, Plutón toca las creencias, la filosofía, el conocimiento superior y los viajes largos. Podés tener una pasión intensa por la verdad, rechazo por la hipocresía y un espíritu investigador más inclinado a cuestionar que a creer. Muchas personas con esta posición son reformadoras o pioneras en el pensamiento. Un viaje o una estadía en otro lugar pueden cambiar mucho tu mirada. El desafío es no imponer tus verdades.",
+      "luz": "Cuando fluye, tu búsqueda de verdad transforma: cuestionás lo falso con valentía y tus ideas pueden renovar el pensamiento de otros.",
+      "sombra": "Puede costarte tolerar ideas distintas. Vale la pena observar si el fervor se vuelve fanatismo o si buscás tener razón más que comprender."
+    },
+    "10": {
+      "texto": "En la casa 10, Plutón toca la vocación, la imagen pública y la ambición. Podés sentir un impulso profundo de destacarte, de tener un camino singular y de ejercer influencia. Muchas personas con esta posición tienen capacidad de liderazgo en lo político, lo espiritual o lo artístico, y viven crisis profesionales que les cambian el rumbo. El desafío es usar el poder con conciencia, para transformar y no para dominar.",
+      "luz": "Cuando fluye, liderás con fuerza y visión: tenés capacidad para conducir cambios profundos y dejar una huella real en tu campo.",
+      "sombra": "Puede costarte compartir el mando. Vale la pena observar el autoritarismo o la ambición de control, y qué buscás realmente cuando querés llegar más alto."
+    },
+    "11": {
+      "texto": "En la casa 11, Plutón toca las amistades, los grupos y los proyectos colectivos. Podés tener pocas amistades pero muy intensas y fieles, construidas con el tiempo y a través de experiencias fuertes. Muchas personas con esta posición tienen magnetismo en lo grupal y se sienten atraídas por grupos que buscan transformaciones radicales o investigan lo profundo. El desafío es sostener la intensidad sin pasar del todo a la nada.",
+      "luz": "Cuando fluye, tus amistades son lealtades profundas: compartís causas que transforman y sabés construir vínculos que resisten el tiempo.",
+      "sombra": "Puede costarte el término medio en la amistad. Vale la pena observar si los vínculos intensos se rompen de forma brusca, y qué enojo o miedo hay detrás."
+    },
+    "12": {
+      "texto": "En la casa 12, Plutón se ubica en el terreno de lo oculto, lo inconsciente y lo retirado. Podés tener una intuición penetrante y gran capacidad para comprender lo que otros no ven, y sentir atracción por lo esotérico y lo espiritual. Muchas personas con esta posición transforman su vida desde adentro, en silencio. El trabajo interior pasa por mirar con valentía tus propias sombras para poner esa fuerza al servicio de otros.",
+      "luz": "Cuando fluye, tu intuición es una brújula: comprendés lo oculto y podés ayudar a otros a atravesar lo que nadie se anima a mirar.",
+      "sombra": "Puede costarte confiar en tu entorno. Vale la pena observar si sentís que otros conspiran en silencio o si las evasiones ocupan el lugar de lo que necesitás enfrentar."
+    }
+  }
+}

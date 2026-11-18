@@ -1,1 +1,126 @@
-{ "en_signo": {}, "en_casa": {} }
+{
+  "en_signo": {
+    "aries": {
+      "texto": "El Sol en Aries está en el signo donde la tradición lo considera exaltado, y eso se nota en la energía vital: arrancar algo te recarga más que terminarlo. Tu voluntad suele encenderse frente a un desafío y es posible que recuperes el ánimo rápido después de un tropiezo. Muchas personas con esta posición sienten que brillan cuando abren camino, y descubren que esa chispa rinde más cuando eligen bien adónde apuntarla.",
+      "luz": "Cuando fluye, tu energía contagia coraje: te animás primero, levantás a otros con tu impulso y transformás los obstáculos en motivos para moverte.",
+      "sombra": "Puede costarte esperar los tiempos ajenos o aceptar que alguien más marque el paso. Vale la pena observar cuándo la prisa por ganar te deja sin escuchar."
+    },
+    "tauro": {
+      "texto": "Con el Sol en Tauro, tu vitalidad se alimenta de lo que podés tocar, saborear y sostener en el tiempo. Tu fuerza suele ser serena y resistente más que explosiva, y muchas personas con esta posición tienen una voz o una presencia corporal que se recuerda. Brillás cuando construís algo que dura y cuando te das permiso para disfrutar sin culpa. El placer, bien llevado, es para vos una forma de recargar energía y no un lujo.",
+      "luz": "En su mejor versión, das calma y solidez a quienes te rodean: tu constancia sostiene proyectos y tu sentido del gusto vuelve más amable cualquier espacio.",
+      "sombra": "Puede costarte soltar lo conocido o moderar el deseo de rodearte de cosas lindas. Vale la pena preguntarte cuándo la comodidad empieza a reemplazar al movimiento."
+    },
+    "geminis": {
+      "texto": "El Sol en Géminis ilumina la mente: tu energía crece cuando algo despierta tu interés y tenés con quién compartirlo. Escribir, conversar, moverte de un lugar a otro o aprender algo nuevo suele devolverte el ánimo. Muchas personas con esta posición tienen un trato ameno que les abre puertas y una facilidad especial para traducir ideas complejas en palabras simples. Tu brillo está en el puente que tendés entre personas y saberes.",
+      "luz": "Cuando fluye, tu palabra es ágil y amable: conectás gente, explicás con gracia y convertís cada viaje o lectura en algo que después compartís.",
+      "sombra": "Puede costarte quedarte con una sola cosa el tiempo suficiente para profundizarla. Vale la pena observar si saltar de tema a veces te protege de lo que sentís."
+    },
+    "cancer": {
+      "texto": "Con el Sol en Cáncer, tu vitalidad tiene mareas: hay momentos de mucha energía y otros en que necesitás replegarte para recuperarla. Tu voluntad suele ponerse en marcha por afecto más que por competencia, y te cuesta pelear por pelear. Muchas personas con esta posición tienen una percepción fina de los climas emocionales, casi psíquica, y sienten que sus logros maduran despacio, con más fuerza a medida que pasan los años.",
+      "luz": "En su mejor versión, tu fuerza es la de quien protege: creás armonía puertas adentro, leés lo que otros no dicen y sostenés proyectos con la paciencia de quien cuida algo que crece.",
+      "sombra": "Puede costarte salir de lo cómodo cuando nada te empuja. Vale la pena observar si la búsqueda de paz a veces te lleva a postergar lo que de verdad querés."
+    },
+    "leo": {
+      "texto": "El Sol en Leo, su signo propio, da una voluntad con mucho foco: cuando algo te importa, ponés el corazón entero y eso se nota en el resultado. El sentido del honor suele ser central para vos; te importa jugar limpio aunque nadie te vea. Muchas personas con esta posición defienden con fuerza a quienes quieren, guardan afectos duraderos y tienen una nobleza que se expresa incluso con quienes no están de su lado.",
+      "luz": "Cuando fluye, tu presencia da confianza: liderás con nobleza, sostenés tu palabra y hacés que las personas cercanas se sientan respaldadas y valiosas.",
+      "sombra": "Puede costarte que otros tengan la última palabra o reconocer que necesitás aplauso. Vale la pena observar cuándo el orgullo te aleja de pedir ayuda."
+    },
+    "virgo": {
+      "texto": "Con el Sol en Virgo, tu energía se activa cuando hay algo que mejorar, ordenar o resolver con inteligencia práctica. Tenés un radar para detectar oportunidades y una habilidad especial para hacer de puente entre quien produce y quien necesita. Muchas personas con esta posición brillan en tareas de cuidado, análisis o asistencia, y sienten una ambición callada de destacarse por la calidad de su trabajo más que por el ruido.",
+      "luz": "En su mejor versión, sos la persona que hace que las cosas funcionen: atenta, sociable, con criterio fino y ganas genuinas de que todo salga bien para todos.",
+      "sombra": "Puede costarte delegar o soltar el control cuando trabajás en equipo. Vale la pena observar si la exigencia que ponés en otros es la misma que te ponés a vos."
+    },
+    "libra": {
+      "texto": "El Sol en Libra pone la voluntad al servicio del encuentro: tu energía suele crecer cuando tenés con quién construir. Los vínculos cercanos pueden ocupar el centro de tu vida, y la entrega hacia quien elegís suele ser muy grande. También hay un sentido estético que pide salida, sea en el diseño, en la música, en la arquitectura o en cualquier tarea donde la proporción importe. Brillás cuando creás belleza con equilibrio.",
+      "luz": "Cuando fluye, aportás armonía y buen gusto: sabés unir partes que parecían opuestas y hacés que las personas cercanas se sientan elegidas y respetadas.",
+      "sombra": "Puede costarte sostener tu centro cuando el vínculo pide tanto. Vale la pena observar si a veces tu luz gira demasiado alrededor de otra persona."
+    },
+    "escorpio": {
+      "texto": "Con el Sol en Escorpio, tu voluntad tiene una potencia concentrada: cuando decidís algo, lo sostenés con coraje y una independencia que no pide permiso. La mente suele estar muy activa, atenta a lo que se mueve debajo de la superficie. Muchas personas con esta posición se sienten cómodas en situaciones límite que a otros los paralizan, y encuentran su lugar en tareas donde hace falta temple, precisión y capacidad de ir hasta el fondo.",
+      "luz": "En su mejor versión, sos una fuerza que no se rinde: atravesás lo difícil con valentía y acompañás a otros en momentos donde casi nadie se anima a quedarse.",
+      "sombra": "Puede costarte aceptar que otras miradas también tienen razón. Vale la pena observar cuándo tu firmeza se vuelve dureza y te aleja de la ternura propia y ajena."
+    },
+    "sagitario": {
+      "texto": "El Sol en Sagitario orienta tu energía hacia un horizonte: necesitás sentir que lo que hacés tiene un sentido más amplio que el día a día. Tus ideales suelen ser altos y te mueve el deseo de que otras personas también crezcan. Muchas personas con esta posición son vistas como dignas de confianza para tareas delicadas, y sienten atracción por la filosofía, las leyes, la espiritualidad o cualquier campo que ayude a entender la vida.",
+      "luz": "Cuando fluye, tu generosidad inspira: abrís caminos para otros, sostenés tus valores con alegría y encarás las grandes preguntas sin miedo.",
+      "sombra": "Puede costarte bajar las ideas a tierra o aceptar que no todos comparten tu visión. Vale la pena observar cuándo el entusiasmo predica más de lo que escucha."
+    },
+    "capricornio": {
+      "texto": "Con el Sol en Capricornio, tu energía se ordena alrededor de la confianza que te ganás con el tiempo. Solés avanzar paso a paso, con prudencia y una honestidad que no se negocia, y es habitual que otras personas te confíen responsabilidades porque saben que cumplís. Muchas personas con esta posición prefieren jugar con las cartas a la vista y se ganan el respeto de su entorno por su constancia más que por su carisma.",
+      "luz": "En su mejor versión, sos un pilar: tu palabra vale, tu sentido de la justicia es parejo y tu perseverancia convierte metas lejanas en logros concretos.",
+      "sombra": "Puede costarte pedir ayuda o mostrar cansancio, como si la responsabilidad no admitiera pausas. Vale la pena observar cuánto de tu exigencia es elección y cuánto costumbre."
+    },
+    "acuario": {
+      "texto": "El Sol en Acuario le da a tu voluntad un rumbo hacia lo que todavía no existe. Solés percibir de forma intuitiva cómo funcionan las cosas por dentro, y te atraen las ideas nuevas, la ciencia, las búsquedas espirituales poco convencionales y las formas distintas de mirar el mundo. Muchas personas con esta posición encuentran su energía en las amistades firmes, donde una visión compartida vale más que cualquier jerarquía.",
+      "luz": "Cuando fluye, tu originalidad abre caminos: anticipás tendencias, unís gente diversa alrededor de una idea y defendés la libertad de cada quien.",
+      "sombra": "Puede costarte sostener lo cotidiano o acercarte a lo emocional sin teorizarlo. Vale la pena observar si la distancia a veces te sirve para no involucrarte."
+    },
+    "piscis": {
+      "texto": "Con el Sol en Piscis, tu energía brilla más en lo sutil que en el escenario. Muchas personas con esta posición rinden mejor lejos del ruido, en tareas de acompañamiento, en espacios de asistencia o en proyectos que ayudan sin buscar visibilidad. Tenés una percepción que capta lo invisible y un interés natural por lo espiritual y lo simbólico. Tu voluntad no empuja: se deja guiar por una intuición que suele saber antes que la razón.",
+      "luz": "En su mejor versión, tu presencia es un refugio: comprendés sin juzgar, inspirás desde el silencio y das lo mejor de vos donde hace falta compasión.",
+      "sombra": "Puede costarte defender tu lugar o decir que no. Vale la pena observar cuándo replegarte te cuida y cuándo te aleja de lo que sí podrías mostrar."
+    }
+  },
+  "en_casa": {
+    "1": {
+      "texto": "En la casa 1, tu luz se ve apenas llegás: la vitalidad, el entusiasmo y las ganas de afirmarte suelen ser parte de tu primera impresión. Muchas personas con esta posición tienen una manera alegre y sociable de encarar la vida, con arrojo para enfrentar obstáculos y el deseo de ocupar un lugar de guía. La forma en que te ven y la forma en que te sentís suelen estar muy unidas, así que cuidar tu ánimo es cuidar tu camino.",
+      "luz": "Tu presencia irradia confianza: te mostrás tal cual sos, con honestidad y valentía, y eso invita a otras personas a seguir tu impulso.",
+      "sombra": "También puede costarte separar tu valor de la imagen que proyectás. Conviene mirar si el deseo de destacar te deja poco espacio para la duda o la pausa."
+    },
+    "2": {
+      "texto": "En la casa 2, tu energía se pone en juego en lo que valorás y en cómo administrás tus recursos, materiales y personales. Muchas personas con esta posición sienten orgullo por lo que pueden generar con sus propios talentos, y suelen encontrar apoyo en quienes reconocen su valor. El aprendizaje está en que lo que entra con facilidad también puede irse rápido: la seguridad crece más por cómo usás lo que tenés que por cuánto juntás.",
+      "luz": "Tu autoestima puede ser firme y generosa: conocés tus talentos, los ponés en valor y sabés disfrutar de lo que construís con tus manos o tu cabeza.",
+      "sombra": "En lo material, puede costarte medir el gasto cuando algo te entusiasma. Conviene mirar si a veces buscás en lo que comprás una confirmación de quién sos."
+    },
+    "3": {
+      "texto": "En la casa 3, tu luz se enciende en la comunicación, el aprendizaje y el movimiento cotidiano. Es una posición que suele dar una mente observadora, con ganas de entender el porqué de las cosas y un carácter jovial que hace fácil el intercambio. Muchas personas con esta posición disfrutan escribiendo, enseñando o investigando, y sienten que los trayectos cortos, las charlas con vecinos o hermanos y los cursos breves les dan energía.",
+      "luz": "Tu palabra tiene llegada: explicás con claridad, despertás interés en lo que contás y convertís la curiosidad en conocimiento compartido.",
+      "sombra": "Al comunicar, puede costarte callar o dejar una idea sin resolver. Conviene mirar si la necesidad de explicarlo todo te quita espacio para escuchar."
+    },
+    "4": {
+      "texto": "En la casa 4, tu energía se concentra en lo íntimo: la casa, la familia, las raíces y el mundo interior. Es una posición donde el brillo no siempre se ve hacia afuera, y muchas personas sienten que la primera parte de la vida les pidió esfuerzo para encontrar su lugar. La tradición la asocia con una madurez que florece con los años, cuando construís un hogar propio, real o simbólico, que refleja lo que sos.",
+      "luz": "Podés ser el centro cálido de tu casa: das pertenencia, honrás tu historia y encontrás tu fuerza en un refugio que elegiste y cuidás.",
+      "sombra": "Puertas adentro, puede costarte mostrar hacia afuera lo que cultivás en privado. Conviene mirar qué mandatos familiares todavía dirigen tus elecciones."
+    },
+    "5": {
+      "texto": "En la casa 5, tu luz busca expresarse a través de la creatividad, el juego, el romance y todo lo que te da placer genuino. Muchas personas con esta posición tienen un carisma natural en los vínculos amorosos y una satisfacción especial al enseñar, publicar o crear algo que lleva su sello. Disfrutar no es un premio al final del esfuerzo: para vos es una fuente de energía que conviene cuidar.",
+      "luz": "Contagiás alegría: tu creatividad se luce, enseñás con entusiasmo y hacés del amor y del juego un espacio para crecer.",
+      "sombra": "En lo creativo, puede costarte que el centro de la escena no sea tuyo. Conviene mirar cuándo la búsqueda de intensidad te aleja de los vínculos que piden constancia."
+    },
+    "6": {
+      "texto": "En la casa 6, tu energía se pone en juego en el trabajo diario, los hábitos y el servicio. Muchas personas con esta posición son muy eficientes y sienten que brillan cuando su tarea está bien hecha, aunque también pueden sentir que no se les reconoce lo suficiente. Hay una afinidad con los trabajos de cuidado, la alimentación y todo lo que ayuda a otros a estar mejor. Las rutinas que elegís con conciencia te sostienen más de lo que parece.",
+      "luz": "Tu dedicación puede ser un ejemplo: ordenás, resolvés y ponés tu talento al servicio de algo útil para tu comunidad.",
+      "sombra": "En el trabajo, puede costarte seguir la conducción de otros o, si te toca dirigir, no imponerte. Conviene mirar cómo cuidás tu energía en medio de tantas obligaciones."
+    },
+    "7": {
+      "texto": "En la casa 7, tu luz se ve con más claridad a través de los vínculos de a dos: parejas, socios, aliados. Muchas personas con esta posición atraen a gente con un sentido del honor alto y viven la relación como un espacio donde se reconocen a sí mismas. La lealtad y la confianza mutua son centrales, y también es común que en situaciones de conflicto encuentres la forma de llegar a acuerdos justos.",
+      "luz": "Das y recibís lealtad: elegís compañías nobles, sostenés acuerdos con integridad y hacés de cada alianza un lugar de crecimiento.",
+      "sombra": "En los vínculos, puede costarte descubrir quién sos cuando no tenés a alguien enfrente. Conviene mirar si esperás que el otro te devuelva la luz que podés encender por tu cuenta."
+    },
+    "8": {
+      "texto": "En la casa 8, tu energía se juega en lo profundo: las crisis que transforman, la intimidad emocional y los recursos que compartís con otras personas. Muchas personas con esta posición sienten que se renuevan cada vez que atraviesan un final, y que su verdadero reconocimiento llega cuando se animan a mostrar lo que está oculto. Los acuerdos sobre lo común, lo que se da y lo que se recibe, son un terreno donde aprender mucho de vos.",
+      "luz": "Tenés el coraje de mirar de frente lo que otros evitan y la capacidad de renacer con más fuerza después de cada etapa difícil.",
+      "sombra": "En lo compartido, puede costarte confiar o soltar el control. Conviene mirar qué te cuesta entregar y qué temés perder cuando te abrís de verdad."
+    },
+    "9": {
+      "texto": "En la casa 9, tu luz busca sentido: la filosofía, la espiritualidad, los estudios superiores y los viajes que cambian la mirada. Es una posición asociada con ideales elevados y con una tolerancia genuina hacia otras opiniones. Muchas personas con esta posición sienten una urgencia interna por entender el porqué de la vida y se destacan en la enseñanza, las leyes, la investigación o cualquier camino que las lleve lejos, por fuera o por dentro.",
+      "luz": "Podés ser una guía generosa: compartís lo que aprendés, inspirás con tu visión y abrís la cabeza de quienes te rodean.",
+      "sombra": "En tu búsqueda, puede costarte aceptar respuestas pequeñas o caminos sin gloria. Conviene mirar si la búsqueda de verdad a veces se vuelve una certeza que no escucha."
+    },
+    "10": {
+      "texto": "En la casa 10, tu energía se orienta hacia la vocación y el lugar que ocupás en el mundo. Es una posición asociada con el reconocimiento público y con la capacidad de asumir responsabilidades de confianza. Muchas personas con esta posición sienten que su propósito se cumple cuando su tarea deja huella en la comunidad, y suelen encontrar apoyo en quienes tienen más experiencia. La congruencia entre lo que sos y lo que mostrás es tu mayor capital.",
+      "luz": "Tu liderazgo puede ser confiable: honrás los cargos que asumís y tu trayectoria inspira un respeto genuino en tu comunidad.",
+      "sombra": "En lo público, puede costarte separar tu valor de tus logros visibles. Conviene mirar qué parte de tu ambición es tuya y cuál responde a lo que se espera de vos."
+    },
+    "11": {
+      "texto": "En la casa 11, tu luz se expande a través de las amistades, los grupos y los proyectos que compartís con otros. Muchas personas con esta posición tienen facilidad para rodearse de gente valiosa e influyente, y viven sus sueños como algo que se construye en red. Tus esperanzas para el futuro toman fuerza cuando encuentran un colectivo que las sostenga, y es habitual que seas quien les da ánimo a los demás.",
+      "luz": "Podés ser el corazón de tu grupo: unís personas alrededor de un propósito, ofrecés amistad leal y convertís ideales en proyectos comunes.",
+      "sombra": "En los grupos, puede costarte ocupar un lugar más entre otros sin ser referencia. Conviene mirar si buscás en ellos aprobación más que pertenencia."
+    },
+    "12": {
+      "texto": "En la casa 12, tu luz brilla en lo retirado: la vida interior, la contemplación y el trabajo que se hace lejos de las miradas. Muchas personas con esta posición sienten durante un tiempo que no encajan en su entorno o que les cuesta encontrar su lugar, y descubren con los años que su fuerza está en lo invisible. Hay afinidad con tareas de acompañamiento en instituciones, con la investigación silenciosa y con lo espiritual.",
+      "luz": "Tu soledad puede ser fértil: encontrás sabiduría en el silencio y ayudás a otras personas desde un lugar discreto y compasivo.",
+      "sombra": "En lo íntimo, puede costarte mostrarte o sentir que tenés derecho a ocupar espacio. Conviene mirar si el aislamiento te protege o te esconde de tu propio brillo."
+    }
+  }
+}
