@@ -1,7 +1,7 @@
 {
   "en_signo": {
     "aries": {
-      "texto": "La Luna en Aries reacciona primero y procesa después: tu reflejo emocional es avanzar, defender tu terreno y no dejar que otros decidan por vos. Muchas personas con esta posición se resienten cuando sienten interferencias en su camino, y tienen una gran capacidad para levantarse después de un fracaso y probar por otro lado. En el afecto suele haber pasión y franqueza, con ganas de que todo quede claro desde el principio.",
+      "texto": "La Luna en Aries reacciona primero y procesa después: tu reflejo emocional es avanzar, defender tu terreno y no dejar que otros decidan por vos. Es posible que te resientas cuando sentís interferencias en tu camino, y tenés una gran capacidad para levantarte después de un tropiezo y probar por otro lado. En el afecto suele haber pasión y franqueza, con ganas de que todo quede claro desde el principio.",
       "luz": "Cuando fluye, tu emoción es valiente y honesta: te recuperás rápido, protegés a los tuyos con energía y vivís el cariño con entusiasmo y transparencia.",
       "sombra": "Puede costarte respetar ritmos emocionales distintos al tuyo. Vale la pena observar si la impaciencia te lleva a esperar que el otro siempre te dé la razón."
     },
@@ -11,22 +11,22 @@
       "sombra": "Puede costarte adaptarte a cambios que no elegiste o salir de lo conocido. Vale la pena observar cuándo la terquedad es una forma de protegerte del miedo."
     },
     "geminis": {
-      "texto": "Con la Luna en Géminis, tus hábitos emocionales están ligados al movimiento mental: leer, preguntar, enterarte, ir de un tema a otro. Muchas personas con esta posición tienen muchos recursos para salir de situaciones difíciles y una inquietud que las lleva a buscar contacto con gente muy distinta. En lo afectivo, el ingenio y la charla son una forma de cercanía, aunque a veces cueste decidir si avanzar o retroceder.",
+      "texto": "Con la Luna en Géminis, tus hábitos emocionales están ligados al movimiento mental: leer, preguntar, enterarte, ir de un tema a otro. Solés tener muchos recursos para salir de situaciones difíciles y una inquietud que te lleva a buscar contacto con gente muy distinta. En lo afectivo, el ingenio y la charla son una forma de cercanía, aunque a veces cueste decidir si avanzar o retroceder.",
       "luz": "Cuando fluye, tu ánimo es liviano y creativo: hacés reír, adaptás tu modo a cada persona y encontrás soluciones donde otros ven un callejón.",
       "sombra": "Puede costarte concentrarte en lo que sentís sin dispersarte. Vale la pena observar si los comentarios sobre otras personas ocupan el lugar de hablar de vos."
     },
     "cancer": {
-      "texto": "La Luna en Cáncer tiene una memoria emocional enorme: recordás gestos, palabras y climas con una precisión que sorprende. Tus estados de ánimo pueden subir y bajar como las mareas, y muchas personas con esta posición sienten de forma especial los cambios de ciclo. Te sale naturalmente alimentar, proteger y ofrecer comodidad, y preferís fluir con la corriente antes que forzar los acontecimientos.",
+      "texto": "La Luna en Cáncer tiene una memoria emocional enorme: recordás gestos, palabras y climas con una precisión que sorprende. Tus estados de ánimo pueden subir y bajar como las mareas, y es posible que sientas de forma especial los cambios de ciclo. Te sale naturalmente cobijar, proteger y ofrecer comodidad, y preferís fluir con la corriente antes que forzar los acontecimientos.",
       "luz": "En su mejor versión, sos un sostén incondicional: tu intuición detecta lo que el otro necesita y tu cariño hace que cualquier lugar se sienta como casa.",
       "sombra": "Puede costarte soltar lo que pasó o actuar si nada te obliga. Vale la pena observar cuándo el cuidado se vuelve posesión o miedo a perder."
     },
     "leo": {
-      "texto": "Con la Luna en Leo, tu mundo emocional tiene algo de escenario: te gusta que el amor se celebre y que haya brillo en lo cotidiano. Muchas personas con esta posición tienen facilidad para organizar y ocupar un lugar destacado en su círculo, con un trato franco y magnánimo. Detrás de una apariencia segura puede haber una sensibilidad más frágil de lo que se muestra, que se calma cuando se siente valorada de verdad.",
+      "texto": "Con la Luna en Leo, tu mundo emocional tiene algo de escenario: te gusta que el amor se celebre y que haya brillo en lo cotidiano. Tenés facilidad para organizar y para ocupar un lugar destacado en tu círculo, con un trato franco y magnánimo. Detrás de una apariencia segura puede haber una sensibilidad más frágil de lo que se muestra, que se calma cuando se siente valorada de verdad.",
       "luz": "Cuando fluye, tu afecto es generoso y leal: hacés sentir especiales a quienes querés y tu alegría ilumina las reuniones y los proyectos comunes.",
       "sombra": "Puede costarte quedar en segundo plano o pedir lo que necesitás sin dramatizar. Vale la pena observar si el orgullo tapa la vulnerabilidad que hay detrás."
     },
     "virgo": {
-      "texto": "La Luna en Virgo suele procesar lo que siente a través del análisis: entender qué pasó te ayuda a calmarte. Muchas personas con esta posición tienen una memoria muy retentiva, gusto por el estudio y una manera reservada y tranquila de estar, lejos de la ostentación. En los vínculos te comprometés con hechos, aunque podés mirar con lupa cada detalle propio y ajeno. Cuidar a otros con tareas concretas es tu forma de decir que te importan.",
+      "texto": "La Luna en Virgo suele procesar lo que siente a través del análisis: entender qué pasó te ayuda a calmarte. Podés tener una memoria muy retentiva, gusto por el estudio y una manera reservada y tranquila de estar, lejos de la ostentación. En los vínculos te comprometés con hechos, aunque podés mirar con lupa cada detalle propio y ajeno. Cuidar a otros con tareas concretas es tu forma de decir que te importan.",
       "luz": "En su mejor versión, tu cariño es confiable y atento: estás en los detalles, ayudás con humildad y das estabilidad a quienes te rodean.",
       "sombra": "Puede costarte no criticarte por cada error o aceptar el desorden de los demás. Vale la pena observar si la exigencia reemplaza a la ternura hacia vos."
     },
@@ -36,89 +36,89 @@
       "sombra": "Puede costarte estar en soledad o tomar decisiones que incomoden a alguien. Vale la pena observar si a veces conseguís lo que querés por caminos indirectos."
     },
     "escorpio": {
-      "texto": "La Luna en Escorpio tiene una voluntad emocional muy firme: no te dejás intimidar, pero un gesto de bondad sincero puede desarmarte por completo. Muchas personas con esta posición hablan con una franqueza que a veces suena áspera y defienden su autonomía frente a cualquier intromisión. Hay un magnetismo y una intuición fuertes, un interés por lo oculto y una necesidad profunda de que en los vínculos se hable siempre con la verdad.",
+      "texto": "La Luna en Escorpio tiene una voluntad emocional muy firme: no te dejás intimidar, pero un gesto de bondad sincero puede desarmarte por completo. Tu franqueza a veces suena áspera, y tendés a defender tu autonomía frente a cualquier intromisión. Hay un magnetismo y una intuición fuertes, un interés por lo oculto y una necesidad profunda de que en los vínculos se hable siempre con la verdad.",
       "luz": "En su mejor versión, tu lealtad no tiene medias tintas: percibís lo que otros esconden, acompañás procesos difíciles y transformás el dolor en sabiduría.",
       "sombra": "Puede costarte perdonar u olvidar una herida. Vale la pena observar cuándo el deseo de control nace del miedo a mostrarte frágil."
     },
     "sagitario": {
-      "texto": "Con la Luna en Sagitario, tus hábitos piden aire libre, caminatas y algún horizonte por descubrir. Muchas personas con esta posición sienten un cariño especial por los animales, una sed de conocimiento que las lleva a la filosofía o a otras culturas, y un humor que alivia cualquier reunión. En los vínculos necesitás espacio para respirar; cuando lo tenés, tu compañía es generosa, franca y muy estimulante.",
+      "texto": "Con la Luna en Sagitario, tus hábitos piden aire libre, caminatas y algún horizonte por descubrir. Puede que sientas un cariño especial por los animales, una sed de conocimiento que te lleva a la filosofía o a otras culturas, y un humor que alivia cualquier reunión. En los vínculos necesitás espacio para respirar; cuando lo tenés, tu compañía es generosa, franca y muy estimulante.",
       "luz": "Cuando fluye, sos una compañía luminosa: tu fe en la vida contagia, tu franqueza es honesta y tu curiosidad convierte lo cotidiano en aventura.",
       "sombra": "Puede costarte sostener rutinas o mirar lo que incomoda sin escaparte. Vale la pena observar cuándo la libertad que pedís se vuelve dificultad para comprometerte."
     },
     "capricornio": {
-      "texto": "La Luna en Capricornio suele aprender temprano a arreglárselas, y eso deja un hábito de previsión y de seriedad ante lo que siente. Muchas personas con esta posición son muy sensibles a los desaires, aunque no lo muestren, y pueden privarse de disfrutar el presente por miedo a que algo falte mañana. Valorás las conversaciones con contenido y los vínculos que se construyen con paciencia, y cuando entrás en confianza aparece una calidez profunda.",
+      "texto": "La Luna en Capricornio suele aprender temprano a arreglárselas, y eso deja un hábito de previsión y de seriedad ante lo que siente. Tendés a ser muy sensible a los desaires, aunque no lo muestres, y podés privarte de disfrutar el presente por miedo a que algo falte mañana. Valorás las conversaciones con contenido y los vínculos que se construyen con paciencia, y cuando entrás en confianza aparece una calidez profunda.",
       "luz": "En su mejor versión, tu cuidado es sólido y práctico: estás cuando hace falta, sostenés compromisos y das a otros una estructura donde apoyarse.",
       "sombra": "Puede costarte permitirte el disfrute sin justificarlo. Vale la pena observar si la autosuficiencia es una elección o una forma de no necesitar a nadie."
     },
     "acuario": {
-      "texto": "Con la Luna en Acuario, tu manera de cuidar se expresa en lo colectivo: te conmueven las causas comunes y las luchas por el bienestar de todos. Muchas personas con esta posición tienen una imaginación vívida y una intuición que se adelanta a los razonamientos, y disfrutan entendiendo cómo funcionan las cosas. En lo íntimo, los sentimientos pueden tardar en salir; necesitan un vínculo que estimule la mente y respete la independencia.",
+      "texto": "Con la Luna en Acuario, tu manera de cuidar se expresa en lo colectivo: te conmueven las causas comunes y las luchas por el bienestar de todos. Tenés una imaginación vívida y una intuición que se adelanta a los razonamientos, y disfrutás entendiendo cómo funcionan las cosas. En lo íntimo, los sentimientos pueden tardar en salir; necesitan un vínculo que estimule la mente y respete la independencia.",
       "luz": "Cuando fluye, tu afecto es amplio y sin juicio: aceptás a cada quien como es, sumás a otros a causas generosas y aportás ideas que inspiran.",
       "sombra": "Puede costarte mostrar lo que sentís sin explicarlo o acercarte cuando el vínculo pide intimidad. Vale la pena observar si la rebeldía a veces es una defensa."
     },
     "piscis": {
-      "texto": "La Luna en Piscis le da a tu mundo interno una imaginación fértil y una receptividad casi sin bordes. Muchas personas con esta posición tienen una veta poética o musical, se expresan con fluidez cuando algo las conmueve y viven el amor con un romanticismo profundo. Hay una compasión espontánea por el dolor ajeno y una tendencia a soñar con los ojos abiertos que, bien cuidada, puede transformarse en arte o en intuición al servicio de otros.",
+      "texto": "La Luna en Piscis le da a tu mundo interno una imaginación fértil y una receptividad casi sin bordes. Es posible que tengas una veta poética o musical, que te expreses con fluidez cuando algo te conmueve y que vivas el amor con un romanticismo profundo. Hay una compasión espontánea por el dolor ajeno y una tendencia a soñar con los ojos abiertos que, bien cuidada, puede transformarse en arte o en intuición al servicio de otros.",
       "luz": "En su mejor versión, sos pura empatía e inspiración: entendés sin palabras, creás belleza desde lo que sentís y acompañás con una dulzura enorme.",
       "sombra": "Puede costarte pasar del sueño a la acción o dejar de lamentarte por lo que no fue. Vale la pena observar cuándo la fantasía te aleja de lo que sí podés cambiar."
     }
   },
   "en_casa": {
     "1": {
-      "texto": "En la casa 1, tus emociones están a la vista: lo que sentís se refleja rápido en tu cara y en tu forma de presentarte. Muchas personas con esta posición tienen una sensibilidad y una intuición muy despiertas, necesitan cambiar de ambiente cada tanto y disfrutan conocer lugares nuevos. También suele haber facilidad para tratar con el público, porque la gente percibe en vos algo cercano y fácil de leer.",
+      "texto": "En la casa 1, tus emociones están a la vista: lo que sentís se refleja rápido en tu cara y en tu forma de presentarte. Tu sensibilidad y tu intuición suelen estar muy despiertas; necesitás cambiar de ambiente cada tanto y disfrutás conocer lugares nuevos. También suele haber facilidad para tratar con el público, porque la gente percibe en vos algo cercano y fácil de leer.",
       "luz": "Tu calidez es inmediata: la gente se siente cómoda con vos y tu intuición te guía bien cuando te encontrás con lo nuevo.",
       "sombra": "También puede costarte sostener un rumbo cuando tu ánimo cambia. Conviene mirar cuánto de tu identidad depende del clima emocional del momento."
     },
     "2": {
-      "texto": "En la casa 2, tu sensación de seguridad está muy ligada a lo que tenés y a cómo te valorás. Muchas personas con esta posición viven sus recursos con altibajos, como mareas, y descubren que la tranquilidad interna influye en cómo administran. Puede haber afinidad con tareas vinculadas al público o a cubrir necesidades básicas de otras personas. Tu autoestima se nutre de sentir que podés sostenerte.",
+      "texto": "En la casa 2, tu sensación de seguridad está muy ligada a lo que tenés y a cómo te valorás. Tus recursos pueden vivirse con altibajos, como mareas, y con el tiempo descubrís que la tranquilidad interna influye en cómo administrás. Puede haber afinidad con tareas vinculadas al público o a cubrir necesidades básicas de otras personas. Tu autoestima se nutre de sentir que podés sostenerte.",
       "luz": "Sabés convertir lo que sentís en recursos: ofrecés cosas que cuidan y tu relación con lo material es intuitiva y flexible.",
       "sombra": "En lo material, puede costarte encontrar un punto medio entre gastar para calmarte y retener por miedo. Conviene mirar qué emoción aparece cuando pensás en lo que tenés."
     },
     "3": {
-      "texto": "En la casa 3, tus emociones se mueven a través de las palabras, las noticias y el contacto diario con tu entorno cercano. Muchas personas con esta posición tienen una imaginación muy fértil, un olfato especial para enterarse de lo que pasa y ganas de ir de un lado al otro para comprobarlo. Las tareas mentales variadas te entusiasman más que las rutinas largas, y los vínculos con hermanos, vecinos o compañeros te marcan mucho.",
+      "texto": "En la casa 3, tus emociones se mueven a través de las palabras, las noticias y el contacto diario con tu entorno cercano. Tal vez tengas una imaginación muy fértil, un olfato especial para enterarte de lo que pasa y ganas de ir de un lado al otro para comprobarlo. Las tareas mentales variadas te entusiasman más que las rutinas largas, y los vínculos con hermanos, vecinos o compañeros te marcan mucho.",
       "luz": "Comunicás con sensibilidad: contás historias que llegan, captás el pulso del momento y conectás a las personas de tu barrio o de tu grupo.",
       "sombra": "Al comunicar, puede costarte terminar lo que empezás o resistir el brillo pasajero de la novedad. Conviene mirar si la información constante te aleja de lo que sentís."
     },
     "4": {
-      "texto": "En la casa 4, la Luna está en un terreno afín: el hogar, la familia y las raíces tienen un peso enorme en tu mundo emocional. Muchas personas con esta posición viven varias mudanzas a lo largo de la vida, y buscan una y otra vez el lugar donde sentirse en paz. También puede haber una vida interior muy rica, con sueños vívidos y una percepción fina de lo que no se ve.",
+      "texto": "En la casa 4, la Luna está en un terreno afín: el hogar, la familia y las raíces tienen un peso enorme en tu mundo emocional. Quizás busques una y otra vez un lugar donde sentirte en paz, y esa búsqueda te enseñe que el hogar también se lleva adentro. También puede haber una vida interior muy rica, con sueños vívidos y una percepción fina de lo que no se ve.",
       "luz": "Tu casa puede ser un refugio para todos: honrás tu historia familiar y creás raíces nuevas donde quiera que estés.",
       "sombra": "Puertas adentro, puede costarte separar tu ánimo del clima de tu hogar o de tu familia de origen. Conviene mirar qué patrones aprendidos repetís sin elegirlos."
     },
     "5": {
-      "texto": "En la casa 5, tus emociones buscan expresarse en el juego, la creatividad y el romance. Muchas personas con esta posición tienen un vínculo especial con la infancia, propia o ajena, y viven el amor con mucha intensidad. Disfrutar es una necesidad emocional real, y la creación, sea artística o cotidiana, se vuelve una forma de nutrirte. También puede aparecer el deseo de sentirte importante para alguien.",
+      "texto": "En la casa 5, tus emociones buscan expresarse en el juego, la creatividad y el romance. Tendés a tener un vínculo especial con la infancia, propia o ajena, y a vivir el amor con mucha intensidad. Disfrutar es una necesidad emocional real, y la creación, sea artística o cotidiana, se vuelve una forma de nutrirte. También puede aparecer el deseo de sentirte importante para alguien.",
       "luz": "Tu alegría es fecunda: creás con el corazón, jugás sin vergüenza y hacés que las personas que querés se sientan celebradas.",
       "sombra": "En lo creativo, puede costarte poner un límite al placer o no dramatizar lo que sentís. Conviene mirar si buscás en el aplauso una forma de sentir cariño."
     },
     "6": {
-      "texto": "En la casa 6, tus emociones se ordenan a través de las rutinas, el trabajo diario y el servicio a otros. Muchas personas con esta posición tienen una disposición natural para ayudar y se sienten bien cuando son útiles, aunque dirigir equipos les resulte más difícil. El estado de ánimo influye mucho en cómo rendís, y las preocupaciones pueden ocupar demasiado espacio si no encuentran por dónde salir.",
+      "texto": "En la casa 6, tus emociones se ordenan a través de las rutinas, el trabajo diario y el servicio a otros. Tenés una disposición natural para ayudar y te sentís bien cuando sos útil, aunque dirigir equipos puede resultarte más difícil. El estado de ánimo influye mucho en cómo rendís, y las preocupaciones pueden ocupar demasiado espacio si no encuentran por dónde salir.",
       "luz": "Tu dedicación es cálida: notás lo que otros necesitan en el día a día y hacés del trabajo un lugar de cuidado.",
-      "sombra": "En el trabajo, puede costarte no cargarte de preocupaciones ajenas. Conviene mirar si la ansiedad aparece cuando sentís que no sos imprescindible."
+      "sombra": "En el trabajo, puede costarte no cargarte de preocupaciones ajenas. Conviene mirar si la inquietud aparece cuando sentís que no sos imprescindible."
     },
     "7": {
-      "texto": "En la casa 7, tu mundo emocional se activa en los vínculos de a dos y en el contacto con el público. Muchas personas con esta posición son muy populares y buscan en la pareja o en los socios un sostén emocional profundo, a veces más parecido al cuidado familiar que a la complicidad entre pares. Los vínculos pueden atravesar cambios de humor y de ritmo, y ahí se aprende mucho sobre lo que realmente necesitás.",
+      "texto": "En la casa 7, tu mundo emocional se activa en los vínculos de a dos y en el contacto con el público. Podés tener mucha llegada a la gente y buscar en la pareja o en los socios un sostén emocional profundo, a veces más parecido al cuidado familiar que a la complicidad entre pares. Los vínculos pueden atravesar cambios de humor y de ritmo, y ahí se aprende mucho sobre lo que realmente necesitás.",
       "luz": "Sos una compañía sensible: registrás lo que el otro siente, te adaptás con naturalidad y generás vínculos cálidos con mucha gente.",
       "sombra": "En los vínculos, puede costarte no depender del ánimo de tu pareja o de tus socios. Conviene mirar si buscás en el otro el cuidado que todavía no te das."
     },
     "8": {
-      "texto": "En la casa 8, tus emociones se viven con intensidad y en lo profundo. Muchas personas con esta posición sienten que la intimidad es más una necesidad de afecto y de fusión emocional que de pasión, y viven con fuerza los procesos de transformación. Lo compartido, los recursos en común y los acuerdos con otros pueden despertar inquietud, y es un terreno donde aprendés a confiar.",
+      "texto": "En la casa 8, tus emociones se viven con intensidad y en lo profundo. Quizás vivas la intimidad más como una necesidad de afecto y de fusión emocional que como pasión, y atravieses con fuerza los procesos de transformación. Lo compartido, los recursos en común y los acuerdos con otros pueden despertar inquietud, y es un terreno donde aprendés a confiar.",
       "luz": "Tenés una intuición profunda para acompañar crisis ajenas y la capacidad de renovarte cada vez que soltás lo que ya cumplió su ciclo.",
       "sombra": "En lo compartido, puede costarte no preocuparte por lo que podría faltar. Conviene mirar qué temores antiguos aparecen cuando te entregás en un vínculo."
     },
     "9": {
-      "texto": "En la casa 9, tus emociones buscan horizonte: los viajes lejanos, la filosofía y las creencias son parte de lo que te nutre. Muchas personas con esta posición sienten el impulso de explorar otras culturas, tienen sueños e intuiciones que les orientan el camino y una manera seria y sentida de vivir lo espiritual. Las convicciones pueden cambiar con los años, siguiendo lo que el corazón va descubriendo.",
+      "texto": "En la casa 9, tus emociones buscan horizonte: los viajes lejanos, la filosofía y las creencias son parte de lo que te nutre. Podés sentir el impulso de explorar otras culturas, tener sueños e intuiciones que te orientan el camino y una manera seria y sentida de vivir lo espiritual. Las convicciones pueden cambiar con los años, siguiendo lo que el corazón va descubriendo.",
       "luz": "Tu confianza en la vida es contagiosa: aprendés viajando, abrís la mente de otros y tus intuiciones te llevan hacia lo que da sentido.",
       "sombra": "En tu búsqueda, puede costarte no decidir por impulso cuando algo te entusiasma. Conviene mirar si cambiar de creencia a veces es una manera de huir de una pregunta."
     },
     "10": {
-      "texto": "En la casa 10, tu mundo emocional se expone en la vida pública: la vocación, la reputación y el reconocimiento te tocan de cerca. Muchas personas con esta posición tienen llegada al público, con una mente diplomática y curiosa que sabe leer lo que la gente necesita. Como la Luna cambia, la imagen pública también puede tener altibajos, y aprender a no tomarlos como algo personal es parte del camino.",
+      "texto": "En la casa 10, tu mundo emocional se expone en la vida pública: la vocación, la reputación y el reconocimiento te tocan de cerca. Tendés a tener llegada al público, con una mente diplomática y curiosa que sabe leer lo que la gente necesita. Como la Luna cambia, la imagen pública también puede tener altibajos, y aprender a no tomarlos como algo personal es parte del camino.",
       "luz": "Tu sensibilidad es una herramienta profesional: conectás con la gente, cuidás desde tu tarea y construís una trayectoria cercana.",
       "sombra": "En lo público, puede costarte que la opinión ajena no defina cómo te sentís. Conviene mirar cuánto de tu vocación nace de lo que querés y cuánto de lo que te pidieron."
     },
     "11": {
-      "texto": "En la casa 11, tus emociones se nutren de las amistades y de los grupos. Muchas personas con esta posición tienen una simpatía natural por lo que sienten los demás y una red amplia de conocidos, aunque los vínculos íntimos de verdad sean pocos. Los proyectos colectivos y los sueños compartidos te dan pertenencia, y la amistad puede ser para vos una segunda familia.",
+      "texto": "En la casa 11, tus emociones se nutren de las amistades y de los grupos. Tenés una simpatía natural por lo que sienten los demás y una red amplia de conocidos, aunque los vínculos íntimos de verdad sean pocos. Los proyectos colectivos y los sueños compartidos te dan pertenencia, y la amistad puede ser para vos una segunda familia.",
       "luz": "Podés ser un lugar de contención para tu grupo: empatizás con facilidad, sumás afecto a los proyectos comunes y cuidás a tus amistades.",
       "sombra": "En los grupos, puede costarte distinguir entre la gente que te rodea y la que te sostiene. Conviene mirar si a veces te acercás por necesidad más que por afinidad."
     },
     "12": {
-      "texto": "En la casa 12, tus emociones viven en lo reservado: muchas cosas las sentís a solas antes de poder compartirlas. Muchas personas con esta posición tienen una vida interior muy rica, una gran capacidad para trabajar en silencio, en instituciones o en tareas de acompañamiento, y una sensibilidad que absorbe lo que flota en el ambiente. Los afectos pueden tener algo de secreto o de privado que conviene mirar con honestidad.",
+      "texto": "En la casa 12, tus emociones viven en lo reservado: muchas cosas las sentís a solas antes de poder compartirlas. Tenés una vida interior muy rica, una gran capacidad para trabajar en silencio, en instituciones o en tareas de acompañamiento, y una sensibilidad que absorbe lo que flota en el ambiente. Los afectos pueden tener algo de secreto o de privado que conviene mirar con honestidad.",
       "luz": "Tu compasión es profunda y discreta: acompañás a quien sufre, encontrás paz en el retiro y tu intuición llega a lugares invisibles.",
       "sombra": "En lo íntimo, puede costarte mostrar lo que sentís o confiar en quienes te rodean. Conviene mirar si guardar secretos te protege o te aísla."
     }

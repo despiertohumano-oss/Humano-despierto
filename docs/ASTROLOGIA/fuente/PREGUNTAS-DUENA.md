@@ -68,3 +68,15 @@
 - Plutón en casas: el material habla de violencia, venganza, enemigos terribles, muerte de hermanos, padres o hijos, abortos, viudez, divorcio, drogas, y de «atracción por formas morbosas de erotismo» (casa 8). Todo se llevó a transformación, poder, control e intensidad, sin sentencias.
 - Casa 7 del material: «el cónyuge puede ser una amenaza para su integridad física». No se usó. Si tenés una lectura de esta casa que quieras sumar, decinos.
 - Plutón en casa 6 dice ser posición ideal para psicólogos, médicos y sanadores. Se dejó «la psicología o el trabajo terapéutico» como ejemplo de vocación posible.
+
+## Revisión de QA
+
+Tras la primera revisión de QA se reescribieron estas frases. Se anota la idea y la posición, no el texto anterior.
+
+- **Promesas favorables** (la tradición las nombraba como «posición afortunada» o «de las más favorables»): Venus en casa 1 (la gracia personal abre puertas), Venus en casa 10 (realización personal), Júpiter en casa 1 (posición favorable en general), Júpiter en casa 2 (prosperidad), Júpiter en casa 7 (éxito en las sociedades), Júpiter en casa 10 (vida pública reconocida), Marte en casa 10 (realización personal) y Venus en casa 5 (favorable para enseñar). Ahora hablan de un don o de una afinidad, sin asegurar resultado.
+- **Salud, cuerpo y hábitos de consumo**: la casa 6 de los diez planetas habla ahora solo de rutinas, trabajo cotidiano y el modo de ordenar el día (se quitaron alimentación y bienestar en el Sol y Mercurio, recuperación y vitalidad física en Marte, hábitos que sostienen el bienestar en Venus y Neptuno, energía nerviosa en Urano, trabajo terapéutico en Plutón). También se quitaron los excesos en la mesa (Júpiter en Cáncer y en Tauro, Neptuno en Tauro), el juego y la apuesta (Marte y Júpiter en casa 5, Júpiter en Leo y en Sagitario, Urano en casa 5), el exceso y el apetito como sombra (Júpiter en casa 1 y en Escorpio), el desgaste físico (Marte en casa 1, casa 6 y casa 12) y lo que consume más de lo que nutre (Plutón en casa 8).
+- **Herencias y finales aludidos**: la casa 8 se trata como intimidad, confianza, lo compartido y procesos de cambio (Sol, Venus, Júpiter, Saturno, Urano, Plutón; Mercurio en casa 8 ya no habla de dejar acuerdos por escrito). Saturno en casa 2 ya no menciona lo recibido de la familia.
+- **Mudanzas como hecho**: Luna, Mercurio y Urano en casa 4 hablan ahora de la búsqueda de un lugar propio, no de cambiar de casa.
+- **Tono persecutorio**: Neptuno y Plutón en casa 12 y Saturno en Piscis hablan de la desconfianza y lo no dicho como algo que la persona puede observar en sí, no de otros que actúan en su contra.
+- **Pregunta**: ¿querés que la casa 6 vuelva a hablar de salud y del cuidado del cuerpo, como hace el material, con el tono que vos elijas? Hoy queda fuera por la regla de no hablar de salud.
+- **Datos corregidos**: Plutón pasa unos veinticuatro años en Piscis, unos dieciséis en Capricornio y unos trece en Sagitario (antes decía veinte, quince y doce). Urano en casa 9 ya no menciona los riesgos en viajes.
