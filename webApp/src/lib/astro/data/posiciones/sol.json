@@ -8,17 +8,17 @@
     "tauro": {
       "texto": "Con el Sol en Tauro, tu vitalidad se alimenta de lo que podés tocar, saborear y sostener en el tiempo. Tu fuerza suele ser serena y resistente más que explosiva, y tu voz o tu manera de estar suelen dejar una huella que se recuerda. Brillás cuando construís algo que dura y cuando te das permiso para disfrutar sin culpa. El placer, bien llevado, es para vos una forma de recargar energía y no un lujo.",
       "luz": "En su mejor versión, das calma y solidez a quienes te rodean: tu constancia sostiene proyectos y tu sentido del gusto vuelve más amable cualquier espacio.",
-      "sombra": "Puede costarte soltar lo conocido o moderar el deseo de rodearte de cosas lindas. Vale la pena preguntarte cuándo la comodidad empieza a reemplazar al movimiento."
+      "sombra": "Quizás te cueste soltar lo conocido o moderar el deseo de rodearte de cosas lindas. Vale la pena preguntarte cuándo la comodidad empieza a reemplazar al movimiento."
     },
     "geminis": {
       "texto": "El Sol en Géminis ilumina la mente: tu energía crece cuando algo despierta tu interés y tenés con quién compartirlo. Escribir, conversar, moverte de un lugar a otro o aprender algo nuevo suele devolverte el ánimo. Solés tener un trato ameno que te abre puertas y una facilidad especial para traducir ideas complejas en palabras simples. Tu brillo está en el puente que tendés entre personas y saberes.",
-      "luz": "Cuando fluye, tu palabra es ágil y amable: conectás gente, explicás con gracia y convertís cada viaje o lectura en algo que después compartís.",
+      "luz": "Tu palabra puede ser ágil y amable a la vez: conectás gente, explicás con gracia y convertís cada viaje o lectura en algo que después compartís.",
       "sombra": "Puede costarte quedarte con una sola cosa el tiempo suficiente para profundizarla. Vale la pena observar si saltar de tema a veces te protege de lo que sentís."
     },
     "cancer": {
       "texto": "Con el Sol en Cáncer, tu vitalidad tiene mareas: hay momentos de mucha energía y otros en que necesitás replegarte para recuperarla. Tu voluntad suele ponerse en marcha por afecto más que por competencia, y te cuesta pelear por pelear. Tenés una percepción fina de los climas emocionales, casi psíquica, y tus logros tienden a madurar despacio, con más fuerza a medida que pasan los años.",
       "luz": "En su mejor versión, tu fuerza es la de quien protege: creás armonía puertas adentro, leés lo que otros no dicen y sostenés proyectos con la paciencia de quien cuida algo que crece.",
-      "sombra": "Puede costarte salir de lo cómodo cuando nada te empuja. Vale la pena observar si la búsqueda de paz a veces te lleva a postergar lo que de verdad querés."
+      "sombra": "Salir de lo cómodo cuando nada te empuja puede pedirte un esfuerzo extra. Vale la pena observar si la búsqueda de paz a veces te lleva a postergar lo que de verdad querés."
     },
     "leo": {
       "texto": "El Sol en Leo, su signo propio, da una voluntad con mucho foco: cuando algo te importa, ponés el corazón entero y eso se nota en el resultado. El sentido del honor suele ser central para vos; te importa jugar limpio aunque nadie te vea. Defendés con fuerza a quienes querés, guardás afectos duraderos y podés mostrar nobleza incluso con quienes no están de tu lado.",
@@ -27,100 +27,100 @@
     },
     "virgo": {
       "texto": "Con el Sol en Virgo, tu energía se activa cuando hay algo que mejorar, ordenar o resolver con inteligencia práctica. Tenés un radar para detectar oportunidades y una habilidad especial para hacer de puente entre quien produce y quien necesita. Podés brillar en tareas de cuidado, análisis o asistencia, con una ambición callada de destacarte por la calidad de tu trabajo más que por el ruido.",
-      "luz": "En su mejor versión, sos la persona que hace que las cosas funcionen: atenta, sociable, con criterio fino y ganas genuinas de que todo salga bien para todos.",
-      "sombra": "Puede costarte delegar o soltar el control cuando trabajás en equipo. Vale la pena observar si la exigencia que ponés en otros es la misma que te ponés a vos."
+      "luz": "Sos, en tus mejores días, la persona que hace que las cosas funcionen: atenta, sociable, con criterio fino y ganas genuinas de que todo salga bien para todos.",
+      "sombra": "Delegar o soltar el control cuando trabajás en equipo quizás no te salga natural. Vale la pena observar si la exigencia que ponés en otros es la misma que te ponés a vos."
     },
     "libra": {
       "texto": "El Sol en Libra pone la voluntad al servicio del encuentro: tu energía suele crecer cuando tenés con quién construir. Los vínculos cercanos pueden ocupar el centro de tu vida, y la entrega hacia quien elegís suele ser muy grande. También hay un sentido estético que pide salida, sea en el diseño, en la música, en la arquitectura o en cualquier tarea donde la proporción importe. Brillás cuando creás belleza con equilibrio.",
       "luz": "Cuando fluye, aportás armonía y buen gusto: sabés unir partes que parecían opuestas y hacés que las personas cercanas se sientan elegidas y respetadas.",
-      "sombra": "Puede costarte sostener tu centro cuando el vínculo pide tanto. Vale la pena observar si a veces tu luz gira demasiado alrededor de otra persona."
+      "sombra": "Quizás te cueste sostener tu centro cuando el vínculo pide tanto. Vale la pena observar si a veces tu luz gira demasiado alrededor de otra persona."
     },
     "escorpio": {
       "texto": "Con el Sol en Escorpio, tu voluntad tiene una potencia concentrada: cuando decidís algo, lo sostenés con coraje y una independencia que no pide permiso. La mente suele estar muy activa, atenta a lo que se mueve debajo de la superficie. Es posible que te muevas con soltura en situaciones límite que a otros los paralizan, y que encuentres tu lugar donde hace falta temple, precisión y capacidad de ir hasta el fondo.",
       "luz": "En su mejor versión, sos una fuerza que no se rinde: atravesás lo difícil con valentía y acompañás a otros en momentos donde casi nadie se anima a quedarse.",
-      "sombra": "Puede costarte aceptar que otras miradas también tienen razón. Vale la pena observar cuándo tu firmeza se vuelve dureza y te aleja de la ternura propia y ajena."
+      "sombra": "Aceptar que otras miradas también tienen razón puede ser tu aprendizaje más fino. Vale la pena observar cuándo tu firmeza se vuelve dureza y te aleja de la ternura propia y ajena."
     },
     "sagitario": {
       "texto": "El Sol en Sagitario orienta tu energía hacia un horizonte: necesitás sentir que lo que hacés tiene un sentido más amplio que el día a día. Tus ideales suelen ser altos y te mueve el deseo de que otras personas también crezcan. Tu entorno tiende a confiarte tareas delicadas, y te atraen la filosofía, las leyes, la espiritualidad o cualquier campo que ayude a entender la vida.",
-      "luz": "Cuando fluye, tu generosidad inspira: abrís caminos para otros, sostenés tus valores con alegría y encarás las grandes preguntas sin miedo.",
+      "luz": "Tu generosidad puede inspirar a mucha gente: abrís caminos para otros, sostenés tus valores con alegría y encarás las grandes preguntas sin miedo.",
       "sombra": "Puede costarte bajar las ideas a tierra o aceptar que no todos comparten tu visión. Vale la pena observar cuándo el entusiasmo predica más de lo que escucha."
     },
     "capricornio": {
       "texto": "Con el Sol en Capricornio, tu energía se ordena alrededor de la confianza que te ganás con el tiempo. Solés avanzar paso a paso, con prudencia y una honestidad que no se negocia, y es habitual que otras personas te confíen responsabilidades porque saben que cumplís. Muchas personas con esta posición prefieren jugar con las cartas a la vista y se ganan el respeto de su entorno por su constancia más que por su carisma.",
       "luz": "En su mejor versión, sos un pilar: tu palabra vale, tu sentido de la justicia es parejo y tu perseverancia convierte metas lejanas en logros concretos.",
-      "sombra": "Puede costarte pedir ayuda o mostrar cansancio, como si la responsabilidad no admitiera pausas. Vale la pena observar cuánto de tu exigencia es elección y cuánto costumbre."
+      "sombra": "Pedir ayuda o mostrar cansancio quizás te resulte difícil, como si la responsabilidad no admitiera pausas. Vale la pena observar cuánto de tu exigencia es elección y cuánto costumbre."
     },
     "acuario": {
       "texto": "El Sol en Acuario le da a tu voluntad un rumbo hacia lo que todavía no existe. Solés percibir de forma intuitiva cómo funcionan las cosas por dentro, y te atraen las ideas nuevas, la ciencia, las búsquedas espirituales poco convencionales y las formas distintas de mirar el mundo. Tu energía se renueva en las amistades firmes, donde una visión compartida vale más que cualquier jerarquía.",
       "luz": "Cuando fluye, tu originalidad abre caminos: anticipás tendencias, unís gente diversa alrededor de una idea y defendés la libertad de cada quien.",
-      "sombra": "Puede costarte sostener lo cotidiano o acercarte a lo emocional sin teorizarlo. Vale la pena observar si la distancia a veces te sirve para no involucrarte."
+      "sombra": "Quizás te cueste sostener lo cotidiano o acercarte a lo emocional sin teorizarlo. Vale la pena observar si la distancia a veces te sirve para no involucrarte."
     },
     "piscis": {
       "texto": "Con el Sol en Piscis, tu energía brilla más en lo sutil que en el escenario. Tendés a rendir mejor lejos del ruido, en tareas de acompañamiento, en espacios de asistencia o en proyectos que ayudan sin buscar visibilidad. Tenés una percepción que capta lo invisible y un interés natural por lo espiritual y lo simbólico. Tu voluntad no empuja: se deja guiar por una intuición que suele saber antes que la razón.",
-      "luz": "En su mejor versión, tu presencia es un refugio: comprendés sin juzgar, inspirás desde el silencio y das lo mejor de vos donde hace falta compasión.",
-      "sombra": "Puede costarte defender tu lugar o decir que no. Vale la pena observar cuándo replegarte te cuida y cuándo te aleja de lo que sí podrías mostrar."
+      "luz": "Tu presencia puede ser un refugio: comprendés sin juzgar, inspirás desde el silencio y das lo mejor de vos donde hace falta compasión.",
+      "sombra": "Defender tu lugar o decir que no tal vez te pida más coraje que a otros. Vale la pena observar cuándo replegarte te cuida y cuándo te aleja de lo que sí podrías mostrar."
     }
   },
   "en_casa": {
     "1": {
       "texto": "En la casa 1, tu luz se ve apenas llegás: la vitalidad, el entusiasmo y las ganas de afirmarte suelen ser parte de tu primera impresión. Tal vez tengas una manera alegre y sociable de encarar la vida, con arrojo para enfrentar obstáculos y el deseo de ocupar un lugar de guía. La forma en que te ven y la forma en que te sentís suelen estar muy unidas, así que cuidar tu ánimo es cuidar tu camino.",
-      "luz": "Tu presencia irradia confianza: te mostrás tal cual sos, con honestidad y valentía, y eso invita a otras personas a seguir tu impulso.",
-      "sombra": "También puede costarte separar tu valor de la imagen que proyectás. Conviene mirar si el deseo de destacar te deja poco espacio para la duda o la pausa."
+      "luz": "Tu primera impresión ya transmite esa confianza: te mostrás tal cual sos, con honestidad y valentía, y eso invita a otras personas a sumarse.",
+      "sombra": "¿Cuánto de tu valor depende de la imagen que proyectás? Darte espacio para la duda y para la pausa también es parte de tu fuerza."
     },
     "2": {
       "texto": "En la casa 2, tu energía se pone en juego en lo que valorás y en cómo administrás tus recursos, materiales y personales. Quizás sientas orgullo por lo que generás con tus propios talentos y encuentres apoyo en quienes reconocen tu valor. El aprendizaje está en que lo que entra con facilidad también puede irse rápido: la seguridad crece más por cómo usás lo que tenés que por cuánto juntás.",
-      "luz": "Tu autoestima puede ser firme y generosa: conocés tus talentos, los ponés en valor y sabés disfrutar de lo que construís con tus manos o tu cabeza.",
-      "sombra": "En lo material, puede costarte medir el gasto cuando algo te entusiasma. Conviene mirar si a veces buscás en lo que comprás una confirmación de quién sos."
+      "luz": "Tus talentos son tu mejor recurso: los reconocés, les das valor y sabés disfrutar de lo que construís con tus manos o con tu cabeza.",
+      "sombra": "La tensión aparece entre el entusiasmo y la medida: cuando algo te gusta mucho, comprarlo puede parecer una forma de confirmar quién sos."
     },
     "3": {
       "texto": "En la casa 3, tu luz se enciende en la comunicación, el aprendizaje y el movimiento cotidiano. Es una posición que suele dar una mente observadora, con ganas de entender el porqué de las cosas y un carácter jovial que hace fácil el intercambio. Escribir, enseñar o investigar suele darte gusto, y los trayectos cortos, las charlas con vecinos o hermanos y los cursos breves te devuelven energía.",
-      "luz": "Tu palabra tiene llegada: explicás con claridad, despertás interés en lo que contás y convertís la curiosidad en conocimiento compartido.",
-      "sombra": "Al comunicar, puede costarte callar o dejar una idea sin resolver. Conviene mirar si la necesidad de explicarlo todo te quita espacio para escuchar."
+      "luz": "Las conversaciones de todos los días se vuelven tu escenario: explicás con claridad, despertás interés en lo que contás y convertís la curiosidad en algo compartido.",
+      "sombra": "Lo que pide cuidado es la necesidad de explicarlo todo: callar a tiempo o dejar una idea abierta te deja más lugar para escuchar."
     },
     "4": {
       "texto": "En la casa 4, tu energía se concentra en lo íntimo: la casa, la familia, las raíces y el mundo interior. Es una posición donde el brillo no siempre se ve hacia afuera, y puede que la primera parte de tu camino te haya pedido esfuerzo para encontrar tu lugar. La tradición la asocia con una madurez que florece con los años, cuando construís un hogar propio, real o simbólico, que refleja lo que sos.",
-      "luz": "Podés ser el centro cálido de tu casa: das pertenencia, honrás tu historia y encontrás tu fuerza en un refugio que elegiste y cuidás.",
-      "sombra": "Puertas adentro, puede costarte mostrar hacia afuera lo que cultivás en privado. Conviene mirar qué mandatos familiares todavía dirigen tus elecciones."
+      "luz": "Tu casa puede ser el centro cálido de tu vida: das pertenencia, honrás tu historia y encontrás fuerza en un refugio que elegiste y cuidás.",
+      "sombra": "El desafío es mostrar afuera lo que cultivás en privado y reconocer qué mandatos familiares todavía eligen por vos."
     },
     "5": {
       "texto": "En la casa 5, tu luz busca expresarse a través de la creatividad, el juego, el romance y todo lo que te da placer genuino. Podés tener un carisma natural en los vínculos amorosos y una satisfacción especial al enseñar, publicar o crear algo que lleva tu sello. Disfrutar no es un premio al final del esfuerzo: para vos es una fuente de energía que conviene cuidar.",
-      "luz": "Contagiás alegría: tu creatividad se luce, enseñás con entusiasmo y hacés del amor y del juego un espacio para crecer.",
-      "sombra": "En lo creativo, puede costarte que el centro de la escena no sea tuyo. Conviene mirar cuándo la búsqueda de intensidad te aleja de los vínculos que piden constancia."
+      "luz": "El juego y la creación sacan lo mejor de vos: contagiás alegría, enseñás con entusiasmo y hacés del amor un espacio para crecer.",
+      "sombra": "¿Qué te pasa cuando el centro de la escena no es tuyo? Los vínculos que piden constancia suelen dar menos brillo y más raíz."
     },
     "6": {
       "texto": "En la casa 6, tu energía se pone en juego en el trabajo diario, los hábitos y la manera de ser útil. Tendés a ser muy eficiente y a sentir que brillás cuando tu tarea está bien hecha, aunque a veces puede parecerte que no se te reconoce lo suficiente. Hay afinidad con las tareas de cuidar, ordenar y acompañar a otros en lo práctico. Las rutinas que elegís con conciencia te sostienen más de lo que parece.",
-      "luz": "Tu dedicación puede ser un ejemplo: ordenás, resolvés y ponés tu talento al servicio de algo útil para tu comunidad.",
-      "sombra": "En el trabajo, puede costarte seguir la conducción de otros o, si te toca dirigir, no imponerte. Conviene mirar cómo cuidás tu energía en medio de tantas obligaciones."
+      "luz": "Tu dedicación cotidiana puede ser un ejemplo: ordenás, resolvés y ponés tu talento al servicio de tareas que les simplifican la vida a otros.",
+      "sombra": "Un buen ejercicio es notar cómo te llevás con la conducción ajena y, si te toca dirigir, cuánto lugar dejás. Entre tantas obligaciones, tu energía también necesita pausas."
     },
     "7": {
       "texto": "En la casa 7, tu luz se ve con más claridad a través de los vínculos de a dos: parejas, socios, aliados. Tendés a atraer gente con un sentido del honor alto y a vivir la relación como un espacio donde te reconocés. La lealtad y la confianza mutua son centrales, y también es común que en situaciones de conflicto encuentres la forma de llegar a acuerdos justos.",
-      "luz": "Das y recibís lealtad: elegís compañías nobles, sostenés acuerdos con integridad y hacés de cada alianza un lugar de crecimiento.",
-      "sombra": "En los vínculos, puede costarte descubrir quién sos cuando no tenés a alguien enfrente. Conviene mirar si esperás que el otro te devuelva la luz que podés encender por tu cuenta."
+      "luz": "Las alianzas de a dos se vuelven un lugar de crecimiento: das y recibís lealtad, elegís compañías nobles y sostenés acuerdos con integridad.",
+      "sombra": "La tensión está entre encontrarte en el otro y depender de su mirada: la luz que esperás que te devuelvan también podés encenderla por tu cuenta."
     },
     "8": {
       "texto": "En la casa 8, tu energía se juega en lo profundo: los procesos de cambio que transforman, la intimidad emocional y lo que compartís con otras personas. Quizás sientas que te renovás cada vez que cerrás una etapa, y tu brillo crezca cuando te animás a mostrar lo que guardabas. Los acuerdos sobre lo común, lo que se da y lo que se recibe, y la confianza que ponés en juego, son un terreno donde aprender mucho de vos.",
-      "luz": "Tenés el coraje de mirar de frente lo que otros evitan y la capacidad de renacer con más fuerza después de cada etapa difícil.",
-      "sombra": "En lo compartido, puede costarte confiar o soltar el control. Conviene mirar qué te cuesta entregar y qué temés perder cuando te abrís de verdad."
+      "luz": "Las crisis no te asustan tanto como a otros: tenés el coraje de mirar de frente lo que se evita y la capacidad de renacer con más fuerza después de cada etapa difícil.",
+      "sombra": "Entregar el control es el aprendizaje de este terreno. Mirá qué temés perder cuando te abrís de verdad y cuánto te cuesta dejar algo en manos ajenas."
     },
     "9": {
       "texto": "En la casa 9, tu luz busca sentido: la filosofía, la espiritualidad, los estudios superiores y los viajes que cambian la mirada. Es una posición asociada con ideales elevados y con una tolerancia genuina hacia otras opiniones. Podés sentir una urgencia interna por entender el porqué de la vida y destacarte en la enseñanza, las leyes, la investigación o cualquier camino que te lleve lejos, por fuera o por dentro.",
-      "luz": "Podés ser una guía generosa: compartís lo que aprendés, inspirás con tu visión y abrís la cabeza de quienes te rodean.",
-      "sombra": "En tu búsqueda, puede costarte aceptar respuestas pequeñas o caminos sin gloria. Conviene mirar si la búsqueda de verdad a veces se vuelve una certeza que no escucha."
+      "luz": "Las preguntas grandes te encuentran con ganas: compartís lo que aprendés, inspirás con tu visión y ayudás a abrir la cabeza de quienes te rodean.",
+      "sombra": "El riesgo es que la búsqueda de verdad se vuelva una certeza que ya no escucha. Las respuestas pequeñas y los caminos sin gloria también enseñan."
     },
     "10": {
       "texto": "En la casa 10, tu energía se orienta hacia la vocación y el lugar que ocupás en el mundo. Es una posición asociada con el reconocimiento público y con la capacidad de asumir responsabilidades de confianza. Tu propósito tiende a cumplirse cuando tu tarea deja huella en la comunidad, y quienes tienen más experiencia pueden ser un buen apoyo. La congruencia entre lo que sos y lo que mostrás es tu mayor capital.",
-      "luz": "Tu liderazgo puede ser confiable: honrás los cargos que asumís y tu trayectoria inspira un respeto genuino en tu comunidad.",
-      "sombra": "En lo público, puede costarte separar tu valor de tus logros visibles. Conviene mirar qué parte de tu ambición es tuya y cuál responde a lo que se espera de vos."
+      "luz": "Tu vocación puede volverse una referencia para otros: honrás los cargos que asumís y tu trayectoria despierta un respeto genuino en tu comunidad.",
+      "sombra": "Conviene mirar qué parte de tu ambición es tuya y cuál responde a lo que se espera de vos, para que tu valor no quede atado a los logros visibles."
     },
     "11": {
       "texto": "En la casa 11, tu luz se expande a través de las amistades, los grupos y los proyectos que compartís con otros. Tenés facilidad para rodearte de gente valiosa e influyente, y vivís tus sueños como algo que se construye en red. Tus esperanzas para el futuro toman fuerza cuando encuentran un colectivo que las sostenga, y es habitual que seas quien les da ánimo a los demás.",
-      "luz": "Podés ser el corazón de tu grupo: unís personas alrededor de un propósito, ofrecés amistad leal y convertís ideales en proyectos comunes.",
-      "sombra": "En los grupos, puede costarte ocupar un lugar más entre otros sin ser referencia. Conviene mirar si buscás en ellos aprobación más que pertenencia."
+      "luz": "Los proyectos compartidos te encuentran en el centro: ofrecés amistad leal, das ánimo cuando el grupo flaquea y convertís ideales en planes comunes.",
+      "sombra": "El desafío es ocupar un lugar más entre otros, sin ser referencia, y distinguir cuándo buscás en el grupo aprobación y cuándo pertenencia."
     },
     "12": {
       "texto": "En la casa 12, tu luz brilla en lo retirado: la vida interior, la contemplación y el trabajo que se hace lejos de las miradas. Puede que durante un tiempo sientas que no encajás en tu entorno o que te cuesta encontrar tu lugar, y que con los años descubras que tu fuerza está en lo invisible. Hay afinidad con tareas de acompañamiento en instituciones, con la investigación silenciosa y con lo espiritual.",
-      "luz": "Tu soledad puede ser fértil: encontrás sabiduría en el silencio y ayudás a otras personas desde un lugar discreto y compasivo.",
-      "sombra": "En lo íntimo, puede costarte mostrarte o sentir que tenés derecho a ocupar espacio. Conviene mirar si el aislamiento te protege o te esconde de tu propio brillo."
+      "luz": "La soledad puede ser fértil para vos: encontrás sabiduría en el silencio y ayudás a otras personas desde un lugar discreto y compasivo.",
+      "sombra": "Mostrarte y ocupar espacio puede sentirse como un permiso que nadie te dio. ¿El aislamiento te protege o te esconde de tu propio brillo?"
     }
   }
 }

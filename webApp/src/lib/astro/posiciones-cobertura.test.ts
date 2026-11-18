@@ -39,6 +39,18 @@ function arranques(texto: string, palabras = 2): string[] {
 const MULETILLA = /muchas personas con esta posici[oó]n/iu;
 const TOPE_MULETILLA = 3;
 
+const FORMULAS_DE_SIGNO = /puede costarte|vale la pena|cuando fluye|en su mejor/iu;
+const TOPE_APERTURA = 4;
+
+function oraciones(texto: string): string[] {
+  return texto
+    .split(/(?<=[.!?])\s+/)
+    .map((o) =>
+      (o.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().match(/\p{L}+/gu) ?? []).join(" "),
+    )
+    .filter((o) => o.length > 0);
+}
+
 const entradas = PLANET_IDS.flatMap((p) => [
   ...SIGN_IDS.map((s) => ({ id: `${p}/signo/${s}`, e: POSICIONES[p].en_signo[s] })),
   ...HOUSE_KEYS.map((h) => ({ id: `${p}/casa/${h}`, e: POSICIONES[p].en_casa[h] })),
@@ -91,6 +103,55 @@ describe("cobertura de posiciones (T-101)", () => {
       return { p, n: todas.filter((e) => [e.texto, e.luz, e.sombra].some((t) => MULETILLA.test(t))).length };
     }).filter(({ n }) => n > TOPE_MULETILLA);
     expect(excesos).toEqual([]);
+  });
+
+  // La casa continúa el párrafo que abrió el signo: las fórmulas de invitación son del signo y no se repiten.
+  it("luz y sombra de casa no usan las fórmulas del signo en ninguna posición", () => {
+    const hits = PLANET_IDS.flatMap((p) =>
+      HOUSE_KEYS.flatMap((h) =>
+        (["luz", "sombra"] as const).flatMap((campo) => {
+          const m = POSICIONES[p].en_casa[h]?.[campo]?.match(FORMULAS_DE_SIGNO);
+          return m ? [`${p}/casa/${h}/${campo}: «${m[0]}»`] : [];
+        }),
+      ),
+    );
+    expect(hits).toEqual([]);
+  });
+
+  // Restos de «Muchas personas con esta posición»: la misma oración dos veces, a veces con otro sujeto
+  // («te movés bien en situaciones que exigen temple. Se mueven bien en situaciones que exigen temple.»).
+  it("ningún campo repite una oración, ni con otro sujeto", () => {
+    const repetidas = entradas.flatMap(({ id, e }) =>
+      (["texto", "luz", "sombra"] as const).flatMap((campo) => {
+        const os = oraciones(e?.[campo] ?? "");
+        const colas = os.map((o) => o.split(" ")).filter((ps) => ps.length >= 6).map((ps) => ps.slice(-4).join(" "));
+        return [
+          ...os.filter((o, i) => os.indexOf(o) !== i),
+          ...colas.filter((c, i) => colas.indexOf(c) !== i).map((c) => `… ${c}`),
+        ].map((o) => `${id}/${campo}: «${o}»`);
+      }),
+    );
+    expect(repetidas).toEqual([]);
+  });
+
+  it(`por planeta, ninguna apertura de luz o sombra de signo se usa en más de ${TOPE_APERTURA} de las 12 entradas`, () => {
+    const excesos = PLANET_IDS.flatMap((p) =>
+      (["luz", "sombra"] as const).flatMap((campo) => {
+        const cuenta = new Map<string, number>();
+        for (const e of Object.values(POSICIONES[p].en_signo)) {
+          const a = arranques(e[campo])[0];
+          if (a) cuenta.set(a, (cuenta.get(a) ?? 0) + 1);
+        }
+        return [...cuenta].filter(([, n]) => n > TOPE_APERTURA).map(([a, n]) => `${p}/${campo}: «${a}» ×${n}`);
+      }),
+    );
+    expect(excesos).toEqual([]);
+  });
+
+  it("las oraciones se comparan sin acentos, mayúsculas ni puntuación", () => {
+    expect(oraciones("Te movés bien. Te mueves bien! te movés  bien.")).toEqual(["te moves bien", "te mueves bien", "te moves bien"]);
+    expect(FORMULAS_DE_SIGNO.test("Aquí, en su mejor versión")).toBe(true);
+    expect(FORMULAS_DE_SIGNO.test("Valé la pena")).toBe(false);
   });
 
   it("los arranques se normalizan sin acentos ni mayúsculas", () => {
