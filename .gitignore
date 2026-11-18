@@ -10,3 +10,7 @@ docs/superpowers/research/astrologia/fuentes/
 # Material original del taller de tarot (no se versiona; solo la fuente extraída)
 docs/TAROT/*
 !docs/TAROT/fuente/
+
+# Material original de astrología (no se versiona; solo la fuente extraída)
+docs/ASTROLOGIA/*
+!docs/ASTROLOGIA/fuente/

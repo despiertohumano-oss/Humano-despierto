@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { type ChartFacts, computeChart } from "./chart";
+import type { Aspect } from "./aspects";
+import type { Posiciones } from "./posiciones";
 import { AVISO_MARCO, AVISO_SIN_HORA, HOUSE_KEYS, type HouseKey, TEMPLATES, renderChart } from "./prose";
 import { BODY_IDS, SIGNS, SIGN_IDS } from "./zodiac";
 
@@ -80,12 +82,18 @@ describe("renderChart", () => {
     expect(r.porQue).toMatch(/^Cáncer tiene como regente tradicional a la Luna, que está a \d+°\d\d′ de \S+, casa \d+$/);
   });
 
-  it("el párrafo de un cuerpo es cuerpo + signo + casa, en ese orden", () => {
-    const t = renderChart(conHora);
-    const sol = conHora.bodies[0]!;
-    expect(t.cuerpos[0]!.texto).toBe(
-      `${TEMPLATES.cuerpos.sol.frase} ${TEMPLATES.signos[sol.sign].frase} ${TEMPLATES.casas[String(sol.house) as HouseKey].frase}`,
-    );
+  it("el párrafo genérico es cuerpo + signo + casa, en ese orden (punto sin material y hueco)", () => {
+    const vacias = Object.fromEntries(BODY_IDS.slice(0, 10).map((p) => [p, { en_signo: {}, en_casa: {} }])) as Posiciones;
+    const esperado = (id: (typeof BODY_IDS)[number]) => {
+      const b = conHora.bodies.find((x) => x.id === id)!;
+      return `${TEMPLATES.cuerpos[id].frase} ${TEMPLATES.signos[b.sign].frase} ${TEMPLATES.casas[String(b.house) as HouseKey].frase}`;
+    };
+    // Quirón no tiene material: la composición genérica vale con cualquier contenido.
+    const quiron = renderChart(conHora).cuerpos.find((c) => c.titulo.startsWith("Quirón"))!;
+    expect(quiron.texto).toBe(esperado("quiron"));
+    // Un planeta con hueco cae a lo mismo.
+    const t = renderChart(conHora, vacias);
+    expect(t.cuerpos[0]!.texto).toBe(esperado("sol"));
   });
 
   it("sin hora: sin Ascendente ni regente, sin casas y con el aviso de la spec", () => {
@@ -106,5 +114,79 @@ describe("renderChart", () => {
 
   it("es determinista", () => {
     expect(renderChart(conHora)).toEqual(renderChart(conHora));
+  });
+});
+
+describe("textos por posición", () => {
+  const base = computeChart({ utc: new Date("1990-06-15T12:00:00Z"), lat: -34.60372, lon: -58.38159, houseSystem: "placidus", hasTime: true });
+  const sinHora = computeChart({ utc: new Date("1990-06-15T15:00:00Z"), lat: -34.60372, lon: -58.38159, houseSystem: "placidus", hasTime: false });
+  const pos = (t: string) => ({ texto: t.repeat(300), luz: `${t}L`.repeat(60), sombra: `${t}S`.repeat(60) });
+  const vacio = (): Posiciones => Object.fromEntries(BODY_IDS.slice(0, 10).map((p) => [p, { en_signo: {}, en_casa: {} }])) as Posiciones;
+  const asp = (a: Aspect["a"], b: Aspect["b"], type: Aspect["type"]): Aspect => ({ a, b, type, orb: 1, applying: true });
+  const conMarte = (aspects: Aspect[]): ChartFacts => ({
+    ...base,
+    bodies: base.bodies.map((b) => (b.id === "marte" ? { ...b, sign: "tauro", house: 7 } : b)),
+    aspects,
+  });
+  const datos = (): Posiciones => ({ ...vacio(), marte: { en_signo: { tauro: pos("a") }, en_casa: { "7": pos("b") } } });
+  const marte = (f: ChartFacts, p: Posiciones) => renderChart(f, p).cuerpos.find((c) => c.titulo.startsWith("Marte"))!;
+
+  it("une el texto de signo y el de casa, sin frases genéricas", () => {
+    const m = marte(conMarte([]), datos());
+    expect(m.titulo).toMatch(/^Marte en Tauro, casa 7/);
+    expect(m.texto).toBe(`${pos("a").texto} ${pos("b").texto}`);
+    expect(m.texto).not.toContain(TEMPLATES.cuerpos.marte.frase);
+    expect(m.texto).not.toContain(TEMPLATES.signos.tauro.frase);
+  });
+
+  it("sin hora: solo el texto por signo", () => {
+    const f: ChartFacts = { ...sinHora, bodies: sinHora.bodies.map((b) => (b.id === "marte" ? { ...b, sign: "tauro" } : b)) };
+    const m = marte(f, datos());
+    expect(m.texto).toBe(pos("a").texto);
+    expect(m.caras!.luz).toBe(pos("a").luz);
+  });
+
+  it("Quirón, nodo y Lilith se arman como hoy y no llevan luz ni sombra", () => {
+    const t = renderChart(conMarte([]), datos());
+    for (const id of ["quiron", "nodo_norte", "lilith_media"] as const) {
+      const b = base.bodies.find((x) => x.id === id)!;
+      const c = t.cuerpos.find((x) => x.titulo.startsWith(id === "quiron" ? "Quirón" : id === "nodo_norte" ? "Nodo" : "Lilith"))!;
+      expect(c.caras).toBeUndefined();
+      expect(c.texto).toContain(TEMPLATES.signos[b.sign].frase);
+    }
+  });
+
+  it("un hueco cae a la composición genérica", () => {
+    const m = marte(conMarte([]), vacio());
+    expect(m.caras).toBeUndefined();
+    expect(m.texto).toContain(TEMPLATES.cuerpos.marte.frase);
+  });
+
+  it("si solo existe una de las dos entradas, usa esa", () => {
+    const solo: Posiciones = { ...vacio(), marte: { en_signo: {}, en_casa: { "7": pos("b") } } };
+    expect(marte(conMarte([]), solo).texto).toBe(pos("b").texto);
+  });
+
+  it("más trígonos y sextiles: la luz primero, con el motivo", () => {
+    const c = marte(conMarte([asp("marte", "venus", "trigono"), asp("marte", "sol", "sextil"), asp("marte", "saturno", "cuadratura")]), datos()).caras!;
+    expect(c.tono).toBe("luz");
+    expect(c.motivo).toMatch(/^Empieza por la luz: .*2 aspectos fluidos.*1 aspecto tenso/);
+    expect(c.luz).toBe(`${pos("a").luz} ${pos("b").luz}`);
+    expect(c.sombra).toBe(`${pos("a").sombra} ${pos("b").sombra}`);
+  });
+
+  it("más cuadraturas y oposiciones: la sombra primero", () => {
+    const c = marte(conMarte([asp("marte", "venus", "oposicion"), asp("marte", "sol", "cuadratura")]), datos()).caras!;
+    expect(c.tono).toBe("sombra");
+    expect(c.motivo).toMatch(/^Empieza por la sombra/);
+  });
+
+  it("empate o sin aspectos: sin orden de énfasis, y lo dice", () => {
+    const sin = marte(conMarte([]), datos()).caras!;
+    expect(sin.tono).toBe("ambas");
+    expect(sin.motivo).toMatch(/^Las dos caras pesan igual: no forma/);
+    const empate = marte(conMarte([asp("marte", "venus", "trigono"), asp("marte", "sol", "cuadratura")]), datos()).caras!;
+    expect(empate.tono).toBe("ambas");
+    expect(empate.motivo).toMatch(/^Las dos caras pesan igual: con otros planetas tiene 1 aspecto fluido/);
   });
 });

@@ -2,7 +2,7 @@
 
 Guidance for Claude Code when working in this repository.
 
-> **Every claim in this file was verified against the repo on 2026-11-08** (T-024; previously T-038); counts, migrations and the session rules updated on 2026-11-13 (T-096, T-097, T-098). The previous
+> **Every claim in this file was verified against the repo on 2026-11-08** (T-024; previously T-038); counts, migrations and the session rules updated on 2026-11-13 (T-096, T-097, T-098); natal-chart position texts on 2026-11-18 (T-101). The previous
 > version described a project that did not exist (see "History" at the bottom). If you change
 > the code, change this file — a wrong CLAUDE.md is worse than none, because it is trusted.
 
@@ -78,7 +78,7 @@ Runs against **PGlite** (embedded Postgres). Migrations in `migrations/` apply i
 
 | Area | State |
 |------|-------|
-| `webApp/src` | **~27.1k LOC** (non-test). 47 routes (`page.tsx`), 163 non-test files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`, with the reading interpreted by lenses, tensions and a reflective answer in `src/lib/tarot/interpret/` (T-094); 78 card scans in `public/tarot/rws/`; the owner's 9 brand images in `public/brand/` (WebP, `CREDITS.md`). Tarot text comes from the owner's course material in `docs/TAROT/fuente/` (originals outside git). Natal-chart engine (pure, no DB) in `src/lib/astro/` on `astronomy-engine` (MIT, ADR-017; credits in `src/lib/astro/CREDITS.md`). Tests: Vitest (1674 unit tests in 200 files, next to the file; `vitest.config.mts` includes every `src/**/*.test.{ts,tsx}`, T-098) + Playwright (`e2e/`), T-039. |
+| `webApp/src` | **~27.1k LOC** (non-test). 47 routes (`page.tsx`), 163 non-test files under `components/`, no mock modules (`lib/mocks/` removed in T-053), `tokens.css`. Real Supabase queries everywhere. Tarot engine (pure, no DB, no AI) in `src/lib/tarot/`, with the reading interpreted by lenses, tensions and a reflective answer in `src/lib/tarot/interpret/` (T-094); 78 card scans in `public/tarot/rws/`; the owner's 9 brand images in `public/brand/` (WebP, `CREDITS.md`). Tarot text comes from the owner's course material in `docs/TAROT/fuente/` (originals outside git). Natal-chart engine (pure, no DB) in `src/lib/astro/` on `astronomy-engine` (MIT, ADR-017; credits in `src/lib/astro/CREDITS.md`). Its text per position (10 planets x 12 signs and x 12 houses, each with `texto`, `luz`, `sombra`) lives in `src/lib/astro/data/posiciones/<planeta>.json` (T-101), validated on import by `posiciones.ts`; `tonoDe` orders light and shadow by the planet's aspects; Chiron, the node and Lilith keep the generic phrases of `templates.json`. Tests: Vitest (1724 unit tests in 202 files, next to the file; `vitest.config.mts` includes every `src/**/*.test.{ts,tsx}`, T-098) + Playwright (`e2e/`), T-039. |
 | `webApp/supabase` | **Schema live.** 54 migrations (last `0082`; `0032` applies before `0031` by timestamp, independent), 27 tables (`tarot_readings`, ADR-016; `places`, `natal_charts`, T-024; `diario_post_courses`, B3; `error_events`, 0078), RLS + per-column grants + guard triggers, 1007 mutation tests (PGlite). Private Storage bucket `uploads`: `avatars/` (T-042), `covers/` (T-047) and `diario/` (B3), uploads only via service_role; its policies are only tested over HTTP by b1. Fixtures `@test.local` (admin, docente, alumna) in `seed.fixtures.sql`, content seed in `seed.sql`, demo data in `demo.sql`: all **local only**, never run in the cloud (see `webApp/supabase/README.md`). |
 | `mobileApp/` | **Empty directory.** No Expo scaffold. **Out of scope for Phase 2.** |
 | `packages/tokens` | 763 LOC of the old Cosmos palette (marked historical in its README, D-66) — **consumed by nobody**: `webApp` does not import it (it uses its own `src/styles/tokens.css`) and `mobileApp` does not exist. Kept for when mobile returns. |
@@ -490,6 +490,7 @@ Several things block work and require the repo owner's accounts:
   Check `select extname, extnamespace::regnamespace from pg_extension` first (`pg_trgm`/`unaccent`).
 - **Legal consultation on birth data** and **the owner's review of the 78 texts**
   (`templates.json`, `_meta.estado`): they block the T-024 release, not development.
+- **Owner's review of the natal-chart position texts** (`docs/ASTROLOGIA/fuente/revision.json` in `pendiente`, questions in `PREGUNTAS-DUENA.md`): written from her course material in `docs/ASTROLOGIA/` (originals outside git, never copied: `verificar-copia.py` fails on 8+ equal words in a row). They never predict and never speak of health, death, money or marriage as fate (`posiciones-cobertura.test.ts`); house 6 speaks of routines and daily work until she decides otherwise.
 - **Owner's review of the tarot texts** (`docs/TAROT/fuente/revision.json` in `pendiente`): blocks the tarot release.
 - **Auth OTP expiry = 86400** (24 h) in the cloud dashboard (Authentication > Email): the direct
   access of the teacher-invitation mail lives that long (default 1 h). Local: `config.toml`.
@@ -510,6 +511,7 @@ must **never** carry the `NEXT_PUBLIC_` prefix: the first bypasses RLS entirely,
 mail as the school, and the prefix would ship either to the browser.
 
 ## History
+On 2026-11-18 T-101: the natal chart reads a text of its own per planet in sign and in house (240 entries with light and shadow) instead of three generic phrases glued together.
 On 2026-11-13 T-098 (post-audit robustness, `engram/qa/AUDIT-general-2026-11-13.md`): typed confirmation for module/lesson deletes (G-01), Netlify mail-retry cron and mails in `after()` (G-02, D-127), `npm test` in the Netlify build (G-03), player actions return results (G-04), login redirect for `/leccion` (G-06), `cache()` on `getCurrentUser` (G-07), Vitest glob include (G-10), note body cap (0082, G-11).
 On 2026-11-13 T-097 (part A) paid debt: account shown after an invitation link (NB-1), minimatch override, neutral action errors (D-120), drafts cut for a downgraded teacher (0081, D-121), retry of capped transactional mails (D-128).
 On 2026-11-13 T-096 closed the session-isolation audit (`engram/qa/AUDIT-sesiones-2026-11-13.md`, S-01..S-07): migration 0080, invitation access never replaces an open session, session refresh on every document, one service_role factory (`createServiceRoleClient`).
