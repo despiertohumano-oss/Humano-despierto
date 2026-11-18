@@ -2,10 +2,12 @@ import { z } from "@/lib/validation/zod";
 import raw from "./data/templates.json";
 import type { AspectId } from "./aspects";
 import type { BodyPosition, ChartFacts } from "./chart";
-import { BODY_IDS, BODY_NAMES, SIGNS, SIGN_IDS, type BodyId, type Modality, formatDegree, pointName } from "./zodiac";
+import { POSICIONES, type Posiciones, type Tono, isPlanetId, tonoDe } from "./posiciones";
+import {
+  BODY_IDS, BODY_NAMES, HOUSE_KEYS, SIGNS, SIGN_IDS, type BodyId, type HouseKey, type PlanetId, type Modality, formatDegree, pointName,
+} from "./zodiac";
 
-export const HOUSE_KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"] as const;
-export type HouseKey = (typeof HOUSE_KEYS)[number];
+export { HOUSE_KEYS, type HouseKey };
 const ASPECT_KEYS = ["conjuncion", "sextil", "cuadratura", "trigono", "oposicion"] as const satisfies readonly AspectId[];
 
 const entry = z.object({
@@ -40,7 +42,9 @@ export const AVISO_FALLBACK =
 export const AVISO_LUNA =
   "Sin la hora, la Luna puede estar unos grados antes o después de lo que ves, y ese día cambió de signo: tomá su signo con cautela.";
 
-export type Paragraph = { titulo: string; texto: string; porQue: string };
+// Luz y sombra de una posición; `tono` solo decide cuál va primero y `motivo` lo explica a la vista.
+export type Caras = { luz: string; sombra: string; tono: Tono; motivo: string };
+export type Paragraph = { titulo: string; texto: string; porQue: string; caras?: Caras };
 export type ChartText = {
   big3: Paragraph[];
   regente: Paragraph | null;
@@ -82,13 +86,39 @@ function ubicacion(b: BodyPosition): string {
   return `${BODY_NAMES[b.id]} ${posicion(b)}`;
 }
 
-function bodyParagraph(b: BodyPosition): Paragraph {
-  const partes = [TEMPLATES.cuerpos[b.id].frase, TEMPLATES.signos[b.sign].frase];
-  if (b.house) partes.push(TEMPLATES.casas[String(b.house) as HouseKey].frase);
-  return {
+function plural(n: number, uno: string, varios: string): string {
+  return `${n} ${n === 1 ? uno : varios}`;
+}
+
+function motivoDeTono(tono: Tono, fluidos: number, tensos: number): string {
+  const f = plural(fluidos, "aspecto fluido (trígono o sextil)", "aspectos fluidos (trígonos y sextiles)");
+  const t = plural(tensos, "aspecto tenso (cuadratura u oposición)", "aspectos tensos (cuadraturas y oposiciones)");
+  if (tono === "luz") return `Empieza por la luz: con otros planetas tiene ${f} y ${t}.`;
+  if (tono === "sombra") return `Empieza por la sombra: con otros planetas tiene ${t} y ${f}.`;
+  return fluidos === 0
+    ? "Las dos caras pesan igual: no forma trígonos, sextiles, cuadraturas ni oposiciones con otros planetas."
+    : `Las dos caras pesan igual: con otros planetas tiene ${f} y ${t}.`;
+}
+
+function bodyParagraph(b: BodyPosition, aspects: ChartFacts["aspects"], posiciones: Posiciones): Paragraph {
+  const base = {
     titulo: `${BODY_NAMES[b.id]} en ${SIGNS[b.sign].nombre}${b.house ? `, casa ${b.house}` : ""}${b.retrograde ? " (retrógrado)" : ""}`,
-    texto: partes.join(" "),
     porQue: ubicacion(b),
+  };
+  const propio = isPlanetId(b.id) ? posiciones[b.id] : null;
+  const enSigno = propio?.en_signo[b.sign];
+  const enCasa = b.house ? propio?.en_casa[String(b.house) as HouseKey] : undefined;
+  const partes = [enSigno, enCasa].filter((e) => e !== undefined);
+  if (!propio || partes.length === 0) {
+    const genericas = [TEMPLATES.cuerpos[b.id].frase, TEMPLATES.signos[b.sign].frase];
+    if (b.house) genericas.push(TEMPLATES.casas[String(b.house) as HouseKey].frase);
+    return { ...base, texto: genericas.join(" ") };
+  }
+  const { tono, fluidos, tensos } = tonoDe(b.id as PlanetId, aspects);
+  return {
+    ...base,
+    texto: partes.map((e) => e.texto).join(" "),
+    caras: { luz: partes.map((e) => e.luz).join(" "), sombra: partes.map((e) => e.sombra).join(" "), tono, motivo: motivoDeTono(tono, fluidos, tensos) },
   };
 }
 
@@ -107,7 +137,8 @@ function balanceText(f: ChartFacts): string {
   ].join(" ");
 }
 
-export function renderChart(f: ChartFacts): ChartText {
+// `posiciones` se inyecta para que los tests no dependan del contenido real.
+export function renderChart(f: ChartFacts, posiciones: Posiciones = POSICIONES): ChartText {
   const byId = new Map(f.bodies.map((b) => [b.id, b]));
   const sol = byId.get("sol")!;
   const luna = byId.get("luna")!;
@@ -141,5 +172,5 @@ export function renderChart(f: ChartFacts): ChartText {
   if (f.flags.houseSystemFallback) avisos.push(AVISO_FALLBACK);
   if (f.flags.moonSignUncertain) avisos.push(AVISO_LUNA);
 
-  return { big3, regente, cuerpos: f.bodies.map(bodyParagraph), aspectos, balance: balanceText(f), avisos, marco: AVISO_MARCO };
+  return { big3, regente, cuerpos: f.bodies.map((b) => bodyParagraph(b, f.aspects, posiciones)), aspectos, balance: balanceText(f), avisos, marco: AVISO_MARCO };
 }

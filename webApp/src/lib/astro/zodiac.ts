@@ -1,6 +1,9 @@
 export const SIGN_IDS = ["aries", "tauro", "geminis", "cancer", "leo", "virgo", "libra", "escorpio", "sagitario", "capricornio", "acuario", "piscis"] as const;
 export type SignId = (typeof SIGN_IDS)[number];
 
+export const HOUSE_KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"] as const;
+export type HouseKey = (typeof HOUSE_KEYS)[number];
+
 export const PLANET_IDS = ["sol", "luna", "mercurio", "venus", "marte", "jupiter", "saturno", "urano", "neptuno", "pluton"] as const;
 export type PlanetId = (typeof PLANET_IDS)[number];
 

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { computeChart } from "@/lib/astro/chart";
+import type { Posiciones } from "@/lib/astro/posiciones";
 import { AVISO_MARCO, AVISO_SIN_HORA, renderChart } from "@/lib/astro/prose";
 import ChartWheel, { BODY_RINGS, layoutGlyphs } from "./ChartWheel";
 import PositionsTable from "./PositionsTable";
@@ -113,5 +114,33 @@ describe("layoutGlyphs", () => {
     const solo = layoutGlyphs([10, 100, 200]);
     for (const s of solo) expect(s).toMatchObject({ radio: BODY_RINGS[0] });
     expect(solo.map((s) => s.angulo)).toEqual([10, 100, 200]);
+  });
+});
+
+describe("luz y sombra en el resultado", () => {
+  const pos = (t: string) => ({ texto: t.repeat(300), luz: `${t}L`.repeat(60), sombra: `${t}S`.repeat(60) });
+  const datos = Object.fromEntries(
+    ["sol", "luna", "mercurio", "venus", "marte", "jupiter", "saturno", "urano", "neptuno", "pluton"].map((p) => [p, { en_signo: {}, en_casa: {} }]),
+  ) as Posiciones;
+  datos.marte = { en_signo: Object.fromEntries(["aries", "tauro", "geminis", "cancer", "leo", "virgo", "libra", "escorpio", "sagitario", "capricornio", "acuario", "piscis"].map((s) => [s, pos("x")])), en_casa: {} };
+  const html = (tono: "luz" | "sombra" | "ambas") => {
+    const text = renderChart(conHora, datos);
+    const m = text.cuerpos.find((c) => c.titulo.startsWith("Marte"))!;
+    m.caras = { ...m.caras!, tono, motivo: "Motivo de prueba." };
+    return renderToStaticMarkup(<ChartResult view={{ facts: conHora, text, placeLabel: "BA", zoneLabel: "UTC−3" }} />);
+  };
+
+  it("rotula las dos caras con texto y respeta el orden del tono", () => {
+    const luz = html("luz");
+    expect(luz).toContain("Motivo de prueba.");
+    expect(luz.indexOf("Luz:")).toBeGreaterThan(-1);
+    expect(luz.indexOf("Luz:")).toBeLessThan(luz.indexOf("Sombra:"));
+    const sombra = html("sombra");
+    expect(sombra.indexOf("Sombra:")).toBeLessThan(sombra.indexOf("Luz:"));
+  });
+
+  it("los puntos sin material no muestran rótulos", () => {
+    const sinNada = renderToStaticMarkup(<ChartResult view={{ facts: conHora, text: renderChart(conHora), placeLabel: "BA", zoneLabel: "UTC−3" }} />);
+    expect(sinNada).not.toContain("Luz:");
   });
 });

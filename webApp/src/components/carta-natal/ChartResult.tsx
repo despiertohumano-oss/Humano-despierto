@@ -6,11 +6,29 @@ import AstroEthicsNote from "./AstroEthicsNote";
 import ChartWheel, { ASPECT_STYLE } from "./ChartWheel";
 import PositionsTable from "./PositionsTable";
 
+function Caras({ caras }: { caras: NonNullable<Paragraph["caras"]> }) {
+  const luz = { rotulo: "Luz", texto: caras.luz };
+  const sombra = { rotulo: "Sombra", texto: caras.sombra };
+  // El tono solo cambia el orden: las dos caras se muestran siempre.
+  const orden = caras.tono === "sombra" ? [sombra, luz] : [luz, sombra];
+  return (
+    <div className="max-w-[65ch] space-y-2 border-l-2 border-linea pl-4">
+      <p className="text-sm text-suave">{caras.motivo}</p>
+      {orden.map((c) => (
+        <p key={c.rotulo} className="text-tinta">
+          <strong className="font-bold text-bosque">{c.rotulo}:</strong> {c.texto}
+        </p>
+      ))}
+    </div>
+  );
+}
+
 function Bloque({ p }: { p: Paragraph }) {
   return (
     <article className="space-y-2">
       <h4 className="text-lg font-bold text-bosque">{p.titulo}</h4>
       <p className="max-w-[65ch] text-tinta">{p.texto}</p>
+      {p.caras && <Caras caras={p.caras} />}
       <p className="text-sm text-suave">Por qué: {p.porQue}.</p>
     </article>
   );
