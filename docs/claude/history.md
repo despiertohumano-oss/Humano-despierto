@@ -4,6 +4,7 @@
 > the code, change this file — a wrong guide is worse than none, because it is trusted.
 
 ## History
+On 2026-11-18 T-103: the 240 planet-in-sign and planet-in-house texts have their own indexable page, linked from the sheets, the chart result and the sitemap.
 On 2026-11-18 T-102: aspects of Pluto with the other nine planets read their own text by family instead of the generic phrase.
 On 2026-11-18 T-101: the natal chart reads a text of its own per planet in sign and in house (240 entries with light and shadow) instead of three generic phrases glued together.
 On 2026-11-13 T-098 (post-audit robustness, `engram/qa/AUDIT-general-2026-11-13.md`): typed confirmation for module/lesson deletes (G-01), Netlify mail-retry cron and mails in `after()` (G-02, D-127), `npm test` in the Netlify build (G-03), player actions return results (G-04), login redirect for `/leccion` (G-06), `cache()` on `getCurrentUser` (G-07), Vitest glob include (G-10), note body cap (0082, G-11).

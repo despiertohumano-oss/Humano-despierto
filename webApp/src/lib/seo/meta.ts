@@ -91,3 +91,27 @@ export function bodyDescription(nombre: string, palabras: readonly string[]): st
 export function houseDescription(nombre: string, palabras: readonly string[]): string {
   return trimAtWord(`Qué significa la ${nombre.toLowerCase()} en la carta natal: ${lista(palabras)}. Qué áreas de la vida ordena y cómo leerla.`, DESCRIPTION_MAX);
 }
+
+export function posicionTitle(nombre: string): string {
+  return fitTitle(`${nombre}: significado en la carta natal`, `${nombre}: significado`, nombre);
+}
+
+const PALABRAS_SUELTAS = /\s+(y|o|de|del|que|no|la|el|en|con|un|una|a|e|u|se|su|al|los|las|por|para|como|es)$/iu;
+
+/** Oraciones completas del texto que entren; si no alcanzan el mínimo, la siguiente recortada y cerrada con «…». */
+export function posicionDescription(texto: string): string {
+  const oraciones = texto.match(/[^.!?]+[.!?]+(?=\s|$)/g)?.map((o) => o.trim()) ?? [texto];
+  let d = "";
+  let i = 0;
+  while (i < oraciones.length && `${d} ${oraciones[i]}`.trim().length <= DESCRIPTION_MAX) {
+    d = `${d} ${oraciones[i]}`.trim();
+    i++;
+  }
+  if (d.length >= DESCRIPTION_MIN) return d;
+  const resto = oraciones[i] ?? "";
+  const room = DESCRIPTION_MAX - (d ? d.length + 1 : 0) - 1;
+  let corte = resto.slice(0, room);
+  corte = corte.slice(0, Math.max(corte.lastIndexOf(" "), 0) || corte.length).replace(/[\s,;:.\-–—(]+$/, "");
+  while (PALABRAS_SUELTAS.test(corte)) corte = corte.replace(PALABRAS_SUELTAS, "");
+  return `${d ? `${d} ` : ""}${corte}…`;
+}

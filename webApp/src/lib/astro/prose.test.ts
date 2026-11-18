@@ -140,6 +140,20 @@ describe("textos por posición", () => {
     expect(m.texto).not.toContain(TEMPLATES.signos.tauro.frase);
   });
 
+  it("T-103 · marca a qué páginas de posición enlaza: signo y casa, solo con texto propio", () => {
+    expect(marte(conMarte([]), datos()).enlaces).toEqual({ planeta: "marte", signo: "tauro", casa: "7" });
+    const soloSigno: Posiciones = { ...vacio(), marte: { en_signo: { tauro: pos("a") }, en_casa: {} } };
+    expect(marte(conMarte([]), soloSigno).enlaces).toEqual({ planeta: "marte", signo: "tauro" });
+    expect(marte(conMarte([]), vacio()).enlaces).toBeUndefined();
+    const t = renderChart(conMarte([]), datos());
+    expect(t.cuerpos.filter((c) => c.enlaces).map((c) => c.enlaces!.planeta)).toEqual(["marte"]);
+  });
+
+  it("T-103 · sin hora el enlace es solo al signo", () => {
+    const f: ChartFacts = { ...sinHora, bodies: sinHora.bodies.map((b) => (b.id === "marte" ? { ...b, sign: "tauro" } : b)) };
+    expect(marte(f, datos()).enlaces).toEqual({ planeta: "marte", signo: "tauro" });
+  });
+
   it("sin hora: solo el texto por signo", () => {
     const f: ChartFacts = { ...sinHora, bodies: sinHora.bodies.map((b) => (b.id === "marte" ? { ...b, sign: "tauro" } : b)) };
     const m = marte(f, datos());

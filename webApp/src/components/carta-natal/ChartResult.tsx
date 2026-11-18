@@ -1,4 +1,6 @@
 import Icon, { astroIcon } from "@/components/atoms/Icon";
+import Link from "next/link";
+import { posicionPath, tituloPosicion, type TipoPosicion } from "@/lib/astro/posicion-rutas";
 import type { Paragraph } from "@/lib/astro/prose";
 import type { ChartView } from "@/lib/server/natal-chart";
 import AspectsTable from "./AspectsTable";
@@ -23,12 +25,34 @@ function Caras({ caras }: { caras: NonNullable<Paragraph["caras"]> }) {
   );
 }
 
+function MasSobre({ enlaces }: { enlaces: NonNullable<Paragraph["enlaces"]> }) {
+  const { planeta, signo, casa } = enlaces;
+  const destinos: { tipo: TipoPosicion; clave: string }[] = [
+    ...(signo ? [{ tipo: "signo" as const, clave: signo }] : []),
+    ...(casa ? [{ tipo: "casa" as const, clave: casa }] : []),
+  ];
+  return (
+    <p className="text-sm text-suave">
+      Leer más:{" "}
+      {destinos.map((d, i) => (
+        <span key={d.tipo}>
+          {i > 0 && " · "}
+          <Link href={posicionPath(planeta, d.tipo, d.clave)} className="font-semibold text-miel-800 hover:underline">
+            {tituloPosicion(planeta, d.tipo, d.clave)}
+          </Link>
+        </span>
+      ))}
+    </p>
+  );
+}
+
 function Bloque({ p }: { p: Paragraph }) {
   return (
     <article className="space-y-2">
       <h4 className="text-lg font-bold text-bosque">{p.titulo}</h4>
       <p className="max-w-[65ch] text-tinta">{p.texto}</p>
       {p.caras && <Caras caras={p.caras} />}
+      {p.enlaces && <MasSobre enlaces={p.enlaces} />}
       <p className="text-sm text-suave">Por qué: {p.porQue}.</p>
     </article>
   );

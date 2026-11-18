@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import FichaLayout from "@/components/carta-natal/FichaLayout";
+import ListaPosiciones from "@/components/carta-natal/ListaPosiciones";
 import { astroIcon } from "@/components/atoms/Icon";
 import { bodyDescription, fichaTitle, pageOpenGraph } from "@/lib/seo/meta";
+import { posicionesDe } from "@/lib/astro/posicion-rutas";
+import { isPlanetId } from "@/lib/astro/posiciones";
 import { TEMPLATES } from "@/lib/astro/prose";
 import { BODY_IDS, BODY_NAMES, SIGNS, SIGN_IDS, bodyBySlug, bodySlug, type BodyId } from "@/lib/astro/zodiac";
 
@@ -46,6 +49,8 @@ export default async function PlanetaPage({ params }: { params: Promise<{ slug: 
       path={`/carta-natal/planetas/${slug}`}
       prev={{ href: `/carta-natal/planetas/${bodySlug(prev)}`, label: BODY_NAMES[prev] }}
       next={{ href: `/carta-natal/planetas/${bodySlug(next)}`, label: BODY_NAMES[next] }}
-    />
+    >
+      {isPlanetId(id) && <ListaPosiciones titulo={`${BODY_NAMES[id]} en cada signo y en cada casa`} items={posicionesDe(id)} />}
+    </FichaLayout>
   );
 }
