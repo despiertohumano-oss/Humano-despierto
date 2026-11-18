@@ -5,10 +5,11 @@ import { CARD_IMAGE_SIZES } from "@/lib/tarot/image-sizes";
 import { activeSpreads } from "@/lib/tarot/spreads";
 import { HOUSE_KEYS, TEMPLATES } from "@/lib/astro/prose";
 import { BODY_IDS, SIGNS, SIGN_IDS } from "@/lib/astro/zodiac";
+import { POSICION_RUTAS, resolverPosicion, tituloPosicion } from "@/lib/astro/posicion-rutas";
 import { CATALOGO, DIARIO, DOCENTES } from "@/content/site-copy";
 import {
   DESCRIPTION_MAX, DESCRIPTION_MIN, TITLE_MAX, TITLE_SUFFIX, bodyDescription, cardDescription, cardImageAlt, cardOgImage,
-  cardTitle, fichaTitle, houseDescription, pageOpenGraph, signDescription, spreadTitle, trimAtWord,
+  cardTitle, fichaTitle, houseDescription, pageOpenGraph, posicionDescription, posicionTitle, signDescription, spreadTitle, trimAtWord,
 } from "./meta";
 import { buildLlmsTxt } from "./llms";
 
@@ -113,5 +114,36 @@ describe("T-099 · llms.txt", () => {
     for (const p of ["/tarot", "/tarot/cartas", "/tarot/cartas/el-sol", "/carta-natal", "/carta-natal/signos/aries", "/cursos", "/diario"]) expect(txt).toContain(`(https://ejemplo.test${p})`);
     expect(txt).not.toMatch(/\]\(\//);
     expect(txt.startsWith("# Humano Despierto")).toBe(true);
+  });
+});
+
+describe("T-103 · páginas de posición", () => {
+  const todas = POSICION_RUTAS.map((r) => resolverPosicion(r.slug, r.posicion)!);
+
+  it("las 240 descripciones entran en 70-160 y salen del texto de la posición", () => {
+    expect(todas).toHaveLength(240);
+    for (const r of todas) {
+      const d = posicionDescription(r.entrada.texto);
+      const id = `${r.planeta}/${r.clave}`;
+      expect(d.length, id).toBeGreaterThanOrEqual(DESCRIPTION_MIN);
+      expect(d.length, id).toBeLessThanOrEqual(DESCRIPTION_MAX);
+      expect(r.entrada.texto.startsWith(d.replace(/[….]$/, "")), id).toBe(true);
+      expect(d, id).not.toMatch(/\s(y|o|de|que|no|la|el|en|con|un|una|a)[.…]$/i);
+      expect(d, id).toMatch(/[.!?…]$/);
+    }
+  });
+
+  it("la descripción de marte/tauro ya no se corta en una palabra suelta", () => {
+    const d = posicionDescription(resolverPosicion("marte", "tauro")!.entrada.texto);
+    expect(d).not.toMatch(/ y no\.$/);
+  });
+
+  it("los 240 títulos entran en 60 con el sufijo y nombran la posición", () => {
+    for (const r of todas) {
+      const nombre = tituloPosicion(r.planeta, r.tipo, r.clave);
+      const t = posicionTitle(nombre);
+      expect(t.startsWith(nombre), nombre).toBe(true);
+      expect(`${t}${TITLE_SUFFIX}`.length, t).toBeLessThanOrEqual(TITLE_MAX);
+    }
   });
 });

@@ -19,6 +19,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [{ protocol: "https", hostname: "images.unsplash.com", pathname: "/photo-**" }],
   },
   experimental: {
+    agentUpgrade: "security",
     // T-042/T-047 · avatar y portada viajan en el FormData de un Server Action y el tope por
     // defecto es 1 MB. 4 MB cubre los 3 MB de la portada mas el overhead multipart: 3,1 MB tiene
     // que LLEGAR a la action para recibir su mensaje (criterio 2 de T-047). El tope real lo

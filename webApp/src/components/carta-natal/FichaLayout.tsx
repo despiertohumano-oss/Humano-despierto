@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import Icon, { type AstroIconName } from "@/components/atoms/Icon";
 import { ButtonLink } from "@/components/atoms/Button";
@@ -14,9 +15,10 @@ type Props = {
   prev: Vecino;
   next: Vecino;
   icon?: AstroIconName;
+  children?: ReactNode;
 };
 
-export default function FichaLayout({ kicker, entry, datos, path, prev, next, icon }: Props) {
+export default function FichaLayout({ kicker, entry, datos, path, prev, next, icon, children }: Props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -59,6 +61,7 @@ export default function FichaLayout({ kicker, entry, datos, path, prev, next, ic
             ))}
           </dl>
         )}
+        {children}
         <ButtonLink href="/carta-natal" arrow>Calculá tu carta</ButtonLink>
         <nav aria-label="Fichas vecinas" className="flex justify-between gap-4 text-sm font-semibold">
           <Link href={prev.href} className="inline-flex min-h-10 items-center text-miel-800 hover:underline">{prev.label}</Link>

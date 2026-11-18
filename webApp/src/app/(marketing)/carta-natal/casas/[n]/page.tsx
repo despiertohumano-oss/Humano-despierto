@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import FichaLayout from "@/components/carta-natal/FichaLayout";
+import ListaPosiciones from "@/components/carta-natal/ListaPosiciones";
 import { fichaTitle, houseDescription, pageOpenGraph } from "@/lib/seo/meta";
+import { planetasEn } from "@/lib/astro/posicion-rutas";
 import { HOUSE_KEYS, TEMPLATES, type HouseKey } from "@/lib/astro/prose";
 
 const isHouse = (n: string): n is HouseKey => (HOUSE_KEYS as readonly string[]).includes(n);
@@ -35,6 +37,8 @@ export default async function CasaPage({ params }: { params: Promise<{ n: string
       path={`/carta-natal/casas/${n}`}
       prev={{ href: `/carta-natal/casas/${prev}`, label: `Casa ${prev}` }}
       next={{ href: `/carta-natal/casas/${next}`, label: `Casa ${next}` }}
-    />
+    >
+      <ListaPosiciones titulo={`Los planetas en la casa ${n}`} items={planetasEn("casa", n)} />
+    </FichaLayout>
   );
 }

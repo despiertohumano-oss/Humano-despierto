@@ -1,10 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { computeChart } from "@/lib/astro/chart";
+import type { Posiciones } from "@/lib/astro/posiciones";
 import { AVISO_MARCO, AVISO_SIN_HORA, renderChart } from "@/lib/astro/prose";
 import ChartWheel, { BODY_RINGS, layoutGlyphs } from "./ChartWheel";
 import PositionsTable from "./PositionsTable";
 import ChartResult from "./ChartResult";
+import PosicionPage, { generateMetadata, generateStaticParams } from "@/app/(marketing)/carta-natal/planetas/[slug]/[posicion]/page";
+import PlanetaPage from "@/app/(marketing)/carta-natal/planetas/[slug]/page";
+import SignoPage from "@/app/(marketing)/carta-natal/signos/[slug]/page";
+import CasaPage from "@/app/(marketing)/carta-natal/casas/[n]/page";
+import { POSICIONES } from "@/lib/astro/posiciones";
 
 const BA = { lat: -34.60372, lon: -58.38159 };
 const conHora = computeChart({ utc: new Date("1990-06-15T12:00:00Z"), ...BA, houseSystem: "placidus", hasTime: true });
@@ -113,5 +119,128 @@ describe("layoutGlyphs", () => {
     const solo = layoutGlyphs([10, 100, 200]);
     for (const s of solo) expect(s).toMatchObject({ radio: BODY_RINGS[0] });
     expect(solo.map((s) => s.angulo)).toEqual([10, 100, 200]);
+  });
+});
+
+describe("luz y sombra en el resultado", () => {
+  const pos = (t: string) => ({ texto: t.repeat(300), luz: `${t}L`.repeat(60), sombra: `${t}S`.repeat(60) });
+  const datos = Object.fromEntries(
+    ["sol", "luna", "mercurio", "venus", "marte", "jupiter", "saturno", "urano", "neptuno", "pluton"].map((p) => [p, { en_signo: {}, en_casa: {} }]),
+  ) as Posiciones;
+  datos.marte = { en_signo: Object.fromEntries(["aries", "tauro", "geminis", "cancer", "leo", "virgo", "libra", "escorpio", "sagitario", "capricornio", "acuario", "piscis"].map((s) => [s, pos("x")])), en_casa: {} };
+  const html = (tono: "luz" | "sombra" | "ambas") => {
+    const text = renderChart(conHora, datos);
+    const m = text.cuerpos.find((c) => c.titulo.startsWith("Marte"))!;
+    m.caras = { ...m.caras!, tono, motivo: "Motivo de prueba." };
+    return renderToStaticMarkup(<ChartResult view={{ facts: conHora, text, placeLabel: "BA", zoneLabel: "UTC−3" }} />);
+  };
+
+  it("rotula las dos caras con texto y respeta el orden del tono", () => {
+    const luz = html("luz");
+    expect(luz).toContain("Motivo de prueba.");
+    expect(luz.indexOf("Luz:")).toBeGreaterThan(-1);
+    expect(luz.indexOf("Luz:")).toBeLessThan(luz.indexOf("Sombra:"));
+    const sombra = html("sombra");
+    expect(sombra.indexOf("Sombra:")).toBeLessThan(sombra.indexOf("Luz:"));
+  });
+
+  it("los puntos sin material no muestran rótulos", () => {
+    // Solo Marte tiene material: Quirón, nodo y Lilith (sin material nunca) y los planetas con hueco no rotulan.
+    const text = renderChart(conHora, datos);
+    const out = renderToStaticMarkup(<ChartResult view={{ facts: conHora, text, placeLabel: "BA", zoneLabel: "UTC−3" }} />);
+    expect(out.split("Luz:").length - 1).toBe(1);
+    expect(out.split("Sombra:").length - 1).toBe(1);
+    const vacias = Object.fromEntries(Object.keys(datos).map((p) => [p, { en_signo: {}, en_casa: {} }])) as Posiciones;
+    const sinNada = renderToStaticMarkup(<ChartResult view={{ facts: conHora, text: renderChart(conHora, vacias), placeLabel: "BA", zoneLabel: "UTC−3" }} />);
+    expect(sinNada).not.toContain("Luz:");
+  });
+});
+
+describe("T-103 · enlaces a las páginas de posición", () => {
+  const vista = (facts: typeof conHora) => ({ facts, text: renderChart(facts), placeLabel: "Buenos Aires, Argentina", zoneLabel: "UTC−3" });
+  const hrefs = (html: string) => [...html.matchAll(/href="(\/carta-natal\/planetas\/[^"/]+\/[^"]+)"/g)].map((m) => m[1]!);
+
+  it("con hora: cada planeta con texto propio enlaza a su signo y a su casa; los puntos no", () => {
+    const html = renderToStaticMarkup(<ChartResult view={vista(conHora)} />);
+    const links = hrefs(html);
+    expect(links).toHaveLength(20);
+    for (const b of conHora.bodies.filter((x) => x.id !== "quiron" && x.id !== "nodo_norte" && x.id !== "lilith_media")) {
+      expect(links).toContain(`/carta-natal/planetas/${b.id}/${b.sign}`);
+      expect(links).toContain(`/carta-natal/planetas/${b.id}/casa-${b.house}`);
+    }
+    expect(html).not.toMatch(/planetas\/(quiron|nodo-norte|lilith-media)\//);
+  });
+
+  it("sin hora: solo al signo", () => {
+    const links = hrefs(renderToStaticMarkup(<ChartResult view={vista(sinHora)} />));
+    expect(links).toHaveLength(10);
+    expect(links.some((l) => l.includes("/casa-"))).toBe(false);
+  });
+});
+
+describe("T-103 · página de posición", () => {
+  const render = async (slug: string, posicion: string) => renderToStaticMarkup(await PosicionPage({ params: Promise.resolve({ slug, posicion }) }));
+  const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  it("planeta en signo: título, texto, Luz y Sombra rotuladas, enlaces y aviso", async () => {
+    const html = await render("marte", "tauro");
+    const e = POSICIONES.marte.en_signo.tauro!;
+    expect(html).toMatch(/<h1[^>]*>.*Marte en Tauro<\/h1>/);
+    for (const t of [e.texto, e.luz, e.sombra]) expect(html).toContain(esc(t));
+    expect(html).toMatch(/<h2[^>]*>Luz<\/h2>/);
+    expect(html).toMatch(/<h2[^>]*>Sombra<\/h2>/);
+    for (const href of ["/carta-natal/planetas/marte", "/carta-natal/signos/tauro", "/carta-natal"]) expect(html).toContain(`href="${href}"`);
+    expect(html).toContain(AVISO_MARCO);
+    expect(html).toContain("Ver la ficha de Marte");
+    expect(html).not.toMatch(/Marte\s*: /);
+  });
+
+  it("planeta en casa y luminar con artículo", async () => {
+    const casa = await render("marte", "casa-7");
+    expect(casa).toMatch(/<h1[^>]*>.*Marte en la casa 7<\/h1>/);
+    expect(casa).toContain('href="/carta-natal/casas/7"');
+    expect(casa).toContain("Ver la ficha de la casa 7");
+    expect(casa).not.toMatch(/Casa 7\s*: /);
+    expect(casa).toContain(esc(POSICIONES.marte.en_casa["7"]!.texto));
+    expect(await render("sol", "leo")).toMatch(/<h1[^>]*>.*El Sol en Leo<\/h1>/);
+    expect(await render("luna", "casa-4")).toMatch(/<h1[^>]*>.*La Luna en la casa 4<\/h1>/);
+  });
+
+  it("posiciones inexistentes dan 404", async () => {
+    for (const [slug, posicion] of [["quiron", "tauro"], ["marte", "casa-13"], ["marte", "xyz"]]) {
+      await expect(render(slug, posicion), `${slug}/${posicion}`).rejects.toMatchObject({ digest: expect.stringContaining("404") });
+    }
+  });
+
+  it("generateStaticParams: 240; metadata con canonical propio y Open Graph", async () => {
+    expect(generateStaticParams()).toHaveLength(240);
+    const m = await generateMetadata({ params: Promise.resolve({ slug: "marte", posicion: "casa-7" }) });
+    expect(m.title).toContain("Marte en la casa 7");
+    expect(m.alternates?.canonical).toBe("/carta-natal/planetas/marte/casa-7");
+    expect(m.openGraph).toMatchObject({ url: "/carta-natal/planetas/marte/casa-7", siteName: "Humano Despierto" });
+  });
+});
+
+describe("T-103 · las fichas enlazan a sus posiciones", () => {
+  const links = (html: string) => [...html.matchAll(/href="(\/carta-natal\/planetas\/[^"/]+\/[^"]+)"/g)].map((m) => m[1]!);
+
+  it("la de un planeta, a sus 24", async () => {
+    const l = links(renderToStaticMarkup(await PlanetaPage({ params: Promise.resolve({ slug: "marte" }) })));
+    expect(l).toHaveLength(24);
+    expect(l).toContain("/carta-natal/planetas/marte/piscis");
+    expect(l).toContain("/carta-natal/planetas/marte/casa-12");
+  });
+
+  it("la de un punto sin material no lista nada", async () => {
+    expect(links(renderToStaticMarkup(await PlanetaPage({ params: Promise.resolve({ slug: "quiron" }) })))).toHaveLength(0);
+  });
+
+  it("la de un signo y la de una casa, a los 10 planetas", async () => {
+    const s = links(renderToStaticMarkup(await SignoPage({ params: Promise.resolve({ slug: "leo" }) })));
+    expect(s).toHaveLength(10);
+    expect(s.every((h) => h.endsWith("/leo"))).toBe(true);
+    const c = links(renderToStaticMarkup(await CasaPage({ params: Promise.resolve({ n: "7" }) })));
+    expect(c).toHaveLength(10);
+    expect(c.every((h) => h.endsWith("/casa-7"))).toBe(true);
   });
 });

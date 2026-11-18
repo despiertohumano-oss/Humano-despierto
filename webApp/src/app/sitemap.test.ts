@@ -34,14 +34,26 @@ describe("T-091 · /sitemap.xml no se prerenderiza", () => {
 });
 
 describe("T-024 · fichas de carta natal en el sitemap", () => {
-  it("lista la portada y las 37 fichas", async () => {
+  it("lista la portada y las 37 fichas (sin contar las posiciones)", async () => {
     connection.mockResolvedValue(undefined);
     const urls = (await sitemap()).map((e) => e.url);
     expect(urls).toContain("http://localhost:3000/carta-natal");
     expect(urls).toContain("http://localhost:3000/carta-natal/signos/aries");
     expect(urls).toContain("http://localhost:3000/carta-natal/planetas/lilith-media");
     expect(urls).toContain("http://localhost:3000/carta-natal/casas/12");
-    expect(urls.filter((u) => u.includes("/carta-natal/")).length).toBe(37);
+    const fichas = urls.filter((u) => u.includes("/carta-natal/") && !/\/planetas\/[^/]+\/[^/]+$/.test(u));
+    expect(fichas.length).toBe(37);
+  });
+
+  it("T-103 · lista las 240 páginas de posición, sin repetir", async () => {
+    connection.mockResolvedValue(undefined);
+    const urls = (await sitemap()).map((e) => e.url);
+    const posiciones = urls.filter((u) => /\/carta-natal\/planetas\/[^/]+\/[^/]+$/.test(u));
+    expect(posiciones).toHaveLength(240);
+    expect(new Set(posiciones).size).toBe(240);
+    expect(urls).toContain("http://localhost:3000/carta-natal/planetas/marte/tauro");
+    expect(urls).toContain("http://localhost:3000/carta-natal/planetas/sol/casa-12");
+    expect(urls.some((u) => u.includes("/planetas/quiron/"))).toBe(false);
   });
 
   it("no incluye cartas personales", async () => {
