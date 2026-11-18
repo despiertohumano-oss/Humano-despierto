@@ -91,3 +91,12 @@ export function bodyDescription(nombre: string, palabras: readonly string[]): st
 export function houseDescription(nombre: string, palabras: readonly string[]): string {
   return trimAtWord(`Qué significa la ${nombre.toLowerCase()} en la carta natal: ${lista(palabras)}. Qué áreas de la vida ordena y cómo leerla.`, DESCRIPTION_MAX);
 }
+
+export function posicionTitle(nombre: string): string {
+  return fitTitle(`${nombre}: significado en la carta natal`, `${nombre}: significado`, nombre);
+}
+
+/** El comienzo del texto de la posición, cortado en palabra; el texto mismo no se toca. */
+export function posicionDescription(texto: string): string {
+  return trimAtWord(texto, DESCRIPTION_MAX);
+}

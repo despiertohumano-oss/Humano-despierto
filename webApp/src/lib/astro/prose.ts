@@ -5,7 +5,7 @@ import type { BodyPosition, ChartFacts } from "./chart";
 import { ASPECTOS_PLUTON, type AspectosPluton, textoDePluton } from "./aspectos-pluton";
 import { POSICIONES, type Posiciones, type Tono, isPlanetId, tonoDe } from "./posiciones";
 import {
-  BODY_IDS, BODY_NAMES, HOUSE_KEYS, SIGNS, SIGN_IDS, type BodyId, type HouseKey, type PlanetId, type Modality, formatDegree, pointName,
+  BODY_IDS, BODY_NAMES, HOUSE_KEYS, SIGNS, SIGN_IDS, type BodyId, type HouseKey, type PlanetId, type SignId, type Modality, formatDegree, pointName,
 } from "./zodiac";
 
 export { HOUSE_KEYS, type HouseKey };
@@ -45,7 +45,9 @@ export const AVISO_LUNA =
 
 // Luz y sombra de una posición; `tono` solo decide cuál va primero y `motivo` lo explica a la vista.
 export type Caras = { luz: string; sombra: string; tono: Tono; motivo: string };
-export type Paragraph = { titulo: string; texto: string; porQue: string; caras?: Caras };
+// Qué páginas de posición (T-103) corresponden al párrafo: solo donde el texto es el propio de la posición.
+export type EnlacesPosicion = { planeta: PlanetId; signo?: SignId; casa?: HouseKey };
+export type Paragraph = { titulo: string; texto: string; porQue: string; caras?: Caras; enlaces?: EnlacesPosicion };
 export type ChartText = {
   big3: Paragraph[];
   regente: Paragraph | null;
@@ -119,6 +121,7 @@ function bodyParagraph(b: BodyPosition, aspects: ChartFacts["aspects"], posicion
   return {
     ...base,
     texto: partes.map((e) => e.texto).join(" "),
+    enlaces: { planeta: b.id as PlanetId, ...(enSigno ? { signo: b.sign } : {}), ...(enCasa ? { casa: String(b.house) as HouseKey } : {}) },
     caras: { luz: partes.map((e) => e.luz).join(" "), sombra: partes.map((e) => e.sombra).join(" "), tono, motivo: motivoDeTono(tono, fluidos, tensos) },
   };
 }

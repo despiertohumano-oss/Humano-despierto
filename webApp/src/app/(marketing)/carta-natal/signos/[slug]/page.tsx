@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import FichaLayout from "@/components/carta-natal/FichaLayout";
+import ListaPosiciones from "@/components/carta-natal/ListaPosiciones";
 import { astroIcon } from "@/components/atoms/Icon";
 import { fichaTitle, pageOpenGraph, signDescription } from "@/lib/seo/meta";
+import { planetasEn } from "@/lib/astro/posicion-rutas";
 import { TEMPLATES } from "@/lib/astro/prose";
 import { BODY_NAMES, SIGNS, SIGN_IDS, isSignId } from "@/lib/astro/zodiac";
 
@@ -36,6 +38,8 @@ export default async function SignoPage({ params }: { params: Promise<{ slug: st
       path={`/carta-natal/signos/${slug}`}
       prev={{ href: `/carta-natal/signos/${prev}`, label: SIGNS[prev].nombre }}
       next={{ href: `/carta-natal/signos/${next}`, label: SIGNS[next].nombre }}
-    />
+    >
+      <ListaPosiciones titulo={`Los planetas en ${s.nombre}`} items={planetasEn("signo", slug)} />
+    </FichaLayout>
   );
 }

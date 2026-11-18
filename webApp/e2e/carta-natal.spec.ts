@@ -300,6 +300,24 @@ test("la ficha de un signo es indexable", async ({ page }) => {
   for (const r of robots) expect(r).not.toMatch(/noindex/);
 });
 
+test("T-103 · la página de una posición es indexable y lleva a sus fichas", async ({ page }) => {
+  const res = await page.goto("/carta-natal/planetas/marte/tauro");
+  expect(res?.status()).toBe(200);
+  await expect(page).toHaveTitle(/Marte en Tauro/);
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Marte en Tauro");
+  await expect(page.getByRole("heading", { level: 2, name: "Luz" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 2, name: "Sombra" })).toBeVisible();
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/carta-natal\/planetas\/marte\/tauro$/);
+  const robots = await page.locator('meta[name="robots"]').evaluateAll((ms) => ms.map((m) => m.getAttribute("content") ?? ""));
+  for (const r of robots) expect(r).not.toMatch(/noindex/);
+  await expect(page.getByRole("link", { name: "Calculá tu carta natal" })).toBeVisible();
+  expect((await page.goto("/carta-natal/planetas/marte/casa-13"))?.status()).toBe(404);
+  expect((await page.goto("/carta-natal/planetas/quiron/tauro"))?.status()).toBe(404);
+  const ficha = await page.goto("/carta-natal/planetas/marte");
+  expect(ficha?.status()).toBe(200);
+  await expect(page.locator('a[href="/carta-natal/planetas/marte/casa-7"]')).toHaveCount(1);
+});
+
 test("alumna edita una carta guardada: abre precargada, cambia la hora y la reemplaza", async ({ page }) => {
   psql(`delete from public.natal_charts where user_id = '${ALUMNA_ID}';`);
   await login(page, ALUMNA);
