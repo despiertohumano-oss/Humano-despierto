@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { buildCsp, cspEnforced, generateNonce } from "@/lib/security/csp";
 import { updateSession } from "@/lib/supabase/proxy";
+import { internalNext } from "@/lib/auth/safe-next";
 
 // T-006 (rechazo 1): `/leccion` sale de acá. El proxy no puede saber sin ir a la base si una
 // lección es `is_preview` (T-004 ya promete que una vista previa se ve sin inscripción), y una
@@ -39,6 +40,22 @@ function refreshesSession(request: NextRequest): boolean {
   return request.cookies.getAll().some((cookie) => cookie.name.startsWith("sb-"));
 }
 
+const LOGIN_PATH = "/entrar";
+
+// Con sesión iniciada el login no se muestra: va al `next` interno o a la portada. Solo GET/HEAD
+// de `/entrar` exacto: el POST es la Server Action que elige destino justo después de iniciar
+// sesión, y `/entrar/nueva-clave` se abre con la sesión del enlace de recuperación.
+function isLoginDocument(request: NextRequest): boolean {
+  return request.nextUrl.pathname === LOGIN_PATH && (request.method === "GET" || request.method === "HEAD");
+}
+
+function afterLogin(request: NextRequest): URL {
+  const next = internalNext(request.nextUrl.searchParams.get("next"));
+  const destination = new URL(next ?? "/", request.nextUrl.origin);
+  // Un `next` que vuelve al login sería un bucle.
+  return destination.pathname === LOGIN_PATH ? new URL("/", request.nextUrl.origin) : destination;
+}
+
 export async function proxy(request: NextRequest) {
   const nonce = generateNonce();
   const csp = buildCsp({
@@ -66,6 +83,14 @@ export async function proxy(request: NextRequest) {
 
 async function route(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (isLoginDocument(request) && refreshesSession(request)) {
+    const { proxyResponse, claims } = await updateSession(request);
+    if (!claims) return proxyResponse;
+    const redirectResponse = NextResponse.redirect(afterLogin(request));
+    proxyResponse.cookies.getAll().forEach((cookie) => redirectResponse.cookies.set(cookie));
+    return redirectResponse;
+  }
 
   if (!PROTECTED_PREFIXES.some((prefix) => matchesPrefix(pathname, prefix))) {
     // updateSession arma su NextResponse.next({ request }) con las cabeceras ya escritas (nonce).

@@ -23,7 +23,7 @@ opened in the browser that requested them: the PKCE verifier lives in a cookie. 
 Every auth redirect is a trusted origin + `safeNext`: `getSiteUrl()` on the server (never the
 `Origin` header), `window.location.origin` on the client; GoTrue's exact allow-list
 (`additional_redirect_urls`, fixed host and port, `**` only after `/auth/callback`) is the final
-authority. Adding a port means adding its exact entry there. Local e2e needs
+authority. Adding a port means adding its exact entry there. With a session, `GET /entrar` never renders: `src/proxy.ts` redirects to the internal `next` or to the home page (`/entrar/recuperar`, `/entrar/nueva-clave` and the login's Server Action POST are left alone). Local e2e needs
 `SMTP_HOST=127.0.0.1` and `SMTP_PORT=54325` in `webApp/.env.local` for the app's own mails.
 
 **Google OAuth** (T-041, D5): `/entrar` → `signInWithOAuth` (PKCE) → GoTrue → `/auth/callback`,
