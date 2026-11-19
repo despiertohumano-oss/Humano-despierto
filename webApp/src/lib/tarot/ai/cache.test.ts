@@ -23,6 +23,12 @@ describe("caché de la lectura redactada", () => {
     expect(aiCacheKey({ t: "x", c: "1", q: null })).toBe(aiCacheKey({ t: "x", c: "1", q: "" }));
   });
 
+  it("la clave no lleva la pregunta en claro (B12)", () => {
+    const k = aiCacheKey({ t: "cruz-simple", c: "1.2.3.4.5", q: "¿Me deja mi pareja?" });
+    expect(k).not.toMatch(/pareja|deja/i);
+    expect(k).toMatch(/^tarot-ia:cruz-simple:1\.2\.3\.4\.5:[0-9a-z]+$/);
+  });
+
   it("guarda y vuelve a leer los párrafos", () => {
     const s = memoryStorage();
     writeCachedReading(s, "k", ["Uno.", "Dos."]);

@@ -57,6 +57,16 @@ describe("handleTarotAiRequest", () => {
     expect(res.status).toBe(status);
   });
 
+  it("corta un cuerpo demasiado grande antes de parsearlo (B11)", async () => {
+    const big = JSON.stringify({ ...BODY, relleno: "x".repeat(20_000) });
+    const declared = await handleTarotAiRequest(req(big), never);
+    expect(declared.status).toBe(413);
+    // Sin content-length (chunked): se corta leyendo.
+    const stream = new ReadableStream({ start(c) { c.enqueue(new TextEncoder().encode(big)); c.close(); } });
+    const chunked = new Request(URL_, { method: "POST", headers: { "content-type": "application/json", "sec-fetch-site": "same-origin" }, body: stream, duplex: "half" } as RequestInit);
+    expect((await handleTarotAiRequest(chunked, never)).status).toBe(413);
+  });
+
   it("rechaza un pedido de otro sitio", async () => {
     const res = await handleTarotAiRequest(req(BODY, { "sec-fetch-site": "cross-site" }), never);
     expect(res.status).toBe(403);

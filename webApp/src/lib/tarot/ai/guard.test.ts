@@ -96,3 +96,127 @@ describe("guardReading · tirada de una carta", () => {
     expect(guardReading(corto(5), one)).toEqual({ ok: false, reason: "largo" });
   });
 });
+
+// Ronda 2 (QA D1-D3, O1, O6, O7): cada variante parte de la lectura buena y cambia una frase.
+const swap = (x: string) => GOOD.replace("no un salto a ciegas", x);
+
+describe("guardReading · predicciones (A1)", () => {
+  it.each([
+    // plazos
+    "algo que se resuelve en un mes",
+    "algo que se aclara dentro de un año",
+    "una respuesta en pocos días",
+    "un cambio en pocas semanas",
+    "una noticia dentro de unos días",
+    "un cambio el mes que viene",
+    "una charla la semana que viene",
+    "un giro el año que viene",
+    "una llamada el lunes",
+    "una firma el 15/03",
+    "una firma el 15 de marzo",
+    "un cambio el próximo mes",
+    "algo que se define dentro de poco",
+    // salud y muerte
+    "y enfermedades que se van",
+    "y enfermos alrededor",
+    "un riesgo de enfermarte",
+    "y vas a enfermarte",
+    "el miedo a morirte",
+    "y te vas a morir",
+    "la muerte de tu madre",
+    "una operación quirúrgica",
+    "y vas a sanar",
+    "y te vas a curar",
+    // dinero
+    "una herencia",
+    "y va a llegar mucha plata",
+    "y te va a llegar dinero",
+    // desenlaces prometidos (regla general: futuro + desenlace concreto)
+    "y pronto vas a conseguir trabajo",
+    "y te vas a casar",
+    "y vas a quedar embarazada",
+    "y conseguirás ese puesto",
+    "y te va a ir bien",
+    "y él va a volver",
+  ])("rechaza «%s»", (x) => {
+    expect(guardReading(swap(x), facts)).toEqual({ ok: false, reason: "prediccion" });
+  });
+
+  it.each([
+    "porque nada está garantizado",
+    "y no te aseguro nada",
+    "como las instrucciones de tu jefe",
+    "como un accidente de recorrido",
+    "una pausa para mirar esta semana",
+  ])("no rechaza de más (A2): «%s»", (x) => {
+    expect(guardReading(swap(x), facts).ok).toBe(true);
+  });
+
+  it("garantías afirmadas siguen fuera", () => {
+    expect(guardReading(swap("y te aseguro que sale"), facts)).toEqual({ ok: false, reason: "prediccion" });
+    expect(guardReading(swap("y está garantizado"), facts)).toEqual({ ok: false, reason: "prediccion" });
+  });
+});
+
+describe("guardReading · arcanos mayores (A3, A4)", () => {
+  it("rechaza un mayor que no salió", () => {
+    expect(guardReading(GOOD.replace("La Estrella en el presente", "El Diablo en el presente"), facts)).toEqual({ ok: false, reason: "inventa" });
+    expect(guardReading(swap("como pide la carta del Sol"), facts)).toEqual({ ok: false, reason: "inventa" });
+    expect(guardReading(swap("como pide la carta de la fuerza"), facts)).toEqual({ ok: false, reason: "inventa" });
+    expect(guardReading(swap("como dice La Rueda de la Fortuna"), facts)).toEqual({ ok: false, reason: "inventa" });
+  });
+
+  it.each(["con la fuerza que tenés", "en el mundo que te rodea", "con la justicia de tus reclamos", "sin un juicio apurado", "como el sol de la mañana", "bajo la luna", "con la muerte de un ciclo"])(
+    "no confunde la palabra común con la carta: «%s»",
+    (x) => {
+      expect(guardReading(swap(x), facts).ok).toBe(true);
+    },
+  );
+
+  it("un mayor en minúscula no cuenta como nombrado", () => {
+    const sol = buildReading({ spread: "carta-del-dia", cards: [{ indice: idx("el-sol"), reversed: false }] }, null);
+    const body = (name: string) =>
+      `${name} llega hoy como una pausa clara. ${Array.from({ length: 16 }, () => "Mirá con calma lo que ya tenés cerca").join(". ")}.\n\n¿Qué te devuelve la confianza hoy?`;
+    expect(guardReading(body("El Sol"), sol).ok).toBe(true);
+    expect(guardReading(body("El sol"), sol)).toEqual({ ok: false, reason: "cartas" });
+    expect(guardReading(body("La carta del sol"), sol).ok).toBe(true);
+  });
+
+  it("acepta «Paje» como la Sota que salió, y solo esa", () => {
+    const f = buildReading({ spread: "cruz-simple", cards: ["el-ermitano", "sota-de-copas", "la-torre", "dos-de-copas", "la-estrella"].map((s) => ({ indice: idx(s), reversed: false })) }, null);
+    const text = GOOD.replace("El Tres de Oros invertido", "El Paje de Copas");
+    expect(guardReading(text, f).ok).toBe(true);
+    expect(guardReading(text.replace("Paje de Copas", "Paje de Espadas"), f)).toEqual({ ok: false, reason: "inventa" });
+  });
+});
+
+describe("guardReading · enlaces y contactos (A5)", () => {
+  it.each(["escribí a www.estafa.com", "mirá https://estafa.example", "mirá [esto](http://x.example)", "escribí a hola@estafa.com", "llamá al 11 5555 1234", "visitá estafa.com.ar", "llamá al +54 9 11 5555-1234"])(
+    "rechaza «%s»",
+    (x) => {
+      expect(guardReading(swap(x), facts)).toEqual({ ok: false, reason: "contenido" });
+    },
+  );
+});
+
+describe("guardReading · marcas sueltas (A6)", () => {
+  it("limpia la cursiva con un solo asterisco o guion bajo", () => {
+    const r = guardReading(GOOD.replace("calma serena", "*calma* _serena_"), facts);
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.paragraphs.join(" ")).not.toMatch(/[*_]/);
+  });
+
+  it("rechaza corchetes sueltos", () => {
+    expect(guardReading(swap("un [salto] a ciegas"), facts)).toEqual({ ok: false, reason: "formato" });
+  });
+});
+
+describe("guardReading · términos prohibidos del sitio (A7)", () => {
+  // La misma lista literal que src/content/forbidden-terms.test.ts: los dos tests usan FORBIDDEN_TERMS.
+  it.each(["herbolaria", "herboristas", "reiki", "oficios", "sin vencimiento", "acceso ilimitado", "queda tu certificado", "certificado con tu nombre"])(
+    "rechaza «%s»",
+    (term) => {
+      expect(guardReading(swap(`y ${term}`), facts)).toEqual({ ok: false, reason: "contenido" });
+    },
+  );
+});

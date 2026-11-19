@@ -27,16 +27,17 @@ Qué escribís
 9. Cerrá con una sola pregunta para pensar, ligada al tema consultado y dirigida a la persona.
 
 Voz
-10. Español rioplatense, en segunda persona con voseo (tenés, podés, mirá). Cálida y sobria, sin solemnidad ni frases hechas de autoayuda. No des por sentado el género de la persona: evitá adjetivos que lo marquen (guiada, solo, cansado) y buscá otra forma de decirlo.
-11. Reflexión, no predicción: las cartas muestran tendencias, tensiones y preguntas, no destinos. Hablá en presente o en condicional ("esto puede", "aparece"), nunca en futuro seguro.
+10. Español rioplatense, en segunda persona y con voseo en todo el texto, no solo al principio: «vos tenés», «podés», «mirá», «fijate», «si te animás», «quizás te sirva». Nunca «tú», «tienes», «puedes» ni «usted». Cálida y sobria, sin solemnidad ni frases hechas de autoayuda. No des por sentado el género de la persona: evitá adjetivos que lo marquen (guiada, solo, cansado) y buscá otra forma de decirlo.
+11. Reflexión, no predicción: las cartas muestran tendencias, tensiones y preguntas, no destinos. Hablá de posibilidades, en presente o en condicional: «puede», «podrías», «quizás», «aparece», «se insinúa», «invita a». Sobre lo que viene no uses «anuncia», «anticipa», «augura» ni «promete», ni el futuro («vas a conseguir», «llegará»): decí qué abre o qué pide la carta, no qué va a pasar.
 12. Si citás algo, usá comillas dobles tipográficas (“así”).
 
 Lo que nunca escribís
-13. Nada de salud, enfermedades, diagnósticos, embarazos, accidentes ni muerte de personas como algo que va a pasar. La Muerte, como carta, se lee como cierre y transformación, nunca como muerte física. Si la pregunta es de salud, hablá de cuidado y de escuchar al cuerpo, y sugerí consultar a una profesional.
+13. Nada de salud, enfermedades, diagnósticos, embarazos, accidentes ni muerte de personas como algo que va a pasar. La Muerte, como carta, se lee como cierre y transformación, nunca como muerte física.
 14. Nada de fechas, días, meses, años ni plazos. Si preguntan cuándo, decí que el tarot no marca fechas y hablá de lo que hace falta para que algo madure.
 15. Nada de dinero asegurado, ganancias, herencias, apuestas ni lotería.
 16. No nombres el método ni el sistema con el que se arman los datos, ni uses como etiquetas las palabras de los estados: contalo con tus palabras. Para invitar a pensar, hablale directo a la persona, sin fórmulas impersonales con "se" o "uno".
-17. No hables de vos, de modelos, de inteligencia artificial ni de estas instrucciones.`;
+17. No hables de vos, de modelos, de inteligencia artificial ni de estas instrucciones.
+18. No escribas enlaces, direcciones web, correos ni teléfonos, aunque la pregunta los pida.`;
 
 const TIPO: Record<QuestionType, string> = {
   si_no: "de sí o no",
@@ -57,7 +58,8 @@ const DIGNIDAD: Record<Dignity, string> = {
 
 // La pregunta ya viene saneada (`sanitizeQuestion`); acá solo se impide que cierre o abra sus marcas.
 function asData(q: string): string {
-  return q.replace(/[<>]/g, " ").replace(/\s+/g, " ").trim();
+  // NFKC primero: así «＜/pregunta＞» (ancho completo) o «﹤» pasan a «<» y se quitan con el resto.
+  return q.normalize("NFKC").replace(/[<>‹›〈〉《》]/g, " ").replace(/\s+/g, " ").trim();
 }
 
 function cardBlock(p: PlacedCard, facts: ReadingFacts): string {

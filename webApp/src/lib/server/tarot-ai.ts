@@ -1,5 +1,6 @@
 import "server-only";
 import { NextResponse } from "next/server";
+import { readCapped } from "@/lib/http/read-capped";
 import { log } from "@/lib/server/log";
 import { geminiModel, GeminiError, type ModelCall } from "@/lib/server/gemini";
 import { guardReading, type GuardReason } from "@/lib/tarot/ai/guard";
@@ -40,8 +41,9 @@ function fail(reason: string, extra: Record<string, unknown> = {}): null {
   return null;
 }
 
-// Fallos de forma: otra redacción puede salir bien. Los de contenido no se reintentan.
-const RETRYABLE: ReadonlySet<GuardReason> = new Set(["largo", "formato", "inventa", "cartas"]);
+// Fallos que otra redacción puede corregir (el modelo varía de una vez a otra). Contenido y método no:
+// señalan una pregunta o un modelo que empuja hacia lo prohibido.
+const RETRYABLE: ReadonlySet<GuardReason> = new Set(["largo", "formato", "inventa", "cartas", "prediccion"]);
 const MAX_ATTEMPTS = 2;
 
 /** Párrafos ya validados, o null ante cualquier fallo: la página se queda con la lectura por plantillas. */
@@ -77,7 +79,10 @@ export async function writeTarotReading(facts: ReadingFacts, deps: { model: Mode
 }
 
 const MAX_FIELD = 400;
+// t + c + q (≤ 400 cada uno) y el token de Turnstile (≤ 2048) entran holgados.
+const MAX_BODY_BYTES = 4096;
 const bad = () => NextResponse.json({ parrafos: null }, { status: 400 });
+const tooLarge = () => NextResponse.json({ parrafos: null }, { status: 413 });
 
 /** POST /api/tarot/lectura-ia sin el limitador (lo pone route.ts). El modelo se inyecta para probarlo sin red. */
 export async function handleTarotAiRequest(request: Request, model: ModelCall | null = modelFromEnv()): Promise<Response> {
@@ -85,9 +90,13 @@ export async function handleTarotAiRequest(request: Request, model: ModelCall | 
   const site = request.headers.get("sec-fetch-site");
   if (site && site !== "same-origin") return NextResponse.json({ parrafos: null }, { status: 403 });
 
+  // Tope antes de parsear: `content-length` puede faltar (chunked) o mentir, así que también se lee con tope.
+  if (Number(request.headers.get("content-length") ?? 0) > MAX_BODY_BYTES) return tooLarge();
+  const raw = await readCapped(request, MAX_BODY_BYTES);
+  if (raw === null) return tooLarge();
   let body: unknown;
   try {
-    body = await request.json();
+    body = JSON.parse(raw);
   } catch {
     return bad();
   }
