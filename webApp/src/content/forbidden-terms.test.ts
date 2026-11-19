@@ -1,12 +1,15 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join, sep } from "node:path";
 import { describe, expect, it } from "vitest";
+import { FORBIDDEN_TERMS } from "./forbidden-terms";
 
 // Barrido de la spec de contenidos (2026-11-08): la dueña no enseña herbolaria ni reiki, no hay
 // «oficios» y no se promete acceso ilimitado ni certificado como regla general. Los tests que
 // prueban su ausencia quedan fuera: citan los términos a propósito.
-const BANNED =
-  /herbolar|herborist|reiki|\boficios\b|sin vencimiento|acceso ilimitado|queda tu certificado|certificado con tu nombre|m[aá]scara de la esencia|\bpreguntarse\b/i;
+const BANNED = FORBIDDEN_TERMS;
+
+// La lista literal: si alguien afloja FORBIDDEN_TERMS, este test lo nota. guard.test.ts usa la misma.
+const LITERALES = ["herbolaria", "herboristas", "reiki", "oficios", "sin vencimiento", "acceso ilimitado", "queda tu certificado", "certificado con tu nombre", "máscara de la esencia", "mascara de la esencia", "preguntarse"];
 
 const SRC = join(process.cwd(), "src");
 const JSON_BARRIDOS = [join("lib", "astro", "data", "posiciones") + sep, join("lib", "astro", "data", "aspectos") + sep];
@@ -17,6 +20,16 @@ function walk(dir: string): string[] {
     return e.isDirectory() ? walk(p) : [p];
   });
 }
+
+describe("lista de términos prohibidos", () => {
+  it.each(LITERALES)("atrapa «%s»", (t) => {
+    expect(FORBIDDEN_TERMS.test(`un texto con ${t} adentro`)).toBe(true);
+  });
+
+  it("no atrapa palabras parecidas", () => {
+    expect(FORBIDDEN_TERMS.test("un oficio, la pregunta, un certificado")).toBe(false);
+  });
+});
 
 describe("barrido de términos prohibidos en src/", () => {
   // De los .json solo se barren los textos por posición (T-101) y por aspecto (T-102) de la carta: `lib/astro/data/templates.json:354`

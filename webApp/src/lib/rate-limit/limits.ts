@@ -107,6 +107,9 @@ export const RATE_LIMITS = {
   marcarMiCarta: { max: 10, windowSeconds: 600 },
   // Reporte de errores del navegador (T-051, D-50): 10/min, como pide el spec SP-6.
   reportClientErrorAction: { max: 10, windowSeconds: 60 },
+  // Route Handler POST /api/tarot/lectura-ia (T-106): cada pedido gasta cuota del nivel gratuito de
+  // Gemini, compartida por todo el sitio. La pestaña guarda la lectura, así que recargar no cuenta.
+  interpretTarotReadingPost: { max: 10, windowSeconds: 3600 },
   // Route Handler GET /leccion/[id]/recurso/[resourceId] (T-044)
   lessonResourceGet: { max: 60, windowSeconds: 600 },
   // Route Handler GET /invitacion/[token] (T-049): suele llegar sin sesión, cuenta por IP.

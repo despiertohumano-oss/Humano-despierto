@@ -33,6 +33,22 @@ Several things block work and require the repo owner's accounts:
 - **`CRON_SECRET` in Netlify** (T-098, scopes Functions and Runtime): without it the `mail-retry`
   Scheduled Function calls nothing (`missing_env` in its log) and stuck mails are never retried.
   Its first run re-sends what is stuck from the last 3 days (runbook section 6).
+- **Gemini API key** (`GEMINI_API_KEY`, server-side, no `NEXT_PUBLIC_` prefix; T-106): a key from Google AI
+  Studio on the school's Google account, free tier, no billing. Without it the tarot shows only the template
+  reading. On the free tier Google uses prompts and answers to improve its products (the PO accepted it on
+  2026-11-18) and its quota is not published per model, so a `429` can come at any time and only means the
+  fallback. Optional `GEMINI_MODEL` (default `gemini-3.5-flash-lite`). The free tier is not offered in every
+  country (`400 FAILED_PRECONDITION`); it was checked from Argentina with a real key on 2026-11-18 and works.
+  It also has a per-minute cap: about 20 calls in a row produced one `429`. Health, pregnancy and death
+  questions never get a model reading: an unambiguous word list (`src/lib/tarot/ai/sensitive.ts`) cuts them
+  before the call, and the model itself must open its answer with `SENSIBLE: SI|NO` (anything but a clean `NO`
+  shows the template reading).
+- **Cloudflare Turnstile** (`NEXT_PUBLIC_TURNSTILE_SITE_KEY` + `TURNSTILE_SECRET_KEY`, T-106): a free widget on a
+  Cloudflare account of the school, Managed mode, the site's hostname. With **both** set, `POST /api/tarot/lectura-ia`
+  requires a token verified by `siteverify` before calling Gemini (no token or a rejected one: `403 {parrafos:null}`)
+  and the CSP adds `https://challenges.cloudflare.com` to `script-src`, `frame-src` and `connect-src`; with either
+  missing, the endpoint works without it. Only the written reading is protected. Local test keys and their behaviour
+  are in `webApp/.env.example`.
 - **Gmail App Password** (T-090, stopgap until a domain exists): 2-step verification on
   `despiertohumano@gmail.com`, an App Password, then `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`,
   `SMTP_SECURE=true`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM_ADDRESS=despiertohumano@gmail.com`.
