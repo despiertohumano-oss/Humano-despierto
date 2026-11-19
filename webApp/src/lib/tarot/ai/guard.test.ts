@@ -78,3 +78,21 @@ describe("guardReading", () => {
     expect(r.ok).toBe(true);
   });
 });
+
+describe("guardReading · tirada de una carta", () => {
+  const one = buildReading({ spread: "carta-del-dia", cards: [{ indice: idx("la-estrella"), reversed: false }] }, null);
+  const corto = (n: number) =>
+    `La Estrella llega hoy como una pausa clara. ${Array.from({ length: n }, () => "Mirá con calma lo que ya tenés cerca").join(". ")}.\n\n¿Qué te devuelve la confianza hoy?`;
+
+  it("acepta una lectura breve que en una tirada larga sería corta", () => {
+    const text = corto(16);
+    expect(text.split(/\s+/).length).toBeGreaterThan(110);
+    expect(text.split(/\s+/).length).toBeLessThan(180);
+    expect(guardReading(text, one).ok).toBe(true);
+    expect(guardReading(text.replace("La Estrella", "El Ermitaño"), facts)).toEqual({ ok: false, reason: "largo" });
+  });
+
+  it("igual rechaza una demasiado corta", () => {
+    expect(guardReading(corto(5), one)).toEqual({ ok: false, reason: "largo" });
+  });
+});

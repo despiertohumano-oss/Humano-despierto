@@ -6,6 +6,8 @@ export type GuardResult = { ok: true; paragraphs: string[] } | { ok: false; reas
 export type GuardReason = "largo" | "formato" | "contenido" | "metodo" | "prediccion" | "inventa" | "cartas";
 
 const MIN_WORDS = 180;
+// Una sola carta da para menos texto.
+const MIN_WORDS_ONE_CARD = 110;
 const MAX_WORDS = 650;
 const MAX_CHARS = 5000;
 const MAX_PARAGRAPHS = 8;
@@ -46,7 +48,7 @@ export function guardReading(raw: string, facts: ReadingFacts): GuardResult {
   if (text.length === 0 || text.length > MAX_CHARS) return { ok: false, reason: "largo" };
   const paragraphs = text.split(/\n\s*\n/).map((p) => p.replace(/\s*\n\s*/g, " ").trim()).filter(Boolean);
   const words = text.split(/\s+/).length;
-  if (words < MIN_WORDS || words > MAX_WORDS || paragraphs.length > MAX_PARAGRAPHS) return { ok: false, reason: "largo" };
+  if (words < (facts.placed.length === 1 ? MIN_WORDS_ONE_CARD : MIN_WORDS) || words > MAX_WORDS || paragraphs.length > MAX_PARAGRAPHS) return { ok: false, reason: "largo" };
 
   if (/^\s*(?:#|[-*•]\s|\d+[.)]\s|>)/m.test(text) || /[<>`|]/.test(text) || /\p{Extended_Pictographic}/u.test(text)) {
     return { ok: false, reason: "formato" };

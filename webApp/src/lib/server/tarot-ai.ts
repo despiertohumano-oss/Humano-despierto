@@ -2,7 +2,7 @@ import "server-only";
 import { NextResponse } from "next/server";
 import { log } from "@/lib/server/log";
 import { geminiModel, GeminiError, type ModelCall } from "@/lib/server/gemini";
-import { guardReading } from "@/lib/tarot/ai/guard";
+import { guardReading, type GuardReason } from "@/lib/tarot/ai/guard";
 import { buildUserMessage, SYSTEM_PROMPT } from "@/lib/tarot/ai/prompt";
 import { decodeReading } from "@/lib/tarot/codec";
 import { sanitizeQuestion } from "@/lib/tarot/question";
@@ -40,25 +40,34 @@ function fail(reason: string, extra: Record<string, unknown> = {}): null {
   return null;
 }
 
+// Fallos de forma: otra redacción puede salir bien. Los de contenido no se reintentan.
+const RETRYABLE: ReadonlySet<GuardReason> = new Set(["largo", "formato", "inventa", "cartas"]);
+const MAX_ATTEMPTS = 2;
+
 /** Párrafos ya validados, o null ante cualquier fallo: la página se queda con la lectura por plantillas. */
 export async function writeTarotReading(facts: ReadingFacts, deps: { model: ModelCall | null; timeoutMs: number }): Promise<string[] | null> {
   if (!deps.model) return null;
+  // La guarda rechaza cualquier mención de enfermedades: una consulta de salud no gasta cuota.
+  if (facts.domain === "salud") return null;
+  const model = deps.model;
   const controller = new AbortController();
   let timer: ReturnType<typeof setTimeout> | undefined;
+  // Un solo plazo para todos los intentos; además de la señal, por si el cliente la ignora.
+  const deadline = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => {
+      controller.abort(new Error("timeout"));
+      reject(new Error("timeout"));
+    }, deps.timeoutMs);
+  });
   try {
-    const raw = await Promise.race([
-      deps.model({ system: SYSTEM_PROMPT, user: buildUserMessage(facts), signal: controller.signal }),
-      // Plazo propio además de la señal: un cliente que la ignore no puede colgar la función.
-      new Promise<never>((_, reject) => {
-        timer = setTimeout(() => {
-          controller.abort(new Error("timeout"));
-          reject(new Error("timeout"));
-        }, deps.timeoutMs);
-      }),
-    ]);
-    if (raw === null) return fail("empty");
-    const checked = guardReading(raw, facts);
-    return checked.ok ? checked.paragraphs : fail("guard", { guard: checked.reason });
+    const request = { system: SYSTEM_PROMPT, user: buildUserMessage(facts), signal: controller.signal };
+    for (let attempt = 1; ; attempt++) {
+      const raw = await Promise.race([model(request), deadline]);
+      if (raw === null) return fail("empty");
+      const checked = guardReading(raw, facts);
+      if (checked.ok) return checked.paragraphs;
+      if (attempt >= MAX_ATTEMPTS || !RETRYABLE.has(checked.reason)) return fail("guard", { guard: checked.reason, attempt });
+    }
   } catch (err) {
     if (err instanceof GeminiError) return fail("http", { status: err.status });
     return fail(controller.signal.aborted ? "timeout" : "network", { error: err instanceof Error ? err.name : "unknown" });

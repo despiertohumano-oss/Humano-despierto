@@ -86,6 +86,36 @@ describe("writeTarotReading", () => {
     await expect(writeTarotReading(facts(), { model, timeoutMs: 20 })).resolves.toBeNull();
   });
 
+  it("un fallo de forma se reintenta una vez y la segunda salida buena vale", async () => {
+    const outs = [`# Lectura\n\n${GOOD}`, GOOD];
+    let calls = 0;
+    const model: ModelCall = async () => outs[calls++];
+    const r = await writeTarotReading(facts(), { model, timeoutMs: 1000 });
+    expect(r).toHaveLength(5);
+    expect(calls).toBe(2);
+  });
+
+  it("no hay tercer intento", async () => {
+    let calls = 0;
+    const model: ModelCall = async () => (calls++, `# Lectura\n\n${GOOD}`);
+    await expect(writeTarotReading(facts(), { model, timeoutMs: 1000 })).resolves.toBeNull();
+    expect(calls).toBe(2);
+  });
+
+  it("un rechazo por contenido no se reintenta", async () => {
+    let calls = 0;
+    const model: ModelCall = async () => (calls++, GOOD.replace("Hay algo de esperanza", "Te van a diagnosticar una enfermedad y hay algo de esperanza"));
+    await expect(writeTarotReading(facts(), { model, timeoutMs: 1000 })).resolves.toBeNull();
+    expect(calls).toBe(1);
+  });
+
+  it("una consulta de salud no llama al modelo: se queda con la lectura por plantillas", async () => {
+    let calls = 0;
+    const model: ModelCall = async () => (calls++, GOOD);
+    await expect(writeTarotReading(facts("¿Me voy a curar de mi enfermedad?"), { model, timeoutMs: 1000 })).resolves.toBeNull();
+    expect(calls).toBe(0);
+  });
+
   it("una salida que no pasa la guarda da null", async () => {
     const model: ModelCall = async () => `# Lectura\n\n${GOOD}`;
     await expect(writeTarotReading(facts(), { model, timeoutMs: 1000 })).resolves.toBeNull();
