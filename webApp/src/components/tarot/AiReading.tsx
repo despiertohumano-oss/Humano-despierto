@@ -1,14 +1,19 @@
 "use client";
 
-import { useTarotAiReading, type AiReadingState } from "@/hooks/useTarotAiReading";
+import type { RefObject } from "react";
+import { useTarotAiReading, type AiReadingState, type TurnstileProps } from "@/hooks/useTarotAiReading";
 import type { AiReadingRequest } from "@/lib/tarot/ai/cache";
 
-export function AiReadingView({ state }: { state: AiReadingState }) {
+// `widget`: lugar para Turnstile mientras se espera; solo se ve si Cloudflare pide interacción.
+export function AiReadingView({ state, widget = false, widgetRef }: { state: AiReadingState; widget?: boolean; widgetRef?: RefObject<HTMLDivElement | null> }) {
   if (state.status === "loading") {
     return (
-      <p role="status" className="mx-auto max-w-[68ch] text-suave">
-        Redactando una lectura que relaciona tus cartas. Mientras tanto, abajo tenés la lectura carta por carta.
-      </p>
+      <div className="mx-auto max-w-[68ch] space-y-3">
+        <p role="status" className="text-suave">
+          Redactando una lectura que relaciona tus cartas. Mientras tanto, abajo tenés la lectura carta por carta.
+        </p>
+        {widget && <div ref={widgetRef} data-turnstile="" />}
+      </div>
     );
   }
   if (state.status !== "done" || !state.parrafos) return null;
@@ -27,6 +32,7 @@ export function AiReadingView({ state }: { state: AiReadingState }) {
   );
 }
 
-export default function AiReading({ request }: { request: AiReadingRequest }) {
-  return <AiReadingView state={useTarotAiReading(request)} />;
+export default function AiReading({ request, turnstile = null }: { request: AiReadingRequest; turnstile?: TurnstileProps | null }) {
+  const { state, widgetRef } = useTarotAiReading(request, turnstile);
+  return <AiReadingView state={state} widget={turnstile !== null} widgetRef={widgetRef} />;
 }

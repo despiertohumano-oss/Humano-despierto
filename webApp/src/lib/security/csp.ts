@@ -11,6 +11,8 @@ export interface CspInput {
   siteUrl: string | undefined;
   isDev: boolean;
   enforce: boolean;
+  /** Turnstile encendido (las dos claves): suma su origen solo donde lo pide su documentación. */
+  turnstile?: boolean;
 }
 
 const YOUTUBE = "https://www.youtube.com";
@@ -19,6 +21,9 @@ const YOUTUBE_NOCOOKIE = "https://www.youtube-nocookie.com";
 // Placeholders de fotografia (ADR-015). next/image los sirve desde /_next/image, pero un
 // `unoptimized` o un fallo del optimizador cae al host original.
 const UNSPLASH = "https://images.unsplash.com";
+// developers.cloudflare.com/turnstile/reference/content-security-policy: script-src y frame-src; el
+// widget además se conecta a ese origen. El api.js se carga con el nonce (compatible con strict-dynamic).
+const TURNSTILE = "https://challenges.cloudflare.com";
 const NONCE_RE = /^[A-Za-z0-9+/]+={0,2}$/;
 
 function httpOrigin(raw: string | undefined): string | null {
@@ -45,18 +50,19 @@ export function buildCsp(input: CspInput): { name: CspHeaderName; value: string 
   if (!NONCE_RE.test(input.nonce)) throw new Error("CSP: nonce invalido");
   const supabase = httpOrigin(input.supabaseUrl);
   const extra = supabase ? [supabase] : [];
+  const cf = input.turnstile ? [TURNSTILE] : [];
 
   const directives: string[][] = [
     ["default-src", "'self'"],
     // 'strict-dynamic' deja pasar lo que cargue un script con nonce (el iframe_api que inyecta
     // useYouTubePlayer); el host de YouTube queda para navegadores sin CSP3.
-    ["script-src", "'self'", `'nonce-${input.nonce}'`, "'strict-dynamic'", YOUTUBE, ...(input.isDev ? ["'unsafe-eval'"] : [])],
+    ["script-src", "'self'", `'nonce-${input.nonce}'`, "'strict-dynamic'", YOUTUBE, ...(input.isDev ? ["'unsafe-eval'"] : []), ...cf],
     // Deliberado: hay style={{}} inline en landing y player, y un nonce aca anularia 'unsafe-inline'.
     ["style-src", "'self'", "'unsafe-inline'"],
     ["img-src", "'self'", "blob:", "data:", "https://i.ytimg.com", UNSPLASH, ...extra],
     ["font-src", "'self'"],
-    ["connect-src", "'self'", ...extra],
-    ["frame-src", YOUTUBE, YOUTUBE_NOCOOKIE],
+    ["connect-src", "'self'", ...extra, ...cf],
+    ["frame-src", YOUTUBE, YOUTUBE_NOCOOKIE, ...cf],
     ["object-src", "'none'"],
     ["base-uri", "'self'"],
     ["form-action", "'self'"],

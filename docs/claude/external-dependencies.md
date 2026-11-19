@@ -39,6 +39,12 @@ Several things block work and require the repo owner's accounts:
   2026-11-18) and its quota is not published per model, so a `429` can come at any time and only means the
   fallback. Optional `GEMINI_MODEL` (default `gemini-3.5-flash-lite`). The free tier is not offered in every
   country (`400 FAILED_PRECONDITION`): check it from Argentina with the real key before announcing it.
+- **Cloudflare Turnstile** (`NEXT_PUBLIC_TURNSTILE_SITE_KEY` + `TURNSTILE_SECRET_KEY`, T-106): a free widget on a
+  Cloudflare account of the school, Managed mode, the site's hostname. With **both** set, `POST /api/tarot/lectura-ia`
+  requires a token verified by `siteverify` before calling Gemini (no token or a rejected one: `403 {parrafos:null}`)
+  and the CSP adds `https://challenges.cloudflare.com` to `script-src`, `frame-src` and `connect-src`; with either
+  missing, the endpoint works without it. Only the written reading is protected. Local test keys and their behaviour
+  are in `webApp/.env.example`.
 - **Gmail App Password** (T-090, stopgap until a domain exists): 2-step verification on
   `despiertohumano@gmail.com`, an App Password, then `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`,
   `SMTP_SECURE=true`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM_ADDRESS=despiertohumano@gmail.com`.

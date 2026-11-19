@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { buildCsp, cspEnforced, generateNonce } from "@/lib/security/csp";
+import { turnstileConfig } from "@/lib/security/turnstile-config";
 import { updateSession } from "@/lib/supabase/proxy";
 import { internalNext } from "@/lib/auth/safe-next";
 
@@ -64,6 +65,7 @@ export async function proxy(request: NextRequest) {
     siteUrl: process.env.SITE_URL,
     isDev: process.env.NODE_ENV === "development",
     enforce: cspEnforced(process.env.CSP_ENFORCE),
+    turnstile: turnstileConfig(process.env) !== null,
   });
   // Next toma el nonce de la cabecera CSP del REQUEST (CSP o CSP-Report-Only) y lo pone en sus
   // <script>. Se escribe sobre request.headers para que tambien lo vea el NextResponse.next({ request })

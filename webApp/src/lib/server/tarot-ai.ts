@@ -2,6 +2,8 @@ import "server-only";
 import { NextResponse } from "next/server";
 import { readCapped } from "@/lib/http/read-capped";
 import { log } from "@/lib/server/log";
+import { humanCheckFromEnv, type HumanCheck, type HumanCheckResult } from "@/lib/server/turnstile";
+import { clientIpFrom } from "@/lib/rate-limit/core";
 import { geminiModel, GeminiError, type ModelCall } from "@/lib/server/gemini";
 import { guardReading, type GuardReason } from "@/lib/tarot/ai/guard";
 import { buildUserMessage, SYSTEM_PROMPT } from "@/lib/tarot/ai/prompt";
@@ -85,7 +87,11 @@ const bad = () => NextResponse.json({ parrafos: null }, { status: 400 });
 const tooLarge = () => NextResponse.json({ parrafos: null }, { status: 413 });
 
 /** POST /api/tarot/lectura-ia sin el limitador (lo pone route.ts). El modelo se inyecta para probarlo sin red. */
-export async function handleTarotAiRequest(request: Request, model: ModelCall | null = modelFromEnv()): Promise<Response> {
+export async function handleTarotAiRequest(
+  request: Request,
+  model: ModelCall | null = modelFromEnv(),
+  human: HumanCheck | null = humanCheckFromEnv(),
+): Promise<Response> {
   // Gasta cuota de la escuela: solo desde el propio sitio. Sin la cabecera (navegador viejo) pasa, y el cupo lo frena.
   const site = request.headers.get("sec-fetch-site");
   if (site && site !== "same-origin") return NextResponse.json({ parrafos: null }, { status: 403 });
@@ -103,6 +109,17 @@ export async function handleTarotAiRequest(request: Request, model: ModelCall | 
   const { t, c, q } = (body ?? {}) as Record<string, unknown>;
   if (typeof t !== "string" || typeof c !== "string" || t.length > MAX_FIELD || c.length > MAX_FIELD) return bad();
   if (q !== undefined && q !== null && (typeof q !== "string" || q.length > MAX_FIELD)) return bad();
+
+  // Con Turnstile encendido no hay modelo sin una persona verificada. Va después de validar la forma:
+  // un pedido roto no gasta una llamada a Cloudflare.
+  if (human) {
+    const token = (body as Record<string, unknown>).token;
+    const check: HumanCheckResult = typeof token === "string" && token.length > 0 ? await human(token, clientIpFrom(request.headers)) : { ok: false, reason: "missing" };
+    if (!check.ok) {
+      void log.warn("tarot_ai_turnstile_failed", { reason: check.reason, codes: check.codes ?? [] });
+      return NextResponse.json({ parrafos: null }, { status: 403 });
+    }
+  }
 
   // Se vuelve a decodificar la tirada: del cliente solo llega la misma codificación que la URL.
   const reading = decodeReading(t, c);

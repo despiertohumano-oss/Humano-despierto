@@ -23,6 +23,12 @@ describe("AiReadingView", () => {
     expect(html).toMatch(/tu pregunta se envía a ese servicio/);
   });
 
+  it("con Turnstile, mientras redacta deja el lugar del widget", () => {
+    const html = renderToStaticMarkup(<AiReadingView state={{ status: "loading" }} widget />);
+    expect(html).toContain("data-turnstile");
+    expect(renderToStaticMarkup(<AiReadingView state={{ status: "loading" }} />)).not.toContain("data-turnstile");
+  });
+
   it("sin texto (respaldo) no dibuja nada", () => {
     expect(renderToStaticMarkup(<AiReadingView state={{ status: "done", parrafos: null }} />)).toBe("");
     expect(renderToStaticMarkup(<AiReadingView state={{ status: "off" }} />)).toBe("");

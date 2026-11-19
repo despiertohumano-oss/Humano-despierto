@@ -9,7 +9,7 @@ import { decodeReading, encodeReading, readingSeed } from "@/lib/tarot/codec";
 import { renderReading } from "@/lib/tarot/interpret/narrative";
 import { sanitizeQuestion } from "@/lib/tarot/question";
 import { buildReading } from "@/lib/tarot/reading";
-import { isTarotAiEnabled } from "@/lib/server/tarot-ai";
+import { tarotAiProps } from "@/lib/server/tarot-ai-page";
 
 export const metadata: Metadata = { title: "Tu lectura de tarot", robots: { index: false, follow: false } };
 
@@ -32,7 +32,7 @@ export default async function LecturaPage({ searchParams }: { searchParams: Prom
       <main className="mx-auto max-w-[1000px] px-6 py-12">
         <p className="text-sm font-semibold text-miel-800">{facts.spread.nombre}</p>
         <h1 className="mt-2 text-display-lg leading-[1.08] tracking-[-0.025em]">{question ?? "Tu lectura"}</h1>
-        <div className="mt-10"><ReadingView facts={facts} text={text} ai={isTarotAiEnabled() ? { t: reading.spread, c: encodeReading(reading), q: question } : null} /></div>
+        <div className="mt-10"><ReadingView facts={facts} text={text} {...await tarotAiProps(reading, question)} /></div>
         <div className="mt-12 flex flex-wrap items-center gap-3">
           <ButtonLink href={`/tarot/${reading.spread}`} arrow>Tirar de nuevo</ButtonLink>
           {facts.spread.retirada ? null : user ? (

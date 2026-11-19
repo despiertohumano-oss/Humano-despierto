@@ -111,7 +111,8 @@ covered by mutation tests that fail loudly if you regress them.
     Playwright runs with `CSP_ENFORCE=false` on purpose: every test imports `test` from
     `e2e/fixtures.ts`, whose `cspGuard` fails the test on any violation (the same policy, so zero
     violations means nothing is blocked), and the csp.spec tests need an injected script to run.
-    A new third-party origin goes into `buildCsp` with its test, never into a page. Netlify's own
+    A new third-party origin goes into `buildCsp` with its test, never into a page. Cloudflare Turnstile
+    (`https://challenges.cloudflare.com`) enters only when both Turnstile keys are set (`turnstile` input, T-106). Netlify's own
     `/.netlify/scripts/hud` has no nonce and is blocked: that is intended.
 11. **Every write a client can trigger is rate-limited** (T-050). Each export of a `"use server"`
     file and each `route.ts` method goes through `withRateLimit("<its own name>", fn, onLimited)`

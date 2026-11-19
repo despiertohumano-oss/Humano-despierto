@@ -96,4 +96,46 @@ describe("handleTarotAiRequest", () => {
     expect(q.startsWith("¿Qué hago?")).toBe(true);
     expect(Array.from(q).length).toBeLessThanOrEqual(140);
   });
+
+describe("handleTarotAiRequest con Turnstile encendido", () => {
+  const model: ModelCall = async () => null;
+
+  it("sin token responde 403 y no llama al modelo ni a Cloudflare", async () => {
+    let modelCalls = 0;
+    let verifyCalls = 0;
+    const res = await handleTarotAiRequest(req(BODY), async () => (modelCalls++, null), async () => (verifyCalls++, { ok: true }));
+    expect(res.status).toBe(403);
+    await expect(res.json()).resolves.toEqual({ parrafos: null });
+    expect(modelCalls).toBe(0);
+    expect(verifyCalls).toBe(0);
+  });
+
+  it("con un token que Cloudflare rechaza responde 403 sin llamar al modelo", async () => {
+    let modelCalls = 0;
+    const res = await handleTarotAiRequest(req({ ...BODY, token: "malo" }), async () => (modelCalls++, null), async () => ({ ok: false, reason: "invalid", codes: [] }));
+    expect(res.status).toBe(403);
+    expect(modelCalls).toBe(0);
+  });
+
+  it("con token válido sigue hasta el modelo, con la IP del pedido", async () => {
+    let modelCalls = 0;
+    const seen: { token: unknown; ip: string }[] = [];
+    const res = await handleTarotAiRequest(
+      req({ ...BODY, token: "XXXX.DUMMY.TOKEN.XXXX" }, { "x-nf-client-connection-ip": "203.0.113.5" }),
+      async () => (modelCalls++, null),
+      async (token, ip) => (seen.push({ token, ip }), { ok: true }),
+    );
+    expect(res.status).toBe(200);
+    expect(modelCalls).toBe(1);
+    expect(seen).toEqual([{ token: "XXXX.DUMMY.TOKEN.XXXX", ip: "203.0.113.5" }]);
+  });
+
+  it("apagado (null), el token se ignora y todo sigue como antes", async () => {
+    let modelCalls = 0;
+    const res = await handleTarotAiRequest(req(BODY), async () => (modelCalls++, null), null);
+    expect(res.status).toBe(200);
+    expect(modelCalls).toBe(1);
+    void model;
+  });
+});
 });
