@@ -40,6 +40,8 @@ como Edge Function y lee `SITE_URL`, `CSP_ENFORCE` y las de Supabase en cada req
 | `MAIL_FROM_ADDRESS` | no secreta | **La misma dirección de Gmail** que `SMTP_USER`: Gmail reescribe cualquier otro From |
 | `MAIL_FROM_NAME` | no secreta | `Humano Despierto` |
 | `YOUTUBE_API_KEY` | **secreta** | Google Cloud, YouTube Data API v3. Sin ella no se publica una lección |
+| `GEMINI_API_KEY` | **secreta**, opcional | Google AI Studio > Get API key, en la cuenta de la escuela, nivel gratuito (T-106). Vacía = el tarot muestra solo la lectura por plantillas. Nunca con `NEXT_PUBLIC_` |
+| `GEMINI_MODEL` | no secreta, opcional | Vacía = `gemini-3.5-flash-lite`. Otro modelo con nivel gratuito, si ese se retira |
 | `CRON_SECRET` | **secreta** | ≥16 caracteres al azar (`openssl rand -hex 32`). **Obligatoria desde T-098:** la usa la Scheduled Function `mail-retry` para llamar a `/api/mail/retry` (sección 6). Scope: Functions y Runtime |
 | `CSP_ENFORCE` | no secreta | Vacía (= enforce desde 2026-11-09). `false` vuelve a Report-Only sin redeploy de código: interruptor de emergencia |
 | `ERROR_ALERT_EMAIL` | no secreta, opcional | Adónde llegan los avisos de error (0078). Vacía = `MAIL_FROM_ADDRESS` |

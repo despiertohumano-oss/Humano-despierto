@@ -33,6 +33,12 @@ Several things block work and require the repo owner's accounts:
 - **`CRON_SECRET` in Netlify** (T-098, scopes Functions and Runtime): without it the `mail-retry`
   Scheduled Function calls nothing (`missing_env` in its log) and stuck mails are never retried.
   Its first run re-sends what is stuck from the last 3 days (runbook section 6).
+- **Gemini API key** (`GEMINI_API_KEY`, server-side, no `NEXT_PUBLIC_` prefix; T-106): a key from Google AI
+  Studio on the school's Google account, free tier, no billing. Without it the tarot shows only the template
+  reading. On the free tier Google uses prompts and answers to improve its products (the PO accepted it on
+  2026-11-18) and its quota is not published per model, so a `429` can come at any time and only means the
+  fallback. Optional `GEMINI_MODEL` (default `gemini-3.5-flash-lite`). The free tier is not offered in every
+  country (`400 FAILED_PRECONDITION`): check it from Argentina with the real key before announcing it.
 - **Gmail App Password** (T-090, stopgap until a domain exists): 2-step verification on
   `despiertohumano@gmail.com`, an App Password, then `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`,
   `SMTP_SECURE=true`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM_ADDRESS=despiertohumano@gmail.com`.

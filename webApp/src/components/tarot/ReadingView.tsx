@@ -4,12 +4,16 @@ import EthicsNote from "@/components/tarot/EthicsNote";
 import type { ReadingFacts } from "@/lib/tarot/reading";
 import type { ReadingText } from "@/lib/tarot/interpret/narrative";
 import { positionsFor } from "@/lib/tarot/spreads";
+import AiReading from "@/components/tarot/AiReading";
+import type { AiReadingRequest } from "@/lib/tarot/ai/cache";
 
-export default function ReadingView({ facts, text }: { facts: ReadingFacts; text: ReadingText }) {
+// `ai` = la tirada codificada para pedir la lectura redactada (T-106); null si la función está apagada.
+export default function ReadingView({ facts, text, ai = null }: { facts: ReadingFacts; text: ReadingText; ai?: AiReadingRequest | null }) {
   const positions = positionsFor(facts.spread, facts.placed.length);
   return (
     <div className="space-y-12">
       <SpreadLayout positions={positions} forma={facts.spread.forma} render={(_p, i) => <TarotCard card={facts.placed[i]!.card} reversed={facts.placed[i]!.reversed} size={facts.placed.length > 3 ? "sm" : "md"} priority={i === 0} />} />
+      {ai && <AiReading request={ai} />}
       <section className="mx-auto max-w-[68ch] space-y-5 text-lg leading-relaxed text-tinta">
         <p>{text.apertura}</p>
         {text.ideaLineal && <p>{text.ideaLineal}</p>}

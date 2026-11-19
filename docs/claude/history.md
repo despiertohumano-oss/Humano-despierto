@@ -4,6 +4,7 @@
 > the code, change this file — a wrong guide is worse than none, because it is trusted.
 
 ## History
+On 2026-11-18 T-106: the tarot reading adds a text written by Gemini (free tier) from the engine's facts, guarded before it is shown; the template reading stays as the instant fallback.
 On 2026-11-18 T-103: the 240 planet-in-sign and planet-in-house texts have their own indexable page, linked from the sheets, the chart result and the sitemap.
 On 2026-11-18 T-102: aspects of Pluto with the other nine planets read their own text by family instead of the generic phrase.
 On 2026-11-18 T-101: the natal chart reads a text of its own per planet in sign and in house (240 entries with light and shadow) instead of three generic phrases glued together.

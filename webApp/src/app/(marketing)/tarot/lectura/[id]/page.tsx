@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ReadingView from "@/components/tarot/ReadingView";
 import { getSavedReading } from "@/lib/server/tarot";
-import { readingSeed } from "@/lib/tarot/codec";
+import { encodeReading, readingSeed } from "@/lib/tarot/codec";
 import { renderReading } from "@/lib/tarot/interpret/narrative";
 import { buildReading } from "@/lib/tarot/reading";
+import { isTarotAiEnabled } from "@/lib/server/tarot-ai";
 
 export const metadata: Metadata = { title: "Tirada guardada", robots: { index: false, follow: false } };
 
@@ -19,7 +20,7 @@ export default async function LecturaGuardadaPage({ params }: { params: Promise<
       <main className="mx-auto max-w-[1000px] px-6 py-12">
         <p className="text-sm font-semibold text-miel-800">{facts.spread.nombre} · {new Date(saved.createdAt).toLocaleDateString("es-AR")}</p>
         <h1 className="mt-2 text-display-lg leading-[1.08] tracking-[-0.025em]">{saved.question ?? "Tu lectura"}</h1>
-        <div className="mt-10"><ReadingView facts={facts} text={text} /></div>
+        <div className="mt-10"><ReadingView facts={facts} text={text} ai={isTarotAiEnabled() ? { t: saved.reading.spread, c: encodeReading(saved.reading), q: saved.question } : null} /></div>
       </main>
     </div>
   );
