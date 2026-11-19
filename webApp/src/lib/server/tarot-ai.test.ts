@@ -120,6 +120,16 @@ describe("writeTarotReading", () => {
     expect(calls).toBe(1);
   });
 
+  it.each(["¿Voy a quedar embarazada este año?", "¿Mi mamá se va a curar?", "¿Me van a operar y sale bien?", "¿Mi pareja y yo vamos a tener un hijo?"])(
+    "«%s» no llama al modelo aunque el tema detectado no sea salud",
+    async (q) => {
+      let calls = 0;
+      const model: ModelCall = async () => (calls++, GOOD);
+      await expect(writeTarotReading(facts(q), { model, timeoutMs: 1000 })).resolves.toBeNull();
+      expect(calls).toBe(0);
+    },
+  );
+
   it("una consulta de salud no llama al modelo: se queda con la lectura por plantillas", async () => {
     let calls = 0;
     const model: ModelCall = async () => (calls++, GOOD);

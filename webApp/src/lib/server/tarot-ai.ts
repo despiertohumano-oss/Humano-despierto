@@ -6,6 +6,7 @@ import { humanCheckFromEnv, type HumanCheck, type HumanCheckResult } from "@/lib
 import { clientIpFrom } from "@/lib/rate-limit/core";
 import { geminiModel, GeminiError, type ModelCall } from "@/lib/server/gemini";
 import { guardReading, type GuardReason } from "@/lib/tarot/ai/guard";
+import { isSensitiveQuestion } from "@/lib/tarot/ai/sensitive";
 import { buildUserMessage, SYSTEM_PROMPT } from "@/lib/tarot/ai/prompt";
 import { decodeReading } from "@/lib/tarot/codec";
 import { sanitizeQuestion } from "@/lib/tarot/question";
@@ -51,8 +52,9 @@ const MAX_ATTEMPTS = 2;
 /** Párrafos ya validados, o null ante cualquier fallo: la página se queda con la lectura por plantillas. */
 export async function writeTarotReading(facts: ReadingFacts, deps: { model: ModelCall | null; timeoutMs: number }): Promise<string[] | null> {
   if (!deps.model) return null;
-  // La guarda rechaza cualquier mención de enfermedades: una consulta de salud no gasta cuota.
-  if (facts.domain === "salud") return null;
+  // Salud, embarazo o muerte: no se le preguntan al modelo. El tema detectado no alcanza ("amor" le gana a
+  // "salud" en "¿voy a quedar embarazada de mi novio?"), por eso además se mira la pregunta.
+  if (facts.domain === "salud" || isSensitiveQuestion(facts.question)) return null;
   const model = deps.model;
   const controller = new AbortController();
   let timer: ReturnType<typeof setTimeout> | undefined;

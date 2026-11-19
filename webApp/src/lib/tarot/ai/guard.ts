@@ -38,16 +38,19 @@ const CANTIDAD = "un|una|unos|unas|pocos|pocas|algunos|algunas|varios|varias|\\d
 // de un desenlace concreto (conseguir, casarse, cobrar, curarse, morir, volver…). El futuro solo, sin
 // desenlace («vas a necesitar paciencia»), pasa: eso lo cuida el prompt.
 const DESENLACES =
-  "consegu|encontrar|casar|divorciar|separar|ganar|cobrar|recibir|heredar|curar|sanar|morir|enfermar|embaraz|quedar embarazad|ascender|aprobar|volver|regresar|llegar|perder|mudar|triunfar|ir bien|salir bien|salir todo bien|tener (?:un |una )?(?:accidente|hijo|hija|bebe)";
+  "consegu|encontrar|casar|divorciar|separar|ganar|cobrar|recibir|heredar|curar|sanar|morir|enfermar|embaraz|quedar embarazad|quedar en estado|ascender|aprobar|volver|regresar|llegar|perder|mudar|triunfar|ir (?:muy |re |todo )?bien|salir (?:muy |todo )?bien|recuperar|mejorar|empeorar|operar|sufrir|lograr|obtener|conocer a|hacerte ric|ser (?:ric[oa]|mama|papa|madre|padre)|estar de luto|tener que operar|tener (?:un |una )?(?:accidente|hijo|hija|bebe)";
 const FUTURO_SIMPLE =
-  "consegui|encontra|casa|divorcia|separa|gana|cobra|recibi|hereda|cura|sana|mori|enferma|embaraza|ascende|aproba|volve|regresa|llega|perde|muda|triunfa";
+  "consegui|encontra|casa|divorcia|separa|gana|cobra|recibi|hereda|cura|sana|mori|enferma|embaraza|ascende|aproba|volve|regresa|llega|perde|muda|triunfa|logra|obtend|conoce|parti|mejora|empeora|recupera";
 
 const PREDICCION = [
   // salud
   /\benferm\w*|\bdiagnost\w*|\bcancer\b|\bembaraz\w*|\btumor\w*|\bquirurg\w*|\bcirugia\w*|\bhospital\w*/,
+  /\bsalud\b|\boperar\w*|\boperaci\w*|\binternaci\w*|\bdepresi\w*|\bbebes?\b|\bquedar en estado\b|\b(?:tener|tendr\w+|ser|seras) (?:un |una )?(?:hijo|hija|bebe|mama|papa|madre|padre)\b/,
   // muerte de personas; «la Muerte» como carta y «la muerte de un ciclo» pasan
   /\bmori\w*|\bmuri\w*|\bmuer(?:a|as|an)\b|\bmuert[oa]s?\b|\bfallec\w*|\bfuneral\w*|\bvelorio\w*|\bmuerte de (?:tu|tus|su|sus|mi|mis|alguien|algun|alguna|un ser|una persona|un familiar|un pariente|un amigo|una amiga)\b/,
+  /\bluto\b|\bde este (?:mundo|plano)\b/,
   // fechas y plazos
+  new RegExp(`\\beste (?:ano|mes)\\b|\\b(?:primavera|verano|otono|invierno|navidad)\\b|\\bfin(?:es)? de (?:mes|ano)\\b|\\b(?:${UNIDAD}) que entra\\b|\\ben cuestion de\\b|\\bun par de (?:${UNIDAD})\\b|\\bmanana mismo\\b|\\bmuy pronto\\b`),
   new RegExp(`\\b(?:${MESES}|${DIAS})\\b`),
   /\b(?:19|20)\d\d\b|\b\d{1,2}\s*[/.-]\s*\d{1,2}\b/,
   new RegExp(`\\b(?:en|dentro de)\\s+(?:(?:${CANTIDAD})\\s+)?(?:${UNIDAD})\\b`),
@@ -55,6 +58,8 @@ const PREDICCION = [
   // dinero
   /\bherenci\w*|\bloteria\b|\bapuestas?\b|\bcasino\b|\bdinero asegurado\b/,
   /\b(?:plata|dinero|premio)\b[^.]{0,40}\b(?:lleg\w*|vas a|va a|vendra\w*)|\b(?:lleg\w*|vas a|va a)\b[^.]{0,30}\b(?:plata|dinero|premio)\b/,
+  // promesas que no pasan por el futuro de la lista
+  /\bte van a (?:pagar|ofrecer|dar|contratar|llamar|elegir)\b|\bte ira (?:muy |todo )?bien\b/,
   // futuro + desenlace
   new RegExp(`\\b(?:vas|va|van|vamos) a (?:\\S+ ){0,2}?(?:${DESENLACES})`),
   new RegExp(`\\b(?:${FUTURO_SIMPLE})r(?:as|a|an|e|emos)\\b`),

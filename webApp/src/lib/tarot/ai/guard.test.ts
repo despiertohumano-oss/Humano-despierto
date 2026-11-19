@@ -244,3 +244,60 @@ describe("guardReading · quintaesencia de la cruz celta", () => {
     expect(guardReading(text, celta)).toEqual({ ok: false, reason: "inventa" });
   });
 });
+
+describe("guardReading · ronda 3: salud, embarazo, muerte, plazos y promesas", () => {
+  it.each([
+    // embarazo
+    "y vas a ser mamá muy pronto",
+    "y tendrás un hijo",
+    "y un bebé viene en camino",
+    "y vas a quedar en estado",
+    // salud
+    "y tu salud va a mejorar",
+    "y vas a recuperarte por completo",
+    "como la operación de tu madre",
+    "como tu depresión y tu ansiedad",
+    "y tu salud va a empeorar",
+    "y vas a tener que operarte",
+    "con una internación que se acerca",
+    "y vas a sufrir un accidente",
+    // muerte
+    "y alguien cercano partirá de este plano",
+    "y vas a estar de luto",
+    "porque alguien se va de este mundo",
+    // plazos
+    "y eso no llega este año",
+    "algo que se define este mes",
+    "una respuesta antes del verano",
+    "un cambio en primavera",
+    "una noticia para fin de mes",
+    "un cierre a fin de año",
+    "un giro el mes que entra",
+    "una visita en Navidad",
+    "un cambio en cuestión de días",
+    "una respuesta en un par de meses",
+    "una llamada mañana mismo",
+    "y eso pasa muy pronto",
+    // promesas
+    "y te va a ir muy bien",
+    "y lograrás el puesto",
+    "y obtendrás ese ascenso",
+    "y conocerás al amor de tu vida",
+    "y te van a ofrecer un contrato",
+    "y te van a pagar lo que te deben",
+    "y vas a hacerte rica",
+  ])("rechaza «%s»", (x) => {
+    expect(guardReading(swap(x), facts)).toEqual({ ok: false, reason: "prediccion" });
+  });
+
+  it.each([
+    "una pausa para mirar esta semana",
+    "algo que te genera ansiedad",
+    "un camino que recién empieza",
+    "lo que querés lograr con calma",
+    "tu manera de conocer a otros",
+    "el estado de ánimo de estos días",
+  ])("no rechaza de más: «%s»", (x) => {
+    expect(guardReading(swap(x), facts).ok).toBe(true);
+  });
+});
