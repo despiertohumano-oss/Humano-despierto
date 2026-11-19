@@ -98,7 +98,7 @@ export function posicionTitle(nombre: string): string {
 
 const PALABRAS_SUELTAS = /\s+(y|o|de|del|que|no|la|el|en|con|un|una|a|e|u|se|su|al|los|las|por|para|como|es)$/iu;
 
-/** Oraciones completas del texto que entren; si no alcanzan el mínimo, la siguiente recortada y cerrada con «…». */
+/** Oraciones completas del texto que entren; si no alcanzan el mínimo, la siguiente recortada y cerrada con “…”. */
 export function posicionDescription(texto: string): string {
   const oraciones = texto.match(/[^.!?]+[.!?]+(?=\s|$)/g)?.map((o) => o.trim()) ?? [texto];
   let d = "";

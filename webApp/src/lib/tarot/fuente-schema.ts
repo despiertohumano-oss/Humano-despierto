@@ -24,7 +24,7 @@ const menor = z.object({
   numero: z.number().int().min(1).max(14), // 1 = As ... 10, 11 Sota, 12 Caballo, 13 Reina, 14 Rey
   imagen: texto,
   significados: texto,
-  invertida: z.string(), // puede ser «Waite no cita ningún significado»: se copia igual
+  invertida: z.string(), // puede ser “Waite no cita ningún significado”: se copia igual
 });
 
 const palo = z.object({

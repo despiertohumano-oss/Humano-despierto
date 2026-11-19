@@ -9,7 +9,7 @@ import { type ClockChoice, NOON, type TimeResolution, formatOffset, isValidTimeZ
 import type { HouseSystem } from "@/lib/astro/zodiac";
 
 export type ChartFormInput = { date: string; time: string | null; placeId: number | null; lat: number | null; lon: number | null; timeZone: string | null; houseSystem: HouseSystem; clock: ClockChoice | null };
-// `name` nombra el huso antes y después de calcular («Hora de El Paso», no la provincia).
+// `name` nombra el huso antes y después de calcular (“Hora de El Paso”, no la provincia).
 export type PlaceOption = { id: number; label: string; name: string; lat: number; lon: number; timeZone: string };
 export type ResolvedBirth = { date: string; time: string | null; placeId: number | null; lat: number; lon: number; timeZone: string; offsetSeconds: number; clock: ClockChoice | null; houseSystem: HouseSystem };
 export type ChartView = { facts: ChartFacts; text: ChartText; placeLabel: string; zoneLabel: string };
@@ -189,7 +189,7 @@ export async function listNatalCharts(): Promise<SavedChart[]> {
   return rows.map(toSaved).filter((c): c is SavedChart => c !== null);
 }
 
-/** La carta que se muestra al entrar a /carta-natal: la marcada «mi carta», si no la más reciente. */
+/** La carta que se muestra al entrar a /carta-natal: la marcada “mi carta”, si no la más reciente. */
 export async function getMainNatalChart(): Promise<SavedChart | null> {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -211,7 +211,7 @@ export async function hasSelfChart(): Promise<boolean> {
 }
 
 // Se recalcula con el offset GUARDADO, no con la tzdata de hoy: el huso que la persona vio y
-// confirmó es parte de su input (lugar-y-hora.md §4, «si el usuario lo corrige, queda fijo»).
+// confirmó es parte de su input (lugar-y-hora.md §4, “si el usuario lo corrige, queda fijo”).
 function factsFromSaved(s: SavedChart): ChartFacts {
   const utc = utcFromOffset(s.birthDate, s.birthTime ?? NOON, s.offsetSeconds);
   return computeChart({ utc, lat: s.lat, lon: s.lon, houseSystem: s.houseSystem, hasTime: s.birthTime !== null });
@@ -247,8 +247,8 @@ type RpcError = { code?: string; message?: string } | null;
 // El trigger de 0072 corta en 100 con este mensaje y 23514 (el mismo código que cualquier CHECK).
 const TOPE_MESSAGE = "tope de 100 cartas guardadas";
 
-// Solo el código: en una violación de constraint, message/details traen «Failing row contains
-// (...)» con fecha, hora y coordenadas de nacimiento.
+// Solo el código: en una violación de constraint, message/details traen “Failing row contains
+// (...)” con fecha, hora y coordenadas de nacimiento.
 function logRpcFailure(event: string, error: RpcError): void {
   void log.error(event, { pg_code: error?.code ?? "sin_codigo" });
 }

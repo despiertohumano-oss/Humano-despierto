@@ -3,7 +3,7 @@ import SkyIllustration from "@/components/atoms/SkyIllustration";
 import Reveal from "@/components/layout/Reveal";
 import { LANDING } from "@/content/landing";
 
-/** «Explorá cada propuesta» (pantalla 3 del documento de la dueña): título, bajada y tres pasos.
+/** “Explorá cada propuesta” (pantalla 3 del documento de la dueña): título, bajada y tres pasos.
  *  No depende de si los cursos tienen clase gratuita: no se promete nada de acceso. */
 export default function Empezar() {
   const e = LANDING.empezar;

@@ -30,7 +30,7 @@ export interface PublishedCourseSummary {
   updatedAt: string;
   /** El path, no la URL: `sitemap.ts` tambien lee el catalogo y no tiene por que firmar nada. */
   coverPath: string | null;
-  /** Tiene al menos una lección publicada `is_preview`: lo único que habilita decir «clase gratis» (spec Brote). */
+  /** Tiene al menos una lección publicada `is_preview`: lo único que habilita decir “clase gratis” (spec Brote). */
   hasPreview: boolean;
   /** B2 · qué incluye según su docente; la tarjeta lo resume con la duración. */
   modality: CourseModality;

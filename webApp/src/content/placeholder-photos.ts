@@ -6,7 +6,7 @@
  * docente real le atribuiría una cara ajena (decisión 3 del PO, QA T-060 D1).
  *
  * Desde 2026-11-08 sólo quedan las dos del costado de las pantallas de acceso (`auth-aside.ts`):
- * el hero, «Nuestra mirada» y las portadas de ejemplo usan `brand-images.ts`.
+ * el hero, “Nuestra mirada” y las portadas de ejemplo usan `brand-images.ts`.
  */
 
 export type PhotoUse = "fondo";

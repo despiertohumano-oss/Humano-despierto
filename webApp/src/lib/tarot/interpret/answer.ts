@@ -23,7 +23,7 @@ const byN = (a: PlacedCard, b: PlacedCard) => a.position.n - b.position.n;
 // Qué grupos compara el contraste de cada tirada (reading.ts, contrastOf), en el orden en que se nombran.
 const LADOS: Record<Contrast["kind"], [string, string]> = { camino: ["si-continua", "si-cambia"], relaciones: ["a", "b"] };
 
-// «¿Qué hago?» en una tirada con dos caminos o dos personas: la respuesta compara los lados, no lee un camino solo.
+// “¿Qué hago?” en una tirada con dos caminos o dos personas: la respuesta compara los lados, no lee un camino solo.
 export function contrastSides(facts: ReadingFacts): [PlacedCard[], PlacedCard[]] | null {
   if (facts.questionType !== "que_hacer" || !facts.contrast) return null;
   const side = (k: string) => [...(facts.groups.find((g) => g.clave === k)?.placed ?? [])].sort(byN);
@@ -53,8 +53,8 @@ export function cardValue(c: Pick<PlacedCard, "card" | "estado" | "reversed">): 
   return c.estado === "trabada" ? -1 : POLARIDAD[cardVerdict(c.card, c.reversed)];
 }
 
-// Lo que vale en promedio una carta al azar: el mazo trae 49 «sí», 12 «depende» y 17 «no», un tercio sale
-// invertida y una de cada cinco queda trabada por sus vecinas. Sin restarlo, cualquier tirada grande «favorece».
+// Lo que vale en promedio una carta al azar: el mazo trae 49 “sí”, 12 “depende” y 17 “no”, un tercio sale
+// invertida y una de cada cinco queda trabada por sus vecinas. Sin restarlo, cualquier tirada grande “favorece”.
 // balance.test.ts lo vuelve a medir.
 export const VALOR_BASE = -0.09;
 // Margen en desvíos (σ ≈ 1 por carta): por debajo de 0,5·√n la diferencia es ruido del mazo y la respuesta queda abierta.

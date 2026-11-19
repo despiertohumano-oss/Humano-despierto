@@ -100,7 +100,7 @@ export default function Icon({
   className,
 }: {
   name: IconName;
-  /** Relleno con el color actual (estado «activo»: guardado, votado). */
+  /** Relleno con el color actual (estado “activo”: guardado, votado). */
   filled?: boolean;
   className?: string;
 }) {

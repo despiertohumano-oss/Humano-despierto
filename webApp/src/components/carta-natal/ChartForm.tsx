@@ -125,7 +125,7 @@ export default function ChartForm({ mode, signedIn, perfilPublico, editing }: Pr
     if (tildado("consiento")) setConsiento(true);
   }, []);
 
-  // La elección de «antes/después del atraso» vale solo para estos datos: si cambian, se vuelve a preguntar.
+  // La elección de “antes/después del atraso” vale solo para estos datos: si cambian, se vuelve a preguntar.
   const datos = datosDe(fecha, sinHora ? null : hora, manual ? { lat, lon, huso } : null, place?.id ?? null, corregir ? huso : null);
   const firma = JSON.stringify([datos, casas]);
   const reloj = elegido && elegido.datos === datos ? elegido.valor : "";

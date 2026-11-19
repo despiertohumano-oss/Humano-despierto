@@ -85,7 +85,7 @@ export function annotateCourses(courses: PublishedCourseSummary[]): AnnotatedCou
   }));
 }
 
-// Sin tildes ni mayúsculas: quien escribe «astrologia» también encuentra «Astrología».
+// Sin tildes ni mayúsculas: quien escribe “astrologia” también encuentra “Astrología”.
 function foldForSearch(value: string): string {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }

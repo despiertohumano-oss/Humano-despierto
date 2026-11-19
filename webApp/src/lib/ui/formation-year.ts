@@ -1,4 +1,4 @@
-// La seed vieja guardó los años de `formations` en romanos («MMXII»): es dato, pero la ficha
+// La seed vieja guardó los años de `formations` en romanos (“MMXII”): es dato, pero la ficha
 // muestra años de verdad. Sólo se convierte un romano canónico; cualquier otro texto queda igual.
 const CANONICAL_ROMAN = /^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/;
 const VALUE: Record<string, number> = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };

@@ -56,7 +56,7 @@ function moduleMeta(m: CourseDetailModule): string {
   return seconds > 0 ? `${clases}, ${formatTotalDuration(seconds)}` : clases;
 }
 
-/** Programa del curso (B1 «Así es un curso por dentro»): un módulo abierto a la vez. */
+/** Programa del curso (B1 “Así es un curso por dentro”): un módulo abierto a la vez. */
 export default function CurriculumAccordion({ modules, hasAccess, completedLessonIds }: Props) {
   const lessonStates = useLessonStates(modules, hasAccess, completedLessonIds);
 

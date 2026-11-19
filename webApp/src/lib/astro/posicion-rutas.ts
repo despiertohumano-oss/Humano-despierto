@@ -17,7 +17,7 @@ export function posicionPath(planeta: PlanetId, tipo: TipoPosicion, clave: strin
   return `/carta-natal/planetas/${bodySlug(planeta)}/${posicionSlug(tipo, clave)}`;
 }
 
-// Solo los luminares llevan artículo («El Sol en Leo»), igual que en la prosa de la carta.
+// Solo los luminares llevan artículo (“El Sol en Leo”), igual que en la prosa de la carta.
 export function tituloPosicion(planeta: PlanetId, tipo: TipoPosicion, clave: string): string {
   const nombre = planeta === "sol" ? "El Sol" : planeta === "luna" ? "La Luna" : BODY_NAMES[planeta];
   return `${nombre} en ${tipo === "casa" ? `la casa ${clave}` : SIGNS[clave as SignId].nombre}`;

@@ -39,7 +39,7 @@ export function studentLossText(count: number | null, scope: "module" | "lesson"
   return `${count} alumnas tienen avance en ${where}: pierden su avance, sus notas y sus preguntas.`;
 }
 
-/** Texto del `confirm()` de «Borrar lección» en el editor de la lección (PublishLessonControl). */
+/** Texto del `confirm()` de “Borrar lección” en el editor de la lección (PublishLessonControl). */
 export function lessonDeleteConfirmText(count: number | null): string {
   return `¿Borrar esta lección? Se pierden sus capítulos y recursos. ${studentLossText(count, "lesson")}`;
 }
