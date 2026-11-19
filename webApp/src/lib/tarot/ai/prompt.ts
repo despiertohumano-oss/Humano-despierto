@@ -64,7 +64,8 @@ const DIGNIDAD: Record<Dignity, string> = {
 // La pregunta ya viene saneada (`sanitizeQuestion`); acá solo se impide que cierre o abra sus marcas.
 function asData(q: string): string {
   // NFKC primero: así «＜/pregunta＞» (ancho completo) o «﹤» pasan a «<» y se quitan con el resto.
-  return q.normalize("NFKC").replace(/[<>‹›〈〉《》]/g, " ").replace(/\s+/g, " ").trim();
+  // Tampoco puede traer escrita la etiqueta con la que el modelo declara su veredicto.
+  return q.normalize("NFKC").replace(/[<>‹›〈〉《》]/g, " ").replace(/sensible\s*:/gi, "sensible ").replace(/\s+/g, " ").trim();
 }
 
 function cardBlock(p: PlacedCard, facts: ReadingFacts): string {

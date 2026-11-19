@@ -38,7 +38,11 @@ Several things block work and require the repo owner's accounts:
   reading. On the free tier Google uses prompts and answers to improve its products (the PO accepted it on
   2026-11-18) and its quota is not published per model, so a `429` can come at any time and only means the
   fallback. Optional `GEMINI_MODEL` (default `gemini-3.5-flash-lite`). The free tier is not offered in every
-  country (`400 FAILED_PRECONDITION`): check it from Argentina with the real key before announcing it.
+  country (`400 FAILED_PRECONDITION`); it was checked from Argentina with a real key on 2026-11-18 and works.
+  It also has a per-minute cap: about 20 calls in a row produced one `429`. Health, pregnancy and death
+  questions never get a model reading: an unambiguous word list (`src/lib/tarot/ai/sensitive.ts`) cuts them
+  before the call, and the model itself must open its answer with `SENSIBLE: SI|NO` (anything but a clean `NO`
+  shows the template reading).
 - **Cloudflare Turnstile** (`NEXT_PUBLIC_TURNSTILE_SITE_KEY` + `TURNSTILE_SECRET_KEY`, T-106): a free widget on a
   Cloudflare account of the school, Managed mode, the site's hostname. With **both** set, `POST /api/tarot/lectura-ia`
   requires a token verified by `siteverify` before calling Gemini (no token or a rejected one: `403 {parrafos:null}`)
