@@ -36,7 +36,7 @@ function deckOf(rng: () => number, variants: readonly string[]): (ok?: (v: strin
 const byN = (a: PlacedCard, b: PlacedCard) => a.position.n - b.position.n;
 const nom = (p: PlacedCard) => nombrar(p.card);
 
-// «los Enamorados» no admite un verbo en minúscula pegado: con carta plural solo valen las variantes que arrancan el texto en mayúscula.
+// “los Enamorados” no admite un verbo en minúscula pegado: con carta plural solo valen las variantes que arrancan el texto en mayúscula.
 const forCard = (variants: string[], p: PlacedCard): string[] => (articulo(p.card) === "los" ? variants.filter((v) => !v.includes("{texto_min}")) : variants);
 
 function ideaLineal(facts: ReadingFacts, rng: () => number): string {
@@ -139,7 +139,7 @@ export function renderReading(facts: ReadingFacts, seed: number): ReadingText {
   const pan = panorama(facts, rng);
   const dominante =
     facts.placed.length > 1
-      ? { titulo: cap(nom(d)), texto: fill(pick(rng, templates.dominante), { nombre: nom(d), Nombre: cap(nom(d)), posicion: d.position.nombre, claves: joinY(d.keywords.slice(0, 3).map((k) => `«${k}»`)) }) }
+      ? { titulo: cap(nom(d)), texto: fill(pick(rng, templates.dominante), { nombre: nom(d), Nombre: cap(nom(d)), posicion: d.position.nombre, claves: joinY(d.keywords.slice(0, 3).map((k) => `“${k}”`)) }) }
       : null;
   return {
     apertura,

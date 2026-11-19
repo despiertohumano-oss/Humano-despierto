@@ -8,10 +8,10 @@ import { proxy } from "./proxy";
 
 const SESSION_COOKIE = "sb-127-auth-token=base64-abc";
 
-function request(path: string, cookie: string | null = SESSION_COOKIE): NextRequest {
+function request(path: string, cookie: string | null = SESSION_COOKIE, method = "GET"): NextRequest {
   const headers = new Headers();
   if (cookie) headers.set("cookie", cookie);
-  return new NextRequest(new URL(path, "http://localhost:3000"), { headers });
+  return new NextRequest(new URL(path, "http://localhost:3000"), { headers, method });
 }
 
 /** Lo que devuelve updateSession: la respuesta "next" con la cookie refrescada y las claims. */
@@ -97,6 +97,62 @@ describe("proxy · /panel sigue protegido", () => {
   it("una admin entra a /panel/admin", async () => {
     session({ sub: "u-1", user_role: "admin" });
     const res = await proxy(request("/panel/admin"));
+    expect(res.headers.get("location")).toBeNull();
+  });
+});
+
+describe("proxy · /entrar con sesión iniciada", () => {
+  beforeEach(() => updateSession.mockReset());
+
+  it("redirige a la portada y copia las cookies", async () => {
+    session({ sub: "u-1", user_role: "student" });
+    const res = await proxy(request("/entrar"));
+    const location = new URL(res.headers.get("location")!);
+    expect(location.pathname).toBe("/");
+    expect(location.search).toBe("");
+    expect(res.cookies.get("sb-127-auth-token")?.value).toBe("refrescada");
+  });
+
+  it("respeta un next interno", async () => {
+    session({ sub: "u-1" });
+    const res = await proxy(request("/entrar?next=%2Fcursos%2Fx%3Fa%3D1"));
+    const location = new URL(res.headers.get("location")!);
+    expect(location.origin).toBe("http://localhost:3000");
+    expect(`${location.pathname}${location.search}`).toBe("/cursos/x?a=1");
+  });
+
+  it.each(["%2F%2Fevil.tld", "https%3A%2F%2Fevil.tld", "%2Fentrar", "%2Fentrar%3Fnext%3D%2Fentrar"])(
+    "next=%s cae en la portada (ni otro host ni un bucle)",
+    async (next) => {
+      session({ sub: "u-1" });
+      const res = await proxy(request(`/entrar?next=${next}`));
+      const location = new URL(res.headers.get("location")!);
+      expect(location.origin).toBe("http://localhost:3000");
+      expect(location.pathname).toBe("/");
+    },
+  );
+
+  it("con cookie vencida (sin claims) muestra el login", async () => {
+    session(null);
+    const res = await proxy(request("/entrar"));
+    expect(res.headers.get("location")).toBeNull();
+  });
+
+  it("sin cookie no consulta la sesión", async () => {
+    const res = await proxy(request("/entrar", null));
+    expect(updateSession).not.toHaveBeenCalled();
+    expect(res.headers.get("location")).toBeNull();
+  });
+
+  it("el POST de la Server Action del login no se redirige", async () => {
+    session({ sub: "u-1" });
+    const res = await proxy(request("/entrar", SESSION_COOKIE, "POST"));
+    expect(res.headers.get("location")).toBeNull();
+  });
+
+  it.each(["/entrar/nueva-clave", "/entrar/recuperar"])("%s sigue accesible con sesión", async (path) => {
+    session({ sub: "u-1" });
+    const res = await proxy(request(path));
     expect(res.headers.get("location")).toBeNull();
   });
 });

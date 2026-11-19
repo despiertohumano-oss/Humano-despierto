@@ -16,12 +16,12 @@ export interface CourseCardData {
   level?: string;
   featured?: boolean;
   slug: string;
-  /** Promedio 1..5 y total de reseñas visibles; sin ellos, «Curso nuevo» (R-01). */
+  /** Promedio 1..5 y total de reseñas visibles; sin ellos, “Curso nuevo” (R-01). */
   rating?: number;
   reviewCount?: number;
   /** URL firmada de la portada (T-047); sin ella, una foto de muestra de su disciplina. */
   coverUrl?: string;
-  /** Sólo con una lección `is_preview` publicada se dice «Clase gratis» (spec Brote, D-67). */
+  /** Sólo con una lección `is_preview` publicada se dice “Clase gratis” (spec Brote, D-67). */
   hasPreview?: boolean;
   /** Modalidad resumida + duración (B2); sin ella la tarjeta no la dibuja (landing). */
   meta?: string;

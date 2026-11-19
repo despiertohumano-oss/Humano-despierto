@@ -108,7 +108,7 @@ export async function listErrorEvents(limit = 100): Promise<ErrorEventRow[] | nu
   }));
 }
 
-/** «Ya está resuelto»: borra la huella. Si vuelve a pasar, nace de nuevo y vuelve a avisar. */
+/** “Ya está resuelto”: borra la huella. Si vuelve a pasar, nace de nuevo y vuelve a avisar. */
 export async function deleteErrorEvent(fingerprint: string): Promise<{ error: string | null }> {
   const { error } = await createServiceRoleClient().from("error_events").delete().eq("fingerprint", fingerprint);
   return { error: error ? error.message : null };

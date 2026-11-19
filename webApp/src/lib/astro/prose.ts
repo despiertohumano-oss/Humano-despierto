@@ -72,7 +72,7 @@ function lista(items: string[]): string {
   return items.length <= 1 ? (items[0] ?? "") : `${items.slice(0, -1).join(", ")} y ${items.at(-1)}`;
 }
 
-// Los luminares llevan artículo en la prosa corrida («la Luna rige…»); los planetas, no.
+// Los luminares llevan artículo en la prosa corrida (“la Luna rige…”); los planetas, no.
 function conArticulo(id: BodyId): string {
   return id === "sol" ? "el Sol" : id === "luna" ? "la Luna" : BODY_NAMES[id];
 }

@@ -29,7 +29,7 @@ export function DeleteConfirmZone({ scope, title, detail, studentsWithProgress, 
   return (
     <div className="space-y-3">
       <TypeToConfirmZone
-        heading={scope === "module" ? `Borrar el módulo «${title}»` : `Borrar la lección «${title}»`}
+        heading={scope === "module" ? `Borrar el módulo “${title}”` : `Borrar la lección “${title}”`}
         confirmText={title}
         action={action}
         isPending={isPending}

@@ -23,7 +23,7 @@ opened in the browser that requested them: the PKCE verifier lives in a cookie. 
 Every auth redirect is a trusted origin + `safeNext`: `getSiteUrl()` on the server (never the
 `Origin` header), `window.location.origin` on the client; GoTrue's exact allow-list
 (`additional_redirect_urls`, fixed host and port, `**` only after `/auth/callback`) is the final
-authority. Adding a port means adding its exact entry there. Local e2e needs
+authority. Adding a port means adding its exact entry there. With a session, `GET /entrar` never renders: `src/proxy.ts` redirects to the internal `next` or to the home page (`/entrar/recuperar`, `/entrar/nueva-clave` and the login's Server Action POST are left alone). Local e2e needs
 `SMTP_HOST=127.0.0.1` and `SMTP_PORT=54325` in `webApp/.env.local` for the app's own mails.
 
 **Google OAuth** (T-041, D5): `/entrar` → `signInWithOAuth` (PKCE) → GoTrue → `/auth/callback`,
@@ -111,7 +111,8 @@ covered by mutation tests that fail loudly if you regress them.
     Playwright runs with `CSP_ENFORCE=false` on purpose: every test imports `test` from
     `e2e/fixtures.ts`, whose `cspGuard` fails the test on any violation (the same policy, so zero
     violations means nothing is blocked), and the csp.spec tests need an injected script to run.
-    A new third-party origin goes into `buildCsp` with its test, never into a page. Netlify's own
+    A new third-party origin goes into `buildCsp` with its test, never into a page. Cloudflare Turnstile
+    (`https://challenges.cloudflare.com`) enters only when both Turnstile keys are set (`turnstile` input, T-106). Netlify's own
     `/.netlify/scripts/hud` has no nonce and is blocked: that is intended.
 11. **Every write a client can trigger is rate-limited** (T-050). Each export of a `"use server"`
     file and each `route.ts` method goes through `withRateLimit("<its own name>", fn, onLimited)`

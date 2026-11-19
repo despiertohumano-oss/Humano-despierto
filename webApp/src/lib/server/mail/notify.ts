@@ -739,7 +739,7 @@ const TRANSACTIONAL_MAIL_TYPES: readonly TransactionalMailType[] = [
   "enrollment_rejected",
 ];
 const RETRY_TRANSACTIONAL_PER_RUN = 25;
-// Una bienvenida o un «te aprobaron» de hace una semana confunde más de lo que informa: lo que
+// Una bienvenida o un “te aprobaron” de hace una semana confunde más de lo que informa: lo que
 // quedó pendiente más de 3 días no se retoma (el anuncio no tiene corte, sigue vigente).
 const TRANSACTIONAL_MAX_AGE_MS = 3 * 24 * 60 * 60_000;
 

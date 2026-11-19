@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils/cn";
 import Icon from "@/components/atoms/Icon";
 
-/** R-01 · sin reseñas no hay estrellas ni «0,0»: se dice que el curso es nuevo. El texto visible
- *  sigue el formato de `formatRating` («4,5 · 2 reseñas») y el valor exacto viaja en `.sr-only`. */
+/** R-01 · sin reseñas no hay estrellas ni “0,0”: se dice que el curso es nuevo. El texto visible
+ *  sigue el formato de `formatRating` (“4,5 · 2 reseñas”) y el valor exacto viaja en `.sr-only`. */
 export default function Rating({
   average,
   count,

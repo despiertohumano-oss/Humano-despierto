@@ -111,4 +111,26 @@ describe("buildCsp", () => {
     expect(a).toMatch(/^[A-Za-z0-9+/]+={0,2}$/);
     expect(a).not.toBe(b);
   });
+
+  it("Turnstile apagado: challenges.cloudflare.com no aparece en ninguna directiva", () => {
+    expect(buildCsp(BASE).value).not.toContain("challenges.cloudflare.com");
+    expect(buildCsp({ ...BASE, turnstile: false }).value).not.toContain("challenges.cloudflare.com");
+  });
+
+  it("Turnstile encendido: suma su origen SOLO en script-src, frame-src y connect-src, sin aflojar nada más", () => {
+    const off = directives(buildCsp(BASE).value);
+    const on = directives(buildCsp({ ...BASE, turnstile: true }).value);
+    const CF = "https://challenges.cloudflare.com";
+    expect(on.get("script-src")).toEqual([...off.get("script-src")!, CF]);
+    expect(on.get("frame-src")).toEqual([...off.get("frame-src")!, CF]);
+    expect(on.get("connect-src")).toEqual([...off.get("connect-src")!, CF]);
+    for (const [name, sources] of on) {
+      if (["script-src", "frame-src", "connect-src"].includes(name)) continue;
+      expect(sources, name).toEqual(off.get(name));
+    }
+    const all = [...on.values()].flat();
+    expect(all).not.toContain("'unsafe-eval'");
+    expect(all.some((s) => s.includes("*"))).toBe(false);
+    expect(on.get("script-src")).toContain("'strict-dynamic'");
+  });
 });

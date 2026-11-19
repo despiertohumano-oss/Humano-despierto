@@ -487,7 +487,7 @@ export const setFounderAction = withRateLimit(
   limitedState,
 );
 
-/** 0078 · «Ya está resuelto»: borra la huella; si el error vuelve, avisa de nuevo. */
+/** 0078 · “Ya está resuelto”: borra la huella; si el error vuelve, avisa de nuevo. */
 export const resolveErrorEventAction = withRateLimit(
   "resolveErrorEventAction",
   async function resolveErrorEventAction(
