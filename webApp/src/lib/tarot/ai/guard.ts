@@ -129,6 +129,8 @@ export function guardReading(raw: string, facts: ReadingFacts): GuardResult {
   if (PREDICCION.some((re) => re.test(folded)) || affirmedGuarantee(folded)) return { ok: false, reason: "prediccion" };
 
   const inReading = new Set(facts.placed.map((p) => p.card.id));
+  // La quintaesencia no está en la mesa, pero el motor la nombra en los datos: no es un invento.
+  if (facts.quintessence) inReading.add(facts.quintessence.id);
   const minorNames = new Set(facts.placed.filter((p) => p.card.arcano === "menor").map((p) => fold(p.card.nombre_es)));
   for (const m of folded.matchAll(MENOR)) if (!minorNames.has(canonMinor(m[0]))) return { ok: false, reason: "inventa" };
   for (const m of MAJOR_PATTERNS) if (!inReading.has(m.id) && majorMentioned(m, stripped, folded)) return { ok: false, reason: "inventa" };

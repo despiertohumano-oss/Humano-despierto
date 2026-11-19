@@ -220,3 +220,27 @@ describe("guardReading · términos prohibidos del sitio (A7)", () => {
     },
   );
 });
+
+describe("guardReading · quintaesencia de la cruz celta", () => {
+  const slugs = ["el-loco", "cuatro-de-bastos", "nueve-de-copas", "la-rueda-de-la-fortuna", "rey-de-espadas", "el-carro", "diez-de-bastos", "la-luna", "tres-de-espadas", "reina-de-oros"];
+  const celta = buildReading({ spread: "cruz-celta", cards: slugs.map((s) => ({ indice: idx(s), reversed: false })) }, null);
+  const cuerpo = celta.placed
+    .map((p) => `En este lugar aparece ${p.card.nombre_es}, y lo que trae conversa con las cartas que tiene cerca sin imponerse sobre ellas, como una voz más dentro de un mismo relato.`)
+    .join(" ");
+
+  it("la tirada tiene quintaesencia y no es una de las cartas de la mesa", () => {
+    expect(celta.quintessence).toBeTruthy();
+    expect(celta.placed.some((p) => p.card.id === celta.quintessence!.id)).toBe(false);
+  });
+
+  it("nombrar la quintaesencia no cuenta como carta inventada", () => {
+    const text = `${cuerpo}\n\nComo síntesis, ${celta.quintessence!.nombre_es} reúne el tono de toda la tirada.\n\n¿Qué parte de este recorrido querés mirar primero?`;
+    expect(guardReading(text, celta).ok).toBe(true);
+  });
+
+  it("otro arcano mayor que no salió sigue siendo un invento", () => {
+    const otro = ["El Diablo", "La Estrella", "El Mago"].find((n) => n !== celta.quintessence!.nombre_es && !celta.placed.some((p) => p.card.nombre_es === n))!;
+    const text = `${cuerpo}\n\nComo síntesis, ${otro} reúne el tono de toda la tirada.\n\n¿Qué parte de este recorrido querés mirar primero?`;
+    expect(guardReading(text, celta)).toEqual({ ok: false, reason: "inventa" });
+  });
+});
