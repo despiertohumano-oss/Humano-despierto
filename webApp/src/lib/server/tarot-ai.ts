@@ -5,8 +5,8 @@ import { log } from "@/lib/server/log";
 import { humanCheckFromEnv, type HumanCheck, type HumanCheckResult } from "@/lib/server/turnstile";
 import { clientIpFrom } from "@/lib/rate-limit/core";
 import { geminiModel, GeminiError, type ModelCall } from "@/lib/server/gemini";
-import { guardReading, type GuardReason } from "@/lib/tarot/ai/guard";
-import { isSensitiveQuestion } from "@/lib/tarot/ai/sensitive";
+import { guardReading, type GuardReason, type GuardResult } from "@/lib/tarot/ai/guard";
+import { isSensitiveQuestion, readVerdict } from "@/lib/tarot/ai/sensitive";
 import { buildUserMessage, SYSTEM_PROMPT } from "@/lib/tarot/ai/prompt";
 import { decodeReading } from "@/lib/tarot/codec";
 import { sanitizeQuestion } from "@/lib/tarot/question";
@@ -70,7 +70,10 @@ export async function writeTarotReading(facts: ReadingFacts, deps: { model: Mode
     for (let attempt = 1; ; attempt++) {
       const raw = await Promise.race([model(request), deadline]);
       if (raw === null) return fail("empty");
-      const checked = guardReading(raw, facts);
+      // El modelo declara primero si la pregunta trata de salud, embarazo o muerte: ahí no se muestra nada.
+      const verdict = readVerdict(raw);
+      if (verdict?.sensitive) return fail("sensible");
+      const checked: GuardResult = verdict ? guardReading(verdict.text, facts) : { ok: false, reason: "formato" };
       if (checked.ok) return checked.paragraphs;
       if (attempt >= MAX_ATTEMPTS || !RETRYABLE.has(checked.reason)) return fail("guard", { guard: checked.reason, attempt });
     }

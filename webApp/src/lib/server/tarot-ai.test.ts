@@ -10,13 +10,15 @@ const idx = (slug: string) => cardBySlug(slug)!.indice;
 const facts = (question: string | null = "¿Qué hago con mi trabajo?") =>
   buildReading({ spread: "cruz-simple", cards: ["el-ermitano", "tres-de-oros", "la-torre", "dos-de-copas", "la-estrella"].map((s) => ({ indice: idx(s), reversed: false })) }, question);
 
-const GOOD = [
+const BODY = [
   "Tu pregunta por el trabajo llega en un momento en que las cartas piden pausa antes que movimiento. El Ermitaño en el pasado muestra que ya venías mirando hacia adentro, buscando una respuesta propia y no la que esperan los demás, y esa búsqueda sigue teniendo sentido hoy.",
   "El Tres de Oros habla de un trabajo en equipo que todavía puede encajar mejor: tareas que se pisan, reconocimiento que tarda, la sensación de poner más de lo que vuelve. La Torre, como información del pasado, explica por qué: algo se rompió en la forma en que entendías tu lugar, y lo que parecía firme dejó de sostenerte.",
   "Frente a eso, el Dos de Copas trae otra pista. Lo que se asoma no es una solución técnica sino un vínculo: alguien con quien el trabajo vuelva a sentirse compartido, un acuerdo más parejo, una conversación pendiente con quien trabaja a tu lado. La Estrella en el presente sostiene todo el cuadro con una calma serena, como si ya supieras hacia dónde querés ir aunque todavía no lo digas.",
   "Las cartas no te dicen que te quedes ni que te vayas. Te muestran que la decisión madura cuando dejás de pelear con lo que se cayó y empezás a cuidar lo que te da confianza. Hay algo de esperanza en esta tirada, pero es una esperanza que pide gestos concretos y conversaciones claras, no un salto a ciegas.",
   "¿Qué conversación sobre tu trabajo venís postergando y qué cambiaría si la tuvieras esta semana?",
 ].join("\n\n");
+// El modelo antepone su veredicto sobre la pregunta; sin esa línea la salida no vale.
+const GOOD = `SENSIBLE: NO\n\n${BODY}`;
 
 let warn: ReturnType<typeof vi.spyOn>;
 beforeEach(() => {
@@ -87,7 +89,7 @@ describe("writeTarotReading", () => {
   });
 
   it("un fallo de forma se reintenta una vez y la segunda salida buena vale", async () => {
-    const outs = [`# Lectura\n\n${GOOD}`, GOOD];
+    const outs = [`SENSIBLE: NO\n\n# Lectura\n\n${BODY}`, GOOD];
     let calls = 0;
     const model: ModelCall = async () => outs[calls++];
     const r = await writeTarotReading(facts(), { model, timeoutMs: 1000 });
@@ -97,7 +99,7 @@ describe("writeTarotReading", () => {
 
   it("no hay tercer intento", async () => {
     let calls = 0;
-    const model: ModelCall = async () => (calls++, `# Lectura\n\n${GOOD}`);
+    const model: ModelCall = async () => (calls++, `SENSIBLE: NO\n\n# Lectura\n\n${BODY}`);
     await expect(writeTarotReading(facts(), { model, timeoutMs: 1000 })).resolves.toBeNull();
     expect(calls).toBe(2);
   });
@@ -130,6 +132,27 @@ describe("writeTarotReading", () => {
     },
   );
 
+  it("si el modelo marca la pregunta como sensible, no se muestra nada y no se reintenta", async () => {
+    let calls = 0;
+    const model: ModelCall = async () => (calls++, `SENSIBLE: SI\n\n${BODY}`);
+    await expect(writeTarotReading(facts("¿Se viene alguien nuevo a casa?"), { model, timeoutMs: 1000 })).resolves.toBeNull();
+    expect(calls).toBe(1);
+    expect(JSON.stringify(warn.mock.calls)).toContain("sensible");
+  });
+
+  it("sin la línea de veredicto la salida no vale: se reintenta y, si sigue faltando, respaldo", async () => {
+    let calls = 0;
+    const model: ModelCall = async () => (calls++, BODY);
+    await expect(writeTarotReading(facts(), { model, timeoutMs: 1000 })).resolves.toBeNull();
+    expect(calls).toBe(2);
+  });
+
+  it("la línea de veredicto no llega a la pantalla", async () => {
+    const model: ModelCall = async () => GOOD;
+    const r = await writeTarotReading(facts(), { model, timeoutMs: 1000 });
+    expect(r!.join(" ")).not.toMatch(/SENSIBLE/i);
+  });
+
   it("una consulta de salud no llama al modelo: se queda con la lectura por plantillas", async () => {
     let calls = 0;
     const model: ModelCall = async () => (calls++, GOOD);
@@ -138,7 +161,7 @@ describe("writeTarotReading", () => {
   });
 
   it("una salida que no pasa la guarda da null", async () => {
-    const model: ModelCall = async () => `# Lectura\n\n${GOOD}`;
+    const model: ModelCall = async () => `SENSIBLE: NO\n\n# Lectura\n\n${BODY}`;
     await expect(writeTarotReading(facts(), { model, timeoutMs: 1000 })).resolves.toBeNull();
   });
 
